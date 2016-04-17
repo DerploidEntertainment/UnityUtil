@@ -11,7 +11,7 @@
     <AssemblyName>Danware.Unity3D</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
+    <TargetFrameworkProfile>Unity Subset v3.5</TargetFrameworkProfile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -38,7 +38,6 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL" />
@@ -75,14 +74,15 @@
     <Compile Include="Use.cs" />
     <Compile Include="Useable.cs" />
     <Compile Include="Input\ValueInput.cs" />
+    <Compile Include="WorldGen\MapGenerator.cs" />
+    <Compile Include="WorldGen\MeshGenerator.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="deployToUnityProjects.cmd" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>$(ProjectDir)deployToUnityProjects.cmd $(TargetPath) $(ProjectDir)unity_projects.txt</PostBuildEvent>
+    <PostBuildEvent>$(SolutionDir)copyToUnityProjects.cmd $(TargetDir)$(TargetName) $(ProjectDir)COPY_LOCATIONS\COPY_LOCATIONS.txt</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
