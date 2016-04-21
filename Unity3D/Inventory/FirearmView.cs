@@ -28,7 +28,7 @@ namespace Danware.Unity3D.Inventory {
             _line.enabled = true;
             Transform trans = e.Firearm.transform;
             Vector3 pos0 = trans.TransformPoint(trans.localPosition + FlashOffset);
-            Vector3 pos1 = trans.position + Firearm.Range * trans.forward;
+            Vector3 pos1 = trans.position + Firearm.Range * e.Direction;
             _line.SetPosition(0, pos0);
             _line.SetPosition(1, pos1);
             Invoke("clearFlash", FlashDuration);
@@ -40,7 +40,7 @@ namespace Danware.Unity3D.Inventory {
         }
 
         // HELPER FUNCTIONS
-        protected virtual void init() {
+        private void init() {
             _line = GetComponent<LineRenderer>();
             _audio = gameObject.AddComponent<AudioSource>();
             _audio.clip = FireAudioClip;

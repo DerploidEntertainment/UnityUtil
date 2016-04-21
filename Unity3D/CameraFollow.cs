@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
-using System.Collections;
 
-namespace Rolling {
+namespace Danware.Unity3D {
 
     public class CameraFollow : MonoBehaviour {
         // INSPECTOR FIELDS

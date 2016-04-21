@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 using UnityEngine;
 
-namespace Rolling {
+namespace Danware.Unity3D {
 
     public enum AreaType {
         Box,

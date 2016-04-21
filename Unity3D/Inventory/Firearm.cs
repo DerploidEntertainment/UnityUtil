@@ -1,4 +1,6 @@
 ﻿using UnityEngine;
+using U = UnityEngine;
+
 using System;
 using System.Linq;
 using System.Collections.Generic;
@@ -20,6 +22,7 @@ namespace Danware.Unity3D.Inventory {
             public RaycastHit Hit;
         }
         public class FireEventArgs : FirearmEventArgs {
+            public Vector3 Direction;
             public RaycastHit[] Hits;
             public IList<RaycastHit> TargetsToAffect;
         }
@@ -29,12 +32,21 @@ namespace Danware.Unity3D.Inventory {
         private EventHandler<FireEventArgs> _firedInvoker;
         private EventHandler<HitEventArgs> _affectingInvoker;
         private bool _canFire = true;
+        private float _accuracyDegrees;
+        private float _accuracyLerpT;
 
         // INSPECTOR FIELDS
         public float Range;
         public float FireRate = 5f; // Shots/sec
         public bool Automatic;
         public LayerMask FireLayer;
+        [Header("Accuracy")]
+        [Range(0f, 90f)]
+        public float InitialConeHalfAngle = 0f;
+        [Range(0f, 90f)]
+        public float FinalConeHalfAngle = 0f;
+        [Tooltip("For automatic weapons, the accuracy cone's half angle will lerp from the initial to the final value in this amount of time")]
+        public float AccuracyLerpTime = 1f;   // Seconds
         public event EventHandler<CancelEventArgs> Firing {
             add { _firingInvoker += value; }
             remove { _firingInvoker -= value; }
@@ -51,6 +63,33 @@ namespace Danware.Unity3D.Inventory {
         // API INTERFACE
         public static StartStopInput FireInput { get; set; }
         public void Fire() {
+            fireActions();
+        }
+
+        // EVENT HANDLERS
+        private void Update() {
+            // Get player input
+            bool fired = FireInput.Started;
+            bool firing = FireInput.Happening;
+
+            // Reset the accuracy cone on the first shot
+            if (fired) {
+                _accuracyDegrees = InitialConeHalfAngle;
+                _accuracyLerpT = 0f;
+            }
+
+            // Try to Fire according to whether the Firearm is automatic
+            if (!Automatic && fired)
+                fireActions();
+            if (Automatic && firing)
+                fireActions();
+        }
+        private void OnDrawGizmos() {
+            Gizmos.DrawRay(transform.position, Range * transform.forward);
+        }
+
+        // HELPER FUNCTIONS
+        private void fireActions() {
             // If the Firearm is automatic, only allow firing in time with the FireRate
             if (Automatic && _canFire) {
                 _canFire = false;
@@ -62,24 +101,6 @@ namespace Danware.Unity3D.Inventory {
             else if (!Automatic)
                 doFire();
         }
-
-        // EVENT HANDLERS
-        private void Update() {
-            // Get player input
-            bool fired = FireInput.Started;
-            bool firing = FireInput.Happening;
-
-            // Try to Fire according to whether the Firearm is automatic
-            if (!Automatic && fired)
-                Fire();
-            if (Automatic && firing)
-                Fire();
-        }
-        private void OnDrawGizmos() {
-            Gizmos.DrawRay(transform.position, Range * transform.forward);
-        }
-
-        // HELPER FUNCTIONS
         private void doFire() {
             // Raise the Firing event
             CancelEventArgs firingArgs = new CancelEventArgs() {
@@ -92,15 +113,28 @@ namespace Danware.Unity3D.Inventory {
             if (firingArgs.Cancel)
                 return;
 
+            // Get a random Ray within the accuracy cone
+            float z = U.Random.Range(Mathf.Cos(Mathf.Deg2Rad * _accuracyDegrees), 1f);
+            float theta = U.Random.Range(0f, 2 * Mathf.PI);
+            float sqrtPart = Mathf.Sqrt(1 - z * z);
+            Vector3 dir = new Vector3(sqrtPart * Mathf.Cos(theta), sqrtPart * Mathf.Sin(theta), z);
+            Ray ray = new Ray(transform.position, transform.TransformDirection(dir));
+
+            // Raycast into the scene on the given Fire Layer
             // Raise the Fired event, allowing other components to select which targets to affect
-            RaycastHit[] hits = Physics.RaycastAll(transform.position, transform.forward, Range, FireLayer);
+            RaycastHit[] hits = Physics.RaycastAll(ray, Range, FireLayer);
             hits = hits.OrderBy(h => h.distance).ToArray();
             FireEventArgs fireArgs = new FireEventArgs() {
                 Firearm = this,
+                Direction = ray.direction,
                 Hits = hits,
                 TargetsToAffect = new List<RaycastHit>(),
             };
             _firedInvoker?.Invoke(this, fireArgs);
+
+            // Adjust the accuracy cone for the next shot
+            _accuracyLerpT = (AccuracyLerpTime == 0 ? 1f : Mathf.Clamp01(_accuracyLerpT + (1f / FireRate) / AccuracyLerpTime));
+            _accuracyDegrees = Mathf.LerpAngle(InitialConeHalfAngle, FinalConeHalfAngle, _accuracyLerpT);
 
             // Affect the closest target, if there was one
             RaycastHit[] orderedHits = fireArgs.TargetsToAffect.OrderBy(t => t.distance).ToArray();

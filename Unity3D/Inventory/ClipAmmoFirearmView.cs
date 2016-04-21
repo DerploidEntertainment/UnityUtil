@@ -2,7 +2,7 @@
 
 namespace Danware.Unity3D.Inventory {
     
-    public class ClipAmmoFirearmView : FirearmView {
+    public class ClipAmmoFirearmView : MonoBehaviour {
         // HIDDEN FIELDS
         private AudioSource _misfireAudio;
         private AudioSource _reloadAudio;
@@ -26,9 +26,7 @@ namespace Danware.Unity3D.Inventory {
         }
 
         // HELPER FUNCTIONS
-        protected override void init() {
-            base.init();
-
+        private void init() {
             _misfireAudio = gameObject.AddComponent<AudioSource>();
             _misfireAudio.clip = MisfireAudioClip;
             _misfireAudio.loop = false;

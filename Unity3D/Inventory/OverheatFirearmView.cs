@@ -2,7 +2,7 @@
 
 namespace Danware.Unity3D.Inventory {
     
-    public class OverheatFirearmView : FirearmView {
+    public class OverheatFirearmView : MonoBehaviour {
         // HIDDEN FIELDS
         private AudioSource _onOverheatAudio;
         private AudioSource _whileOverheatedAudio;
@@ -29,9 +29,7 @@ namespace Danware.Unity3D.Inventory {
         }
 
         // HELPER FUNCTIONS
-        protected override void init() {
-            base.init();
-
+        protected void init() {
             _onOverheatAudio = gameObject.AddComponent<AudioSource>();
             _onOverheatAudio.clip = OnOverheatAudioClip;
             _onOverheatAudio.loop = false;
