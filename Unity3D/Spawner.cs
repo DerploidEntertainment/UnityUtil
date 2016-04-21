@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using U = UnityEngine;
+
 using System;
 
 namespace Danware.Unity3D {
@@ -36,7 +37,7 @@ namespace Danware.Unity3D {
             // Instantiating a Prefab can sometimes give a GameObject or a Transform...we want the GameObject
             U.Object obj = Instantiate(Prefab, transform.position, transform.rotation);
             _previous = (obj is GameObject) ? obj as GameObject : (obj as Transform).gameObject;
-            _previous.name += String.Format("_{0}", _count);
+            _previous.name += string.Format("_{0}", _count);
             if (!DestroyPrevious)
                 ++_count;
 
@@ -61,10 +62,10 @@ namespace Danware.Unity3D {
                     return transform.forward;
 
                 case SpawnerSpawnType.ConeRandom:
-                    return onUnitCone(transform.forward, ConeHalfAngle, false);
+                    return onUnitCone(ConeHalfAngle, false);
 
                 case SpawnerSpawnType.ConeBoundary:
-                    return onUnitCone(transform.forward, ConeHalfAngle, true);
+                    return onUnitCone(ConeHalfAngle, true);
 
                 case SpawnerSpawnType.SphereRandom:
                     return U.Random.onUnitSphere;
@@ -77,19 +78,14 @@ namespace Danware.Unity3D {
             float speed = UseRandomSpeed ? U.Random.Range(MinSpeed, MaxSpeed) : RigidbodySpeed;
             return speed;
         }
-        private Vector3 onUnitCone(Vector3 unitAxis, float halfAngle, bool onlyBoundary) {
-            // Get a random cone-vector, assuming that the cone is centered on the z-axis
-            float minZ = Mathf.Cos(halfAngle);
-            float z = onlyBoundary ? minZ : U.Random.Range(minZ, 1f);
+        private Vector3 onUnitCone(float halfAngle, bool onlyBoundary) {
+            float minZ = Mathf.Cos(Mathf.Deg2Rad * halfAngle);
+            float z = U.Random.Range(minZ, onlyBoundary ? minZ : 1f);
             float theta = U.Random.Range(0f, 2 * Mathf.PI);
-            float r = Mathf.Sqrt(1f - z * z);
-            Vector3 basis = new Vector3(r * Mathf.Cos(theta), r * Mathf.Sin(theta), z);
+            float sqrtPart = Mathf.Sqrt(1 - z * z);
 
-            // Now rotate that vector to the actual cone's direction
-            Vector3 rotAxis = Vector3.Cross(unitAxis, Vector3.forward);
-            float rotAngle = Mathf.Rad2Deg * Mathf.Acos(Vector3.Dot(unitAxis, Vector3.forward));
-
-            return Vector3.one;
+            Vector3 dir = new Vector3(sqrtPart * Mathf.Cos(theta), sqrtPart * Mathf.Sin(theta), z);
+            return transform.TransformDirection(dir);
         }
     }
 
