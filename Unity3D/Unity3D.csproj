@@ -74,6 +74,7 @@
     <Compile Include="Use.cs" />
     <Compile Include="Useable.cs" />
     <Compile Include="Input\ValueInput.cs" />
+    <Compile Include="Util.cs" />
     <Compile Include="WorldGen\MapGenerator.cs" />
     <Compile Include="WorldGen\MeshGenerator.cs" />
   </ItemGroup>

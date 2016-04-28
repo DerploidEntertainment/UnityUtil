@@ -15,41 +15,43 @@ namespace Danware.Unity3D {
         }
         public class LoadEventArgs : PickUpEventArgs {
             public Rigidbody Load;
-            public bool Dropped;
+        }
+        public class ReleasedEventArgs : LoadEventArgs {
+            public bool Dislodged;
+            public bool Thrown;
         }
 
         // HIDDEN FIELDS
         private EventHandler<LoadEventArgs> _pickupInvoker;
-        private EventHandler<LoadEventArgs> _releaseInvoker;
-        private EventHandler<LoadEventArgs> _throwInvoker;
+        private EventHandler<ReleasedEventArgs> _releaseInvoker;
         private FixedJoint _joint;
+        private Rigidbody _rigidbody;
         private Rigidbody _load;
-        private bool _throwing;
         private bool _releasing;
+        private bool _throwing;
 
         // INSPECTOR FIELDS
         public LayerMask PickupLayer = Physics.DefaultRaycastLayers;
         public float MaxMass = 10f;
         public float Reach = 5f;
-        public float ThrowForce = 100f;
+        public float ThrowForce = 10f;
         public bool CanThrow = true;
-        public Vector3 Offset = new Vector3(0f, 0f, 1f);
+        public Vector3 LocalOffset = new Vector3(0f, 0f, 1.5f);
         public float DislodgeForce = Mathf.Infinity;
         public float DislodgeTorque = Mathf.Infinity;
         public event EventHandler<LoadEventArgs> LoadPickedUp {
             add { _pickupInvoker += value; }
             remove { _pickupInvoker -= value; }
         }
-        public event EventHandler<LoadEventArgs> LoadReleased {
+        public event EventHandler<ReleasedEventArgs> LoadReleased {
             add { _releaseInvoker += value; }
             remove { _releaseInvoker -= value; }
         }
-        public event EventHandler<LoadEventArgs> LoadThrown {
-            add { _throwInvoker += value; }
-            remove { _throwInvoker -= value; }
-        }
 
         // EVENT HANDLERS
+        private void Awake() {
+            _rigidbody = GetComponent<Rigidbody>();
+        }
         private void Update() {
             // Get user input
             bool pickup = PickupInput.Started;
@@ -63,25 +65,21 @@ namespace Danware.Unity3D {
                     releaseActions();
             }
 
-            // If the player pressed Throw, then do throw actions
-            if (threw)
+            // If the player pressed Throw and throwing is currently applicable, then do throw actions
+            if (threw && CanThrow && _load != null)
                 throwActions();
         }
-        public void OnJointBreak(float breakForce) {
-            // Throw the load, if requested
-            if (_throwing)
-                doThrow();
-
-            // In any case, actually release the load
+        private void OnJointBreak(float breakForce) {
+            // Release the load
             Rigidbody load = _load;
-            _load = null;
+            releaseLoad();
 
             // Raise the Released event
-            bool dropped = (!_throwing && !_releasing);
-            LoadEventArgs args = new LoadEventArgs() {
+            ReleasedEventArgs args = new ReleasedEventArgs() {
                 PickUp = this,
                 Load = load,
-                Dropped = dropped,
+                Dislodged = true,
+                Thrown = false,
             };
             _releaseInvoker?.Invoke(this, args);
         }
@@ -91,33 +89,35 @@ namespace Danware.Unity3D {
         public static StartStopInput ThrowInput { get; set; }
         public Rigidbody Load { get { return _load; } }
         public void Pickup() {
-            pickupActions();
+            if (_load == null)
+                pickupActions();
         }
         public void Release() {
-            releaseActions();
+            if (_load != null)
+                releaseActions();
         }
         public void Throw() {
-            throwActions();
+            if (CanThrow && _load != null)
+                throwActions();
         }
 
         // HELPER FUNCTIONS
         private void pickupActions() {
             // Make sure there is no current load, and an object is ahead that can be picked up
-            if (_load != null)
-                return;
             _load = objAhead();
             if (_load == null)
                 return;
 
             // Move the load to the correct offset/orientation
-            _load.transform.position = transform.TransformPoint(transform.localPosition + Offset);
+            // Cant use Rigidbody.position/rotation b/c we're about to add a Joint
+            _load.transform.position = transform.TransformPoint(LocalOffset);
             _load.transform.rotation = transform.rotation;
 
             // Connect it to the holder via a FixedJoint
-            _joint = gameObject.AddComponent<FixedJoint>();
+            _joint = _load.gameObject.AddComponent<FixedJoint>();
             _joint.breakForce = DislodgeForce;
             _joint.breakTorque = DislodgeTorque;
-            _joint.connectedBody = _load;
+            _joint.connectedBody = _rigidbody;
 
             // Raise the PickUp event
             LoadEventArgs args = new LoadEventArgs() {
@@ -127,20 +127,39 @@ namespace Danware.Unity3D {
             _pickupInvoker?.Invoke(this, args);
         }
         private void releaseActions() {
-            // Break the joint, if a load is present
-            if (_load != null) {
-                _releasing = true;
-                breakJoint();
-            }
+            // Break the joint and release the Load
+            _releasing = true;
+            Rigidbody load = _load;
+            destroyJoint();
+            releaseLoad();
+
+            // Raise the Released event
+            ReleasedEventArgs args = new ReleasedEventArgs() {
+                PickUp = this,
+                Load = load,
+                Dislodged = false,
+                Thrown = false,
+            };
+            _releaseInvoker?.Invoke(this, args);
         }
         private void throwActions() {
-            // If there is no load or throwing is not enabled then just return
-            if (_load == null || !CanThrow)
-                return;
-
-            // Break the joint
+            // Break the joint and release the load
             _throwing = true;
-            breakJoint();
+            Rigidbody load = _load;
+            destroyJoint();
+            releaseLoad();
+
+            // Apply the throw force
+            load.AddForce(transform.forward * ThrowForce, ForceMode.Impulse);
+
+            // Raise the Thrown event
+            ReleasedEventArgs args = new ReleasedEventArgs() {
+                PickUp = this,
+                Load = load,
+                Dislodged = false,
+                Thrown = true,
+            };
+            _releaseInvoker?.Invoke(this, args);
         }
         private Rigidbody objAhead() {
             Rigidbody rbAhead = null;
@@ -156,21 +175,13 @@ namespace Danware.Unity3D {
 
             return rbAhead;
         }
-        private void breakJoint() {
-            // Apply a huge force so we're sure the joint gets broken
-            _load.AddForce(transform.forward * float.MaxValue);
+        private void destroyJoint() {
+            DestroyImmediate(_joint);
         }
-        private void doThrow() {
-            // Actually apply the throw force
-            _load.AddForce(transform.forward * ThrowForce);
+        private void releaseLoad() {
+            _load = null;
             _throwing = false;
-
-            // Raise the Thrown event
-            LoadEventArgs args = new LoadEventArgs() {
-                PickUp = this,
-                Load = _load,
-            };
-            _throwInvoker?.Invoke(this, args);
+            _releasing = false;
         }
 
     }

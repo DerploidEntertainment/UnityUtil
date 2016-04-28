@@ -25,8 +25,11 @@ namespace Danware.Unity3D.Inventory {
                                  where h.collider.GetComponent<Health>() != null
                                  where !h.collider.CompareTag("Player")
                                  select h).ToArray();
-            if (hits.Count() > 0)
-                e.TargetsToAffect.Add(hits[0]);
+            if (hits.Count() > 0) {
+                RaycastHit closest = hits[0];
+                if (!e.TargetPriorities.ContainsKey(closest))
+                    e.TargetPriorities.Add(closest, 0);
+            }
         }
         private void handleTarget(object sender, Firearm.HitEventArgs e) {
             // Damage the target, if it has a Health component

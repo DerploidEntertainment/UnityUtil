@@ -27,7 +27,7 @@ namespace Danware.Unity3D.Inventory {
 
         // INSPECTOR FIELDS
         public int MaxItems = 10;
-        public float DroppedItemRefactoryPeriod = 3f;
+        public float DroppedItemRefactoryPeriod = 1.5f;
         public event EventHandler<ItemEventArgs> ItemCollected {
             add { _collectedInvoker += value; }
             remove { _collectedInvoker -= value; }

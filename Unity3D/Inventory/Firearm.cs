@@ -24,7 +24,7 @@ namespace Danware.Unity3D.Inventory {
         public class FireEventArgs : FirearmEventArgs {
             public Vector3 Direction;
             public RaycastHit[] Hits;
-            public IList<RaycastHit> TargetsToAffect;
+            public Dictionary<RaycastHit, uint> TargetPriorities;
         }
 
         // HIDDEN FIELDS
@@ -128,7 +128,7 @@ namespace Danware.Unity3D.Inventory {
                 Firearm = this,
                 Direction = ray.direction,
                 Hits = hits,
-                TargetsToAffect = new List<RaycastHit>(),
+                TargetPriorities = new Dictionary<RaycastHit, uint>(),
             };
             _firedInvoker?.Invoke(this, fireArgs);
 
@@ -136,8 +136,12 @@ namespace Danware.Unity3D.Inventory {
             _accuracyLerpT = (AccuracyLerpTime == 0 ? 1f : Mathf.Clamp01(_accuracyLerpT + (1f / FireRate) / AccuracyLerpTime));
             _accuracyDegrees = Mathf.LerpAngle(InitialConeHalfAngle, FinalConeHalfAngle, _accuracyLerpT);
 
-            // Affect the closest target, if there was one
-            RaycastHit[] orderedHits = fireArgs.TargetsToAffect.OrderBy(t => t.distance).ToArray();
+            // Affect the closest, highest-priority target, if there is one
+            RaycastHit[] orderedHits = (
+                from derp in fireArgs.TargetPriorities
+                orderby derp.Value descending,
+                        derp.Key.distance
+                select derp.Key).ToArray();
             if (orderedHits.Length > 0) {
                 HitEventArgs targetArgs = new HitEventArgs() {
                     Firearm = this,
