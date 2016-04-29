@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="Button.cs" />
     <Compile Include="CameraFollow.cs" />
+    <Compile Include="JointWrapper.cs" />
     <Compile Include="Movement\CharacterFPSWalker.cs" />
     <Compile Include="Inventory\ClipAmmoFirearm.cs" />
     <Compile Include="Inventory\ClipAmmoFirearmView.cs" />

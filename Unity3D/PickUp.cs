@@ -25,10 +25,9 @@ namespace Danware.Unity3D {
         private EventHandler<LoadEventArgs> _pickupInvoker;
         private EventHandler<ReleasedEventArgs> _releaseInvoker;
         private FixedJoint _joint;
+        private JointWrapper _jointWrapper;
         private Rigidbody _rigidbody;
         private Rigidbody _load;
-        private bool _releasing;
-        private bool _throwing;
 
         // INSPECTOR FIELDS
         public LayerMask PickupLayer = Physics.DefaultRaycastLayers;
@@ -69,20 +68,6 @@ namespace Danware.Unity3D {
             if (threw && CanThrow && _load != null)
                 throwActions();
         }
-        private void OnJointBreak(float breakForce) {
-            // Release the load
-            Rigidbody load = _load;
-            releaseLoad();
-
-            // Raise the Released event
-            ReleasedEventArgs args = new ReleasedEventArgs() {
-                PickUp = this,
-                Load = load,
-                Dislodged = true,
-                Thrown = false,
-            };
-            _releaseInvoker?.Invoke(this, args);
-        }
 
         // API INTERFACE
         public static StartStopInput PickupInput { get; set; }
@@ -114,10 +99,12 @@ namespace Danware.Unity3D {
             _load.transform.rotation = transform.rotation;
 
             // Connect it to the holder via a FixedJoint
-            _joint = _load.gameObject.AddComponent<FixedJoint>();
+            _jointWrapper = _load.gameObject.AddComponent<JointWrapper>();
+            _joint = _jointWrapper.SetJoint<FixedJoint>();
             _joint.breakForce = DislodgeForce;
             _joint.breakTorque = DislodgeTorque;
             _joint.connectedBody = _rigidbody;
+            _jointWrapper.Broken += (object sender, EventArgs e) => jointBreakActions();
 
             // Raise the PickUp event
             LoadEventArgs args = new LoadEventArgs() {
@@ -128,7 +115,6 @@ namespace Danware.Unity3D {
         }
         private void releaseActions() {
             // Break the joint and release the Load
-            _releasing = true;
             Rigidbody load = _load;
             destroyJoint();
             releaseLoad();
@@ -144,7 +130,6 @@ namespace Danware.Unity3D {
         }
         private void throwActions() {
             // Break the joint and release the load
-            _throwing = true;
             Rigidbody load = _load;
             destroyJoint();
             releaseLoad();
@@ -158,6 +143,20 @@ namespace Danware.Unity3D {
                 Load = load,
                 Dislodged = false,
                 Thrown = true,
+            };
+            _releaseInvoker?.Invoke(this, args);
+        }
+        private void jointBreakActions() {
+            // Release the load
+            Rigidbody load = _load;
+            releaseLoad();
+
+            // Raise the Released event
+            ReleasedEventArgs args = new ReleasedEventArgs() {
+                PickUp = this,
+                Load = load,
+                Dislodged = true,
+                Thrown = false,
             };
             _releaseInvoker?.Invoke(this, args);
         }
@@ -176,12 +175,11 @@ namespace Danware.Unity3D {
             return rbAhead;
         }
         private void destroyJoint() {
+            DestroyImmediate(_jointWrapper);
             DestroyImmediate(_joint);
         }
         private void releaseLoad() {
             _load = null;
-            _throwing = false;
-            _releasing = false;
         }
 
     }
