@@ -8,13 +8,13 @@ namespace Danware.Unity3D {
 
     [DisallowMultipleComponent]
     [RequireComponent(typeof(Rigidbody))]   // For making fixed joints
-    public class PickUp : MonoBehaviour {
+    public class Lift : MonoBehaviour {
         // ABSTRACT DATA TYPES
-        public class PickUpEventArgs : EventArgs {
-            public PickUp PickUp;
+        public class LiftEventArgs : EventArgs {
+            public Lift Lift;
         }
-        public class LoadEventArgs : PickUpEventArgs {
-            public Rigidbody Load;
+        public class LoadEventArgs : LiftEventArgs {
+            public Liftable Load;
         }
         public class ReleasedEventArgs : LoadEventArgs {
             public bool Dislodged;
@@ -27,17 +27,16 @@ namespace Danware.Unity3D {
         private FixedJoint _joint;
         private JointWrapper _jointWrapper;
         private Rigidbody _rigidbody;
-        private Rigidbody _load;
+        private Liftable _load;
 
         // INSPECTOR FIELDS
-        public LayerMask PickupLayer = Physics.DefaultRaycastLayers;
         public float MaxMass = 10f;
         public float Reach = 5f;
         public float ThrowForce = 10f;
         public bool CanThrow = true;
-        public Vector3 LocalOffset = new Vector3(0f, 0f, 1.5f);
         public float DislodgeForce = Mathf.Infinity;
         public float DislodgeTorque = Mathf.Infinity;
+
         public event EventHandler<LoadEventArgs> LoadPickedUp {
             add { _pickupInvoker += value; }
             remove { _pickupInvoker -= value; }
@@ -53,7 +52,7 @@ namespace Danware.Unity3D {
         }
         private void Update() {
             // Get user input
-            bool pickup = PickupInput.Started;
+            bool pickup = LiftInput.Started;
             bool threw = ThrowInput.Started;
 
             // If the player pressed Use, then pick up or drop a load
@@ -70,9 +69,9 @@ namespace Danware.Unity3D {
         }
 
         // API INTERFACE
-        public static StartStopInput PickupInput { get; set; }
+        public static StartStopInput LiftInput { get; set; }
         public static StartStopInput ThrowInput { get; set; }
-        public Rigidbody Load { get { return _load; } }
+        public Liftable Load { get { return _load; } }
         public void Pickup() {
             if (_load == null)
                 pickupActions();
@@ -94,9 +93,7 @@ namespace Danware.Unity3D {
                 return;
 
             // Move the load to the correct offset/orientation
-            // Cant use Rigidbody.position/rotation b/c we're about to add a Joint
-            _load.transform.position = transform.TransformPoint(LocalOffset);
-            _load.transform.rotation = transform.rotation;
+            _load.Lift(this.transform);
 
             // Connect it to the holder via a FixedJoint
             _jointWrapper = _load.gameObject.AddComponent<JointWrapper>();
@@ -108,20 +105,20 @@ namespace Danware.Unity3D {
 
             // Raise the PickUp event
             LoadEventArgs args = new LoadEventArgs() {
-                PickUp = this,
+                Lift = this,
                 Load = _load,
             };
             _pickupInvoker?.Invoke(this, args);
         }
         private void releaseActions() {
             // Break the joint and release the Load
-            Rigidbody load = _load;
+            Liftable load = _load;
             destroyJoint();
             releaseLoad();
 
             // Raise the Released event
             ReleasedEventArgs args = new ReleasedEventArgs() {
-                PickUp = this,
+                Lift = this,
                 Load = load,
                 Dislodged = false,
                 Thrown = false,
@@ -130,16 +127,17 @@ namespace Danware.Unity3D {
         }
         private void throwActions() {
             // Break the joint and release the load
-            Rigidbody load = _load;
+            Liftable load = _load;
             destroyJoint();
             releaseLoad();
 
             // Apply the throw force
-            load.AddForce(transform.forward * ThrowForce, ForceMode.Impulse);
+            Rigidbody rb = load.GetComponent<Rigidbody>();
+            rb.AddForce(transform.forward * ThrowForce, ForceMode.Impulse);
 
             // Raise the Thrown event
             ReleasedEventArgs args = new ReleasedEventArgs() {
-                PickUp = this,
+                Lift = this,
                 Load = load,
                 Dislodged = false,
                 Thrown = true,
@@ -148,31 +146,34 @@ namespace Danware.Unity3D {
         }
         private void jointBreakActions() {
             // Release the load
-            Rigidbody load = _load;
+            Liftable load = _load;
             releaseLoad();
 
             // Raise the Released event
             ReleasedEventArgs args = new ReleasedEventArgs() {
-                PickUp = this,
+                Lift = this,
                 Load = load,
                 Dislodged = true,
                 Thrown = false,
             };
             _releaseInvoker?.Invoke(this, args);
         }
-        private Rigidbody objAhead() {
-            Rigidbody rbAhead = null;
+        private Liftable objAhead() {
+            Liftable liftAhead = null;
 
-            // Locate any valid physical object (has rigidbody/collider) that is within range, not too heavy, and non-kinematic
+            // Locate any valid physical object that is within range, not too heavy, and non-kinematic
             RaycastHit hitInfo;
-            bool loadAhead = Physics.Raycast(transform.position, transform.forward, out hitInfo, Reach, PickupLayer);
+            bool loadAhead = Physics.Raycast(transform.position, transform.forward, out hitInfo, Reach);
             if (loadAhead) {
-                Rigidbody rb = hitInfo.rigidbody;
-                if (rb != null && !rb.isKinematic && rb.mass <= MaxMass && hitInfo.collider != null)
-                    rbAhead = rb;
+                Liftable lift = hitInfo.collider.GetComponent<Liftable>();
+                if (lift != null) {
+                    Rigidbody rb = lift.GetComponent<Rigidbody>();
+                    if (!rb.isKinematic && rb.mass <= MaxMass)
+                        liftAhead = lift;
+                }
             }
 
-            return rbAhead;
+            return liftAhead;
         }
         private void destroyJoint() {
             DestroyImmediate(_jointWrapper);

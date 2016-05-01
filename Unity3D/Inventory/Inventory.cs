@@ -2,7 +2,6 @@
 
 using System;
 using System.Linq;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
@@ -27,7 +26,6 @@ namespace Danware.Unity3D.Inventory {
 
         // INSPECTOR FIELDS
         public int MaxItems = 10;
-        public float DroppedItemRefactoryPeriod = 1.5f;
         public event EventHandler<ItemEventArgs> ItemCollected {
             add { _collectedInvoker += value; }
             remove { _collectedInvoker -= value; }
@@ -38,12 +36,11 @@ namespace Danware.Unity3D.Inventory {
         }
 
         // INTERFACE FUNCTIONS
-        public ReadOnlyCollection<GameObject> Items {
-            get { return new ReadOnlyCollection<GameObject>(_items.Keys.ToList()); }
-        }
-        public void Collect(Collectible collect) {
-            Debug.AssertFormat(_items.Count < MaxItems, "Inventory {0} cannot collect {1} because the former is already full!", this.name, collect.name);
-            Debug.AssertFormat(collect != null, "Inventory {0} cannot collect null!", this.name);
+        public ReadOnlyCollection<GameObject> Items => new ReadOnlyCollection<GameObject>(_items.Keys.ToList());
+        public bool Give(Collectible collect) {
+            // Make sure an actual Collectible was provided, and that there is room for it
+            if (collect == null || _items.Count == MaxItems)
+                return false;
 
             // Parent the Collectible's contained item to this Inventory's GameObject
             GameObject item = collect.Item;
@@ -67,6 +64,8 @@ namespace Danware.Unity3D.Inventory {
                 Item = item,
             };
             _collectedInvoker?.Invoke(this, args);
+
+            return true;
         }
         public void DropItem(GameObject item) {
             if (item == null)
@@ -82,7 +81,7 @@ namespace Danware.Unity3D.Inventory {
             _items.Remove(item);
 
             // Prevent the Collectible from being collected again until a refactory period has passed
-            StartCoroutine(pauseCollectibility(collect));
+            collect.Drop();
 
             // Raise the item dropped event
             Debug.LogFormat("Inventory {0} dropped item {1} in frame {2}", this.name, item.name, Time.frameCount);
@@ -96,13 +95,6 @@ namespace Danware.Unity3D.Inventory {
             GameObject[] items = _items.Keys.ToArray();
             foreach (GameObject item in items)
                 DropItem(item);
-        }
-
-        // HELPER FUNCTIONS
-        private IEnumerator pauseCollectibility(Collectible collect) {
-            collect.enabled = false;
-            yield return new WaitForSeconds(DroppedItemRefactoryPeriod);
-            collect.enabled = true;
         }
 
     }

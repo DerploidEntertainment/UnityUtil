@@ -7,7 +7,6 @@ namespace Danware.Unity3D {
     public class Use : MonoBehaviour {
         // INSPECTOR FIELDS
         public LayerMask UseLayer;
-        [Range(0f, float.PositiveInfinity)]
         public float Reach = 5f;
 
         // API INTERFACE

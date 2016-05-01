@@ -1,15 +1,26 @@
 ﻿using UnityEngine;
 
-namespace Danware.Unity3D.Inventory {
+using System.Collections;
 
-    [RequireComponent(typeof(Rigidbody))]    // So it can be detected
+namespace Danware.Unity3D.Inventory {
+    
     public class Collectible : MonoBehaviour {
+        // API INTERFACE
+        public void Drop() {
+            StartCoroutine(pauseCollectibility());
+        }
+
         // INSPECTOR FIELDS
         public GameObject Item;
+        public bool IsCollectible { get; private set; } = true;
+        [Tooltip("If dropped, the item will take this many seconds to become collectible again")]
+        public float DropRefactoryPeriod = 1.5f;
 
-        // EVENT HANDLERS
-        private void Awake() {
-            Debug.AssertFormat(Item != null, "Collectible {0} was not given an object!", this.name);
+        // HELPER FUNCTIONS
+        private IEnumerator pauseCollectibility() {
+            IsCollectible = false;
+            yield return new WaitForSeconds(DropRefactoryPeriod);
+            IsCollectible = true;
         }
     }
 

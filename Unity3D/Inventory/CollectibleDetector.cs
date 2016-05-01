@@ -4,25 +4,40 @@ namespace Danware.Unity3D.Inventory {
 
     [RequireComponent(typeof(Collider))]
     public class CollectibleDetector : MonoBehaviour {
+        // HIDDEN FIELDS
+        private float _closestDist = Mathf.Infinity;
+        private Collectible _closest;
+
         // INSPECTOR FIELDS
         public Inventory Inventory;
-        public LayerMask CollectLayer;
 
         // EVENT HANDLERS
         private void Awake() {
             Debug.AssertFormat(Inventory != null, "CollectibleDetector {0} was not associated with an Inventory!", this.name);
         }
-        private void OnTriggerEnter(Collider other) {
-            // If the triggering object is not on the right layer then return
-            int layer = other.gameObject.layer;
-            bool isCollectible = ((CollectLayer & (1 << layer)) != 0);
-            if (!isCollectible)
-                return;
+        private void OnTriggerStay(Collider other) {
+            // Check if this Collider is now the closest Collider
+            Vector3 pos = transform.position;
+            float otherDist   = (other.ClosestPointOnBounds(pos) - pos).sqrMagnitude;
+            bool closer = (otherDist < _closestDist);
 
-            // Otherwise, tell the attached Inventory to collect the Collectible, if it is enabled
-            Collectible c = other.GetComponent<Collectible>();
-            if (c != null && c.isActiveAndEnabled && Inventory.Items.Count < Inventory.MaxItems)
-                Inventory.Collect(c);
+            // If so, and it is a valid Collectible, then mark it as the new closest Collectible
+            if (closer) {
+                Collectible c = other.GetComponent<Collectible>();
+                if (c?.IsCollectible ?? false) {
+                    _closestDist = otherDist;
+                    _closest = c;
+                    doCollect();
+                }
+            }
+        }
+
+        // HELPER FUNCTIONS
+        private void doCollect() {
+            // Give the Collectible to the attached Inventory, if possible
+            bool success = Inventory.Give(_closest);
+            if (success)
+                _closestDist = Mathf.Infinity;
         }
     }
 

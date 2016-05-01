@@ -47,6 +47,9 @@ namespace Danware.Unity3D.Inventory {
         public float FinalConeHalfAngle = 0f;
         [Tooltip("For automatic weapons, the accuracy cone's half angle will lerp from the initial to the final value in this amount of time")]
         public float AccuracyLerpTime = 1f;   // Seconds
+
+
+        // API INTERFACE
         public event EventHandler<CancelEventArgs> Firing {
             add { _firingInvoker += value; }
             remove { _firingInvoker -= value; }
@@ -59,8 +62,6 @@ namespace Danware.Unity3D.Inventory {
             add { _affectingInvoker += value; }
             remove { _affectingInvoker -= value; }
         }
-
-        // API INTERFACE
         public static StartStopInput FireInput { get; set; }
         public void Fire() {
             fireActions();

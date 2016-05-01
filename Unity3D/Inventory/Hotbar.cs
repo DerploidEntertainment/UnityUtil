@@ -59,7 +59,7 @@ namespace Danware.Unity3D.Inventory {
             get { return _slotsEquipped.ToArray(); }
         }
         public void EquipSlot(int slot) {
-            // Only equip this slot if it is not already equipped and no more slots are available
+            // Only equip this slot if it is not already equipped and slots are available
             if (!_slotsEquipped.Contains(slot) && _slotsEquipped.Count < NumEquippableSlots)
                 equipSlot(slot);
         }
@@ -172,6 +172,10 @@ namespace Danware.Unity3D.Inventory {
             GameObject item = _slots[slot];
             if (item != null)
                 item.SetActive(true);
+
+            // Render its model
+            Equippable eq = item.GetComponent<Equippable>();
+            eq?.Equip(item.transform);
 
             // Raise the slot equipped event
             Debug.LogFormat("Hotbar {0} equipped slot {1} in frame {2}", this.name, slot, Time.frameCount);
