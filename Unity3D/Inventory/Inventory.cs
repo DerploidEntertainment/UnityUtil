@@ -58,7 +58,7 @@ namespace Danware.Unity3D.Inventory {
             _items.Add(item, data);
 
             // Raise the item collected event
-            Debug.LogFormat("Inventory {0} collected {1} in frame {2}", this.name, collect.name, Time.frameCount);
+            Debug.LogFormat("Inventory {0} collected {1} in frame {2}", this.name, item.name, Time.frameCount);
             ItemEventArgs args = new ItemEventArgs() {
                 Inventory = this,
                 Item = item,
@@ -91,7 +91,7 @@ namespace Danware.Unity3D.Inventory {
             };
             _droppedInvoker?.Invoke(this, args);
         }
-        public void DropAll() {
+        public void DropAllItems() {
             GameObject[] items = _items.Keys.ToArray();
             foreach (GameObject item in items)
                 DropItem(item);

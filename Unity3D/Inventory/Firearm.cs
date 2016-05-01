@@ -153,7 +153,7 @@ namespace Danware.Unity3D.Inventory {
             // Affect the closest, highest-priority target, if there is one
             RaycastHit[] orderedHits = (
                 from derp in fireArgs.TargetPriorities
-                orderby derp.Value descending,
+                orderby derp.Value.Priority descending,
                         derp.Key.distance
                 select derp.Key).ToArray();
             if (orderedHits.Length > 0) {

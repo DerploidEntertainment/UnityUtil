@@ -43,7 +43,8 @@
     <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Button.cs" />
+    <Compile Include="Destroyer.cs" />
+    <Compile Include="Triggers\ButtonTrigger.cs" />
     <Compile Include="CameraFollow.cs" />
     <Compile Include="Liftable.cs" />
     <Compile Include="Inventory\Equippable.cs" />
@@ -53,7 +54,6 @@
     <Compile Include="Inventory\ClipAmmoFirearmView.cs" />
     <Compile Include="Inventory\Collectible.cs" />
     <Compile Include="Inventory\CollectibleDetector.cs" />
-    <Compile Include="ColliderDetonator.cs" />
     <Compile Include="CollisionSounds.cs" />
     <Compile Include="Detonator.cs" />
     <Compile Include="Inventory\Firearm.cs" />
@@ -74,6 +74,9 @@
     <Compile Include="Input\StartStopInput.cs" />
     <Compile Include="Movement\TargetFlyer.cs" />
     <Compile Include="TiledSprite.cs" />
+    <Compile Include="Triggers\ColliderTrigger.cs" />
+    <Compile Include="Triggers\RelayTrigger.cs" />
+    <Compile Include="Triggers\TimerTrigger.cs" />
     <Compile Include="Use.cs" />
     <Compile Include="Useable.cs" />
     <Compile Include="Input\ValueInput.cs" />

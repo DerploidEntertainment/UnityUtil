@@ -4,30 +4,30 @@ using System;
 
 namespace Danware.Unity3D {
 
-    // EVENTS
-    public class DetonatorEventArgs : EventArgs {
-        public Detonator Detonator;
-    }
-    public class DetonatorCancelEventArgs : DetonatorEventArgs {
-        public bool Cancel;
-    }
-
     public class Detonator : MonoBehaviour {
+        // ABSTRACT DATA TYPES
+        public class DetonatorEventArgs : EventArgs {
+            public Detonator Detonator;
+        }
+        public class CancelEventArgs : DetonatorEventArgs {
+            public bool Cancel;
+        }
+
         // HIDDEN FIELDS
-        private EventHandler<DetonatorCancelEventArgs> _detonatingInvoker;
+        private EventHandler<CancelEventArgs> _detonatingInvoker;
         private EventHandler<DetonatorEventArgs> _detonatedInvoker;
-        private AudioSource _audio;
 
         // INSPECTOR FIELDS
-        public AudioClip ExplosionClip;
+        public Transform EffectsPrefab;
         public float ExplosionForce = 10f;
         public float ExplosionRadius = 4f;
-        public float ExplosionUpwardsModifier = 0f;
+        public float ExplosionUpwardsModifier = 2f;
         public float MaxHealthDamage;
         public Health.ChangeMode HealthChangeMode = Health.ChangeMode.Absolute;
         public LayerMask DamageLayer;
         public bool DestroyOnDetonate = true;
-        public event EventHandler<DetonatorCancelEventArgs> Detonating {
+
+        public event EventHandler<CancelEventArgs> Detonating {
             add { _detonatingInvoker += value; }
             remove { _detonatingInvoker -= value; }
         }
@@ -37,16 +37,9 @@ namespace Danware.Unity3D {
         }
 
         // EVENT HANDLERS
-        private void Awake() {
-            // Initialize audio
-            _audio = gameObject.AddComponent<AudioSource>();
-            _audio.clip = ExplosionClip;
-            _audio.loop = false;
-            _audio.spatialBlend = 1f;
-        }
         public void Detonate() {
             // Raise the Detonated event, allowing listeners to cancel detonation
-            DetonatorCancelEventArgs detonatingArgs = new DetonatorCancelEventArgs() {
+            CancelEventArgs detonatingArgs = new CancelEventArgs() {
                 Detonator = this,
                 Cancel = false,
             };
@@ -54,25 +47,24 @@ namespace Danware.Unity3D {
             if (detonatingArgs.Cancel)
                 return;
 
-            // Apply forces to and damage objects within the Explosion radius
+            // If we didn't cancel, then affect objects within the Explosion radius
             Collider[] colls = Physics.OverlapSphere(transform.position, ExplosionRadius);
             foreach (Collider c in colls)
                 affect(c.gameObject);
 
-            // Make the explosion sound effect
-            _audio.clip = ExplosionClip;
-            _audio.loop = false;
-            _audio.Play();
-
-            // Destroy this object, if requested
-            if (DestroyOnDetonate)
-                Destroy(this.gameObject);
+            // Instantiate the explosion prefab if one was provided
+            if (EffectsPrefab != null)
+                Instantiate(EffectsPrefab, transform.position, Quaternion.identity);
 
             // Raise the Detonated event
             DetonatorEventArgs detonatedArgs = new DetonatorEventArgs() {
                 Detonator = this
             };
             _detonatedInvoker?.Invoke(this, detonatedArgs);
+
+            // Destroy this object, if requested
+            if (DestroyOnDetonate)
+                Destroy(this.gameObject);
         }
 
         // HELPER FUNCTIONS
