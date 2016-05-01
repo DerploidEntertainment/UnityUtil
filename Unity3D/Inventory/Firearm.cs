@@ -11,6 +11,14 @@ namespace Danware.Unity3D.Inventory {
 
     public class Firearm : MonoBehaviour {
         // ABSTRACT DATA TYPES
+        public struct TargetData {
+            public TargetData(uint priority = 0) {
+                Priority = priority;
+                Callback = (hit) => { };
+            }
+            public uint Priority;
+            public Action<RaycastHit> Callback;
+        }
         public class FirearmEventArgs : EventArgs {
             public Firearm Firearm;
         }
@@ -18,19 +26,28 @@ namespace Danware.Unity3D.Inventory {
             public Firearm Firearm;
             public bool Cancel;
         }
-        public class HitEventArgs : FirearmEventArgs {
-            public RaycastHit Hit;
-        }
         public class FireEventArgs : FirearmEventArgs {
             public Vector3 Direction;
             public RaycastHit[] Hits;
-            public Dictionary<RaycastHit, uint> TargetPriorities;
+            public Dictionary<RaycastHit, TargetData> TargetPriorities;
+            public void Add(RaycastHit hitInfo, TargetData data) {
+                // If this hit has already been added, adjust its associated data
+                if (TargetPriorities.ContainsKey(hitInfo)) {
+                    TargetData td = TargetPriorities[hitInfo];
+                    td.Priority += data.Priority;
+                    td.Callback += data.Callback;
+                    TargetPriorities[hitInfo] = td;
+                }
+
+                // Otherwise, add the new association
+                else
+                    TargetPriorities.Add(hitInfo, data);
+            }
         }
 
         // HIDDEN FIELDS
         private EventHandler<CancelEventArgs> _firingInvoker;
         private EventHandler<FireEventArgs> _firedInvoker;
-        private EventHandler<HitEventArgs> _affectingInvoker;
         private bool _canFire = true;
         private float _accuracyDegrees;
         private float _accuracyLerpT;
@@ -57,10 +74,6 @@ namespace Danware.Unity3D.Inventory {
         public event EventHandler<FireEventArgs> Fired {
             add { _firedInvoker += value; }
             remove { _firedInvoker -= value; }
-        }
-        public event EventHandler<HitEventArgs> AffectingTarget {
-            add { _affectingInvoker += value; }
-            remove { _affectingInvoker -= value; }
         }
         public static StartStopInput FireInput { get; set; }
         public void Fire() {
@@ -123,13 +136,13 @@ namespace Danware.Unity3D.Inventory {
 
             // Raycast into the scene on the given Fire Layer
             // Raise the Fired event, allowing other components to select which targets to affect
-            RaycastHit[] hits = Physics.RaycastAll(ray, Range, FireLayer);
-            hits = hits.OrderBy(h => h.distance).ToArray();
+            IEnumerable<RaycastHit> hits = Physics.RaycastAll(ray, Range, FireLayer);
+            hits = hits.OrderBy(h => h.distance);
             FireEventArgs fireArgs = new FireEventArgs() {
                 Firearm = this,
                 Direction = ray.direction,
-                Hits = hits,
-                TargetPriorities = new Dictionary<RaycastHit, uint>(),
+                Hits = hits.ToArray(),
+                TargetPriorities = new Dictionary<RaycastHit, TargetData>(),
             };
             _firedInvoker?.Invoke(this, fireArgs);
 
@@ -144,11 +157,9 @@ namespace Danware.Unity3D.Inventory {
                         derp.Key.distance
                 select derp.Key).ToArray();
             if (orderedHits.Length > 0) {
-                HitEventArgs targetArgs = new HitEventArgs() {
-                    Firearm = this,
-                    Hit = orderedHits[0],
-                };
-                _affectingInvoker?.Invoke(this, targetArgs);
+                RaycastHit closest = orderedHits[0];
+                TargetData td = fireArgs.TargetPriorities[closest];
+                td.Callback.Invoke(closest);
             }
         }
         private void allowFire() {

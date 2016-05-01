@@ -32,10 +32,18 @@ namespace Danware.Unity3D.Inventory {
             _line.SetPosition(0, pos0);
             _line.SetPosition(1, pos1);
             Invoke("clearFlash", FlashDuration);
+
+            // Listen for whichever target ends up being affected
+            Firearm.TargetData td = new Firearm.TargetData();
+            td.Callback += handleTarget;
+            RaycastHit[] keys = new RaycastHit[e.TargetPriorities.Count];
+            e.TargetPriorities.Keys.CopyTo(keys, 0);
+            foreach (RaycastHit k in keys)
+                e.Add(k, td);
         }
-        private void handleTarget(object sender, Firearm.HitEventArgs e) {
+        private void handleTarget(RaycastHit hit) {
             // Cut the "flash" back to the impact point
-            Vector3 pos1 = e.Hit.point;
+            Vector3 pos1 = hit.point;
             _line.SetPosition(1, pos1);
         }
 
@@ -50,7 +58,6 @@ namespace Danware.Unity3D.Inventory {
             _line.SetWidth(FlashWidth, FlashWidth);
             
             Firearm.Fired += handleFired;
-            Firearm.AffectingTarget += handleTarget;
         }
         private void clearFlash() {
             _line.enabled = false;

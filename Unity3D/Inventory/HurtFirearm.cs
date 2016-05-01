@@ -17,7 +17,6 @@ namespace Danware.Unity3D.Inventory {
             _firearm = GetComponent<Firearm>();
 
             _firearm.Fired += handleFired;
-            _firearm.AffectingTarget += handleTarget;
         }
         private void handleFired(object sender, Firearm.FireEventArgs e) {
             // Narrow this list down to those targets with Health components
@@ -26,14 +25,14 @@ namespace Danware.Unity3D.Inventory {
                                  where !h.collider.CompareTag("Player")
                                  select h).ToArray();
             if (hits.Count() > 0) {
-                RaycastHit closest = hits[0];
-                if (!e.TargetPriorities.ContainsKey(closest))
-                    e.TargetPriorities.Add(closest, 0);
+                Firearm.TargetData td = new Firearm.TargetData();
+                td.Callback += handleTarget;
+                e.Add(hits[0], td);
             }
+
         }
-        private void handleTarget(object sender, Firearm.HitEventArgs e) {
+        private void handleTarget(RaycastHit hit) {
             // Damage the target, if it has a Health component
-            RaycastHit hit = e.Hit;
             Health h = hit.collider.GetComponent<Health>();
             if (h != null)
                 h.Damage(Damage, HealthChangeMode);
