@@ -56,7 +56,7 @@ namespace Danware.Unity3D.Inventory {
         public float Range;
         public float FireRate = 5f; // Shots/sec
         public bool Automatic;
-        public LayerMask FireLayer;
+        public LayerMask AffectLayer = Physics.DefaultRaycastLayers;
         [Header("Accuracy")]
         [Range(0f, 90f)]
         public float InitialConeHalfAngle = 0f;
@@ -136,7 +136,7 @@ namespace Danware.Unity3D.Inventory {
 
             // Raycast into the scene on the given Fire Layer
             // Raise the Fired event, allowing other components to select which targets to affect
-            IEnumerable<RaycastHit> hits = Physics.RaycastAll(ray, Range, FireLayer);
+            IEnumerable<RaycastHit> hits = Physics.RaycastAll(ray, Range, AffectLayer);
             hits = hits.OrderBy(h => h.distance);
             FireEventArgs fireArgs = new FireEventArgs() {
                 Firearm = this,

@@ -22,11 +22,11 @@ namespace Danware.Unity3D.Inventory {
             RaycastHit[] hits = e.Hits.Where(h => h.collider.GetComponent<Rigidbody>() != null).ToArray();
             if (hits.Count() > 0) {
                 Firearm.TargetData td = new Firearm.TargetData();
-                td.Callback += handleTarget;
+                td.Callback += affectTarget;
                 e.Add(hits[0], td);
             }
         }
-        private void handleTarget(RaycastHit hit) {
+        private void affectTarget(RaycastHit hit) {
             // Apply a force to the target, if it has a Rigidbody component
             Rigidbody rb = hit.collider.GetComponent<Rigidbody>();
             if (rb != null)

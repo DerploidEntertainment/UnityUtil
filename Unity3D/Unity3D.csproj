@@ -44,6 +44,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Destroyer.cs" />
+    <Compile Include="HurtDetonator.cs" />
+    <Compile Include="PushDetonator.cs" />
     <Compile Include="Triggers\ButtonTrigger.cs" />
     <Compile Include="CameraFollow.cs" />
     <Compile Include="Liftable.cs" />

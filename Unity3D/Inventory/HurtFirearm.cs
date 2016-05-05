@@ -26,12 +26,12 @@ namespace Danware.Unity3D.Inventory {
                                  select h).ToArray();
             if (hits.Count() > 0) {
                 Firearm.TargetData td = new Firearm.TargetData();
-                td.Callback += handleTarget;
+                td.Callback += affectTarget;
                 e.Add(hits[0], td);
             }
 
         }
-        private void handleTarget(RaycastHit hit) {
+        private void affectTarget(RaycastHit hit) {
             // Damage the target, if it has a Health component
             Health h = hit.collider.GetComponent<Health>();
             if (h != null)

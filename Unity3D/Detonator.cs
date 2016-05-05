@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 
 using System;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace Danware.Unity3D {
 
@@ -12,33 +14,38 @@ namespace Danware.Unity3D {
         public class CancelEventArgs : DetonatorEventArgs {
             public bool Cancel;
         }
+        public class DetonateEventArgs : DetonatorEventArgs {
+            public Collider[] Hits;
+            public Action<Collider[]> Callback;
+        }
 
         // HIDDEN FIELDS
         private EventHandler<CancelEventArgs> _detonatingInvoker;
-        private EventHandler<DetonatorEventArgs> _detonatedInvoker;
+        private EventHandler<DetonateEventArgs> _detonatedInvoker;
 
         // INSPECTOR FIELDS
         public Transform EffectsPrefab;
-        public float ExplosionForce = 10f;
         public float ExplosionRadius = 4f;
-        public float ExplosionUpwardsModifier = 2f;
-        public float MaxHealthDamage;
-        public Health.ChangeMode HealthChangeMode = Health.ChangeMode.Absolute;
-        public LayerMask DamageLayer;
+        public LayerMask AffectLayer;
         public bool DestroyOnDetonate = true;
 
         public event EventHandler<CancelEventArgs> Detonating {
             add { _detonatingInvoker += value; }
             remove { _detonatingInvoker -= value; }
         }
-        public event EventHandler<DetonatorEventArgs> Detonated {
+        public event EventHandler<DetonateEventArgs> Detonated {
             add { _detonatedInvoker += value; }
             remove { _detonatedInvoker -= value; }
         }
 
-        // EVENT HANDLERS
+        // API INTERFACE
         public void Detonate() {
-            // Raise the Detonated event, allowing listeners to cancel detonation
+            doDetonate();
+        }
+
+        // HELPER FUNCTIONS
+        private void doDetonate() {
+            // Raise the Detonating event, allowing listeners to cancel detonation
             CancelEventArgs detonatingArgs = new CancelEventArgs() {
                 Detonator = this,
                 Cancel = false,
@@ -47,44 +54,27 @@ namespace Danware.Unity3D {
             if (detonatingArgs.Cancel)
                 return;
 
-            // If we didn't cancel, then affect objects within the Explosion radius
-            Collider[] colls = Physics.OverlapSphere(transform.position, ExplosionRadius);
-            foreach (Collider c in colls)
-                affect(c.gameObject);
+            // Do an OverlapSphere into the scene on the given Affect Layer
+            // Raise the Detonated event, allowing other components to select which targets to affect
+            Vector3 thisPos = transform.position;
+            IEnumerable<Collider> hits = Physics.OverlapSphere(thisPos, ExplosionRadius, AffectLayer);
+            DetonateEventArgs detonateArgs = new DetonateEventArgs() {
+                Detonator = this,
+                Hits = hits.ToArray(),
+                Callback = (target) => { },
+            };
+            _detonatedInvoker?.Invoke(this, detonateArgs);
 
             // Instantiate the explosion prefab if one was provided
             if (EffectsPrefab != null)
-                Instantiate(EffectsPrefab, transform.position, Quaternion.identity);
+                Instantiate(EffectsPrefab, thisPos, Quaternion.identity);
 
-            // Raise the Detonated event
-            DetonatorEventArgs detonatedArgs = new DetonatorEventArgs() {
-                Detonator = this
-            };
-            _detonatedInvoker?.Invoke(this, detonatedArgs);
+            // Affect the targets, if there were any
+            detonateArgs.Callback.Invoke(detonateArgs.Hits);
 
             // Destroy this object, if requested
             if (DestroyOnDetonate)
                 Destroy(this.gameObject);
-        }
-
-        // HELPER FUNCTIONS
-        private void affect(GameObject obj) {
-            // Apply the explosion force!!!
-            Rigidbody rb = obj.GetComponent<Rigidbody>();
-            if (rb != null)
-                rb.AddExplosionForce(ExplosionForce, transform.position, ExplosionRadius, ExplosionUpwardsModifier, ForceMode.Impulse);
-
-            // Damage any Health component (if it matches the DamageLayer)
-            // Damage amount decreases with distance from the explosion
-            Health h = obj.GetComponent<Health>();
-            if (h != null) {
-                bool shouldDamage = ((DamageLayer | obj.layer) != 0);
-                if (shouldDamage) {
-                    float dist = Vector3.Distance(transform.position, obj.transform.position);
-                    float hp = MaxHealthDamage * dist / ExplosionRadius;
-                    h.Damage(hp, HealthChangeMode);
-                }
-            }
         }
     }
 

@@ -30,8 +30,9 @@ namespace Danware.Unity3D {
         private Liftable _load;
 
         // INSPECTOR FIELDS
-        public float MaxMass = 10f;
         public float Reach = 5f;
+        public float MaxMass = 10f;
+        public LayerMask LiftLayer = Physics.DefaultRaycastLayers;
         public float ThrowForce = 10f;
         public bool CanThrow = true;
         public float DislodgeForce = Mathf.Infinity;
@@ -163,7 +164,7 @@ namespace Danware.Unity3D {
 
             // Locate any valid physical object that is within range, not too heavy, and non-kinematic
             RaycastHit hitInfo;
-            bool loadAhead = Physics.Raycast(transform.position, transform.forward, out hitInfo, Reach);
+            bool loadAhead = Physics.Raycast(transform.position, transform.forward, out hitInfo, Reach, LiftLayer);
             if (loadAhead) {
                 Liftable lift = hitInfo.collider.GetComponent<Liftable>();
                 if (lift != null) {
