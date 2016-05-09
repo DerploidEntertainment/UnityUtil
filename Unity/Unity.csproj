@@ -1,0 +1,106 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{567FE3BC-52EE-4BF6-92BE-A356F8F08DBE}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Danware.Unity</RootNamespace>
+    <AssemblyName>Danware.Unity</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile>Unity Subset v3.5</TargetFrameworkProfile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <LangVersion>6</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Destroyer.cs" />
+    <Compile Include="HurtDetonator.cs" />
+    <Compile Include="PowerUp.cs" />
+    <Compile Include="PushDetonator.cs" />
+    <Compile Include="Triggers\ButtonTrigger.cs" />
+    <Compile Include="CameraFollow.cs" />
+    <Compile Include="Liftable.cs" />
+    <Compile Include="Inventory\Equippable.cs" />
+    <Compile Include="JointWrapper.cs" />
+    <Compile Include="Movement\CharacterFPSWalker.cs" />
+    <Compile Include="Inventory\ClipAmmoFirearm.cs" />
+    <Compile Include="Inventory\ClipAmmoFirearmView.cs" />
+    <Compile Include="Inventory\Collectible.cs" />
+    <Compile Include="Inventory\CollectibleDetector.cs" />
+    <Compile Include="CollisionSounds.cs" />
+    <Compile Include="Detonator.cs" />
+    <Compile Include="Inventory\Firearm.cs" />
+    <Compile Include="Inventory\FirearmView.cs" />
+    <Compile Include="Health.cs" />
+    <Compile Include="Inventory\Hotbar.cs" />
+    <Compile Include="Inventory\HurtFirearm.cs" />
+    <Compile Include="Inventory\Inventory.cs" />
+    <Compile Include="Movement\MouseLookHorz.cs" />
+    <Compile Include="Movement\MouseLookVert.cs" />
+    <Compile Include="Inventory\OverheatFirearm.cs" />
+    <Compile Include="Inventory\OverheatFirearmView.cs" />
+    <Compile Include="Lift.cs" />
+    <Compile Include="Inventory\ProjectileFirearm.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Inventory\PushFirearm.cs" />
+    <Compile Include="Spawner.cs" />
+    <Compile Include="Input\StartStopInput.cs" />
+    <Compile Include="Movement\TargetFlyer.cs" />
+    <Compile Include="TiledSprite.cs" />
+    <Compile Include="Triggers\ColliderTrigger.cs" />
+    <Compile Include="Triggers\RelayTrigger.cs" />
+    <Compile Include="Triggers\TimerTrigger.cs" />
+    <Compile Include="Use.cs" />
+    <Compile Include="Useable.cs" />
+    <Compile Include="Input\ValueInput.cs" />
+    <Compile Include="Util.cs" />
+    <Compile Include="WorldGen\MapGenerator.cs" />
+    <Compile Include="WorldGen\MeshGenerator.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>$(SolutionDir)copyToUnityProjects.cmd $(TargetDir)$(TargetName) $(ProjectDir)COPY_LOCATIONS\COPY_LOCATIONS.txt</PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
