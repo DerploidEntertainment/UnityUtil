@@ -14,15 +14,18 @@ namespace Danware.Unity.Inventory {
             if (!success)
                 return;
 
-            // If it was successfully given, then parent the contained item to the Inventory's Transform
+            // If it was successfully given, then do collect actions
             base.doCollect(targetRoot);
+            PhysicalObject.SetActive(false);
             Item.transform.parent = inv.transform;
             Item.transform.localPosition = new Vector3(0f, 0f, 0f);
             Item.transform.localRotation = Quaternion.identity;
         }
         protected override void doDrop(Transform target) {
             // Drop it as a new Collectible
-            base.doDrop(target);
+            PhysicalObject.SetActive(true);
+            base.doDrop(target);    // Don't try base actions until the PhysicalObject has been reactivated
+            PhysicalObject.transform.position = target.transform.position;
             Item.transform.parent = transform;
         }
     }

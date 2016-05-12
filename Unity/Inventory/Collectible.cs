@@ -23,14 +23,8 @@ namespace Danware.Unity.Inventory {
         public float DropRefactoryPeriod = 1.5f;
 
         // HELPER FUNCTIONS
-        protected virtual void doCollect(Transform targetRoot) {
-            PhysicalObject.SetActive(false);
-        }
+        protected virtual void doCollect(Transform targetRoot) { }
         protected virtual void doDrop(Transform target) {
-            // Reposition the physical object
-            PhysicalObject.transform.position = target.transform.position;
-            PhysicalObject.SetActive(true);
-
             // Prevent the Collectible from being collected again until the refactory period has passed
             StartCoroutine(pauseCollectibility());
         }
