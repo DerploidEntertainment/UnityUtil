@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
@@ -10,7 +9,7 @@ namespace Danware.Unity.Inventory {
     public class Inventory : MonoBehaviour {
         // ABSTRACT DATA TYPES
         private struct ItemData {
-            public Collectible OldCollectible;
+            public InventoryCollectible OldCollectible;
         }
         public class InventoryEventArgs : EventArgs {
             public Inventory Inventory { get; set; }
@@ -36,22 +35,20 @@ namespace Danware.Unity.Inventory {
         }
 
         // INTERFACE FUNCTIONS
-        public ReadOnlyCollection<GameObject> Items => new ReadOnlyCollection<GameObject>(_items.Keys.ToList());
-        public bool Give(Collectible collect) {
+        public ReadOnlyCollection<GameObject> Items {
+            get {
+                GameObject[] items = new GameObject[_items.Count];
+                _items.Keys.CopyTo(items, 0);
+                return new ReadOnlyCollection<GameObject>(items);
+            }
+        }
+        public bool Give(InventoryCollectible collect) {
             // Make sure an actual Collectible was provided, and that there is room for it
             if (collect == null || _items.Count == MaxItems)
                 return false;
 
-            // Parent the Collectible's contained item to this Inventory's GameObject
-            GameObject item = collect.Item;
-            item.transform.parent = transform;
-            item.transform.localPosition = new Vector3(0f, 0f, 0f);
-            item.transform.localRotation = Quaternion.identity;
-
-            // Deactivate the old Collectible
-            collect.gameObject.SetActive(false);
-
             // Place the item in the Inventory
+            GameObject item = collect.Item;
             ItemData data = new ItemData() {
                 OldCollectible = collect,
             };
@@ -68,23 +65,17 @@ namespace Danware.Unity.Inventory {
             return true;
         }
         public void DropItem(GameObject item) {
-            if (item == null)
-                return;
+            // Make sure a valid item was provided
+            Debug.Assert(item != null, $"{nameof(Inventory)} {name} cannot drop null!");
+            Debug.Assert(_items.ContainsKey(item), $"{nameof(Inventory)} {name} was told to drop an Item that it has not collected!");
 
-            // Drop it as a new Collectible
-            Collectible collect = _items[item].OldCollectible;
-            collect.transform.position = transform.position;
-            item.transform.parent = collect.transform;
-            collect.gameObject.SetActive(true);
-
-            // Remove the item from the Inventory
+            // If so, remove it from the Inventory
+            InventoryCollectible collect = _items[item].OldCollectible;
+            collect.Drop(transform);
             _items.Remove(item);
 
-            // Prevent the Collectible from being collected again until a refactory period has passed
-            collect.Drop();
-
             // Raise the item dropped event
-            Debug.LogFormat("Inventory {0} dropped item {1} in frame {2}", this.name, item.name, Time.frameCount);
+            Debug.Log($"{nameof(Inventory)} {name} dropped item {item.name} in frame {Time.frameCount}");
             ItemEventArgs args = new ItemEventArgs() {
                 Inventory = this,
                 Item = item,
@@ -92,7 +83,8 @@ namespace Danware.Unity.Inventory {
             _droppedInvoker?.Invoke(this, args);
         }
         public void DropAllItems() {
-            GameObject[] items = _items.Keys.ToArray();
+            GameObject[] items = new GameObject[_items.Count];
+            _items.Keys.CopyTo(items, 0);
             foreach (GameObject item in items)
                 DropItem(item);
         }

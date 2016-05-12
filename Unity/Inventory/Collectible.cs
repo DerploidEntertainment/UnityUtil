@@ -4,19 +4,36 @@ using System.Collections;
 
 namespace Danware.Unity.Inventory {
     
-    public class Collectible : MonoBehaviour {
+    [RequireComponent(typeof(Collider))]
+    public abstract class Collectible : MonoBehaviour {
         // API INTERFACE
-        public void Drop() {
-            StartCoroutine(pauseCollectibility());
+        public void Collect(Transform targetRoot) {
+            if (IsCollectible)
+                doCollect(targetRoot);
         }
-
+        public void Drop(Transform target) {
+            doDrop(target);
+        }
+        
         // INSPECTOR FIELDS
-        public GameObject Item;
         public bool IsCollectible { get; private set; } = true;
+        [Tooltip("If there is a GameObject that gives this Collectible a physical representation, then reference it here.")]
+        public GameObject PhysicalObject;
         [Tooltip("If dropped, the item will take this many seconds to become collectible again")]
         public float DropRefactoryPeriod = 1.5f;
 
         // HELPER FUNCTIONS
+        protected virtual void doCollect(Transform targetRoot) {
+            PhysicalObject.SetActive(false);
+        }
+        protected virtual void doDrop(Transform target) {
+            // Reposition the physical object
+            PhysicalObject.transform.position = target.transform.position;
+            PhysicalObject.SetActive(true);
+
+            // Prevent the Collectible from being collected again until the refactory period has passed
+            StartCoroutine(pauseCollectibility());
+        }
         private IEnumerator pauseCollectibility() {
             IsCollectible = false;
             yield return new WaitForSeconds(DropRefactoryPeriod);

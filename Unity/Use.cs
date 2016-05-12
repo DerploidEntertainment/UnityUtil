@@ -19,19 +19,19 @@ namespace Danware.Unity {
 
             // Use the Useable currently being looked at
             if (use) {
-                Useable u = objAhead();
+                IUseable u = objAhead();
                 if (u != null)
                     u.Use();
             }
         }
-        private Useable objAhead() {
-            Useable uAhead = null;
+        private IUseable objAhead() {
+            IUseable uAhead = null;
 
             // Locate any object on the Use layer that is within reach
             RaycastHit hitInfo;
             bool useableAhead = Physics.Raycast(transform.position, transform.forward, out hitInfo, Reach, UseLayer);
             if (useableAhead)
-                uAhead = hitInfo.transform.GetComponent<Useable>();
+                uAhead = hitInfo.transform.GetComponent<IUseable>();
 
             return uAhead;
         }

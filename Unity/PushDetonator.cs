@@ -34,14 +34,8 @@ namespace Danware.Unity {
             Vector3 down = Physics.gravity.normalized;
             Vector3 detonatorPos = Detonator.transform.position;
             Vector3 explosionPos = detonatorPos + ExplosionUpwardsModifier * down;
-            foreach (Rigidbody rb in rbs) {
-                float dist = Vector3.Distance(rb.transform.position, detonatorPos);
-                float factor = 1f - Mathf.Min(1f, dist / Detonator.ExplosionRadius);
-                float mag = ExplosionForce * factor;
-                Vector3 dir = (rb.position - explosionPos).normalized;
-                rb.AddForce(mag * dir, ForceMode.Impulse);
-                //rb.AddExplosionForce(ExplosionForce, Detonator.transform.position, Detonator.ExplosionRadius, ExplosionUpwardsModifier, ForceMode.Impulse);
-            }
+            foreach (Rigidbody rb in rbs)
+                rb.AddExplosionForce(ExplosionForce, Detonator.transform.position, Detonator.ExplosionRadius, ExplosionUpwardsModifier, ForceMode.Impulse);
         }
     }
 

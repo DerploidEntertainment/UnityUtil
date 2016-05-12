@@ -1,6 +1,6 @@
 ﻿namespace Danware.Unity {
 
-    public interface Useable {
+    public interface IUseable {
         void Use();
     }
 
