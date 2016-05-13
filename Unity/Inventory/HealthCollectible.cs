@@ -16,13 +16,10 @@ namespace Danware.Unity.Inventory {
         public Health.ChangeMode HealthChangeMode = Health.ChangeMode.Absolute;
         public DestroyModeType DestroyMode = DestroyModeType.WhenHealthUsed;
 
-        // EVENT HANDLERS
-        private void Awake() {
-            Debug.Assert(HealthAmount >= 0, $"{nameof(HealthCollectible)} {name} must have a positive value for {nameof(HealthAmount)}!");
-        }
-
         // HELPER FUNCTIONS
         protected override void doCollect(Transform targetRoot) {
+            Debug.Assert(HealthAmount >= 0, $"{nameof(HealthCollectible)} {name} must have a positive value for {nameof(HealthAmount)}!");
+
             // Try to get the target's Health component
             Health h = targetRoot.GetComponentInChildren<Health>();
             if (h == null)

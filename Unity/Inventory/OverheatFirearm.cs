@@ -2,8 +2,7 @@
 using System;
 
 namespace Danware.Unity.Inventory {
-
-    [RequireComponent(typeof(Firearm))]
+    
     public class OverheatFirearm : MonoBehaviour {
         // ABSTRACT DATA TYPES
         public class HeatChangedEventArgs : EventArgs {
@@ -20,10 +19,10 @@ namespace Danware.Unity.Inventory {
         private EventHandler<Firearm.FirearmEventArgs> _misfiredInvoker;
         private EventHandler<HeatChangedEventArgs> _heatInvoker;
         private EventHandler<OverheatChangedEventArgs> _overheatInvoker;
-        private Firearm _firearm;
         private bool _canCool = true;
 
         // INSPECTOR FIELDS
+        public Firearm Firearm;
         public float CurrentHeat = 0f;
         public float HeatPerShot = 50f;
         public bool AbsoluteHeat = true;
@@ -34,7 +33,7 @@ namespace Danware.Unity.Inventory {
             add { _misfiredInvoker += value; }
             remove { _misfiredInvoker -= value; }
         }
-        public event EventHandler<HeatChangedEventArgs> HeatChanged {
+        public event EventHandler<HeatChangedEventArgs> HeatIncreased {
             add { _heatInvoker += value; }
             remove { _heatInvoker -= value; }
         }
@@ -48,10 +47,8 @@ namespace Danware.Unity.Inventory {
 
         // EVENT HANDLERS
         private void Awake() {
-            _firearm = GetComponent<Firearm>();
-
-            _firearm.Firing += handleFiring;
-            _firearm.Fired += handleFired;
+            Firearm.Firing += handleFiring;
+            Firearm.Fired += handleFired;
         }
         private void Update() {
             // Only do cooling updates if they are allowed and necessary
@@ -62,14 +59,6 @@ namespace Danware.Unity.Inventory {
             float old = CurrentHeat;
             float coolAmt = CoolRate * (AbsoluteHeat ? 1f : MaxHeat) * Time.deltaTime;
             CurrentHeat = Mathf.Max(0f, CurrentHeat - coolAmt);
-
-            // Raise the HeatChanged event
-            HeatChangedEventArgs heatArgs = new HeatChangedEventArgs() {
-                Firearm = this,
-                OldHeat = old,
-                NewHeat = CurrentHeat,
-            };
-            _heatInvoker?.Invoke(this, heatArgs);
 
             // If the Firearm has cooled below the threshold, then raise the Overheat Changed event
             if (OverHeated && CurrentHeat < MaxHeat) {
@@ -89,7 +78,7 @@ namespace Danware.Unity.Inventory {
 
             // If the player has overheated this Firearm, then raise the Misfired event and cancel further firing
             if (OverHeated) {
-                Firearm.FirearmEventArgs fireArgs = new Firearm.FirearmEventArgs() { Firearm = _firearm };
+                Firearm.FirearmEventArgs fireArgs = new Firearm.FirearmEventArgs() { Firearm = Firearm };
                 _misfiredInvoker?.Invoke(this, fireArgs);
                 e.Cancel = true;
             }
@@ -118,7 +107,7 @@ namespace Danware.Unity.Inventory {
             // Otherwise, block firing for the set amount of time...
             OverHeated = true;
             _canCool = false;
-            Invoke("allowCool", OverheatDuration);
+            Invoke(nameof(allowCool), OverheatDuration);
 
             // ...and raise the Overheat Changed event
             OverheatChangedEventArgs overheatArgs = new OverheatChangedEventArgs() {

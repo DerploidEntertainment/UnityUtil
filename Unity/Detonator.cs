@@ -22,12 +22,12 @@ namespace Danware.Unity {
         // HIDDEN FIELDS
         private EventHandler<CancelEventArgs> _detonatingInvoker;
         private EventHandler<DetonateEventArgs> _detonatedInvoker;
+        private int _lastDetonationFrame;
 
         // INSPECTOR FIELDS
         public Transform EffectsPrefab;
         public float ExplosionRadius = 4f;
         public LayerMask AffectLayer;
-        public bool DestroyOnDetonate = true;
 
         public event EventHandler<CancelEventArgs> Detonating {
             add { _detonatingInvoker += value; }
@@ -45,6 +45,12 @@ namespace Danware.Unity {
 
         // HELPER FUNCTIONS
         private void doDetonate() {
+            // If a detonation has already been ordered this frame then just return
+            int frame = Time.frameCount;
+            if (frame == _lastDetonationFrame)
+                return;
+            _lastDetonationFrame = frame;
+
             // Raise the Detonating event, allowing listeners to cancel detonation
             CancelEventArgs detonatingArgs = new CancelEventArgs() {
                 Detonator = this,
@@ -71,10 +77,6 @@ namespace Danware.Unity {
 
             // Affect the targets, if there were any
             detonateArgs.Callback.Invoke(detonateArgs.Hits);
-
-            // Destroy this object, if requested
-            if (DestroyOnDetonate)
-                Destroy(this.gameObject);
         }
     }
 

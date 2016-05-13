@@ -2,20 +2,15 @@
 using System.Linq;
 
 namespace Danware.Unity.Inventory {
-
-    [RequireComponent(typeof(Firearm))]
+    
     public class PushFirearm : MonoBehaviour {
-        // HIDDEN FIELDS
-        private Firearm _firearm;
-
         // INSPECTOR FIELDS
+        public Firearm Firearm;
         public float FireForce = 1f;
 
         // EVENT HANDLERS
         private void Awake() {
-            _firearm = GetComponent<Firearm>();
-
-            _firearm.Fired += handleFired;
+            Firearm.Fired += handleFired;
         }
         private void handleFired(object sender, Firearm.FireEventArgs e) {
             // Narrow this list down to those targets with Rigidbody components

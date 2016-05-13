@@ -2,21 +2,16 @@
 using System.Linq;
 
 namespace Danware.Unity.Inventory {
-
-    [RequireComponent(typeof(Firearm))]
+    
     public class HurtFirearm : MonoBehaviour {
-        // HIDDEN FIELDS
-        private Firearm _firearm;
-
         // INSPECTOR FIELDS
+        public Firearm Firearm;
         public float Damage = 10f;
         public Health.ChangeMode HealthChangeMode = Health.ChangeMode.Absolute;
 
         // EVENT HANDLERS
         private void Awake() {
-            _firearm = GetComponent<Firearm>();
-
-            _firearm.Fired += handleFired;
+            Firearm.Fired += handleFired;
         }
         private void handleFired(object sender, Firearm.FireEventArgs e) {
             // Narrow this list down to those targets with Health components

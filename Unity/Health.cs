@@ -52,13 +52,15 @@ namespace Danware.Unity {
             float hp = hpFromAmount(amount, changeMode);
             CurrentHealth = Mathf.Min(old + hp, MaxHealth);
 
-            // Raise the HealthChanged event
-            ChangedEventArgs args = new ChangedEventArgs() {
-                Health = this,
-                OldValue = old,
-                NewValue = CurrentHealth,
-            };
-            _healthInvoker?.Invoke(this, args);
+            // Raise the HealthChanged event, if a change actually occurred
+            if (CurrentHealth != old) {
+                ChangedEventArgs args = new ChangedEventArgs() {
+                    Health = this,
+                    OldValue = old,
+                    NewValue = CurrentHealth,
+                };
+                _healthInvoker?.Invoke(this, args);
+            }
         }
         private void doDamage(float amount, ChangeMode changeMode) {
             // Lower the Current Health
@@ -66,13 +68,15 @@ namespace Danware.Unity {
             float hp = hpFromAmount(amount, changeMode);
             CurrentHealth = Mathf.Max(old - hp, 0f);
 
-            // Raise the HealthChanged event
-            ChangedEventArgs args = new ChangedEventArgs() {
-                Health = this,
-                OldValue = old,
-                NewValue = CurrentHealth,
-            };
-            _healthInvoker?.Invoke(this, args);
+            // Raise the HealthChanged event, if a change actually occurred
+            if (CurrentHealth != old) {
+                ChangedEventArgs args = new ChangedEventArgs() {
+                    Health = this,
+                    OldValue = old,
+                    NewValue = CurrentHealth,
+                };
+                _healthInvoker?.Invoke(this, args);
+            }
         }
         private float hpFromAmount(float amount, ChangeMode changeMode) {
             float hp = amount;

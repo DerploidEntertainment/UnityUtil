@@ -48,7 +48,8 @@ namespace Danware.Unity.Inventory {
         // HIDDEN FIELDS
         private EventHandler<CancelEventArgs> _firingInvoker;
         private EventHandler<FireEventArgs> _firedInvoker;
-        private bool _canFire = true;
+        private bool _canStartFiring = true;
+        private bool _canKeepFiring = true;
         private float _accuracyDegrees;
         private float _accuracyLerpT;
 
@@ -56,8 +57,10 @@ namespace Danware.Unity.Inventory {
         [Tooltip("A case-insensitive string to identify different types of Firearms (e.g., for collecting ammo)")]
         public string TypeID = "Firearm";
         public float Range;
-        [Tooltip("Shots per second.  Non-automatic Firearms cannot be fired faster than this rate.")]
-        public float FireRate = 5f; // Shots/sec
+        [Tooltip("Once an automatic Firearm starts firing, it maintains this many shots per second.")]
+        public float FireRate = 5f;
+        [Tooltip("This much time (in seconds) must pass before a Firearms can start firing again.")]
+        public float RefactoryPeriod = 0f;
         public bool Automatic;
         public LayerMask AffectLayer = Physics.DefaultRaycastLayers;
         [Header("Accuracy")]
@@ -80,43 +83,52 @@ namespace Danware.Unity.Inventory {
         }
         public static StartStopInput FireInput { get; set; }
         public void Fire() {
-            fireActions();
+            fireStartedActions();
         }
 
         // EVENT HANDLERS
         private void Update() {
-            // Get player input
-            bool fired = FireInput.Started;
-            bool firing = FireInput.Happening;
+            // Handle player input
+            if (FireInput.Started)
+                fireStartedActions();
 
-            // Reset the accuracy cone on the first shot
-            if (fired) {
-                _accuracyDegrees = InitialConeHalfAngle;
-                _accuracyLerpT = 0f;
-            }
+            if (FireInput.Happening)
+                fireHappeningActions();
 
-            // Try to Fire according to whether the Firearm is automatic
-            if (!Automatic && fired)
-                fireActions();
-            if (Automatic && firing)
-                fireActions();
+            if (FireInput.Stopped)
+                fireStoppededActions();
         }
         private void OnDrawGizmos() {
             Gizmos.DrawRay(transform.position, Range * transform.forward);
         }
 
         // HELPER FUNCTIONS
-        private void fireActions() {
-            // If the Firearm is automatic, only allow firing in time with the FireRate
-            if (Automatic && _canFire) {
-                _canFire = false;
-                doFire();
-                Invoke("allowFire", 1f / FireRate);
-            }
+        private void fireStartedActions() {
+            // Reset the accuracy cone on the first shot
+            resetAccuracy();
 
-            // Otherwise, do the Fire
-            else if (!Automatic)
+            // Fire, if non-automatic
+            if (!Automatic && _canStartFiring)
                 doFire();
+            _canStartFiring = false;
+        }
+        private void fireHappeningActions() {
+            // If the Firearm is automatic, only allow firing in time with the FireRate
+            if (Automatic && _canKeepFiring) {
+                _canKeepFiring = false;
+                doFire();
+                Invoke(nameof(allowKeepFiring), 1f / FireRate);
+            }
+        }
+        private void fireStoppededActions() {
+            bool alreadyWaiting = IsInvoking(nameof(allowStartFiring));
+            if (!alreadyWaiting)
+                Invoke(nameof(allowStartFiring), RefactoryPeriod);
+        }
+        private void resetAccuracy() {
+            // Prevent player from starting firing again until after a refactory period
+            _accuracyDegrees = InitialConeHalfAngle;
+            _accuracyLerpT = 0f;
         }
         private void doFire() {
             // Raise the Firing event
@@ -165,8 +177,11 @@ namespace Danware.Unity.Inventory {
                 td.Callback.Invoke(closest);
             }
         }
-        private void allowFire() {
-            _canFire = true;
+        private void allowStartFiring() {
+            _canStartFiring = true;
+        }
+        private void allowKeepFiring() {
+            _canKeepFiring = true;
         }
 
     }

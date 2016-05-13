@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="Destroyer.cs" />
     <Compile Include="HurtDetonator.cs" />
+    <Compile Include="Inventory\AmmoCollectible.cs" />
     <Compile Include="Inventory\HealthCollectible.cs" />
     <Compile Include="Inventory\InventoryCollectible.cs" />
     <Compile Include="PowerUp.cs" />
