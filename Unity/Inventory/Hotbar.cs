@@ -167,15 +167,14 @@ namespace Danware.Unity.Inventory {
         }
         }
         private void equipSlot(int slot) {
-            // Equip the slot (activate its GameObject, if one is there)
+            // Equip the slot (i.e., if an item is there, activate its GameObject and render its model)
             _slotsEquipped.Add(slot);
             GameObject item = _slots[slot];
-            if (item != null)
+            if (item != null) {
                 item.SetActive(true);
-
-            // Render its model
-            Equippable eq = item.GetComponent<Equippable>();
-            eq?.Equip(item.transform);
+                Equippable eq = item.GetComponent<Equippable>();
+                eq?.Equip(item.transform);
+            }
 
             // Raise the slot equipped event
             Debug.LogFormat("Hotbar {0} equipped slot {1} in frame {2}", this.name, slot, Time.frameCount);

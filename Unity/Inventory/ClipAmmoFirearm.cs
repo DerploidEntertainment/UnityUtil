@@ -9,8 +9,10 @@ namespace Danware.Unity.Inventory {
         // ABSTRACT DATA TYPES
         public class AmmoChangedEventArgs : EventArgs {
             public ClipAmmoFirearm Firearm;
-            public int OldAmmo;
-            public int NewAmmo;
+            public int OldClipAmmo;
+            public int OldBackupAmmo;
+            public int NewClipAmmo;
+            public int NewBackupAmmo;
         }
 
         // HIDDEN FIELDS
@@ -58,18 +60,26 @@ namespace Danware.Unity.Inventory {
 
         // HELPER FUNCTIONS
         private void doLoad(int ammo) {
-            // Fill the current clip as much as possible
+            // Determine how much ammo is needed to fill the current clip and the backup
             int tempAmmo = ammo;
-            int old = CurrentClipAmmo;
-            int clipFill = MaxClipAmmo - CurrentClipAmmo;
-            if (tempAmmo <= clipFill)
-                CurrentClipAmmo += tempAmmo;
+            int oldClip = CurrentClipAmmo;
+            int oldBackup = BackupAmmo;
 
-            // Fill backup ammo as much as possible
+            // Fill the current clip as much as possible
+            int clipFill = MaxClipAmmo - CurrentClipAmmo;
+            if (tempAmmo < clipFill)
+                CurrentClipAmmo += tempAmmo;
             else {
                 CurrentClipAmmo += clipFill;
                 tempAmmo -= clipFill;
-                int backupFill = MaxBackupAmmo - BackupAmmo;
+            }
+
+            // Fill the backup ammo as much as possible
+            // Any remaining ammo is ignored
+            int backupFill = MaxBackupAmmo - BackupAmmo;
+            if (tempAmmo < backupFill)
+                BackupAmmo += tempAmmo;
+            else {
                 BackupAmmo += backupFill;
                 tempAmmo -= backupFill;
             }
@@ -77,8 +87,10 @@ namespace Danware.Unity.Inventory {
             // Raise the ClipAmmoIncreased event
             AmmoChangedEventArgs args = new AmmoChangedEventArgs() {
                 Firearm = this,
-                OldAmmo = old,
-                NewAmmo = CurrentClipAmmo,
+                OldClipAmmo = oldClip,
+                OldBackupAmmo = oldBackup,
+                NewClipAmmo = CurrentClipAmmo,
+                NewBackupAmmo = BackupAmmo,
             };
             _ammoInvoker?.Invoke(this, args);
         }
@@ -94,8 +106,8 @@ namespace Danware.Unity.Inventory {
             if (availableAmmo > 0) {
                 AmmoChangedEventArgs args = new AmmoChangedEventArgs() {
                     Firearm = this,
-                    OldAmmo = old,
-                    NewAmmo = CurrentClipAmmo,
+                    OldClipAmmo = old,
+                    NewClipAmmo = CurrentClipAmmo,
                 };
                 _ammoInvoker?.Invoke(this, args);
             }
@@ -120,8 +132,8 @@ namespace Danware.Unity.Inventory {
                 // Raise the ClipAmmoDecreased event
                 AmmoChangedEventArgs ammoArgs = new AmmoChangedEventArgs() {
                     Firearm = this,
-                    OldAmmo = old,
-                    NewAmmo = CurrentClipAmmo,
+                    OldClipAmmo = old,
+                    NewClipAmmo = CurrentClipAmmo,
                 };
                 _ammoInvoker?.Invoke(this, ammoArgs);
             }

@@ -21,7 +21,7 @@ namespace Danware.Unity.Inventory {
             _misfireAudio.Play();
         }
         private void handleAmmoChanged(object sender, ClipAmmoFirearm.AmmoChangedEventArgs e) {
-            if (e.NewAmmo > e.OldAmmo)
+            if (e.NewClipAmmo > e.OldClipAmmo || e.NewBackupAmmo > e.OldBackupAmmo)
                 _reloadAudio.Play();
         }
 

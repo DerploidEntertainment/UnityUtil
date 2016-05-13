@@ -6,17 +6,17 @@ namespace Danware.Unity.Inventory {
     
     [RequireComponent(typeof(Collider))]
     public abstract class Collectible : MonoBehaviour {
+        // HIDDEN FIELDS
+        private int _collectLayer;
         // API INTERFACE
         public void Collect(Transform targetRoot) {
-            if (IsCollectible)
-                doCollect(targetRoot);
+            doCollect(targetRoot);
         }
         public void Drop(Transform target) {
             doDrop(target);
         }
         
         // INSPECTOR FIELDS
-        public bool IsCollectible { get; private set; } = true;
         [Tooltip("If there is a GameObject that gives this Collectible a physical representation, then reference it here.")]
         public GameObject PhysicalObject;
         [Tooltip("If dropped, the item will take this many seconds to become collectible again")]
@@ -29,9 +29,10 @@ namespace Danware.Unity.Inventory {
             StartCoroutine(pauseCollectibility());
         }
         private IEnumerator pauseCollectibility() {
-            IsCollectible = false;
+            _collectLayer = gameObject.layer;
+            gameObject.layer = LayerMask.NameToLayer("Default");
             yield return new WaitForSeconds(DropRefactoryPeriod);
-            IsCollectible = true;
+            gameObject.layer = _collectLayer;
         }
     }
 
