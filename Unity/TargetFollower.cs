@@ -2,9 +2,9 @@
 
 namespace Danware.Unity {
 
-    public class CameraFollow : MonoBehaviour {
+    public class TargetFollower : MonoBehaviour {
         // INSPECTOR FIELDS
-        public Camera Camera;
+        public Transform Follower;
         public Transform Target;
         public Vector3 Offset = new Vector3(0f, 0f, -10f);
 
@@ -13,7 +13,7 @@ namespace Danware.Unity {
 
         }
         private void Update() {
-            Camera.transform.position = Target.position + Offset;
+            Follower.transform.position = Target.position + Offset;
         }
     }
 

@@ -51,7 +51,7 @@
     <Compile Include="PowerUp.cs" />
     <Compile Include="PushDetonator.cs" />
     <Compile Include="Triggers\ButtonTrigger.cs" />
-    <Compile Include="CameraFollow.cs" />
+    <Compile Include="TargetFollower.cs" />
     <Compile Include="Liftable.cs" />
     <Compile Include="Inventory\Equippable.cs" />
     <Compile Include="JointWrapper.cs" />
