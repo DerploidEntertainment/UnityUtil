@@ -57,13 +57,11 @@
     <Compile Include="JointWrapper.cs" />
     <Compile Include="Movement\CharacterFPSWalker.cs" />
     <Compile Include="Inventory\ClipAmmoFirearm.cs" />
-    <Compile Include="Inventory\ClipAmmoFirearmView.cs" />
     <Compile Include="Inventory\Collectible.cs" />
     <Compile Include="Inventory\CollectibleDetector.cs" />
     <Compile Include="CollisionSounds.cs" />
     <Compile Include="Detonator.cs" />
     <Compile Include="Inventory\Firearm.cs" />
-    <Compile Include="Inventory\FirearmView.cs" />
     <Compile Include="Health.cs" />
     <Compile Include="Inventory\Hotbar.cs" />
     <Compile Include="Inventory\HurtFirearm.cs" />
@@ -71,7 +69,6 @@
     <Compile Include="Movement\MouseLookHorz.cs" />
     <Compile Include="Movement\MouseLookVert.cs" />
     <Compile Include="Inventory\OverheatFirearm.cs" />
-    <Compile Include="Inventory\OverheatFirearmView.cs" />
     <Compile Include="Lift.cs" />
     <Compile Include="Inventory\ProjectileFirearm.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
