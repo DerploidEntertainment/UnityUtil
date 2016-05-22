@@ -9,8 +9,10 @@ namespace Danware.Unity.Inventory {
 
         // EVENT HANDLERS
         private void OnTriggerEnter(Collider collider) {
-            Collectible c = collider.GetComponent<Collectible>();
-            c.Collect(TargetRoot);
+            if (TargetRoot != null) {
+                Collectible c = collider.GetComponent<Collectible>();
+                c.Collect(TargetRoot);
+            }
         }
     }
 

@@ -26,10 +26,10 @@ namespace Danware.Unity {
         private EventHandler<ReleasedEventArgs> _releaseInvoker;
         private FixedJoint _joint;
         private JointWrapper _jointWrapper;
-        private Rigidbody _rigidbody;
         private Liftable _load;
 
         // INSPECTOR FIELDS
+        public Rigidbody Lifter;
         public float Reach = 5f;
         public float MaxMass = 10f;
         public LayerMask LiftLayer = Physics.DefaultRaycastLayers;
@@ -48,9 +48,6 @@ namespace Danware.Unity {
         }
 
         // EVENT HANDLERS
-        private void Awake() {
-            _rigidbody = GetComponent<Rigidbody>();
-        }
         private void Update() {
             // Get user input
             bool pickup = LiftInput.Started;
@@ -58,7 +55,7 @@ namespace Danware.Unity {
 
             // If the player pressed Use, then pick up or drop a load
             if (pickup) {
-                if (_load == null)
+                if (_load == null && Lifter != null)
                     pickupActions();
                 else
                     releaseActions();
@@ -74,7 +71,7 @@ namespace Danware.Unity {
         public static StartStopInput ThrowInput { get; set; }
         public Liftable Load { get { return _load; } }
         public void Pickup() {
-            if (_load == null)
+            if (_load == null && Lifter != null)
                 pickupActions();
         }
         public void Release() {
@@ -97,11 +94,12 @@ namespace Danware.Unity {
             _load.Lift(this.transform);
 
             // Connect it to the holder via a FixedJoint
-            _jointWrapper = _load.gameObject.AddComponent<JointWrapper>();
+            Rigidbody loadRb = _load.GetComponent<Collider>().attachedRigidbody;
+            _jointWrapper = loadRb.gameObject.AddComponent<JointWrapper>();
             _joint = _jointWrapper.SetJoint<FixedJoint>();
             _joint.breakForce = DislodgeForce;
             _joint.breakTorque = DislodgeTorque;
-            _joint.connectedBody = _rigidbody;
+            _joint.connectedBody = Lifter;
             _jointWrapper.Broken += (object sender, EventArgs e) => jointBreakActions();
 
             // Raise the PickUp event
@@ -133,8 +131,8 @@ namespace Danware.Unity {
             releaseLoad();
 
             // Apply the throw force
-            Rigidbody rb = load.GetComponent<Rigidbody>();
-            rb.AddForce(transform.forward * ThrowForce, ForceMode.Impulse);
+            Rigidbody rb = load.GetComponent<Collider>().attachedRigidbody;
+            rb?.AddForce(transform.forward * ThrowForce, ForceMode.Impulse);
 
             // Raise the Thrown event
             ReleasedEventArgs args = new ReleasedEventArgs() {
@@ -168,7 +166,7 @@ namespace Danware.Unity {
             if (loadAhead) {
                 Liftable lift = hitInfo.collider.GetComponent<Liftable>();
                 if (lift != null) {
-                    Rigidbody rb = lift.GetComponent<Rigidbody>();
+                    Rigidbody rb = hitInfo.collider.attachedRigidbody;
                     if (!rb.isKinematic && rb.mass <= MaxMass)
                         liftAhead = lift;
                 }
