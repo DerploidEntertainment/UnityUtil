@@ -1,8 +1,7 @@
 ﻿using UnityEngine;
 
 namespace Danware.Unity.Movement {
-
-    [RequireComponent(typeof(Rigidbody))]
+    
     public class TargetFlyer : MonoBehaviour {
         // INSPECTOR FIELDS
         public Rigidbody FlyingRigidbody;

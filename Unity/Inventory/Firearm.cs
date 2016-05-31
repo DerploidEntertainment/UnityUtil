@@ -63,6 +63,7 @@ namespace Danware.Unity.Inventory {
         public float RefactoryPeriod = 0f;
         public bool Automatic;
         public LayerMask AffectLayer = Physics.DefaultRaycastLayers;
+        public QueryTriggerInteraction QueryTriggerInteraction = QueryTriggerInteraction.UseGlobal;
         [Header("Accuracy")]
         [Range(0f, 90f)]
         public float InitialConeHalfAngle = 0f;
@@ -151,7 +152,7 @@ namespace Danware.Unity.Inventory {
 
             // Raycast into the scene on the given Fire Layer
             // Raise the Fired event, allowing other components to select which targets to affect
-            IEnumerable<RaycastHit> hits = Physics.RaycastAll(ray, Range, AffectLayer);
+            IEnumerable<RaycastHit> hits = Physics.RaycastAll(ray, Range, AffectLayer, QueryTriggerInteraction);
             hits = hits.OrderBy(h => h.distance);
             FireEventArgs fireArgs = new FireEventArgs() {
                 Firearm = this,
