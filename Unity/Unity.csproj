@@ -50,6 +50,7 @@
     <Compile Include="Inventory\InventoryCollectible.cs" />
     <Compile Include="PowerUp.cs" />
     <Compile Include="PushDetonator.cs" />
+    <Compile Include="SceneWrapper.cs" />
     <Compile Include="Triggers\ButtonTrigger.cs" />
     <Compile Include="TargetFollower.cs" />
     <Compile Include="Liftable.cs" />
