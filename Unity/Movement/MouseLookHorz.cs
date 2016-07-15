@@ -9,11 +9,9 @@ namespace Danware.Unity.Movement {
         private float _rotX = 0f;
 
         // INSPECTOR FIELDS
+        public ValueInput LookInput;
         public float MaxX = 360f;   // For best results, minX and maxX should be either less than 180, or 360 for full rotation
         public float MinX = -360f;
-
-        // API INTERFACE
-        public static ValueInput LookInput { get; set; }
 
         // EVENT HANDLERS
         private void Update() {

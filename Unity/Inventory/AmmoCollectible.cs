@@ -22,22 +22,24 @@ namespace Danware.Unity.Inventory {
             Debug.Assert(FirearmTypeID != "", $"{nameof(AmmoCollectible)} {name} must have a specify a value for {nameof(AmmoAmount)}!");
 
             // Try to get the target's Firearm component, with the correct typeID
-            ClipAmmoFirearm caFirearm = null;
-            ClipAmmoFirearm[] firearms = targetRoot.GetComponentsInChildren<ClipAmmoFirearm>(true);
-            foreach (ClipAmmoFirearm f in firearms) {
-                if (f.Firearm.TypeID == FirearmTypeID) {
-                    caFirearm = f;
+            Weapon weapon = null;
+            Weapon[] weapons = targetRoot.GetComponentsInChildren<Weapon>(true);
+            foreach (Weapon w in weapons) {
+                if (w.TypeID == FirearmTypeID) {
+                    weapon = w;
                     break;
                 }
             }
-            if (caFirearm == null)
+            if (weapon == null)
                 return;
 
             // If one was found, then adjust its current ammo as necessary
             int ammo = 0;
-            if (caFirearm.TotalCurrentAmmo != caFirearm.TotalMaxAmmo) {
-                ammo = Mathf.Min(caFirearm.TotalMaxAmmo - caFirearm.TotalCurrentAmmo, AmmoAmount);
-                caFirearm.Load(ammo);
+            int currAmmo = weapon.BackupAmmo + weapon.CurrentClipAmmo;
+            int maxAmmo = weapon.MaxClips * weapon.MaxClipAmmo;
+            if (currAmmo != maxAmmo) {
+                ammo = Mathf.Min(maxAmmo - currAmmo, AmmoAmount);
+                weapon.Load(ammo);
                 AmmoAmount -= ammo;
             }
 

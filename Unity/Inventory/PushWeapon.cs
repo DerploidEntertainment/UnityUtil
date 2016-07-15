@@ -3,20 +3,21 @@ using System.Linq;
 
 namespace Danware.Unity.Inventory {
     
-    public class PushFirearm : MonoBehaviour {
+    public class PushWeapon : MonoBehaviour {
         // INSPECTOR FIELDS
-        public Firearm Firearm;
-        public float FireForce = 1f;
+        public Weapon Weapon;
+        public float AttackForce = 1f;
 
         // EVENT HANDLERS
         private void Awake() {
-            Firearm.Fired += handleFired;
+            Debug.Assert(Weapon != null, $"{nameof(PushWeapon)} {name} was not associated with a {nameof(Weapon)}!");
+            Weapon.Attacked += Weapon_Attacked;
         }
-        private void handleFired(object sender, Firearm.FireEventArgs e) {
+        private void Weapon_Attacked(object sender, Weapon.AttackEventArgs e) {
             // Narrow this list down to those targets with Rigidbody components
             RaycastHit[] hits = e.Hits.Where(h => h.collider.attachedRigidbody != null).ToArray();
             if (hits.Count() > 0) {
-                Firearm.TargetData td = new Firearm.TargetData();
+                Weapon.TargetData td = new Weapon.TargetData();
                 td.Callback += affectTarget;
                 e.Add(hits[0], td);
             }
@@ -25,7 +26,7 @@ namespace Danware.Unity.Inventory {
             // Apply a force to the target, if it has a Rigidbody component
             Rigidbody rb = hit.collider.attachedRigidbody;
             if (rb != null)
-                rb.AddForceAtPosition(FireForce * transform.forward, hit.point, ForceMode.Impulse);
+                rb.AddForceAtPosition(AttackForce * transform.forward, hit.point, ForceMode.Impulse);
         }
 
     }

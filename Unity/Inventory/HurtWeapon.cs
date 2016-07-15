@@ -3,24 +3,25 @@ using System.Linq;
 
 namespace Danware.Unity.Inventory {
     
-    public class HurtFirearm : MonoBehaviour {
+    public class HurtWeapon : MonoBehaviour {
         // INSPECTOR FIELDS
-        public Firearm Firearm;
+        public Weapon Weapon;
         public float Damage = 10f;
         public Health.ChangeMode HealthChangeMode = Health.ChangeMode.Absolute;
 
         // EVENT HANDLERS
         private void Awake() {
-            Firearm.Fired += handleFired;
+            Debug.Assert(Weapon != null, $"{nameof(HurtWeapon)} {name} was not associated with a {nameof(Weapon)}!");
+            Weapon.Attacked += Weapon_Attacked;
         }
-        private void handleFired(object sender, Firearm.FireEventArgs e) {
+        private void Weapon_Attacked(object sender, Weapon.AttackEventArgs e) {
             // Narrow this list down to those targets with Health components
             RaycastHit[] hits = (from h in e.Hits
                                  where h.collider.GetComponent<Health>() != null
                                  where !h.collider.CompareTag("Player")
                                  select h).ToArray();
             if (hits.Count() > 0) {
-                Firearm.TargetData td = new Firearm.TargetData();
+                Weapon.TargetData td = new Weapon.TargetData();
                 td.Callback += affectTarget;
                 e.Add(hits[0], td);
             }

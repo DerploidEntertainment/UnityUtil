@@ -8,20 +8,28 @@ namespace Danware.Unity.Movement {
     [DisallowMultipleComponent]
     public class CharacterFPSWalker : MonoBehaviour {
         // INSPECTOR FIELDS
+        [Header("Inputs")]
+        public StartStopInput SprintInput;
+        public StartStopInput CrouchInput;
+        public StartStopInput JumpInput;
+        public ValueInput HorizontalInput;
+        public ValueInput VerticalInput;
+
+        [Header("Speed")]
         public float WalkSpeed = 15f;
-        public bool LimitDiagonalSpeed = true;
-        public bool ReduceSpeedOnSlopes = true;
-        public float Mass = 70f;
-        
         public float SprintSpeed = 30f;
-        public bool CanSprint = true;
-        
+        public bool CanSprint = true;        
         public float CrouchSpeed = 5f;
         public bool CanCrouch = true;
         public float CrouchHeight = 1f;
+        public bool LimitDiagonalSpeed = true;
+        public bool ReduceSpeedOnSlopes = true;
 
+        [Header("Jumping")]
+        public float Mass = 70f;
         public bool CanJump = true;
         public float JumpHeight = 3f;
+
 
         // HIDDEN FIELDS
         private Rigidbody _rigidBody;
@@ -58,13 +66,6 @@ namespace Danware.Unity.Movement {
             // Move the rigidbody to the target velocity
             _controller.Move(targetV * Time.deltaTime);
         }
-
-        // API INTERFACE
-        public static StartStopInput SprintInput { get; set; }
-        public static StartStopInput CrouchInput { get; set; }
-        public static StartStopInput JumpInput { get; set; }
-        public static ValueInput HorizontalInput { get; set; }
-        public static ValueInput VerticalInput { get; set; }
 
         // HELPER FUNCTIONS
         private Vector3 jumpComponent(bool jumping) {

@@ -3,12 +3,10 @@ using U = UnityEngine;
 
 namespace Danware.Unity.Inventory {
 
-    [RequireComponent(typeof(Firearm))]
-    public class ProjectileFirearm : MonoBehaviour {
-        // HIDDEN FIELDS
-        public Firearm _firearm;
-
+    [RequireComponent(typeof(Weapon))]
+    public class ProjectileWeapon : MonoBehaviour {
         // INSPECTOR FIELDS
+        public Weapon Weapon;
         public Transform ProjectilePrefab;
         public Vector3 RelativeSpawnPosition = Vector3.forward;
         public Vector3 RelativeSpawnRotation = Vector3.zero;
@@ -16,16 +14,12 @@ namespace Danware.Unity.Inventory {
 
         // EVENT HANDLERS
         private void Awake() {
-            _firearm = GetComponent<Firearm>();
-
-            _firearm.Firing += handleFiring;
+            Debug.Assert(Weapon != null, $"{nameof(ProjectileWeapon)} {name} was not associated with a {nameof(Weapon)}!");
+            Weapon.Attacked += handleFiring;
         }
 
         // HELPER FUNCTIONS
-        private void handleFiring(object sender, Firearm.CancelEventArgs e) {
-            if (e.Cancel)
-                return;
-
+        private void handleFiring(object sender, Weapon.AttackEventArgs e) {
             // If a Projectile prefab was defined...
             if (ProjectilePrefab != null) {
 

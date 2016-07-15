@@ -26,12 +26,19 @@ namespace Danware.Unity.Inventory {
         private List<int> _slotsEquipped;
 
         // INSPECTOR FIELDS
+        [Header("Inputs")]
+        public StartStopInput DropInput;
+        public StartStopInputArray EquipInput;
+
+        [Header("Options")]
         public Inventory Inventory;
         [Range(0f, 10f)]
         public int NumSlots = 10;
         [Range(0f, 10f)]
         public int NumEquippableSlots = 1;
         public bool EquipOnCollect = false;
+
+        // API INTERFACE
         public event EventHandler<SlotEventArgs> SlotFilled {
             add { _filledInvoker += value; }
             remove { _filledInvoker -= value; }
@@ -48,10 +55,6 @@ namespace Danware.Unity.Inventory {
             add { _uneqippedInvoker += value; }
             remove { _uneqippedInvoker -= value; }
         }
-
-        // API INTERFACE
-        public static StartStopInput DropInput { get; set; }
-        public static StartStopInputArray EquipInput { get; set; }
         public GameObject[] Slots {
             get { return _slots.ToArray(); }
         }

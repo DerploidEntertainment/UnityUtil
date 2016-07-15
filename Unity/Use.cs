@@ -6,11 +6,9 @@ namespace Danware.Unity {
 
     public class Use : MonoBehaviour {
         // INSPECTOR FIELDS
+        public StartStopInput UseInput;
         public float Reach = 5f;
         public LayerMask UseLayer;
-
-        // API INTERFACE
-        public static StartStopInput UseInput { get; set; }
 
         // EVENT HANDLERS
         private void Update() {

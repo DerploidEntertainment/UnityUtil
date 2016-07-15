@@ -20,12 +20,12 @@ namespace Danware.Unity {
         private bool _paused;
 
         // INSPECTOR INTERFACE
+        public StartStopInput PauseInput;
         public SceneEvent Paused;
         public SceneEvent Resumed;
         public SceneEvent SceneRestarted;
 
         // API INTERFACE
-        public static StartStopInput PauseInput { get; set; }
         public bool IsPaused {
             get { return _paused; }
             set { resetPaused(value); }

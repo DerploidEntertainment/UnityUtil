@@ -13,7 +13,7 @@ namespace Danware.Unity.Movement {
         public float minY = -60f;
 
         // UNITY FUNCTIONS
-        public static ValueInput LookInput { get; set; }
+        public ValueInput LookInput;
         private void Update() {
             // Get inputs
             float mouseY = LookInput.Value;

@@ -29,23 +29,21 @@ namespace Danware.Unity {
         private Liftable _load;
 
         // INSPECTOR FIELDS
+        [Header("Inputs")]
+        public StartStopInput LiftInput;
+        public StartStopInput ThrowInput;
+
+        [Header("Options")]
         public Rigidbody Lifter;
         public float Reach = 5f;
         public float MaxMass = 10f;
         public LayerMask LiftLayer = Physics.DefaultRaycastLayers;
-        public float ThrowForce = 10f;
-        public bool CanThrow = true;
         public float DislodgeForce = Mathf.Infinity;
         public float DislodgeTorque = Mathf.Infinity;
 
-        public event EventHandler<LoadEventArgs> LoadPickedUp {
-            add { _pickupInvoker += value; }
-            remove { _pickupInvoker -= value; }
-        }
-        public event EventHandler<ReleasedEventArgs> LoadReleased {
-            add { _releaseInvoker += value; }
-            remove { _releaseInvoker -= value; }
-        }
+        [Header("Throwing")]
+        public bool CanThrow = true;
+        public float ThrowForce = 10f;
 
         // EVENT HANDLERS
         private void Update() {
@@ -67,8 +65,14 @@ namespace Danware.Unity {
         }
 
         // API INTERFACE
-        public static StartStopInput LiftInput { get; set; }
-        public static StartStopInput ThrowInput { get; set; }
+        public event EventHandler<LoadEventArgs> LoadPickedUp {
+            add { _pickupInvoker += value; }
+            remove { _pickupInvoker -= value; }
+        }
+        public event EventHandler<ReleasedEventArgs> LoadReleased {
+            add { _releaseInvoker += value; }
+            remove { _releaseInvoker -= value; }
+        }
         public Liftable Load { get { return _load; } }
         public void Pickup() {
             if (_load == null && Lifter != null)
