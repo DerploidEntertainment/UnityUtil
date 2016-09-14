@@ -45,8 +45,6 @@
   <ItemGroup>
     <Compile Include="Destroyer.cs" />
     <Compile Include="HurtDetonator.cs" />
-    <Compile Include="Input\StartStopInputArray.cs" />
-    <Compile Include="Input\ValueInputArray.cs" />
     <Compile Include="Inventory\AmmoCollectible.cs" />
     <Compile Include="Inventory\HealthCollectible.cs" />
     <Compile Include="Inventory\HurtWeapon.cs" />
@@ -58,7 +56,6 @@
     <Compile Include="PowerUp.cs" />
     <Compile Include="PushDetonator.cs" />
     <Compile Include="SceneWrapper.cs" />
-    <Compile Include="Triggers\ButtonTrigger.cs" />
     <Compile Include="TargetFollower.cs" />
     <Compile Include="Liftable.cs" />
     <Compile Include="Inventory\Equippable.cs" />
@@ -76,23 +73,22 @@
     <Compile Include="Lift.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Spawner.cs" />
-    <Compile Include="Input\StartStopInput.cs" />
     <Compile Include="Movement\TargetFlyer.cs" />
     <Compile Include="TiledSprite.cs" />
-    <Compile Include="Triggers\ColliderTrigger.cs" />
-    <Compile Include="Triggers\RelayTrigger.cs" />
-    <Compile Include="Triggers\TimerTrigger.cs" />
     <Compile Include="Use.cs" />
-    <Compile Include="Useable.cs" />
-    <Compile Include="Input\ValueInput.cs" />
+    <Compile Include="IUseable.cs" />
     <Compile Include="Util.cs" />
-    <Compile Include="WorldGen\MapGenerator.cs" />
-    <Compile Include="WorldGen\MeshGenerator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Danware.Unity.Input\Danware.Unity.Input.csproj">
+      <Project>{b4a989c3-c0eb-4145-a1f9-293ebc23fbce}</Project>
+      <Name>Danware.Unity.Input</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
