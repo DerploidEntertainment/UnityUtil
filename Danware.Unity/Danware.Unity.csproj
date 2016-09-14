@@ -54,6 +54,7 @@
     <Compile Include="Inventory\ProjectileWeapon.cs" />
     <Compile Include="Inventory\PushWeapon.cs" />
     <Compile Include="Inventory\Weapon.cs" />
+    <Compile Include="DontDestroy.cs" />
     <Compile Include="PowerUp.cs" />
     <Compile Include="PushDetonator.cs" />
     <Compile Include="SceneWrapper.cs" />
