@@ -1,6 +1,6 @@
 ## Ignore files added by Dan
-**/COPY_LOCATIONS/*.*
-!**/COPY_LOCATIONS/DO_NOT_RENAME.dan
+**/COPY_TARGETS/**
+!**/COPY_TARGETS/DO_NOT_RENAME.dan
 
 
 
