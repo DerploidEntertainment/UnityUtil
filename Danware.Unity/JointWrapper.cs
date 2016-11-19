@@ -1,49 +1,53 @@
 ﻿using UnityEngine;
 using System;
 
-public class JointWrapper : MonoBehaviour {
-    // HIDDEN FIELDS
-    private Joint _joint;
-    private EventHandler _brokenInvoker;
+namespace Danware.Unity {
 
-    // API INTERFACE
-    public event EventHandler Broken {
-        add { _brokenInvoker += value; }
-        remove { _brokenInvoker -= value; }
-    }
-    public void Break() {
-        doBreak();
-        Destroy(GetComponent<Joint>());
-    }
-    public J SetJoint<J>() where J : Joint {
-        // Only allow the Joint to be set once
-        if (Joint == null) {
-            J j = gameObject.AddComponent<J>();
-            Joint = j;
-            return j;
-        }
-        else
-            throw new InvalidOperationException("JointWrapper.SetJoint<> cannot be called if there is already an associated Joint!");
-    }
+    public class JointWrapper : MonoBehaviour {
+        // HIDDEN FIELDS
+        private Joint _joint;
+        private EventHandler _brokenInvoker;
 
-    // EVENT HANDLERS
-    private void OnJointBreak(float breakForce) {
-        doBreak();
-    }
+        // API INTERFACE
+        public event EventHandler Broken {
+            add { _brokenInvoker += value; }
+            remove { _brokenInvoker -= value; }
+        }
+        public void Break() {
+            doBreak();
+            Destroy(GetComponent<Joint>());
+        }
+        public J SetJoint<J>() where J : Joint {
+            // Only allow the Joint to be set once
+            if (Joint == null) {
+                J j = gameObject.AddComponent<J>();
+                Joint = j;
+                return j;
+            }
+            else
+                throw new InvalidOperationException("JointWrapper.SetJoint<> cannot be called if there is already an associated Joint!");
+        }
 
-    // HELPER FUNCTIONS
-    private Joint Joint {
-        get {
-            _joint = _joint ?? GetComponent<Joint>();
-            return _joint;
+        // EVENT HANDLERS
+        private void OnJointBreak(float breakForce) {
+            doBreak();
         }
-        set {
-            _joint = value;
+
+        // HELPER FUNCTIONS
+        private Joint Joint {
+            get {
+                _joint = _joint ?? GetComponent<Joint>();
+                return _joint;
+            }
+            set {
+                _joint = value;
+            }
         }
-    }
-    private void doBreak() {
-        _brokenInvoker?.Invoke(this, EventArgs.Empty);
-        Destroy(this);
+        private void doBreak() {
+            _brokenInvoker?.Invoke(this, EventArgs.Empty);
+            Destroy(this);
+        }
+
     }
 
 }
