@@ -43,6 +43,7 @@
     <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ColliderDuplicator.cs" />
     <Compile Include="Destroyer.cs" />
     <Compile Include="HurtDetonator.cs" />
     <Compile Include="Inventory\AmmoCollectible.cs" />
@@ -53,6 +54,7 @@
     <Compile Include="Inventory\PushWeapon.cs" />
     <Compile Include="Inventory\Weapon.cs" />
     <Compile Include="DontDestroy.cs" />
+    <Compile Include="PhysTarget.cs" />
     <Compile Include="PowerUp.cs" />
     <Compile Include="PushDetonator.cs" />
     <Compile Include="SceneWrapper.cs" />

@@ -1,0 +1,170 @@
+﻿using System.Linq;
+using System.Collections.Generic;
+
+using UnityEngine;
+using System;
+
+namespace Danware.Unity {
+
+    public enum ChildColliderDuplicateMode {
+        None,
+        ImmediateChildCollidersOnly,
+        AllChildCollidersFlattened,
+        AllChildCollidersHierarchy,
+    }
+
+    public class ColliderDuplicator : MonoBehaviour {
+
+        // HIDDEN FIELDS
+        IDictionary<Transform, IList<Transform>> _duplicates = new Dictionary<Transform, IList<Transform>>();
+
+        // INSPECTOR FIELDS
+        [Tooltip("Select the behavior for automatically duplicating child Colliders.")]
+        public ChildColliderDuplicateMode ChildColliderDuplication = ChildColliderDuplicateMode.None;
+        [Tooltip("Add additional Colliders to duplicate here.  If these are child Colliders, we recommend that you set ChildColliderDuplication to 'None'.")]
+        public Collider[] CollidersToDuplicate;
+        [Tooltip("Each Collider selected for duplication will be duplicated under each of these GameObjects.")]
+        public Transform[] NewParentsOfDuplicates;
+
+        // EVENT HANDLERS
+        private void Start() {
+            // Create duplicate Colliders
+            foreach (Transform newParent in NewParentsOfDuplicates)
+                _duplicates[newParent] = createDuplicates(newParent);
+
+            // Parent these Colliders to the requested objects
+            // This must happen in a separate loop, or else we duplicate the duplicates also!
+            foreach (Transform newParent in _duplicates.Keys) {
+                foreach (Transform child in _duplicates[newParent]) {
+                    child.parent = newParent.transform;
+                    child.localPosition = Vector3.zero;
+                    child.localRotation = Quaternion.identity;
+                    child.localScale = Vector3.one;
+                }
+            }
+        }
+
+        // HELPERS
+        private IList<Transform> createDuplicates(Transform newParent) {
+            // Duplicate child Colliders, as requested...
+            IList<Transform> dupls = new List<Transform>();
+            switch (ChildColliderDuplication) {
+                
+                case ChildColliderDuplicateMode.ImmediateChildCollidersOnly:
+                    dupls = duplicateImmediateChildren();
+                    break;
+                    
+                case ChildColliderDuplicateMode.AllChildCollidersFlattened:
+                    dupls = duplicateAllChildrenFlat();
+                    break;
+                    
+                case ChildColliderDuplicateMode.AllChildCollidersHierarchy:
+                    dupls = duplicateAllChildrenHierarchy(newParent);
+                    break;
+            }
+
+            // Duplicate other child Colliders
+            foreach (Collider c in CollidersToDuplicate) {
+                GameObject newChild = new GameObject(c.name);
+                duplicateCollider(c, newChild);
+                dupls.Add(newChild.transform);
+            }
+
+            return dupls;
+        }
+        private IList<Transform> duplicateImmediateChildren() {
+            // Get Colliders on immediate children
+            IEnumerable<Collider> childColls = gameObject.GetComponentsInChildren<Collider>()
+                                                         .Where(c => c.transform.parent == this.transform);
+
+            // Duplicate each Collider on its own new GameObject
+            IList<Transform> dupls = new List<Transform>();
+            foreach (Collider c in childColls) {
+                GameObject newChild = new GameObject(c.name);
+                duplicateCollider(c, newChild);
+                dupls.Add(newChild.transform);
+            }
+
+            return dupls;
+        }
+        private IList<Transform> duplicateAllChildrenFlat() {
+            // Get Colliders on the root object and all children
+            IEnumerable<Collider> childColls = gameObject.GetComponentsInChildren<Collider>();
+
+            // Duplicate each Collider on its own new GameObject
+            IList<Transform> dupls = new List<Transform>();
+            foreach (Collider c in childColls) {
+                GameObject newChild = new GameObject(c.name);
+                duplicateCollider(c, newChild);
+                dupls.Add(newChild.transform);
+            }
+
+            return dupls;
+        }
+        private IList<Transform> duplicateAllChildrenHierarchy(Transform newParent) {
+            duplicateHierarchy(transform, newParent);
+            return new Transform[0];
+        }
+        private IList<Transform> duplicateHierarchy(Transform origParent, Transform duplParent) {
+            // Duplicate each Collider of the original GameObject to the new GameObject
+            foreach (Collider c in origParent.GetComponents<Collider>())
+                duplicateCollider(c, duplParent.gameObject);
+
+            // Get Colliders on immediate children
+            IEnumerable<Transform> origChildren = origParent.GetComponentsInChildren<Transform>()
+                                                        .Where(t => t.parent == origParent);
+            
+            // Duplicate each of these Colliders on a new child of the new GameObject
+            // Then recursively duplicate grandchildren
+            foreach (Transform origChild in origChildren) {
+                Transform duplChild = new GameObject(origChild.name).transform;
+                duplChild.parent = duplParent;
+                duplChild.localPosition = Vector3.zero;
+                duplChild.localRotation = Quaternion.identity;
+                duplChild.localScale = Vector3.one;
+
+                duplicateHierarchy(origChild, duplChild);
+            }
+
+            return new Transform[0];
+        }
+        private void duplicateCollider(Collider collider, GameObject newParent) {
+            Collider newColl = null;
+
+            // Copy BoxCollider properties
+            if (collider is BoxCollider) {
+                BoxCollider origBox = collider as BoxCollider;
+                BoxCollider newBox  = newParent.AddComponent<BoxCollider>();
+                newBox.center = origBox.center;
+                newBox.size   = origBox.size;
+                newColl = newBox;
+            }
+
+            // Copy SphereCollider properties
+            else if (collider is SphereCollider) {
+                SphereCollider origSphere = collider as SphereCollider;
+                SphereCollider newSphere  = newParent.AddComponent<SphereCollider>();
+                newSphere.center = origSphere.center;
+                newSphere.radius = origSphere.radius;
+                newColl = newSphere;
+            }
+
+            // Copy CapsuleCollider properties
+            else if (collider is CapsuleCollider) {
+                CapsuleCollider origCapsule = collider as CapsuleCollider;
+                CapsuleCollider newCapsule  = newParent.AddComponent<CapsuleCollider>();
+                newCapsule.center = origCapsule.center;
+                newCapsule.radius = origCapsule.radius;
+                newCapsule.height = origCapsule.height;
+                newCapsule.direction = origCapsule.direction;
+                newColl = newCapsule;
+            }
+
+            // Copy general Collider properties
+            newColl.isTrigger = collider.isTrigger;
+            newColl.material = collider.material;
+        }
+
+    }
+
+}
