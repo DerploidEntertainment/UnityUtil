@@ -77,20 +77,19 @@
     <Compile Include="Spawner.cs" />
     <Compile Include="Movement\TargetFlyer.cs" />
     <Compile Include="TiledSprite.cs" />
+    <Compile Include="UnityLayer.cs" />
     <Compile Include="Use.cs" />
     <Compile Include="IUseable.cs" />
     <Compile Include="Util.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config">
-      <SubType>Designer</SubType>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Danware.Unity.Input\Danware.Unity.Input.csproj">
       <Project>{b4a989c3-c0eb-4145-a1f9-293ebc23fbce}</Project>
       <Name>Danware.Unity.Input</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

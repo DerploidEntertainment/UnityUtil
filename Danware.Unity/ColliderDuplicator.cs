@@ -12,35 +12,43 @@ namespace Danware.Unity {
         AllChildCollidersFlattened,
         AllChildCollidersHierarchy,
     }
+    public enum ChangeTriggerMode {
+        KeepOriginal,
+        MakeAllTriggers,
+        MakeAllColliders,
+    }
 
     public class ColliderDuplicator : MonoBehaviour {
 
         // HIDDEN FIELDS
-        IDictionary<Transform, IList<Transform>> _duplicates = new Dictionary<Transform, IList<Transform>>();
+        IList<Transform> _duplicates = new List<Transform>();
 
         // INSPECTOR FIELDS
+        [Tooltip("Each Collider selected for duplication will be duplicated under each of these GameObjects.")]
+        public Transform NewParentOfDuplicates;
         [Tooltip("Select the behavior for automatically duplicating child Colliders.")]
         public ChildColliderDuplicateMode ChildColliderDuplication = ChildColliderDuplicateMode.None;
         [Tooltip("Add additional Colliders to duplicate here.  If these are child Colliders, we recommend that you set ChildColliderDuplication to 'None'.")]
         public Collider[] CollidersToDuplicate;
-        [Tooltip("Each Collider selected for duplication will be duplicated under each of these GameObjects.")]
-        public Transform[] NewParentsOfDuplicates;
+        [Tooltip("Select the behavior for changing the 'isTrigger' field of all duplicate Colliders")]
+        public ChangeTriggerMode ChangeTriggerMode = ChangeTriggerMode.KeepOriginal;
+        [Tooltip("All duplicate Colliders will be placed in this Layer.")]
+        public UnityLayer DuplicateLayer;
+        [Tooltip("If set, all duplicate Colliders will have a PhysTarget component attached that targets this value.")]
+        public MonoBehaviour PhysicsTarget;
 
         // EVENT HANDLERS
         private void Start() {
             // Create duplicate Colliders
-            foreach (Transform newParent in NewParentsOfDuplicates)
-                _duplicates[newParent] = createDuplicates(newParent);
+            _duplicates = createDuplicates(NewParentOfDuplicates);
 
-            // Parent these Colliders to the requested objects
+            // Parent these Colliders to the requested object
             // This must happen in a separate loop, or else we duplicate the duplicates also!
-            foreach (Transform newParent in _duplicates.Keys) {
-                foreach (Transform child in _duplicates[newParent]) {
-                    child.parent = newParent.transform;
-                    child.localPosition = Vector3.zero;
-                    child.localRotation = Quaternion.identity;
-                    child.localScale = Vector3.one;
-                }
+            foreach (Transform child in _duplicates) {
+                child.parent = NewParentOfDuplicates.transform;
+                child.localPosition = Vector3.zero;
+                child.localRotation = Quaternion.identity;
+                child.localScale = Vector3.one;
             }
         }
 
@@ -161,8 +169,27 @@ namespace Danware.Unity {
             }
 
             // Copy general Collider properties
-            newColl.isTrigger = collider.isTrigger;
             newColl.material = collider.material;
+            newColl.gameObject.layer = DuplicateLayer.LayerIndex;
+            switch (ChangeTriggerMode) {
+                case ChangeTriggerMode.KeepOriginal:
+                    newColl.isTrigger = collider.isTrigger;
+                    break;
+
+                case ChangeTriggerMode.MakeAllTriggers:
+                    newColl.isTrigger = true;
+                    break;
+
+                case ChangeTriggerMode.MakeAllColliders:
+                    newColl.isTrigger = false;
+                    break;
+            }
+
+            // Attach a physics target component, if requested
+            if (PhysicsTarget != null) {
+                PhysTarget target = newParent.AddComponent<PhysTarget>();
+                target.TargetComponent = PhysicsTarget;
+            }
         }
 
     }
