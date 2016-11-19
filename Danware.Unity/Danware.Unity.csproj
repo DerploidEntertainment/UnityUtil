@@ -70,7 +70,7 @@
     <Compile Include="Inventory\Inventory.cs" />
     <Compile Include="Movement\MouseLookHorz.cs" />
     <Compile Include="Movement\MouseLookVert.cs" />
-    <Compile Include="Lift.cs" />
+    <Compile Include="Lifter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Spawner.cs" />
     <Compile Include="Movement\TargetFlyer.cs" />
