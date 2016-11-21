@@ -1,8 +1,11 @@
 ﻿using UnityEngine;
 
+using System.Linq;
+
 namespace Danware.Unity.Inventory {
     
-    public class AmmoCollectible : Collectible {
+    [RequireComponent(typeof(Collectible))]
+    public class AmmoCollectible : MonoBehaviour {
         // ABSTRACT DATA TYPES
         public enum DestroyModeType {
             Never,
@@ -11,25 +14,30 @@ namespace Danware.Unity.Inventory {
             WhenAmmoUsed,
         }
 
+        // HIDDEN FIELDS
+        private Collectible _collectible;
+
         // INSPECTOR FIELDS
+        [Tooltip("If there is a GameObject that gives this Collectible a physical representation, then reference it here.")]
+        public GameObject PhysicalObject;
         public int AmmoAmount;
-        public string FirearmTypeID;
+        public string WeaponTypeName;
         public DestroyModeType DestroyMode = DestroyModeType.WhenAmmoUsed;
 
-        // HELPER FUNCTIONS
-        protected override void doCollect(Transform targetRoot) {
-            Debug.Assert(AmmoAmount >= 0, $"{nameof(AmmoCollectible)} {name} must have a positive value for {nameof(AmmoAmount)}!");
-            Debug.Assert(FirearmTypeID != "", $"{nameof(AmmoCollectible)} {name} must have a specify a value for {nameof(AmmoAmount)}!");
+        // EVENT HANDLERS
+        private void Awake() {
+            _collectible = GetComponent<Collectible>();
+            _collectible.Collected += (sender, e) => doCollect(e.TargetRoot);
+        }
 
-            // Try to get the target's Firearm component, with the correct typeID
-            Weapon weapon = null;
-            Weapon[] weapons = targetRoot.GetComponentsInChildren<Weapon>(true);
-            foreach (Weapon w in weapons) {
-                if (w.TypeID == FirearmTypeID) {
-                    weapon = w;
-                    break;
-                }
-            }
+        // HELPERS
+        private void doCollect(Transform targetRoot) {
+            Debug.Assert(AmmoAmount >= 0, $"{nameof(AmmoCollectible)} {name} must have a positive value for {nameof(AmmoAmount)}!");
+            Debug.Assert(WeaponTypeName != "", $"{nameof(AmmoCollectible)} {name} must have a specify a value for {nameof(AmmoAmount)}!");
+
+            // Try to get the target's Weapon component, with the correct typeID
+            Weapon weapon = targetRoot.GetComponentsInChildren<Weapon>(true)
+                                      .SingleOrDefault(w => w.WeaponName == WeaponTypeName);
             if (weapon == null)
                 return;
 

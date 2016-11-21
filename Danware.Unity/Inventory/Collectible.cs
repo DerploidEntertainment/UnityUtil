@@ -1,39 +1,37 @@
-﻿using UnityEngine;
-
-using System.Collections;
+﻿using System;
+using UnityEngine;
 
 namespace Danware.Unity.Inventory {
     
-    [RequireComponent(typeof(Collider))]
-    public abstract class Collectible : MonoBehaviour {
+    public class Collectible : MonoBehaviour {
+
+        // ABSTRACT DATA TYPES
+        public class CollectibleEventArgs : EventArgs {
+            public CollectibleEventArgs(Collectible collectible) {
+                Collectible = collectible;
+            }
+            public Collectible Collectible { get; }
+        }
+        public class CollectedEventArgs : CollectibleEventArgs {
+            public CollectedEventArgs(Collectible collectible, Transform targetRoot) : base (collectible) {
+                TargetRoot = targetRoot;
+            }
+            public Transform TargetRoot { get; }
+        }
+
         // HIDDEN FIELDS
-        private int _collectLayer;
+        private EventHandler<CollectedEventArgs> _collectInvoker;
+
         // API INTERFACE
         public void Collect(Transform targetRoot) {
-            doCollect(targetRoot);
+            CollectedEventArgs args = new CollectedEventArgs(this, targetRoot);
+            _collectInvoker?.Invoke(this, args);
         }
-        public void Drop(Transform target) {
-            doDrop(target);
+        public event EventHandler<CollectedEventArgs> Collected {
+            add { _collectInvoker += value; }
+            remove { _collectInvoker -= value; }
         }
-        
-        // INSPECTOR FIELDS
-        [Tooltip("If there is a GameObject that gives this Collectible a physical representation, then reference it here.")]
-        public GameObject PhysicalObject;
-        [Tooltip("If dropped, the item will take this many seconds to become collectible again")]
-        public float DropRefactoryPeriod = 1.5f;
 
-        // HELPER FUNCTIONS
-        protected virtual void doCollect(Transform targetRoot) { }
-        protected virtual void doDrop(Transform target) {
-            // Prevent the Collectible from being collected again until the refactory period has passed
-            StartCoroutine(pauseCollectibility());
-        }
-        private IEnumerator pauseCollectibility() {
-            _collectLayer = gameObject.layer;
-            gameObject.layer = LayerMask.NameToLayer("Default");
-            yield return new WaitForSeconds(DropRefactoryPeriod);
-            gameObject.layer = _collectLayer;
-        }
     }
 
 }

@@ -3,15 +3,19 @@ using System.Linq;
 
 namespace Danware.Unity.Inventory {
     
+    [RequireComponent(typeof(Weapon))]
     public class PushWeapon : MonoBehaviour {
+
+        // HIDDEN FIELDS
+        private Weapon _weapon;
+
         // INSPECTOR FIELDS
-        public Weapon Weapon;
         public float AttackForce = 1f;
 
         // EVENT HANDLERS
         private void Awake() {
-            Debug.Assert(Weapon != null, $"{nameof(PushWeapon)} {name} was not associated with a {nameof(Weapon)}!");
-            Weapon.Attacked += Weapon_Attacked;
+            _weapon = GetComponent<Weapon>();
+            _weapon.Attacked += Weapon_Attacked;
         }
         private void Weapon_Attacked(object sender, Weapon.AttackEventArgs e) {
             // Narrow this list down to those targets with Rigidbody components

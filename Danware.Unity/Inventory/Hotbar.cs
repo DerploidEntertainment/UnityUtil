@@ -11,10 +11,16 @@ namespace Danware.Unity.Inventory {
     public class Hotbar : MonoBehaviour {
         // ABSTRACT DATA TYPES
         public class HotbarEventArgs : EventArgs {
-            public Hotbar Hotbar { get; set; }
+            public HotbarEventArgs(Hotbar hotbar) {
+                Hotbar = hotbar;
+            }
+            public Hotbar Hotbar { get; }
         }
         public class SlotEventArgs : HotbarEventArgs {
-            public int Slot { get; set; }
+            public SlotEventArgs(Hotbar hotbar, int slot) : base(hotbar) {
+                Slot = slot;
+            }
+            public int Slot { get; }
         }
 
         // HIDDEN FIELDS
@@ -111,10 +117,7 @@ namespace Danware.Unity.Inventory {
 
                 // Raise the slot filled event
                 _slots[s] = item;
-                SlotEventArgs args = new SlotEventArgs() {
-                    Hotbar = this,
-                    Slot = s,
-                };
+                SlotEventArgs args = new SlotEventArgs(this, s);
                 _filledInvoker?.Invoke(this, args);
 
                 // Equip the item (and it alone), if requested
@@ -134,10 +137,7 @@ namespace Danware.Unity.Inventory {
 
                 UnequipSlot(s);
                 _slots[s] = null;
-                SlotEventArgs args = new SlotEventArgs() {
-                    Hotbar = this,
-                    Slot = s,
-                };
+                SlotEventArgs args = new SlotEventArgs(this, s);
                 _emptiedInvoker?.Invoke(this, args);
                 break;
             }
@@ -181,10 +181,7 @@ namespace Danware.Unity.Inventory {
 
             // Raise the slot equipped event
             Debug.LogFormat("Hotbar {0} equipped slot {1} in frame {2}", this.name, slot, Time.frameCount);
-            SlotEventArgs args = new SlotEventArgs() {
-                Hotbar = this,
-                Slot = slot,
-            };
+            SlotEventArgs args = new SlotEventArgs(this, slot);
             _equippedInvoker?.Invoke(this, args);
         }
         private void unequipSlot(int slot) {
@@ -196,10 +193,7 @@ namespace Danware.Unity.Inventory {
 
             // Raise the slot unequipped event
             Debug.LogFormat("Hotbar {0} unequipped slot {1} in frame {2}", this.name, slot, Time.frameCount);
-            SlotEventArgs args = new SlotEventArgs() {
-                Hotbar = this,
-                Slot = slot,
-            };
+            SlotEventArgs args = new SlotEventArgs(this, slot);
             _uneqippedInvoker?.Invoke(this, args);
         }
         private void unequipAll() {

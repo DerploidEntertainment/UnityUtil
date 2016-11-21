@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
 
 namespace Danware.Unity.Inventory {
-    
-    public class HealthCollectible : Collectible {
+
+    [RequireComponent(typeof(Collectible))]
+    public class HealthCollectible : MonoBehaviour {
         // ABSTRACT DATA TYPES
         public enum DestroyModeType {
             Never,
@@ -11,13 +12,24 @@ namespace Danware.Unity.Inventory {
             WhenHealthUsed,
         }
 
+        // HIDDEN FIELDS
+        private Collectible _collectible;
+
+        // EVENT HANDLERS
+        private void Awake() {
+            _collectible = GetComponent<Collectible>();
+            _collectible.Collected += (sender, e) => doCollect(e.TargetRoot);
+        }
+
         // INSPECTOR FIELDS
+        [Tooltip("If there is a GameObject that gives this Collectible a physical representation, then reference it here.")]
+        public GameObject PhysicalObject;
         public float HealthAmount = 25f;
         public Health.ChangeMode HealthChangeMode = Health.ChangeMode.Absolute;
         public DestroyModeType DestroyMode = DestroyModeType.WhenHealthUsed;
 
-        // HELPER FUNCTIONS
-        protected override void doCollect(Transform targetRoot) {
+        // HELPERS
+        private void doCollect(Transform targetRoot) {
             Debug.Assert(HealthAmount >= 0, $"{nameof(HealthCollectible)} {name} must have a positive value for {nameof(HealthAmount)}!");
 
             // Try to get the target's Health component

@@ -11,7 +11,10 @@ namespace Danware.Unity {
     public class SceneWrapper : MonoBehaviour {
         // ABSTRACT DATA TYPES
         public class SceneEventArgs : EventArgs {
-            public Scene Scene;
+            public SceneEventArgs(Scene scene) {
+                Scene = scene;
+            }
+            public Scene Scene { get; }
         }
         [Serializable]
         public class SceneEvent : UnityEvent<SceneEventArgs> { }
@@ -36,9 +39,7 @@ namespace Danware.Unity {
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
 
             // Raise the Scene restarted event
-            SceneEventArgs args = new SceneEventArgs() {
-                Scene = SceneManager.GetActiveScene()
-            };
+            SceneEventArgs args = new SceneEventArgs(SceneManager.GetActiveScene());
             SceneRestarted.Invoke(args);
         }
         public void Quit() {
@@ -63,9 +64,7 @@ namespace Danware.Unity {
 
             // Raise the corresponding event, if a change actually occurred
             if (_paused != old) {
-                SceneEventArgs args = new SceneEventArgs() {
-                    Scene = SceneManager.GetActiveScene()
-                };
+                SceneEventArgs args = new SceneEventArgs(SceneManager.GetActiveScene());
                 SceneEvent e = _paused ? Paused : Resumed;
                 e.Invoke(args);
             }

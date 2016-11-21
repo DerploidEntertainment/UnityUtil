@@ -9,14 +9,21 @@ namespace Danware.Unity {
     public class Detonator : MonoBehaviour {
         // ABSTRACT DATA TYPES
         public class DetonatorEventArgs : EventArgs {
-            public Detonator Detonator;
+            public DetonatorEventArgs(Detonator detonator) {
+                Detonator = detonator;
+            }
+            public Detonator Detonator { get; }
         }
         public class CancelEventArgs : DetonatorEventArgs {
-            public bool Cancel;
+            public CancelEventArgs(Detonator detonator) : base(detonator) { }
+            public bool Cancel { get; set; } = false;
         }
         public class DetonateEventArgs : DetonatorEventArgs {
-            public Collider[] Hits;
-            public Action<Collider[]> Callback;
+            public DetonateEventArgs(Detonator detonator, Collider[] hits) : base(detonator) {
+                Hits = hits;
+            }
+            public Collider[] Hits { get; }
+            public Action<Collider[]> Callback { get; set; } = (collider) => { };
         }
 
         // HIDDEN FIELDS
@@ -52,10 +59,7 @@ namespace Danware.Unity {
             _lastDetonationFrame = frame;
 
             // Raise the Detonating event, allowing listeners to cancel detonation
-            CancelEventArgs detonatingArgs = new CancelEventArgs() {
-                Detonator = this,
-                Cancel = false,
-            };
+            CancelEventArgs detonatingArgs = new CancelEventArgs(this);
             _detonatingInvoker?.Invoke(this, detonatingArgs);
             if (detonatingArgs.Cancel)
                 return;
@@ -64,11 +68,7 @@ namespace Danware.Unity {
             // Raise the Detonated event, allowing other components to select which targets to affect
             Vector3 thisPos = transform.position;
             IEnumerable<Collider> hits = Physics.OverlapSphere(thisPos, ExplosionRadius, AffectLayer);
-            DetonateEventArgs detonateArgs = new DetonateEventArgs() {
-                Detonator = this,
-                Hits = hits.ToArray(),
-                Callback = (target) => { },
-            };
+            DetonateEventArgs detonateArgs = new DetonateEventArgs(this, hits.ToArray());
             _detonatedInvoker?.Invoke(this, detonateArgs);
 
             // Instantiate the explosion prefab if one was provided

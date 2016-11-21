@@ -9,13 +9,22 @@ namespace Danware.Unity.Inventory {
     public class Inventory : MonoBehaviour {
         // ABSTRACT DATA TYPES
         private struct ItemData {
+            public ItemData(InventoryCollectible invCollectible) {
+                OldCollectible = invCollectible;
+            }
             public InventoryCollectible OldCollectible;
         }
         public class InventoryEventArgs : EventArgs {
-            public Inventory Inventory { get; set; }
+            public InventoryEventArgs(Inventory inventory) {
+                Inventory = inventory;
+            }
+            public Inventory Inventory { get; }
         }
         public class ItemEventArgs : InventoryEventArgs {
-            public GameObject Item { get; set; }
+            public ItemEventArgs(Inventory inventory, GameObject item) : base(inventory) {
+                Item = item;
+            }
+            public GameObject Item { get; }
         }
 
         // HIDDEN FIELDS
@@ -42,24 +51,19 @@ namespace Danware.Unity.Inventory {
                 return new ReadOnlyCollection<GameObject>(items);
             }
         }
-        public bool Give(InventoryCollectible collect) {
+        public bool Give(InventoryCollectible collectible) {
             // Make sure an actual Collectible was provided, and that there is room for it
-            if (collect == null || _items.Count == MaxItems)
+            if (collectible == null || _items.Count == MaxItems)
                 return false;
 
             // Place the item in the Inventory
-            GameObject item = collect.Item;
-            ItemData data = new ItemData() {
-                OldCollectible = collect,
-            };
+            GameObject item = collectible.Item;
+            ItemData data = new ItemData(collectible);
             _items.Add(item, data);
 
             // Raise the item collected event
             Debug.LogFormat("Inventory {0} collected {1} in frame {2}", this.name, item.name, Time.frameCount);
-            ItemEventArgs args = new ItemEventArgs() {
-                Inventory = this,
-                Item = item,
-            };
+            ItemEventArgs args = new ItemEventArgs(this, item);
             _collectedInvoker?.Invoke(this, args);
 
             return true;
@@ -70,16 +74,13 @@ namespace Danware.Unity.Inventory {
             Debug.Assert(_items.ContainsKey(item), $"{nameof(Inventory)} {name} was told to drop an Item that it has not collected!");
 
             // If so, remove it from the Inventory
-            InventoryCollectible collect = _items[item].OldCollectible;
-            collect.Drop(transform);
+            InventoryCollectible collectible = _items[item].OldCollectible;
+            collectible.Drop();
             _items.Remove(item);
 
             // Raise the item dropped event
             Debug.Log($"{nameof(Inventory)} {name} dropped item {item.name} in frame {Time.frameCount}");
-            ItemEventArgs args = new ItemEventArgs() {
-                Inventory = this,
-                Item = item,
-            };
+            ItemEventArgs args = new ItemEventArgs(this, item);
             _droppedInvoker?.Invoke(this, args);
         }
         public void DropAllItems() {

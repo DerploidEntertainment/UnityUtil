@@ -17,16 +17,24 @@ namespace Danware.Unity.Inventory {
                 Priority = priority;
                 Callback = (hit) => { };
             }
-            public uint Priority;
-            public Action<RaycastHit> Callback;
+            public uint Priority { get; set; }
+            public Action<RaycastHit> Callback { get; set; }
         }
         public class WeaponEventArgs : EventArgs {
-            public Weapon Weapon;
+            public WeaponEventArgs(Weapon weapon) {
+                Weapon = weapon;
+            }
+            public Weapon Weapon { get; }
         }
         public class AttackEventArgs : WeaponEventArgs {
-            public Vector3 Direction;
-            public RaycastHit[] Hits;
-            public IDictionary<RaycastHit, TargetData> TargetPriorities = new Dictionary<RaycastHit, TargetData>();
+            public AttackEventArgs(Weapon weapon) : base(weapon) { }
+            public AttackEventArgs(Weapon weapon, Vector3 direction, RaycastHit[] hits) : base(weapon) {
+                Direction = direction;
+                Hits = hits;
+            }
+            public Vector3 Direction { get; }
+            public RaycastHit[] Hits { get; }
+            public IDictionary<RaycastHit, TargetData> TargetPriorities { get; } = new Dictionary<RaycastHit, TargetData>();
             public void Add(RaycastHit hitInfo, TargetData data) {
                 // If this hit has already been added, adjust its associated data
                 if (TargetPriorities.ContainsKey(hitInfo)) {
@@ -42,15 +50,25 @@ namespace Danware.Unity.Inventory {
             }
         }
         public class OverheatChangedEventArgs : WeaponEventArgs {
-            public bool Overheated;
+            public OverheatChangedEventArgs(Weapon weapon, bool overheated) : base(weapon) {
+                Overheated = overheated;
+            }
+            public bool Overheated { get; }
         }
         public class AmmoEventArgs : WeaponEventArgs {
-            public int OldClipAmmo;
-            public int OldBackupAmmo;
-            public int NewClipAmmo;
-            public int NewBackupAmmo;
+            public AmmoEventArgs(Weapon weapon, int oldClipAmmo, int oldBackupAmmo, int newClipAmmo, int newBackupAmmo) : base(weapon) {
+                OldClipAmmo = oldClipAmmo;
+                OldBackupAmmo = oldBackupAmmo;
+                NewClipAmmo = newClipAmmo;
+                NewBackupAmmo = newBackupAmmo;
+            }
+
+            public int OldClipAmmo { get; }
+            public int OldBackupAmmo { get; }
+            public int NewClipAmmo { get; }
+            public int NewBackupAmmo { get; }
         }
-        protected enum State {
+        private enum State {
             Idle,
             Charging,
         }
@@ -70,13 +88,13 @@ namespace Danware.Unity.Inventory {
         private EventHandler<AttackEventArgs> _attackedInvoker;
         private EventHandler<WeaponEventArgs> _failedInvoker;
         private EventHandler<OverheatChangedEventArgs> _overheatInvoker;
-        private EventHandler<AmmoEventArgs> _ammoInvoker;
+        private EventHandler<AmmoEventArgs> _reloadInvoker;
 
         // INSPECTOR FIELDS
         public StartStopInput AttackInput;
         public StartStopInput ReloadInput;
-        [Tooltip("A case-insensitive string to identify different types of Weapons (e.g., for collecting ammo)")]
-        public string TypeID = "Weapon";
+        [Tooltip(@"A case-insensitive string to identify different types of Weapons (e.g., ""Pistol""), for collecting ammo and other Weapon-specific functions.)")]
+        public string WeaponName = "Weapon";
         public LayerMask AffectLayers;
 
         [Header("Range")]
@@ -122,26 +140,6 @@ namespace Danware.Unity.Inventory {
         public float AccuracyLerpTime = 1f;   // Seconds
 
         // API INTERFACE
-        public event EventHandler<WeaponEventArgs> AttackChargeStarted {
-            add { _chargingInvoker += value; }
-            remove { _chargingInvoker -= value; }
-        }
-        public event EventHandler<AttackEventArgs> Attacked {
-            add { _attackedInvoker += value; }
-            remove { _attackedInvoker -= value; }
-        }
-        public event EventHandler<WeaponEventArgs> AttackFailed {
-            add { _failedInvoker += value; }
-            remove { _failedInvoker -= value; }
-        }
-        public event EventHandler<OverheatChangedEventArgs> OverheatStateChanged {
-            add { _overheatInvoker += value; }
-            remove { _overheatInvoker -= value; }
-        }
-        public event EventHandler<AmmoEventArgs> Loaded {
-            add { _ammoInvoker += value; }
-            remove { _ammoInvoker -= value; }
-        }
         public float AccuracyConeHalfAngle => Mathf.LerpAngle(InitialConeHalfAngle, FinalConeHalfAngle, _accuracyLerpT);
         public float Range => Mathf.Lerp(InitialRange, FinalRange, _rangeLerpT);
         public float CurrentHeat { get; private set; } = 0f;
@@ -158,6 +156,27 @@ namespace Danware.Unity.Inventory {
         }
         public void ReloadClip() {
             doReloadClip();
+        }
+
+        public event EventHandler<WeaponEventArgs> AttackChargeStarted {
+            add { _chargingInvoker += value; }
+            remove { _chargingInvoker -= value; }
+        }
+        public event EventHandler<AttackEventArgs> Attacked {
+            add { _attackedInvoker += value; }
+            remove { _attackedInvoker -= value; }
+        }
+        public event EventHandler<WeaponEventArgs> AttackFailed {
+            add { _failedInvoker += value; }
+            remove { _failedInvoker -= value; }
+        }
+        public event EventHandler<OverheatChangedEventArgs> OverheatStateChanged {
+            add { _overheatInvoker += value; }
+            remove { _overheatInvoker -= value; }
+        }
+        public event EventHandler<AmmoEventArgs> Reloaded {
+            add { _reloadInvoker += value; }
+            remove { _reloadInvoker -= value; }
         }
 
         // EVENT HANDLERS
@@ -363,15 +382,9 @@ namespace Danware.Unity.Inventory {
             CurrentClipAmmo += availableAmmo;
             BackupAmmo -= availableAmmo;
 
-            // Raise the ClipAmmoIncreased event
-            AmmoEventArgs args = new AmmoEventArgs() {
-                Weapon = this,
-                OldClipAmmo = old,
-                OldBackupAmmo = BackupAmmo,
-                NewClipAmmo = CurrentClipAmmo,
-                NewBackupAmmo = BackupAmmo,
-            };
-            _ammoInvoker?.Invoke(this, args);
+            // Raise the Reloaded event
+            AmmoEventArgs args = new AmmoEventArgs(this, old, BackupAmmo, CurrentClipAmmo, BackupAmmo);
+            _reloadInvoker?.Invoke(this, args);
         }
         private void doLoad(int ammo) {
             int oldClip = CurrentClipAmmo;
@@ -398,52 +411,34 @@ namespace Danware.Unity.Inventory {
                 ammo -= backupFill;
             }
 
-            // Raise the ClipAmmoIncreased event
-            AmmoEventArgs args = new AmmoEventArgs() {
-                Weapon = this,
-                OldClipAmmo = oldClip,
-                OldBackupAmmo = oldBackup,
-                NewClipAmmo = CurrentClipAmmo,
-                NewBackupAmmo = BackupAmmo,
-            };
-            _ammoInvoker?.Invoke(this, args);
+            // Raise the Reloaded event
+            AmmoEventArgs args = new AmmoEventArgs(this, oldClip, oldBackup, CurrentClipAmmo, BackupAmmo);
+            _reloadInvoker?.Invoke(this, args);
         }
-        private WeaponEventArgs onAttackFailed() {
-            WeaponEventArgs args = new WeaponEventArgs() {
-                Weapon = this,
-            };
+        private void onAttackFailed() {
+            WeaponEventArgs args = new WeaponEventArgs(this);
             _failedInvoker?.Invoke(this, args);
 
-            return args;
+            return;
         }
-        private WeaponEventArgs onAttackChargeStarted() {
-            AttackEventArgs args = new AttackEventArgs() {
-                Weapon = this,
-            };
+        private void onAttackChargeStarted() {
+            AttackEventArgs args = new AttackEventArgs(this);
             _chargingInvoker?.Invoke(this, args);
 
-            return args;
+            return;
         }
         private AttackEventArgs onAttacked(Vector3 direction, RaycastHit[] hits) {
-            AttackEventArgs args = new AttackEventArgs() {
-                Weapon = this,
-                Direction = direction,
-                Hits = hits.ToArray(),
-                TargetPriorities = new Dictionary<RaycastHit, TargetData>(),
-            };
+            AttackEventArgs args = new AttackEventArgs(this, direction, hits.ToArray());
             _attackedInvoker?.Invoke(this, args);
 
             return args;
         }
-        private OverheatChangedEventArgs onOverheatChanged(bool overheated) {
+        private void onOverheatChanged(bool overheated) {
             // Raise the Overheat Changed event
-            OverheatChangedEventArgs args = new OverheatChangedEventArgs() {
-                Weapon = this,
-                Overheated = overheated,
-            };
+            OverheatChangedEventArgs args = new OverheatChangedEventArgs(this, overheated);
             _overheatInvoker?.Invoke(this, args);
 
-            return args;
+            return;
         }
 
     }

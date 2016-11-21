@@ -11,9 +11,16 @@ namespace Danware.Unity {
             PercentMax,
         }
         public class HealthEventArgs : EventArgs {
-            public Health Health;
+            public HealthEventArgs(Health health) {
+                Health = health;
+            }
+            public Health Health { get; }
         }
         public class ChangedEventArgs : HealthEventArgs {
+            public ChangedEventArgs(Health health, float oldValue, float newValue) : base(health) {
+                OldValue = oldValue;
+                NewValue = newValue;
+            }
             public float OldValue;
             public float NewValue;
         }
@@ -31,14 +38,14 @@ namespace Danware.Unity {
 
         // API INTERFACE
         public void Heal(float amount, ChangeMode changeMode = ChangeMode.Absolute) {
-            Debug.AssertFormat(amount >= 0, "Tried to heal Health {0} by a negative amount!", this.name);
+            Debug.AssertFormat(amount >= 0, "Tried to heal Health {0} by a negative amount!", name);
             doHeal(amount, changeMode);
         }
         public void HealCompletely() {
             doHeal(MaxHealth - CurrentHealth, ChangeMode.Absolute);
         }
         public void Damage(float amount, ChangeMode changeMode = ChangeMode.Absolute) {
-            Debug.AssertFormat(amount >= 0, "Tried to wound Health {0} by a negative amount!", this.name);
+            Debug.AssertFormat(amount >= 0, "Tried to wound Health {0} by a negative amount!", name);
             doDamage(amount, changeMode);
         }
         public void Kill() {
@@ -54,11 +61,7 @@ namespace Danware.Unity {
 
             // Raise the HealthChanged event, if a change actually occurred
             if (CurrentHealth != old) {
-                ChangedEventArgs args = new ChangedEventArgs() {
-                    Health = this,
-                    OldValue = old,
-                    NewValue = CurrentHealth,
-                };
+                ChangedEventArgs args = new ChangedEventArgs(this, old, CurrentHealth);
                 _healthInvoker?.Invoke(this, args);
             }
         }
@@ -70,11 +73,7 @@ namespace Danware.Unity {
 
             // Raise the HealthChanged event, if a change actually occurred
             if (CurrentHealth != old) {
-                ChangedEventArgs args = new ChangedEventArgs() {
-                    Health = this,
-                    OldValue = old,
-                    NewValue = CurrentHealth,
-                };
+                ChangedEventArgs args = new ChangedEventArgs(this, old, CurrentHealth);
                 _healthInvoker?.Invoke(this, args);
             }
         }

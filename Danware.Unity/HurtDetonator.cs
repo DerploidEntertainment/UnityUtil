@@ -22,7 +22,8 @@ namespace Danware.Unity {
             // Get the unique Health from these Colliders (without using Linq!)
             HashSet<Health> healths = new HashSet<Health>();
             foreach (Collider c in colliders) {
-                Health h = c.GetComponent<Health>();
+                PhysTarget pt = c.GetComponent<PhysTarget>();
+                Health h = pt.TargetComponent as Health;
                 if (h != null)
                     healths.Add(h);
             }
