@@ -85,7 +85,7 @@
     <Compile Include="UnityLayer.cs" />
     <Compile Include="Use.cs" />
     <Compile Include="IUseable.cs" />
-    <Compile Include="Util.cs" />
+    <Compile Include="ExtensionMethods.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Danware.Unity.Input\Danware.Unity.Input.csproj">
