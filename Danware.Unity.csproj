@@ -44,8 +44,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ColliderDuplicator.cs" />
+    <Compile Include="StayDetector.cs" />
+    <Compile Include="ExitDetector.cs" />
+    <Compile Include="EnterDetector.cs" />
     <Compile Include="Destroyer.cs" />
     <Compile Include="HurtDetonator.cs" />
+    <Compile Include="DetectorBase.cs" />
     <Compile Include="Inventory\AmmoCollectible.cs" />
     <Compile Include="Inventory\HealthCollectible.cs" />
     <Compile Include="Inventory\HurtWeapon.cs" />
@@ -54,6 +58,7 @@
     <Compile Include="Inventory\PushWeapon.cs" />
     <Compile Include="Inventory\Weapon.cs" />
     <Compile Include="DontDestroy.cs" />
+    <Compile Include="DetectorResponder.cs" />
     <Compile Include="PhysTarget.cs" />
     <Compile Include="PowerUp.cs" />
     <Compile Include="PushDetonator.cs" />
