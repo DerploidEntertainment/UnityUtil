@@ -3,16 +3,18 @@
 namespace Danware.Unity {
     
     public class ExitDetector : DetectorBase {
-        
+
         private void OnCollisionExit(Collision collision) {
-            if (_collider != null && !_collider.isTrigger)
-                Responder.InitiateResponse(collision.collider, this);
+            Collider coll = collision.collider;
+            MonoBehaviour target = coll.GetComponent<PhysTarget>()?.TargetComponent;
+            Responder.BeginResponse(this, coll, target);
         }
-        
+
         private void OnTriggerExit(Collider collider) {
-            if (_collider != null && _collider.isTrigger)
-                Responder.InitiateResponse(collider, this);
+            MonoBehaviour target = collider.GetComponent<PhysTarget>()?.TargetComponent;
+            Responder.BeginResponse(this, collider, target);
         }
+
     }
 
 }
