@@ -69,7 +69,6 @@
     <Compile Include="JointWrapper.cs" />
     <Compile Include="Movement\CharacterFPSWalker.cs" />
     <Compile Include="Inventory\Collectible.cs" />
-    <Compile Include="Inventory\CollectibleDetector.cs" />
     <Compile Include="CollisionSounds.cs" />
     <Compile Include="Detonator.cs" />
     <Compile Include="Health.cs" />
@@ -86,6 +85,7 @@
     <Compile Include="Use.cs" />
     <Compile Include="IUseable.cs" />
     <Compile Include="ExtensionMethods.cs" />
+    <Compile Include="ValueChangedEventArgs.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Danware.Unity.Input\Danware.Unity.Input.csproj">
