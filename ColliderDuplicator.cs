@@ -188,7 +188,8 @@ namespace Danware.Unity {
             // Attach a physics target component, if requested
             if (PhysicsTarget != null) {
                 PhysTarget target = newParent.AddComponent<PhysTarget>();
-                target.TargetComponent = PhysicsTarget;
+                if (target != null)
+                    target.TargetComponent = PhysicsTarget;
             }
         }
 

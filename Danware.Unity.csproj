@@ -44,6 +44,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ColliderDuplicator.cs" />
+    <Compile Include="Inventory\AmmoCollector.cs" />
+    <Compile Include="Inventory\HealthCollector.cs" />
+    <Compile Include="Inventory\InventoryCollector.cs" />
     <Compile Include="StayDetector.cs" />
     <Compile Include="ExitDetector.cs" />
     <Compile Include="EnterDetector.cs" />
@@ -65,10 +68,9 @@
     <Compile Include="SceneWrapper.cs" />
     <Compile Include="TargetFollower.cs" />
     <Compile Include="Liftable.cs" />
-    <Compile Include="Inventory\Equippable.cs" />
     <Compile Include="JointWrapper.cs" />
     <Compile Include="Movement\CharacterFPSWalker.cs" />
-    <Compile Include="Inventory\Collectible.cs" />
+    <Compile Include="Inventory\ICollectible.cs" />
     <Compile Include="CollisionSounds.cs" />
     <Compile Include="Detonator.cs" />
     <Compile Include="Health.cs" />

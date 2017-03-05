@@ -8,6 +8,7 @@ using Danware.Unity.Input;
 
 namespace Danware.Unity.Inventory {
 
+    [RequireComponent(typeof(Inventory))]
     public class Hotbar : MonoBehaviour {
         // ABSTRACT DATA TYPES
         public class HotbarEventArgs : EventArgs {
@@ -24,11 +25,12 @@ namespace Danware.Unity.Inventory {
         }
 
         // HIDDEN FIELDS
+        private Inventory _inventory;
         private EventHandler<SlotEventArgs> _filledInvoker;
         private EventHandler<SlotEventArgs> _emptiedInvoker;
         private EventHandler<SlotEventArgs> _equippedInvoker;
         private EventHandler<SlotEventArgs> _uneqippedInvoker;
-        private GameObject[] _slots;
+        private InventoryCollectible[] _slots;
         private List<int> _slotsEquipped;
 
         // INSPECTOR FIELDS
@@ -37,7 +39,6 @@ namespace Danware.Unity.Inventory {
         public StartStopInputArray EquipInput;
 
         [Header("Options")]
-        public Inventory Inventory;
         [Range(0f, 10f)]
         public int NumSlots = 10;
         [Range(0f, 10f)]
@@ -61,12 +62,10 @@ namespace Danware.Unity.Inventory {
             add { _uneqippedInvoker += value; }
             remove { _uneqippedInvoker -= value; }
         }
-        public GameObject[] Slots {
-            get { return _slots.ToArray(); }
-        }
-        public int[] EquippedSlots {
-            get { return _slotsEquipped.ToArray(); }
-        }
+
+        public Inventory Inventory => _inventory;
+        public GameObject[] Slots => _slots.Select(s => s?.Item).ToArray();
+        public int[] EquippedSlots => _slotsEquipped.ToArray();
         public void EquipSlot(int slot) {
             // Only equip this slot if it is not already equipped and slots are available
             if (!_slotsEquipped.Contains(slot) && _slotsEquipped.Count < NumEquippableSlots)
@@ -83,13 +82,14 @@ namespace Danware.Unity.Inventory {
 
         // EVENT HANDLERS
         private void Awake() {
-            Debug.AssertFormat(NumEquippableSlots < NumSlots, "Hotbar {0} was given {1} equippable slots but has only {2} total slots!", this.name, NumEquippableSlots, NumSlots);
+            Debug.AssertFormat(NumEquippableSlots < NumSlots, $"{nameof(Hotbar)} {name} was given {NumEquippableSlots} equippable slots but has only {NumSlots} total slots!");
 
-            _slots = new GameObject[NumSlots];
+            _slots = new InventoryCollectible[NumSlots];
             _slotsEquipped = new List<int>(NumEquippableSlots);
 
-            Inventory.ItemCollected += handleItemCollected;
-            Inventory.ItemDropped += handleItemDropped;
+            _inventory = GetComponent<Inventory>();
+            _inventory.ItemCollected += handleItemCollected;
+            _inventory.ItemDropped += handleItemDropped;
         }
         private void Update() {
             // Get player input
@@ -100,7 +100,7 @@ namespace Danware.Unity.Inventory {
             if (dropped) {
                 int[] equipped = _slotsEquipped.ToArray();
                 foreach (int slot in equipped)
-                    Inventory.DropItem(_slots[slot]);
+                    _inventory.Drop(_slots[slot]);
             }
 
             // If the player pressed any equip item buttons, then toggle those slots' equipped states
@@ -108,15 +108,15 @@ namespace Danware.Unity.Inventory {
         }
 
         // HELPER FUNCTIONS
-        private void handleItemCollected(object sender, Inventory.ItemEventArgs e) {
+        private void handleItemCollected(object sender, Inventory.InventoryItemEventArgs e) {
             // Place the newly collected item in the first available slot
-            GameObject item = e.Item;
+            InventoryCollectible c = e.Collectible;
             for (int s = 0; s < NumSlots; ++s) {
                 if (_slots[s] != null)
                     continue;
 
                 // Raise the slot filled event
-                _slots[s] = item;
+                _slots[s] = c;
                 SlotEventArgs args = new SlotEventArgs(this, s);
                 _filledInvoker?.Invoke(this, args);
 
@@ -128,11 +128,11 @@ namespace Danware.Unity.Inventory {
                 break;
             }
         }
-        private void handleItemDropped(object sender, Inventory.ItemEventArgs e) {
+        private void handleItemDropped(object sender, Inventory.InventoryItemEventArgs e) {
             // Clear this item's slot if it was actually on the Hotbar, unequipping it first if necessary
-            GameObject item = e.Item;
+            InventoryCollectible c = e.Collectible;
             for (int s = 0; s < NumSlots; ++s) {
-                if (_slots[s] != item)
+                if (_slots[s] != c)
                     continue;
 
                 UnequipSlot(s);
@@ -165,19 +165,16 @@ namespace Danware.Unity.Inventory {
                 else {
                     bool equipped = _slotsEquipped.Contains(s);
                     if (equipped)
-                    unequipSlot(s);
+                        unequipSlot(s);
+                }
             }
-        }
         }
         private void equipSlot(int slot) {
             // Equip the slot (i.e., if an item is there, activate its GameObject and render its model)
             _slotsEquipped.Add(slot);
-            GameObject item = _slots[slot];
-            if (item != null) {
-                item.SetActive(true);
-                Equippable eq = item.GetComponent<Equippable>();
-                eq?.Equip(item.transform);
-            }
+            InventoryCollectible c = _slots[slot];
+            if (c != null)
+                c.Item.SetActive(true);
 
             // Raise the slot equipped event
             Debug.LogFormat("Hotbar {0} equipped slot {1} in frame {2}", this.name, slot, Time.frameCount);
@@ -187,9 +184,9 @@ namespace Danware.Unity.Inventory {
         private void unequipSlot(int slot) {
             // Unequip the slot (deactivate its GameObject), if one was provided
             _slotsEquipped.Remove(slot);
-            GameObject item = _slots[slot];
-            if (item != null)
-                item.SetActive(false);
+            InventoryCollectible c = _slots[slot];
+            if (c != null)
+                c.Item.SetActive(false);
 
             // Raise the slot unequipped event
             Debug.LogFormat("Hotbar {0} unequipped slot {1} in frame {2}", this.name, slot, Time.frameCount);

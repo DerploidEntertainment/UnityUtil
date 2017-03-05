@@ -21,7 +21,7 @@ namespace Danware.Unity.Inventory {
         private void Weapon_Attacked(object sender, Weapon.AttackEventArgs e) {
             // Narrow this list down to those targets with Health components
             RaycastHit[] hits = (from h in e.Hits
-                                 where h.collider.GetComponent<PhysTarget>().TargetComponent as Health != null
+                                 where h.collider.GetComponent<PhysTarget>()?.TargetComponent as Health != null
                                  where !h.collider.CompareTag("Player")
                                  select h).ToArray();
             if (hits.Count() > 0) {
@@ -33,10 +33,8 @@ namespace Danware.Unity.Inventory {
         }
         private void affectTarget(RaycastHit hit) {
             // Damage the target, if it has a Health component
-            PhysTarget pt = hit.collider.GetComponent<PhysTarget>();
-            Health h = pt.TargetComponent as Health;
-            if (h != null)
-                h.Damage(Damage, HealthChangeMode);
+            Health h = hit.collider.GetComponent<PhysTarget>()?.TargetComponent as Health;
+            h?.Damage(Damage, HealthChangeMode);
         }
 
     }
