@@ -3,13 +3,18 @@
 namespace Danware.Unity {
 
     public class Destroyer : MonoBehaviour {
+
+        // INSPECTOR FIELDS
+        public GameObject ObjectToDestroy;
+
         // API INTERFACE
         public void DestroyGameObject() {
-            Destroy(this.gameObject);
+            Destroy(ObjectToDestroy);
         }
         public void DestroyGameObjectImmediate() {
-            DestroyImmediate(this.gameObject);
+            DestroyImmediate(ObjectToDestroy);
         }
+
     }
 
 }
