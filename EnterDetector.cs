@@ -5,14 +5,18 @@ namespace Danware.Unity {
     public class EnterDetector : DetectorBase {
 
         private void OnCollisionEnter(Collision collision) {
-            Collider coll = collision.collider;
-            MonoBehaviour target = coll.GetComponent<PhysTarget>()?.TargetComponent;
-            Responder.BeginResponse(this, coll, target);
+            if (Responder != null) {
+                Collider coll = collision.collider;
+                MonoBehaviour target = coll.GetComponent<PhysTarget>()?.TargetComponent;
+                onDetected(coll, target);
+            }
         }
 
         private void OnTriggerEnter(Collider collider) {
-            MonoBehaviour target = collider.GetComponent<PhysTarget>()?.TargetComponent;
-            Responder?.BeginResponse(this, collider, target);
+            if (Responder != null) {
+                MonoBehaviour target = collider.GetComponent<PhysTarget>()?.TargetComponent;
+                onDetected(collider, target);
+            }
         }
 
     }

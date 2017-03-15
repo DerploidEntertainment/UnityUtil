@@ -7,14 +7,20 @@ namespace Danware.Unity.Inventory {
 
         // INSPECTOR FIELDS
         public Inventory Inventory;
+        public EnterDetector[] Detectors;
 
-        public override void BeginResponse(DetectorBase detector, Collider targetCollider, MonoBehaviour target) {
+        // EVENT HANDLERS
+        public void Awake() {
+            foreach (EnterDetector detector in Detectors)
+                detector.Detected += Detector_Detected;
+        }
+        protected override void Detector_Detected(object sender, DetectedEventArgs e) {
             // If we are not associated with an Inventory, or if the target is not an AmmoCollectible, then just early exit
             if (Inventory == null) {
                 Debug.LogWarning($"{nameof(AmmoCollector)} could not collect a {nameof(AmmoCollectible)} because it was not associated with an {nameof(Inventory)}!");
                 return;
             }
-            var a = target as AmmoCollectible;
+            var a = e.Target as AmmoCollectible;
             if (a == null)
                 return;
 
@@ -40,16 +46,11 @@ namespace Danware.Unity.Inventory {
 
             // Destroy the AmmoCollectible's GameObject as necessary
             bool detectDestroy = (a.DestroyMode == CollectibleDestroyMode.WhenDetected);
-            bool useDestroy     = (a.DestroyMode == CollectibleDestroyMode.WhenUsed && ammo > 0f);
-            bool emptyDestroy   = (a.DestroyMode == CollectibleDestroyMode.WhenEmptied && a.AmmoAmount == 0f);
+            bool useDestroy = (a.DestroyMode == CollectibleDestroyMode.WhenUsed && ammo > 0f);
+            bool emptyDestroy = (a.DestroyMode == CollectibleDestroyMode.WhenEmptied && a.AmmoAmount == 0f);
             if (detectDestroy || useDestroy || emptyDestroy)
                 Destroy(a.gameObject);
-
-            // Raise the Responding event
-            var args = new DetectorResponseEventArgs(this, detector, targetCollider, a);
-            _respondingInvoker?.Invoke(this, args);
         }
-
     }
 
 }

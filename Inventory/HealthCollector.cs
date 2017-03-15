@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace Danware.Unity.Inventory {
 
@@ -6,14 +7,20 @@ namespace Danware.Unity.Inventory {
 
         // INSPECTOR FIELDS
         public Health Health;
+        public EnterDetector[] Detectors;
 
-        public override void BeginResponse(DetectorBase detector, Collider targetCollider, MonoBehaviour target) {
+        // EVENT HANDLERS
+        public void Awake() {
+            foreach (EnterDetector detector in Detectors)
+                detector.Detected += Detector_Detected;
+        }
+        protected override void Detector_Detected(object sender, DetectedEventArgs e) {
             // If we are not associated with a Health, or if the target is not a HealthCollectible, then just early exit
             if (Health == null) {
                 Debug.LogWarning($"{nameof(HealthCollector)} could not collect a {nameof(HealthCollectible)} because it was not associated with a {nameof(Health)}!");
                 return;
-            }            
-            var h = target as HealthCollectible;
+            }
+            var h = e.Target as HealthCollectible;
             if (h == null)
                 return;
 
@@ -34,11 +41,6 @@ namespace Danware.Unity.Inventory {
             bool emptyDestroy = (h.DestroyMode == CollectibleDestroyMode.WhenEmptied && h.HealthAmount == 0f);
             if (collectDestroy || useDestroy || emptyDestroy)
                 Destroy(h.gameObject);
-
-            // Raise the Responding event
-            var args = new DetectorResponseEventArgs(this, detector, targetCollider, h);
-            _respondingInvoker?.Invoke(this, args);
-
         }
     }
 
