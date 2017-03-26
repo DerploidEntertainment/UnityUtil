@@ -43,6 +43,7 @@
     <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Detectors\AnimationEventDetector.cs" />
     <Compile Include="Detectors\ColliderDuplicator.cs" />
     <Compile Include="Inventory\AmmoCollector.cs" />
     <Compile Include="Inventory\HealthCollector.cs" />
