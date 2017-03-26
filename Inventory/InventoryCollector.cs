@@ -14,7 +14,7 @@ namespace Danware.Unity.Inventory {
             foreach (EnterDetector detector in Detectors)
                 detector.Detected += Detector_Detected;
         }
-        protected override void Detector_Detected(object sender, DetectedEventArgs e) {
+        protected override void Detector_Detected(object sender, ColliderDetectedEventArgs e) {
             // If we are not associated with an Inventory, or if the target is not an InventoryCollectible, then just early exit
             if (Inventory == null) {
                 Debug.LogWarning($"{nameof(InventoryCollector)} could not collect a {nameof(InventoryCollectible)} because it was not associated with an {nameof(Inventory)}!");

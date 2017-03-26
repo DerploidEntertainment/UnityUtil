@@ -14,7 +14,7 @@ namespace Danware.Unity.Inventory {
             foreach (EnterDetector detector in Detectors)
                 detector.Detected += Detector_Detected;
         }
-        protected override void Detector_Detected(object sender, DetectedEventArgs e) {
+        protected override void Detector_Detected(object sender, ColliderDetectedEventArgs e) {
             // If we are not associated with a Health, or if the target is not a HealthCollectible, then just early exit
             if (Health == null) {
                 Debug.LogWarning($"{nameof(HealthCollector)} could not collect a {nameof(HealthCollectible)} because it was not associated with a {nameof(Health)}!");

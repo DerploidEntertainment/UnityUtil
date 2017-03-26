@@ -4,7 +4,7 @@ namespace Danware.Unity {
 
     public abstract class DetectorResponder : MonoBehaviour {
 
-        protected abstract void Detector_Detected(object sender, DetectedEventArgs e);
+        protected abstract void Detector_Detected(object sender, ColliderDetectedEventArgs e);
 
     }
 

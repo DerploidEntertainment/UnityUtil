@@ -43,16 +43,16 @@
     <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ColliderDuplicator.cs" />
+    <Compile Include="Detectors\ColliderDuplicator.cs" />
     <Compile Include="Inventory\AmmoCollector.cs" />
     <Compile Include="Inventory\HealthCollector.cs" />
     <Compile Include="Inventory\InventoryCollector.cs" />
-    <Compile Include="StayDetector.cs" />
-    <Compile Include="ExitDetector.cs" />
-    <Compile Include="EnterDetector.cs" />
+    <Compile Include="Detectors\StayDetector.cs" />
+    <Compile Include="Detectors\ExitDetector.cs" />
+    <Compile Include="Detectors\EnterDetector.cs" />
     <Compile Include="Destroyer.cs" />
     <Compile Include="HurtDetonator.cs" />
-    <Compile Include="DetectorBase.cs" />
+    <Compile Include="Detectors\ColliderDetectorBase.cs" />
     <Compile Include="Inventory\AmmoCollectible.cs" />
     <Compile Include="Inventory\HealthCollectible.cs" />
     <Compile Include="Inventory\HurtWeapon.cs" />
@@ -61,8 +61,8 @@
     <Compile Include="Inventory\PushWeapon.cs" />
     <Compile Include="Inventory\Weapon.cs" />
     <Compile Include="DontDestroy.cs" />
-    <Compile Include="DetectorResponder.cs" />
-    <Compile Include="PhysTarget.cs" />
+    <Compile Include="Detectors\DetectorResponder.cs" />
+    <Compile Include="Detectors\PhysTarget.cs" />
     <Compile Include="PowerUp.cs" />
     <Compile Include="PushDetonator.cs" />
     <Compile Include="SceneWrapper.cs" />
