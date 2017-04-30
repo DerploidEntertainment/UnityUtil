@@ -73,8 +73,8 @@ namespace Danware.Unity {
         // EVENT HANDLERS
         private void Update() {
             // Get user input
-            bool toggleLift = LiftInput.Started;
-            bool threw = ThrowInput.Started;
+            bool toggleLift = LiftInput.Started();
+            bool threw = ThrowInput.Started();
 
             // If the player pressed Use, then pick up or drop a load
             if (toggleLift) {

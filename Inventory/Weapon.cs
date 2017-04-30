@@ -225,17 +225,17 @@ namespace Danware.Unity.Inventory {
 
             // Otherwise, set/unset attack flags according to player input
             else {
-                if (AttackInput.Started) {
+                if (AttackInput.Started()) {
                     _firstAttack = true;
                     _attacking = true;
                 }
 
-                if (AttackInput.Stopped)
+                if (AttackInput.Stopped())
                     _attacking = false;
             }
 
             // Set/unset reload flag according to player input
-            _reloading = ReloadInput?.Started ?? false;
+            _reloading = ReloadInput?.Started() ?? false;
         }
         private void idleUpdate() {
             // If an attack is being attempted and we're ready to charge, then begin charging

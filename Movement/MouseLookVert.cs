@@ -16,7 +16,7 @@ namespace Danware.Unity.Movement {
         public ValueInput LookInput;
         private void Update() {
             // Get inputs
-            float mouseY = LookInput.Value;
+            float mouseY = LookInput.Value();
 
             // Rotate in y-direction
             float dy = (mouseY > 0) ? Mathf.Min(maxY - _rotY, mouseY) : Mathf.Max(minY - _rotY, mouseY);

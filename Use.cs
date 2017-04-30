@@ -13,7 +13,7 @@ namespace Danware.Unity {
         // EVENT HANDLERS
         private void Update() {
             // Get user input
-            bool use = UseInput.Started;
+            bool use = UseInput.Started();
 
             // Use the Useable currently being looked at
             if (use) {

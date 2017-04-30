@@ -16,7 +16,7 @@ namespace Danware.Unity.Movement {
         // EVENT HANDLERS
         private void Update() {
             // Get inputs
-            float mouseX = LookInput.Value;
+            float mouseX = LookInput.Value();
 
             // Rotate in x-direction
             float dx = (mouseX > 0) ? Mathf.Min(MaxX - _rotX, mouseX) : Mathf.Max(MinX - _rotX, mouseX);

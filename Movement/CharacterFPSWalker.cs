@@ -49,15 +49,15 @@ namespace Danware.Unity.Movement {
 
             // Adjust target velocity for jumping, if its allowed
             if (CanJump) {
-                bool jumped = JumpInput.Started;
+                bool jumped = JumpInput.Started();
                 targetV += jumpComponent(jumped);
             }
 
             // Adjust target velocity for movement, if its allowed
-            bool sprinting = SprintInput.Happening;
-            bool crouching = CrouchInput.Happening;
-            float inputHorz = HorizontalInput.DiscreteValue;   // raw means only returns one of: { -1, 0, 1 }
-            float inputVert = VerticalInput.DiscreteValue;     // raw means only returns one of: { -1, 0, 1 }
+            bool sprinting = SprintInput.Happening();
+            bool crouching = CrouchInput.Happening();
+            float inputHorz = HorizontalInput.DiscreteValue();   // raw means only returns one of: { -1, 0, 1 }
+            float inputVert = VerticalInput.DiscreteValue();     // raw means only returns one of: { -1, 0, 1 }
             targetV += moveComponent(inputHorz, inputVert, CanSprint && sprinting, CanCrouch && crouching);
 
             // Do crouching if its allowed

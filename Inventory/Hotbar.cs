@@ -93,8 +93,8 @@ namespace Danware.Unity.Inventory {
         }
         private void Update() {
             // Get player input
-            bool dropped = DropInput.Started;
-            bool[] toggled = EquipInput.Started;
+            bool dropped = DropInput.Started();
+            bool[] toggled = EquipInput.Started();
 
             // If the player pressed Drop, then Drop all currently equipped items
             if (dropped) {

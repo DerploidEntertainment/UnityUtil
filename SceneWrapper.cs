@@ -49,7 +49,7 @@ namespace Danware.Unity {
         // EVENT HANDLERS
         private void Update() {
             // Handle player input
-            if (PauseInput.Started)
+            if (PauseInput.Started())
                 resetPaused(!_paused);
         }
 
