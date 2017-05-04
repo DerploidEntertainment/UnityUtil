@@ -47,6 +47,10 @@
     <Compile Include="Detectors\AnimationEventDetector.cs" />
     <Compile Include="Detectors\ColliderDuplicator.cs" />
     <Compile Include="EnableToggler.cs" />
+    <Compile Include="Movement\RigidbodyMover.cs" />
+    <Compile Include="Movement\RigidbodyMovement.cs" />
+    <Compile Include="Movement\TargetOffsetMovement.cs" />
+    <Compile Include="Movement\TransformMovement.cs" />
     <Compile Include="Inventory\AmmoCollector.cs" />
     <Compile Include="Inventory\HealthCollector.cs" />
     <Compile Include="Inventory\InventoryCollector.cs" />
@@ -69,7 +73,6 @@
     <Compile Include="PowerUp.cs" />
     <Compile Include="PushDetonator.cs" />
     <Compile Include="SceneWrapper.cs" />
-    <Compile Include="TargetFollower.cs" />
     <Compile Include="Liftable.cs" />
     <Compile Include="JointWrapper.cs" />
     <Compile Include="Movement\CharacterFPSWalker.cs" />
@@ -85,6 +88,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Spawner.cs" />
     <Compile Include="Movement\TargetFlyer.cs" />
+    <Compile Include="Movement\TransformMover.cs" />
     <Compile Include="UnityLayer.cs" />
     <Compile Include="Use.cs" />
     <Compile Include="IUseable.cs" />
