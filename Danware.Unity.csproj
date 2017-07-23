@@ -46,8 +46,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ActivateToggler.cs" />
+    <Compile Include="Triggers\ButtonTrigger.cs" />
     <Compile Include="Detectors\AnimationEventDetector.cs" />
     <Compile Include="Detectors\ColliderDuplicator.cs" />
+    <Compile Include="Triggers\DetectorTrigger.cs" />
     <Compile Include="EnableToggler.cs" />
     <Compile Include="Movement\RigidbodyMover.cs" />
     <Compile Include="Movement\RigidbodyMovement.cs" />
@@ -88,9 +90,11 @@
     <Compile Include="Movement\MouseLookVert.cs" />
     <Compile Include="Lifter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Triggers\SimpleTrigger.cs" />
     <Compile Include="Spawner.cs" />
     <Compile Include="Movement\TargetFlyer.cs" />
     <Compile Include="Movement\TransformMover.cs" />
+    <Compile Include="Triggers\TimerTrigger.cs" />
     <Compile Include="UnityLayer.cs" />
     <Compile Include="Use.cs" />
     <Compile Include="IUseable.cs" />
