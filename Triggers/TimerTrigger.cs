@@ -12,7 +12,7 @@ namespace Danware.Unity.Triggers {
 
         // INSPECTOR FIELDS
         [Tooltip("The time, in seconds, before the next (or first) Tick event.")]
-        public int TimeBeforeTick = 1;
+        public float TimeBeforeTick = 1;
         [Tooltip("Should the timer Tick forever?  NumRepeats value will be ignored if this is set.")]
         public bool TickForever = true;
         [Tooltip("How many Ticks should be raised before stopping?  Ignored if RepeatForever is true.")]
