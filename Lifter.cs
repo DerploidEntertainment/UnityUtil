@@ -7,7 +7,6 @@ using Danware.Unity.Input;
 namespace Danware.Unity {
 
     [DisallowMultipleComponent]
-    [RequireComponent(typeof(Rigidbody))]   // For making fixed joints
     public class Lifter : MonoBehaviour {
         // ABSTRACT DATA TYPES
         private struct LiftableWrapper {
@@ -61,6 +60,7 @@ namespace Danware.Unity {
 
         [Header("Options")]
         public Rigidbody LiftingRigidbody;
+        public LayerMask LiftableLayerMask;
         public float Reach = 5f;
         public float MaxMass = 10f;
         public float DislodgeForce = Mathf.Infinity;
