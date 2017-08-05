@@ -20,6 +20,7 @@ namespace Danware.Unity {
 
         // INSPECTOR FIELDS
         public Transform Prefab;
+        public Transform SpawnParent;
         public bool DestroyPrevious;
         public float RigidbodySpeed = 10f;
         public float MinSpeed = 0f;
@@ -35,7 +36,7 @@ namespace Danware.Unity {
                 Destroy(_previous);
 
             // Instantiating a Prefab can sometimes give a GameObject or a Transform...we want the GameObject
-            U.Object obj = Instantiate(Prefab, transform.position, transform.rotation);
+            U.Object obj = Instantiate(Prefab, transform.position, transform.rotation, SpawnParent);
             _previous = (obj is GameObject) ? obj as GameObject : (obj as Transform).gameObject;
             _previous.name += $"_{_count}";
             if (!DestroyPrevious)
