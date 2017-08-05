@@ -8,12 +8,8 @@ namespace Danware.Unity {
         public MonoBehaviour ComponentToToggle;
 
         // API INTERFACE
-        public void EnableComponent() {
-            ComponentToToggle.enabled = true;
-        }
-        public void DisableComponent() {
-            ComponentToToggle.enabled = false;
-        }
+        public void EnableComponent() => ComponentToToggle.enabled = true;
+        public void DisableComponent() => ComponentToToggle.enabled = false;
 
     }
 

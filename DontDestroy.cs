@@ -4,9 +4,7 @@ namespace Danware.Unity {
 
     public class DontDestroy : MonoBehaviour {
 
-        private void Awake() {
-            DontDestroyOnLoad(gameObject);
-        }
+        private void Awake() => DontDestroyOnLoad(gameObject);
 
     }
 

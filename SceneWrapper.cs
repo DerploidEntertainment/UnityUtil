@@ -30,8 +30,8 @@ namespace Danware.Unity {
 
         // API INTERFACE
         public bool IsPaused {
-            get { return _paused; }
-            set { resetPaused(value); }
+            get => _paused;
+            set => resetPaused(value);
         }
         public void RestartScene() {
             // Unpause and reload the active Scene
@@ -39,12 +39,10 @@ namespace Danware.Unity {
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
 
             // Raise the Scene restarted event
-            SceneEventArgs args = new SceneEventArgs(SceneManager.GetActiveScene());
+            var args = new SceneEventArgs(SceneManager.GetActiveScene());
             SceneRestarted.Invoke(args);
         }
-        public void Quit() {
-            Application.Quit();
-        }
+        public void Quit() => Application.Quit();
 
         // EVENT HANDLERS
         private void Update() {
@@ -64,7 +62,7 @@ namespace Danware.Unity {
 
             // Raise the corresponding event, if a change actually occurred
             if (_paused != old) {
-                SceneEventArgs args = new SceneEventArgs(SceneManager.GetActiveScene());
+                var args = new SceneEventArgs(SceneManager.GetActiveScene());
                 SceneEvent e = _paused ? Paused : Resumed;
                 e.Invoke(args);
             }

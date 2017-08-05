@@ -15,7 +15,7 @@ namespace Danware.Unity {
         }
 
         protected void onDetected(Collider collider, MonoBehaviour target) {
-            ColliderDetectedEventArgs args = new ColliderDetectedEventArgs(this, collider, target);
+            var args = new ColliderDetectedEventArgs(this, collider, target);
             _detectedInvoker?.Invoke(this, args);
         }
 

@@ -81,14 +81,12 @@ namespace Danware.Unity.Movement {
 
             return jumpV;
         }
-        private void crouch(bool crouching) {
+        private void crouch(bool crouching) =>
             _controller.height = (crouching ? CrouchHeight : _oldHeight);
-        }
         private Vector3 moveComponent(float horz, float vert, bool sprinting, bool crouching) {
             // Determine the slope of the ground
-            RaycastHit groundHit;
-            bool hitGround = Physics.Raycast(transform.position, Vector3.down, out groundHit, float.PositiveInfinity);
-            float slopeAngle = (hitGround ? Vector3.Angle(Vector3.up, groundHit.normal) : 0f);
+            bool hitGround = Physics.Raycast(transform.position, Vector3.down, out RaycastHit hitInfo, float.PositiveInfinity);
+            float slopeAngle = (hitGround ? Vector3.Angle(Vector3.up, hitInfo.normal) : 0f);
 
             // Get the target movement vector (speed + direction)
             Vector3 currentV = _controller.velocity;

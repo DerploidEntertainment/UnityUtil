@@ -37,7 +37,7 @@ namespace Danware.Unity {
             // Instantiating a Prefab can sometimes give a GameObject or a Transform...we want the GameObject
             U.Object obj = Instantiate(Prefab, transform.position, transform.rotation);
             _previous = (obj is GameObject) ? obj as GameObject : (obj as Transform).gameObject;
-            _previous.name += string.Format("_{0}", _count);
+            _previous.name += $"_{_count}";
             if (!DestroyPrevious)
                 ++_count;
 
@@ -52,7 +52,7 @@ namespace Danware.Unity {
                     rb.AddForce(speed * dir, ForceMode.VelocityChange);
             }
 
-            Debug.LogFormat("{0} spawned at {1} in frame {2}", _previous.name, transform.position, Time.frameCount);
+            Debug.Log($"{_previous.name} spawned at {transform.position} in frame {Time.frameCount}");
         }
 
         // HELPER FUNCTIONS
@@ -84,7 +84,7 @@ namespace Danware.Unity {
             float theta = U.Random.Range(0f, 2 * Mathf.PI);
             float sqrtPart = Mathf.Sqrt(1 - z * z);
 
-            Vector3 dir = new Vector3(sqrtPart * Mathf.Cos(theta), sqrtPart * Mathf.Sin(theta), z);
+            var dir = new Vector3(sqrtPart * Mathf.Cos(theta), sqrtPart * Mathf.Sin(theta), z);
             return transform.TransformDirection(dir);
         }
     }

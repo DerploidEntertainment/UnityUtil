@@ -46,9 +46,7 @@ namespace Danware.Unity {
         }
 
         // API INTERFACE
-        public void Detonate() {
-            doDetonate();
-        }
+        public void Detonate() => doDetonate();
 
         // HELPER FUNCTIONS
         private void doDetonate() {
@@ -59,7 +57,7 @@ namespace Danware.Unity {
             _lastDetonationFrame = frame;
 
             // Raise the Detonating event, allowing listeners to cancel detonation
-            CancelEventArgs detonatingArgs = new CancelEventArgs(this);
+            var detonatingArgs = new CancelEventArgs(this);
             _detonatingInvoker?.Invoke(this, detonatingArgs);
             if (detonatingArgs.Cancel)
                 return;
@@ -68,7 +66,7 @@ namespace Danware.Unity {
             // Raise the Detonated event, allowing other components to select which targets to affect
             Vector3 thisPos = transform.position;
             IEnumerable<Collider> hits = Physics.OverlapSphere(thisPos, ExplosionRadius, AffectLayer);
-            DetonateEventArgs detonateArgs = new DetonateEventArgs(this, hits.ToArray());
+            var detonateArgs = new DetonateEventArgs(this, hits.ToArray());
             _detonatedInvoker?.Invoke(this, detonateArgs);
 
             // Instantiate the explosion prefab if one was provided

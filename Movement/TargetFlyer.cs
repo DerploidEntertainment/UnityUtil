@@ -25,12 +25,12 @@ namespace Danware.Unity.Movement {
         private void flyMove(Vector3 targetPosition) {
             // Add a Force to move towards the target position at constant velocity
             Vector3 toward = (targetPosition - transform.position).normalized;
-            Vector3 vToward = Vector3.Project(FlyingRigidbody.velocity, toward);
+            var vToward = Vector3.Project(FlyingRigidbody.velocity, toward);
             float factor = (vToward.normalized == toward) ? Mathf.Sign(MoveSpeed * MoveSpeed - vToward.sqrMagnitude) : 1;
             FlyingRigidbody.AddForce(factor * MoveAccel * toward, ForceMode.Acceleration);
 
             // Add a Force to reduce any velocity in the normal direction
-            Vector3 vNorm = Vector3.ProjectOnPlane(FlyingRigidbody.velocity, toward);
+            var vNorm = Vector3.ProjectOnPlane(FlyingRigidbody.velocity, toward);
             Vector3 norm = vNorm.normalized;
             if (vNorm.sqrMagnitude > 0f)
                 FlyingRigidbody.AddForce(-MoveAccel * norm, ForceMode.Acceleration);
@@ -38,13 +38,13 @@ namespace Danware.Unity.Movement {
         private void flyRotate(Vector3 targetPosition) {
             // Add a Force to rotate around the target direction at constant angular velocity
             Vector3 toward = (targetPosition - transform.position).normalized;
-            Vector3 wToward = Vector3.Project(FlyingRigidbody.angularVelocity, toward);
+            var wToward = Vector3.Project(FlyingRigidbody.angularVelocity, toward);
             float factor = (wToward.normalized == toward) ? Mathf.Sign(RotateSpeed * RotateSpeed - wToward.sqrMagnitude) : 1;
             factor *= (RotateClockWise ? 1 : -1);
             FlyingRigidbody.AddTorque(factor * RotateAccel * toward, ForceMode.Acceleration);
 
             // Add a Force to reduce any angular velocity around the normal direction
-            Vector3 wNorm = Vector3.ProjectOnPlane(FlyingRigidbody.angularVelocity, toward);
+            var wNorm = Vector3.ProjectOnPlane(FlyingRigidbody.angularVelocity, toward);
             Vector3 norm = wNorm.normalized;
             if (wNorm.sqrMagnitude > 0f)
                 FlyingRigidbody.AddTorque(-RotateAccel * norm, ForceMode.Acceleration);

@@ -15,13 +15,13 @@ namespace Danware.Unity.Inventory {
         // EVENT HANDLERS
         private void Awake() {
             _weapon = GetComponent<Weapon>();
-            _weapon.Attacked += Weapon_Attacked;
+            _weapon.Attacked += weapon_Attacked;
         }
-        private void Weapon_Attacked(object sender, Weapon.AttackEventArgs e) {
+        private void weapon_Attacked(object sender, Weapon.AttackEventArgs e) {
             // Narrow this list down to those targets with Rigidbody components
             RaycastHit[] hits = e.Hits.Where(h => h.collider.attachedRigidbody != null).ToArray();
             if (hits.Count() > 0) {
-                Weapon.TargetData td = new Weapon.TargetData();
+                var td = new Weapon.TargetData();
                 td.Callback += affectTarget;
                 e.Add(hits[0], td);
             }

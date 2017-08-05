@@ -25,7 +25,7 @@ namespace Danware.Unity.Inventory {
                                  where !h.collider.CompareTag("Player")
                                  select h).ToArray();
             if (hits.Count() > 0) {
-                Weapon.TargetData td = new Weapon.TargetData();
+                var td = new Weapon.TargetData();
                 td.Callback += affectTarget;
                 e.Add(hits[0], td);
             }
@@ -33,7 +33,7 @@ namespace Danware.Unity.Inventory {
         }
         private void affectTarget(RaycastHit hit) {
             // Damage the target, if it has a Health component
-            Health h = hit.collider.GetComponent<PhysTarget>()?.TargetComponent as Health;
+            var h = hit.collider.GetComponent<PhysTarget>()?.TargetComponent as Health;
             h?.Damage(Damage, HealthChangeMode);
         }
 

@@ -87,7 +87,7 @@ namespace Danware.Unity.Inventory {
 
             // Raise the item collected event
             Debug.Log($"{nameof(Inventory)} {name} collected {collectible.Item.name} in frame {Time.frameCount}");
-            InventoryItemEventArgs args = new InventoryItemEventArgs(this, collectible);
+            var args = new InventoryItemEventArgs(this, collectible);
             _collectedInvoker?.Invoke(this, args);
         }
         private IEnumerator doDrop(InventoryCollectible collectible) {
@@ -102,7 +102,7 @@ namespace Danware.Unity.Inventory {
 
             // Raise the item dropped event
             Debug.Log($"{nameof(Inventory)} {name} dropped {collectible.Item.name} in frame {Time.frameCount}");
-            InventoryItemEventArgs args = new InventoryItemEventArgs(this, collectible);
+            var args = new InventoryItemEventArgs(this, collectible);
             _droppedInvoker?.Invoke(this, args);
 
             // Prevent its re-collection for the requested duration

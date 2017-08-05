@@ -12,15 +12,14 @@ namespace Danware.Unity {
 
         // EVENT HANDLERS
         private void Awake() {
-            Detonator.Detonated += (sender, e) => {
+            Detonator.Detonated += (sender, e) =>
                 e.Callback += affectTarget;
-            };
         }
 
         // HELPER FUNCTIONS
         private void affectTarget(Collider[] colliders) {
             // Get the unique Rigidbodies from these Colliders (without using Linq!)
-            HashSet<Rigidbody> rbs = new HashSet<Rigidbody>();
+            var rbs = new HashSet<Rigidbody>();
             Rigidbody thisRb = this.GetComponent<Rigidbody>();
             foreach (Collider c in colliders) {
                 if (!c.isTrigger) {

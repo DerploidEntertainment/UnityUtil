@@ -8,12 +8,8 @@ namespace Danware.Unity {
         public GameObject ObjectToToggle;
 
         // API INTERFACE
-        public void Activate() {
-            ObjectToToggle.SetActive(true);
-        }
-        public void Deactivate() {
-            ObjectToToggle.SetActive(false);
-        }
+        public void Activate() => ObjectToToggle.SetActive(true);
+        public void Deactivate() => ObjectToToggle.SetActive(false);
 
     }
 

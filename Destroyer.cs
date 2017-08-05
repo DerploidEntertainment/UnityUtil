@@ -8,12 +8,8 @@ namespace Danware.Unity {
         public GameObject ObjectToDestroy;
 
         // API INTERFACE
-        public void DestroyGameObject() {
-            Destroy(ObjectToDestroy);
-        }
-        public void DestroyGameObjectImmediate() {
-            DestroyImmediate(ObjectToDestroy);
-        }
+        public void DestroyGameObject() => Destroy(ObjectToDestroy);
+        public void DestroyGameObjectImmediate() => DestroyImmediate(ObjectToDestroy);
 
     }
 

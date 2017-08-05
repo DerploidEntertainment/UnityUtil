@@ -29,9 +29,7 @@ namespace Danware.Unity {
         }
 
         // EVENT HANDLERS
-        private void OnJointBreak(float breakForce) {
-            doBreak();
-        }
+        private void OnJointBreak(float breakForce) => doBreak();
 
         // HELPER FUNCTIONS
         private Joint Joint {
@@ -39,9 +37,7 @@ namespace Danware.Unity {
                 _joint = _joint ?? GetComponent<Joint>();
                 return _joint;
             }
-            set {
-                _joint = value;
-            }
+            set => _joint = value;
         }
         private void doBreak() {
             _brokenInvoker?.Invoke(this, EventArgs.Empty);

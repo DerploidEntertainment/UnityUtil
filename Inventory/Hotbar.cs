@@ -76,9 +76,7 @@ namespace Danware.Unity.Inventory {
             if (_slotsEquipped.Contains(slot))
                 unequipSlot(slot);
         }
-        public void UnequipAll() {
-            unequipAll();
-        }
+        public void UnequipAll() => unequipAll();
 
         // EVENT HANDLERS
         private void Awake() {
@@ -117,7 +115,7 @@ namespace Danware.Unity.Inventory {
 
                 // Raise the slot filled event
                 _slots[s] = c;
-                SlotEventArgs args = new SlotEventArgs(this, s);
+                var args = new SlotEventArgs(this, s);
                 _filledInvoker?.Invoke(this, args);
 
                 // Equip the item (and it alone), if requested
@@ -137,7 +135,7 @@ namespace Danware.Unity.Inventory {
 
                 UnequipSlot(s);
                 _slots[s] = null;
-                SlotEventArgs args = new SlotEventArgs(this, s);
+                var args = new SlotEventArgs(this, s);
                 _emptiedInvoker?.Invoke(this, args);
                 break;
             }
@@ -177,8 +175,8 @@ namespace Danware.Unity.Inventory {
                 c.Item.SetActive(true);
 
             // Raise the slot equipped event
-            Debug.LogFormat("Hotbar {0} equipped slot {1} in frame {2}", this.name, slot, Time.frameCount);
-            SlotEventArgs args = new SlotEventArgs(this, slot);
+            Debug.Log($"{nameof(Hotbar)} {transform.parent.name}{name} equipped slot {slot} in frame {Time.frameCount}");
+            var args = new SlotEventArgs(this, slot);
             _equippedInvoker?.Invoke(this, args);
         }
         private void unequipSlot(int slot) {
@@ -189,8 +187,8 @@ namespace Danware.Unity.Inventory {
                 c.Item.SetActive(false);
 
             // Raise the slot unequipped event
-            Debug.LogFormat("Hotbar {0} unequipped slot {1} in frame {2}", this.name, slot, Time.frameCount);
-            SlotEventArgs args = new SlotEventArgs(this, slot);
+            Debug.Log($"{nameof(Hotbar)} {transform.parent.name}{name} unequipped slot {slot} in frame {Time.frameCount}");
+            var args = new SlotEventArgs(this, slot);
             _uneqippedInvoker?.Invoke(this, args);
         }
         private void unequipAll() {

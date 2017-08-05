@@ -41,16 +41,12 @@ namespace Danware.Unity {
             Debug.AssertFormat(amount >= 0, "Tried to heal Health {0} by a negative amount!", name);
             doHeal(amount, changeMode);
         }
-        public void HealCompletely() {
-            doHeal(MaxHealth - CurrentHealth, ChangeMode.Absolute);
-        }
+        public void HealCompletely() => doHeal(MaxHealth - CurrentHealth, ChangeMode.Absolute);
         public void Damage(float amount, ChangeMode changeMode = ChangeMode.Absolute) {
             Debug.AssertFormat(amount >= 0, "Tried to wound Health {0} by a negative amount!", name);
             doDamage(amount, changeMode);
         }
-        public void Kill() {
-            doDamage(CurrentHealth, ChangeMode.Absolute);
-        }
+        public void Kill() => doDamage(CurrentHealth, ChangeMode.Absolute);
 
         // HELPER FUNCTIONS
         private void doHeal(float amount, ChangeMode changeMode) {
@@ -61,7 +57,7 @@ namespace Danware.Unity {
 
             // Raise the HealthChanged event, if a change actually occurred
             if (CurrentHealth != old) {
-                ChangedEventArgs args = new ChangedEventArgs(this, old, CurrentHealth);
+                var args = new ChangedEventArgs(this, old, CurrentHealth);
                 _healthInvoker?.Invoke(this, args);
             }
         }
@@ -73,7 +69,7 @@ namespace Danware.Unity {
 
             // Raise the HealthChanged event, if a change actually occurred
             if (CurrentHealth != old) {
-                ChangedEventArgs args = new ChangedEventArgs(this, old, CurrentHealth);
+                var args = new ChangedEventArgs(this, old, CurrentHealth);
                 _healthInvoker?.Invoke(this, args);
             }
         }

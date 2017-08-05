@@ -21,8 +21,8 @@ namespace Danware.Unity {
             public Rigidbody Rigidbody { get; }
             public Collider Collider { get; }
 
-            private static LiftableWrapper _empty = new LiftableWrapper(null, null, null);
-            public static LiftableWrapper Empty => _empty;
+            private static LiftableWrapper s_empty = new LiftableWrapper(null, null, null);
+            public static LiftableWrapper Empty => s_empty;
         }
         public class LifterEventArgs : EventArgs {
             public LifterEventArgs(Lifter lifter) {
@@ -139,7 +139,7 @@ namespace Danware.Unity {
             _jointWrapper.Broken += (object sender, EventArgs e) => jointBreakActions();
 
             // Raise the PickUp event
-            LoadEventArgs args = new LoadEventArgs(this, liftable);
+            var args = new LoadEventArgs(this, liftable);
             _pickupInvoker?.Invoke(this, args);
         }
         private void releaseActions() {
@@ -149,7 +149,7 @@ namespace Danware.Unity {
             releaseLoad();
 
             // Raise the Released event
-            ReleasedEventArgs args = new ReleasedEventArgs(this, oldLiftable, false, false);
+            var args = new ReleasedEventArgs(this, oldLiftable, false, false);
             _releaseInvoker?.Invoke(this, args);
         }
         private void throwActions() {
@@ -163,7 +163,7 @@ namespace Danware.Unity {
             oldRb.AddForce(transform.forward * ThrowForce, ForceMode.Impulse);
 
             // Raise the Thrown event
-            ReleasedEventArgs args = new ReleasedEventArgs(this, oldLiftable, false, true);
+            var args = new ReleasedEventArgs(this, oldLiftable, false, true);
             _releaseInvoker?.Invoke(this, args);
         }
         private void jointBreakActions() {
@@ -172,15 +172,14 @@ namespace Danware.Unity {
             releaseLoad();
 
             // Raise the Released event
-            ReleasedEventArgs args = new ReleasedEventArgs(this, oldLiftable, true, false);
+            var args = new ReleasedEventArgs(this, oldLiftable, true, false);
             _releaseInvoker?.Invoke(this, args);
         }
         private LiftableWrapper liftableAhead() {
             Liftable liftableAhead = null;
 
             // Locate any valid physical object that is within range, not too heavy, and non-kinematic
-            RaycastHit hitInfo;
-            bool loadAhead = Physics.Raycast(transform.position, transform.forward, out hitInfo, Reach);
+            bool loadAhead = Physics.Raycast(transform.position, transform.forward, out RaycastHit hitInfo, Reach, LiftableLayerMask);
             if (loadAhead) {
                 Rigidbody rb = hitInfo.collider.attachedRigidbody;
                 if (rb != null && !rb.isKinematic && rb.mass <= MaxMass) {
@@ -191,7 +190,7 @@ namespace Danware.Unity {
             }
 
             // Wrap these values in a struct and return them
-            LiftableWrapper lw = new LiftableWrapper(liftableAhead, hitInfo.collider?.attachedRigidbody, hitInfo.collider);
+            var lw = new LiftableWrapper(liftableAhead, hitInfo.collider?.attachedRigidbody, hitInfo.collider);
             return lw;
         }
         private void destroyJoint() {

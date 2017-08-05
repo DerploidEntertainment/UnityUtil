@@ -11,9 +11,8 @@ namespace Danware.Unity {
         private Animator _animator;
         private EventHandler<AnimationEventOccurredEventArgs> _detectedInvoker;
 
-        private void Awake() {
+        private void Awake() =>
             _animator = GetComponent<Animator>();
-        }
 
         // API INTERFACE
         public event EventHandler<AnimationEventOccurredEventArgs> AnimationEventOccurred {
@@ -21,7 +20,7 @@ namespace Danware.Unity {
             remove { _detectedInvoker -= value; }
         }
         public void RaiseEvent(string eventName) {
-            AnimationEventOccurredEventArgs args = new AnimationEventOccurredEventArgs(this, _animator, eventName);
+            var args = new AnimationEventOccurredEventArgs(this, _animator, eventName);
             _detectedInvoker?.Invoke(this, args);
         }
 

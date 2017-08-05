@@ -154,9 +154,7 @@ namespace Danware.Unity.Inventory {
             Debug.AssertFormat(ammo >= 0, $"Tried to reload Weapon {name} with a negative amount of ammo!");
             doLoad(ammo);
         }
-        public void ReloadClip() {
-            doReloadClip();
-        }
+        public void ReloadClip() => doReloadClip();
 
         public event EventHandler<WeaponEventArgs> AttackChargeStarted {
             add { _chargingInvoker += value; }
@@ -207,9 +205,7 @@ namespace Danware.Unity.Inventory {
                 CurrentHeat -= Mathf.Min(deltaHeat, CurrentHeat);
             }
         }
-        private void OnDisable() {
-            resetToIdle();
-        }
+        private void OnDisable() => resetToIdle();
         private void OnDrawGizmos() {
             float range = Mathf.Lerp(InitialRange, FinalRange, _rangeLerpT);
             Gizmos.DrawLine(transform.position, transform.TransformPoint(range * transform.forward));
@@ -296,8 +292,8 @@ namespace Danware.Unity.Inventory {
             float z = U.Random.Range(Mathf.Cos(Mathf.Deg2Rad * AccuracyConeHalfAngle), 1f);
             float theta = U.Random.Range(0f, 2 * Mathf.PI);
             float sqrtPart = Mathf.Sqrt(1 - z * z);
-            Vector3 dir = new Vector3(sqrtPart * Mathf.Cos(theta), sqrtPart * Mathf.Sin(theta), z);
-            Ray ray = new Ray(transform.position, transform.TransformDirection(dir));
+            var dir = new Vector3(sqrtPart * Mathf.Cos(theta), sqrtPart * Mathf.Sin(theta), z);
+            var ray = new Ray(transform.position, transform.TransformDirection(dir));
 
             // Raycast into the scene with the given LayerMask
             // Raise the Fired event, allowing other components to select which targets to affect
@@ -383,7 +379,7 @@ namespace Danware.Unity.Inventory {
             BackupAmmo -= availableAmmo;
 
             // Raise the Reloaded event
-            AmmoEventArgs args = new AmmoEventArgs(this, old, BackupAmmo, CurrentClipAmmo, BackupAmmo);
+            var args = new AmmoEventArgs(this, old, BackupAmmo, CurrentClipAmmo, BackupAmmo);
             _reloadInvoker?.Invoke(this, args);
         }
         private void doLoad(int ammo) {
@@ -412,30 +408,30 @@ namespace Danware.Unity.Inventory {
             }
 
             // Raise the Reloaded event
-            AmmoEventArgs args = new AmmoEventArgs(this, oldClip, oldBackup, CurrentClipAmmo, BackupAmmo);
+            var args = new AmmoEventArgs(this, oldClip, oldBackup, CurrentClipAmmo, BackupAmmo);
             _reloadInvoker?.Invoke(this, args);
         }
         private void onAttackFailed() {
-            WeaponEventArgs args = new WeaponEventArgs(this);
+            var args = new WeaponEventArgs(this);
             _failedInvoker?.Invoke(this, args);
 
             return;
         }
         private void onAttackChargeStarted() {
-            AttackEventArgs args = new AttackEventArgs(this);
+            var args = new AttackEventArgs(this);
             _chargingInvoker?.Invoke(this, args);
 
             return;
         }
         private AttackEventArgs onAttacked(Vector3 direction, RaycastHit[] hits) {
-            AttackEventArgs args = new AttackEventArgs(this, direction, hits.ToArray());
+            var args = new AttackEventArgs(this, direction, hits.ToArray());
             _attackedInvoker?.Invoke(this, args);
 
             return args;
         }
         private void onOverheatChanged(bool overheated) {
             // Raise the Overheat Changed event
-            OverheatChangedEventArgs args = new OverheatChangedEventArgs(this, overheated);
+            var args = new OverheatChangedEventArgs(this, overheated);
             _overheatInvoker?.Invoke(this, args);
 
             return;

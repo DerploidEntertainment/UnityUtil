@@ -73,7 +73,7 @@ namespace Danware.Unity {
 
             // Duplicate other child Colliders
             foreach (Collider c in CollidersToDuplicate) {
-                GameObject newChild = new GameObject(c.name);
+                var newChild = new GameObject(c.name);
                 duplicateCollider(c, newChild);
                 dupls.Add(newChild.transform);
             }
@@ -88,7 +88,7 @@ namespace Danware.Unity {
             // Duplicate each Collider on its own new GameObject
             IList<Transform> dupls = new List<Transform>();
             foreach (Collider c in childColls) {
-                GameObject newChild = new GameObject(c.name);
+                var newChild = new GameObject(c.name);
                 duplicateCollider(c, newChild);
                 dupls.Add(newChild.transform);
             }
@@ -102,7 +102,7 @@ namespace Danware.Unity {
             // Duplicate each Collider on its own new GameObject
             IList<Transform> dupls = new List<Transform>();
             foreach (Collider c in childColls) {
-                GameObject newChild = new GameObject(c.name);
+                var newChild = new GameObject(c.name);
                 duplicateCollider(c, newChild);
                 dupls.Add(newChild.transform);
             }
@@ -141,7 +141,7 @@ namespace Danware.Unity {
 
             // Copy BoxCollider properties
             if (collider is BoxCollider) {
-                BoxCollider origBox = collider as BoxCollider;
+                var origBox = collider as BoxCollider;
                 BoxCollider newBox  = newParent.AddComponent<BoxCollider>();
                 newBox.center = origBox.center;
                 newBox.size   = origBox.size;
@@ -150,7 +150,7 @@ namespace Danware.Unity {
 
             // Copy SphereCollider properties
             else if (collider is SphereCollider) {
-                SphereCollider origSphere = collider as SphereCollider;
+                var origSphere = collider as SphereCollider;
                 SphereCollider newSphere  = newParent.AddComponent<SphereCollider>();
                 newSphere.center = origSphere.center;
                 newSphere.radius = origSphere.radius;
@@ -159,7 +159,7 @@ namespace Danware.Unity {
 
             // Copy CapsuleCollider properties
             else if (collider is CapsuleCollider) {
-                CapsuleCollider origCapsule = collider as CapsuleCollider;
+                var origCapsule = collider as CapsuleCollider;
                 CapsuleCollider newCapsule  = newParent.AddComponent<CapsuleCollider>();
                 newCapsule.center = origCapsule.center;
                 newCapsule.radius = origCapsule.radius;

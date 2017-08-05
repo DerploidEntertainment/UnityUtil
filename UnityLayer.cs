@@ -12,7 +12,7 @@ namespace Danware.Unity {
 
         public int Mask => 1 << _layerIndex;
         public int LayerIndex {
-            get { return _layerIndex; }
+            get => _layerIndex;
             set {
                 if (0 < value && value < 32)
                     _layerIndex = value;

@@ -10,10 +10,8 @@ namespace Danware.Unity.Movement {
         [Tooltip("The Offset at which to follow the Target")]
         public Vector3 Offset = new Vector3(0f, 0f, -10f);
 
-        protected override void doMove(Transform transform) {
-            transform.position = Target.position + Offset;
-        }
-        
+        protected override void doMove(Transform transform) => transform.position = Target.position + Offset;
+
     }
 
 }
