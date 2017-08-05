@@ -3,7 +3,7 @@ using UnityEngine.Events;
 
 namespace Danware.Unity.Triggers {
 
-    public class ButtonTrigger : MonoBehaviour, IUseable {
+    public class ButtonTrigger : MonoBehaviour {
         // INSPECTOR FIELDS
         public UnityEvent Triggered = new UnityEvent();
         public bool CanPress = true;

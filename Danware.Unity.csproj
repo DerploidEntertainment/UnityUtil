@@ -96,8 +96,6 @@
     <Compile Include="Movement\TransformMover.cs" />
     <Compile Include="Triggers\TimerTrigger.cs" />
     <Compile Include="UnityLayer.cs" />
-    <Compile Include="Use.cs" />
-    <Compile Include="IUseable.cs" />
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="ValueChangedEventArgs.cs" />
   </ItemGroup>
