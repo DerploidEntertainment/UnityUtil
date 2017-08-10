@@ -37,24 +37,27 @@ namespace Danware.Unity.Triggers {
 
         // API INTERFACE
         public void StartTimer() {
-            Assert.IsTrue(gameObject.activeInHierarchy, $"Cannot start {nameof(TimerTrigger)} {name} because its GameObject is inactive!");
-            Assert.IsTrue(enabled, $"Cannot start {nameof(TimerTrigger)} {name} because it is disabled!");
-            Assert.IsNull(_timerCoroutine, $"Cannot start {nameof(TimerTrigger)} {name} because it has already been started!");
+            Assert.IsTrue(gameObject.activeInHierarchy, $"Cannot stop {nameof(TimerTrigger)} {transform.parent.name}.{name} because its GameObject is inactive!");
+            Assert.IsTrue(enabled, $"Cannot stop {nameof(TimerTrigger)} {transform.parent.name}.{name} because it is disabled!");
+            if (_timerCoroutine != null)
+                return;
 
             doStart();
         }
         public void RestartTimer() {
-            Assert.IsTrue(gameObject.activeInHierarchy, $"Cannot start {nameof(TimerTrigger)} {name} because its GameObject is inactive!");
-            Assert.IsTrue(enabled, $"Cannot start {nameof(TimerTrigger)} {name} because it is disabled!");
+            Assert.IsTrue(gameObject.activeInHierarchy, $"Cannot stop {nameof(TimerTrigger)} {transform.parent.name}.{name} because its GameObject is inactive!");
+            Assert.IsTrue(enabled, $"Cannot stop {nameof(TimerTrigger)} {transform.parent.name}.{name} because it is disabled!");
 
             if (_timerCoroutine != null)
                 doStop();
             doStart();
         }
         public void StopTimer() {
-            Assert.IsTrue(gameObject.activeInHierarchy, $"Cannot stop {nameof(TimerTrigger)} {name} because its GameObject is inactive!");
-            Assert.IsTrue(enabled, $"Cannot stop {nameof(TimerTrigger)} {name} because it is disabled!");
-            Assert.IsNotNull(_timerCoroutine, $"Cannot stop {nameof(TimerTrigger)} {name} because it has already been stopped!");
+            Assert.IsTrue(gameObject.activeInHierarchy, $"Cannot stop {nameof(TimerTrigger)} {transform.parent.name}.{name} because its GameObject is inactive!");
+            Assert.IsTrue(enabled, $"Cannot stop {nameof(TimerTrigger)} {transform.parent.name}.{name} because it is disabled!");
+
+            if (_timerCoroutine == null)
+                return;
 
             doStop();
         }
@@ -74,22 +77,19 @@ namespace Danware.Unity.Triggers {
             Stopped.Invoke();
         }
         private void ticksReached() {
-            StopCoroutine(_timerCoroutine);
-            _timerCoroutine = null;
-
             Debug.Log($"{nameof(TimerTrigger)} {name} reached {NumTicks} ticks in frame {Time.frameCount}.");
             NumTicksReached.Invoke();
+
+            doStop();
         }
         private IEnumerator runTimer() {
             int numTicks = 1;
-            bool keepTicking = true;
             do {
                 yield return new WaitForSeconds(TimeBeforeTick);
                 Debug.Log($"{nameof(TimerTrigger)} {name}: tick {numTicks} / {(TickForever ? "infinity" : NumTicks.ToString())}.");
                 Tick.Invoke();
                 ++numTicks;
-                keepTicking = TickForever || numTicks < NumTicks;
-            } while (TickForever || numTicks < NumTicks);
+            } while (TickForever || numTicks <= NumTicks);
 
             // If the desired number of ticks was reached, stop the Timer
             ticksReached();
