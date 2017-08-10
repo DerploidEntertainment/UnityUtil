@@ -184,7 +184,8 @@ namespace Danware.Unity {
                 Rigidbody rb = hitInfo.collider.attachedRigidbody;
                 if (rb != null && !rb.isKinematic && rb.mass <= MaxMass) {
                     Liftable liftable = rb.GetComponentInChildren<Liftable>();
-                    if (liftable != null && liftable.Lifter == null)
+                    Collider liftCollider = liftable?.GetComponent<Collider>();
+                    if (liftCollider == hitInfo.collider && liftable != null && liftable.Lifter == null)
                         liftableAhead = liftable;
                 }
             }
