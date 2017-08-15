@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ActivateToggler.cs" />
+    <Compile Include="GameStateManagerSingleton.cs" />
     <Compile Include="Triggers\ButtonTrigger.cs" />
     <Compile Include="Detectors\AnimationEventDetector.cs" />
     <Compile Include="Detectors\ColliderDuplicator.cs" />
@@ -76,7 +77,6 @@
     <Compile Include="Detectors\PhysTarget.cs" />
     <Compile Include="PowerUp.cs" />
     <Compile Include="PushDetonator.cs" />
-    <Compile Include="SceneWrapper.cs" />
     <Compile Include="Liftable.cs" />
     <Compile Include="JointWrapper.cs" />
     <Compile Include="Movement\CharacterFPSWalker.cs" />
