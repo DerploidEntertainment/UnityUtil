@@ -64,7 +64,7 @@ namespace Danware.Unity.Triggers {
 
         // HELPERS
         private void doStart() {
-            Debug.Log($"Starting {nameof(TimerTrigger)} {name} in frame {Time.frameCount}.");
+            Debug.Log($"{nameof(TimerTrigger)} {name} starting in frame {Time.frameCount}.");
             Starting.Invoke();
 
             _timerCoroutine = StartCoroutine(runTimer());
@@ -73,14 +73,15 @@ namespace Danware.Unity.Triggers {
             StopCoroutine(_timerCoroutine);
             _timerCoroutine = null;
 
-            Debug.Log($"Stopped {nameof(TimerTrigger)} {name} in frame {Time.frameCount}.");
+            Debug.Log($"{nameof(TimerTrigger)} {name} stopped in frame {Time.frameCount}.");
             Stopped.Invoke();
         }
         private void ticksReached() {
             Debug.Log($"{nameof(TimerTrigger)} {name} reached {NumTicks} ticks in frame {Time.frameCount}.");
             NumTicksReached.Invoke();
 
-            doStop();
+            if (_timerCoroutine != null)
+                doStop();
         }
         private IEnumerator runTimer() {
             int numTicks = 1;
