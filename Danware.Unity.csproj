@@ -61,7 +61,6 @@
     <Compile Include="Detectors\StayDetector.cs" />
     <Compile Include="Detectors\ExitDetector.cs" />
     <Compile Include="Detectors\EnterDetector.cs" />
-    <Compile Include="Destroyer.cs" />
     <Compile Include="HurtDetonator.cs" />
     <Compile Include="Detectors\ColliderDetectorBase.cs" />
     <Compile Include="Inventory\AmmoCollectible.cs" />
