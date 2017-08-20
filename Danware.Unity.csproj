@@ -48,9 +48,8 @@
     <Compile Include="GameStateManagerSingleton.cs" />
     <Compile Include="Triggers\JointBreakTrigger.cs" />
     <Compile Include="Triggers\ButtonTrigger.cs" />
-    <Compile Include="Detectors\ColliderDuplicator.cs" />
-    <Compile Include="Triggers\DetectorTrigger.cs" />
     <Compile Include="Triggers\AnimationEventTrigger.cs" />
+    <Compile Include="ColliderDuplicator.cs" />
     <Compile Include="Movement\RigidbodyMover.cs" />
     <Compile Include="Movement\RigidbodyMovement.cs" />
     <Compile Include="Movement\TargetOffsetMovement.cs" />
@@ -58,11 +57,7 @@
     <Compile Include="Inventory\AmmoCollector.cs" />
     <Compile Include="Inventory\HealthCollector.cs" />
     <Compile Include="Inventory\InventoryCollector.cs" />
-    <Compile Include="Detectors\StayDetector.cs" />
-    <Compile Include="Detectors\ExitDetector.cs" />
-    <Compile Include="Detectors\EnterDetector.cs" />
     <Compile Include="HurtDetonator.cs" />
-    <Compile Include="Detectors\ColliderDetectorBase.cs" />
     <Compile Include="Inventory\AmmoCollectible.cs" />
     <Compile Include="Inventory\HealthCollectible.cs" />
     <Compile Include="Inventory\HurtWeapon.cs" />
@@ -71,8 +66,7 @@
     <Compile Include="Inventory\PushWeapon.cs" />
     <Compile Include="Inventory\Weapon.cs" />
     <Compile Include="DontDestroy.cs" />
-    <Compile Include="Detectors\DetectorResponder.cs" />
-    <Compile Include="Detectors\PhysTarget.cs" />
+    <Compile Include="PhysTarget.cs" />
     <Compile Include="PushDetonator.cs" />
     <Compile Include="Liftable.cs" />
     <Compile Include="Movement\CharacterFPSWalker.cs" />
