@@ -48,9 +48,9 @@
     <Compile Include="GameStateManagerSingleton.cs" />
     <Compile Include="Triggers\JointBreakTrigger.cs" />
     <Compile Include="Triggers\ButtonTrigger.cs" />
-    <Compile Include="Detectors\AnimationEventDetector.cs" />
     <Compile Include="Detectors\ColliderDuplicator.cs" />
     <Compile Include="Triggers\DetectorTrigger.cs" />
+    <Compile Include="Triggers\AnimationEventTrigger.cs" />
     <Compile Include="Movement\RigidbodyMover.cs" />
     <Compile Include="Movement\RigidbodyMovement.cs" />
     <Compile Include="Movement\TargetOffsetMovement.cs" />
