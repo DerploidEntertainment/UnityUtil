@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-
-namespace Danware.Unity.Inventory {
+﻿namespace Danware.Unity.Inventory {
 
     /// <summary>
     /// Determines under what circumstances, if any, a Collectible's GameObject will be destroyed.
@@ -26,7 +24,5 @@ namespace Danware.Unity.Inventory {
         /// </summary>
         WhenEmptied,
     }
-
-    public interface ICollectible { }
 
 }

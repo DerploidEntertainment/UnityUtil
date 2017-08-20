@@ -1,31 +1,31 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.Assertions;
 
 namespace Danware.Unity.Inventory {
 
-    public class HealthCollector : DetectorResponder {
+    public class HealthCollector : MonoBehaviour {
+
+        private SphereCollider _sphere;
 
         // INSPECTOR FIELDS
         public Health Health;
-        public EnterDetector[] Detectors;
+        public float Radius = 1f;
 
         // EVENT HANDLERS
-        public void Awake() {
-            foreach (EnterDetector detector in Detectors)
-                detector.Detected += Detector_Detected;
+        private void Awake() {
+            Assert.IsNotNull(Health, $"{nameof(HealthCollector)} {transform.parent.name}.{name} must be associated with a {nameof(this.Health)}!");
+
+            _sphere = gameObject.AddComponent<SphereCollider>();
+            _sphere.radius = Radius;
+            _sphere.isTrigger = true;
+
         }
-        protected override void Detector_Detected(object sender, ColliderDetectedEventArgs e) {
-            // If we are not associated with a Health, or if the target is not a HealthCollectible, then just early exit
-            if (Health == null) {
-                Debug.LogWarning($"{nameof(HealthCollector)} could not collect a {nameof(HealthCollectible)} because it was not associated with a {nameof(Health)}!");
-                return;
-            }
-            var h = e.Target as HealthCollectible;
+        private void OnDrawGizmos() => Gizmos.DrawWireSphere(transform.position, Radius);
+        private void OnTriggerEnter(Collider other) {
+            // If no AmmoCollectible was found then just return
+            HealthCollectible h = other.attachedRigidbody.GetComponent<HealthCollectible>();
             if (h == null)
                 return;
-
-            // Otherwise, make sure this HealthCollectible has valid values
-            Debug.Assert(h.HealthAmount >= 0, $"{nameof(HealthCollectible)} {name} must have a positive value for {nameof(h.HealthAmount)}!");
 
             // If one was found, then adjust its current health as necessary
             float hp = 0f;

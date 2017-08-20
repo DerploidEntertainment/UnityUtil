@@ -2,7 +2,7 @@
 
 namespace Danware.Unity.Inventory {
     
-    public class InventoryCollectible : MonoBehaviour, ICollectible {
+    public class InventoryCollectible : MonoBehaviour {
 
         // INSPECTOR FIELDS
         public GameObject Item;

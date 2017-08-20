@@ -76,7 +76,7 @@
     <Compile Include="PushDetonator.cs" />
     <Compile Include="Liftable.cs" />
     <Compile Include="Movement\CharacterFPSWalker.cs" />
-    <Compile Include="Inventory\ICollectible.cs" />
+    <Compile Include="Inventory\CollectibleDestroyMode.cs" />
     <Compile Include="CollisionSounds.cs" />
     <Compile Include="Detonator.cs" />
     <Compile Include="Health.cs" />
