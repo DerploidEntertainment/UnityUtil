@@ -76,7 +76,6 @@
     <Compile Include="DontDestroy.cs" />
     <Compile Include="Detectors\DetectorResponder.cs" />
     <Compile Include="Detectors\PhysTarget.cs" />
-    <Compile Include="PowerUp.cs" />
     <Compile Include="PushDetonator.cs" />
     <Compile Include="Liftable.cs" />
     <Compile Include="Movement\CharacterFPSWalker.cs" />
