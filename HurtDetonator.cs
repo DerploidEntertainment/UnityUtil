@@ -1,34 +1,37 @@
 ﻿using UnityEngine;
-
 using System.Linq;
-using System.Collections.Generic;
 
 namespace Danware.Unity {
 
+    [RequireComponent(typeof(Detonator))]
     public class HurtDetonator : MonoBehaviour {
+
+        private Detonator _detonator;
+
         // INSPECTOR FIELDS
-        public Detonator Detonator;
         public float MaxHealthDamage;
         public Health.ChangeMode HealthChangeMode = Health.ChangeMode.Absolute;
 
         // EVENT HANDLERS
         private void Awake() {
-            Detonator.Detonated += (sender, e) =>
-                e.Callback += affectTarget;
+            _detonator = GetComponent<Detonator>();
+            _detonator.Detonated.AddListener(hurtAll);
         }
 
         // HELPER FUNCTIONS
-        private void affectTarget(Collider[] colliders) {
-            // Damage all unique Health objects from these Colliders
-            // Damage amount decreases with distance from the explosion
-            Vector3 detonatorPos = Detonator.transform.position;
-            colliders.SelectNonNull(c => c.GetComponent<PhysTarget>()?.TargetComponent as Health)
-                     .Distinct()
-                     .DoWith(h => {
-                         float dist = Vector3.Distance(h.transform.position, detonatorPos);
-                         float factor = 1f - Mathf.Min(1f, dist / Detonator.ExplosionRadius);
-                         h.Damage(factor * MaxHealthDamage, HealthChangeMode);
-                     });
+        private void hurtAll(Collider[] colliders) {
+            // Damage all unique Healths among these Colliders
+            // Damage amount decreases linearly with distance from the explosion
+            Health[] healths = colliders.Select(c => c.attachedRigidbody?.GetComponent<Health>())
+                                        .Where(h => h != null)
+                                        .Distinct()
+                                        .ToArray();
+            for (int h = 0; h < healths.Length; ++h) {
+                Health health = healths[h];
+                float dist = Vector3.Distance(health.transform.position, transform.position);
+                float factor = 1f - Mathf.Min(1f, dist / _detonator.ExplosionRadius);
+                health.Damage(factor * MaxHealthDamage, HealthChangeMode);
+            }
         }
     }
 

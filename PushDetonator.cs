@@ -1,41 +1,38 @@
 ﻿using UnityEngine;
-
-using System.Collections.Generic;
+using System.Linq;
 
 namespace Danware.Unity {
 
+    [RequireComponent(typeof(Detonator))]
     public class PushDetonator : MonoBehaviour {
+
+        private Detonator _detonator;
+
         // INSPECTOR FIELDS
-        public Detonator Detonator;
         public float ExplosionForce = 10f;
         public float ExplosionUpwardsModifier = 2f;
 
         // EVENT HANDLERS
         private void Awake() {
-            Detonator.Detonated += (sender, e) =>
-                e.Callback += affectTarget;
+            _detonator = GetComponent<Detonator>();
+            _detonator.Detonated.AddListener(pushAll);
         }
 
         // HELPER FUNCTIONS
-        private void affectTarget(Collider[] colliders) {
-            // Get the unique Rigidbodies from these Colliders (without using Linq!)
-            var rbs = new HashSet<Rigidbody>();
-            Rigidbody thisRb = this.GetComponent<Rigidbody>();
-            foreach (Collider c in colliders) {
-                if (!c.isTrigger) {
-                    Rigidbody rb = c.attachedRigidbody;
-                    if (rb != null && rb != thisRb)
-                        rbs.Add(rb);
-                }
+        private void pushAll(Collider[] colliders) {
+            // Apply an explosion force to all unique Rigidbodies among these Colliders
+            // Upwards modifier adjusts to gravity
+            Rigidbody[] rigidbodies = colliders.Select(c => c.attachedRigidbody)
+                                        .Where(rb => rb != null)
+                                        .Distinct()
+                                        .ToArray();
+            for (int rb = 0; rb < rigidbodies.Length; ++rb) {
+                Rigidbody rigidbody = rigidbodies[rb];
+                Vector3 explosionPos = _detonator.transform.position + ExplosionUpwardsModifier * Physics.gravity.normalized;
+                rigidbody.AddExplosionForce(ExplosionForce, explosionPos, _detonator.ExplosionRadius, 0f, ForceMode.Impulse);
             }
-
-            // Apply an explosion force (upwards modifier changes direction with Physics.Gravity)
-            Vector3 down = Physics.gravity.normalized;
-            Vector3 detonatorPos = Detonator.transform.position;
-            Vector3 explosionPos = detonatorPos + ExplosionUpwardsModifier * down;
-            foreach (Rigidbody rb in rbs)
-                rb.AddExplosionForce(ExplosionForce, Detonator.transform.position, Detonator.ExplosionRadius, ExplosionUpwardsModifier, ForceMode.Impulse);
         }
+
     }
 
 }
