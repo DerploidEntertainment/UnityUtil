@@ -64,7 +64,7 @@ namespace Danware.Unity.Inventory {
         }
 
         public Inventory Inventory => _inventory;
-        public GameObject[] Slots => _slots.Select(s => s?.Item).ToArray();
+        public GameObject[] Slots => _slots.Select(s => s?.ItemRoot).ToArray();
         public int[] EquippedSlots => _slotsEquipped.ToArray();
         public void EquipSlot(int slot) {
             // Only equip this slot if it is not already equipped and slots are available
@@ -172,7 +172,7 @@ namespace Danware.Unity.Inventory {
             _slotsEquipped.Add(slot);
             InventoryCollectible c = _slots[slot];
             if (c != null)
-                c.Item.SetActive(true);
+                c.ItemRoot.SetActive(true);
 
             // Raise the slot equipped event
             Debug.Log($"{nameof(Hotbar)} {transform.parent.name}{name} equipped slot {slot} in frame {Time.frameCount}");
@@ -184,7 +184,7 @@ namespace Danware.Unity.Inventory {
             _slotsEquipped.Remove(slot);
             InventoryCollectible c = _slots[slot];
             if (c != null)
-                c.Item.SetActive(false);
+                c.ItemRoot.SetActive(false);
 
             // Raise the slot unequipped event
             Debug.Log($"{nameof(Hotbar)} {transform.parent.name}{name} unequipped slot {slot} in frame {Time.frameCount}");
