@@ -45,6 +45,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CancellableUnityEvent.cs" />
     <Compile Include="Destroyer.cs" />
     <Compile Include="GameStateManagerSingleton.cs" />
     <Compile Include="Inventory\AmmoTool.cs" />

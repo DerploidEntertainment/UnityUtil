@@ -18,15 +18,6 @@ namespace Danware.Unity.Inventory {
         FullyAutomatic,
     }
 
-    [Serializable]
-    public class CancellableUnityEvent : UnityEvent {
-        public bool Cancel { get; set; }
-        public new void Invoke() {
-            Cancel = false;
-            base.Invoke();
-        }
-    }
-
     public class Tool : MonoBehaviour {
         // HIDDEN FIELDS
         private Coroutine _usingRoutine;
