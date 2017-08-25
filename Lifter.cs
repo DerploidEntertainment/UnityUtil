@@ -86,7 +86,7 @@ namespace Danware.Unity {
             if (throwing && CanThrow && _liftable != null)
                 doThrow();
         }
-        private void onJointBreak() => release(LiftableReleaseType.Accidental);
+        private void onJointBreak(Joint joint) => release(LiftableReleaseType.Accidental);
 
         // API INTERFACE
         public Liftable CurrentLiftable => _liftable;

@@ -1,9 +1,13 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Assertions;
 
 namespace Danware.Unity.Triggers {
+
+    [Serializable]
+    public class CountEvent : UnityEvent<int> { }
 
     public class TimerTrigger : MonoBehaviour {
 
@@ -21,7 +25,7 @@ namespace Danware.Unity.Triggers {
         public bool StartOnEnable = false;
 
         public UnityEvent Starting = new UnityEvent();
-        public UnityEvent Tick = new UnityEvent();
+        public CountEvent Tick = new CountEvent();
         public UnityEvent Stopped = new UnityEvent();
         public UnityEvent NumTicksReached = new UnityEvent();
 
@@ -76,24 +80,21 @@ namespace Danware.Unity.Triggers {
             Debug.Log($"{nameof(TimerTrigger)} {name} stopped in frame {Time.frameCount}.");
             Stopped.Invoke();
         }
-        private void ticksReached() {
-            Debug.Log($"{nameof(TimerTrigger)} {name} reached {NumTicks} ticks in frame {Time.frameCount}.");
-            NumTicksReached.Invoke();
-
-            if (_timerCoroutine != null)
-                doStop();
-        }
         private IEnumerator runTimer() {
             int numTicks = 1;
             do {
                 yield return new WaitForSeconds(TimeBeforeTick);
                 Debug.Log($"{nameof(TimerTrigger)} {name}: tick {numTicks} / {(TickForever ? "infinity" : NumTicks.ToString())}.");
-                Tick.Invoke();
+                Tick.Invoke(numTicks);
                 ++numTicks;
             } while (TickForever || numTicks <= NumTicks);
 
             // If the desired number of ticks was reached, stop the Timer
-            ticksReached();
+            Debug.Log($"{nameof(TimerTrigger)} {name} reached {NumTicks} ticks in frame {Time.frameCount}.");
+            NumTicksReached.Invoke();
+
+            if (_timerCoroutine != null)
+                doStop();
         }
 
 
