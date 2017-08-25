@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Assertions;
 using U = UnityEngine;
 
 using System;
@@ -8,6 +9,7 @@ namespace Danware.Unity {
     public class Spawner : MonoBehaviour {
         // ABSTRACT DATA TYPES
         public enum SpawnerSpawnType {
+            Point,
             Straight,
             ConeRandom,
             ConeBoundary,
@@ -21,6 +23,8 @@ namespace Danware.Unity {
         // INSPECTOR FIELDS
         public Transform Prefab;
         public Transform SpawnParent;
+        [Tooltip("All spawned instances of the Prefab will be given this name, along with a numeric suffix.  If DestroyPrevious is true, then the numeric suffix will not be added.")]
+        public string BaseName = "Object";
         public bool DestroyPrevious;
         public float RigidbodySpeed = 10f;
         public float MinSpeed = 0f;
@@ -29,6 +33,9 @@ namespace Danware.Unity {
         public SpawnerSpawnType SpawnType = SpawnerSpawnType.Straight;
         public float ConeHalfAngle = 30f;
 
+        private void Awake() =>
+            Assert.IsNotNull(Prefab, $"{nameof(Spawner)} {transform.parent.name}.{name} must be associated with a {nameof(this.Prefab)}!");
+
         // API INTERFACE
         public void Spawn() {
             // Destroy any previously spawned GameObjects, if requested
@@ -36,9 +43,13 @@ namespace Danware.Unity {
                 Destroy(_previous);
 
             // Instantiating a Prefab can sometimes give a GameObject or a Transform...we want the GameObject
-            U.Object obj = Instantiate(Prefab, transform.position, transform.rotation, SpawnParent);
+            U.Object obj;
+            if (SpawnParent == null)
+                obj = Instantiate(Prefab, transform.position, transform.rotation);
+            else
+                obj = Instantiate(Prefab, transform.position, transform.rotation, SpawnParent);
             _previous = (obj is GameObject) ? obj as GameObject : (obj as Transform).gameObject;
-            _previous.name += $"_{_count}";
+            _previous.name = $"{BaseName}{(DestroyPrevious ? "" : "_" + _count)}";
             if (!DestroyPrevious)
                 ++_count;
 
@@ -53,26 +64,18 @@ namespace Danware.Unity {
                     rb.AddForce(speed * dir, ForceMode.VelocityChange);
             }
 
-            Debug.Log($"{_previous.name} spawned at {transform.position} in frame {Time.frameCount}");
+            Debug.Log($"{nameof(Spawner)} {transform.parent.name}.{name} spawned {_previous.name} in frame {Time.frameCount}");
         }
 
         // HELPER FUNCTIONS
         private Vector3 getSpawnDirection() {
             switch (SpawnType) {
-                case SpawnerSpawnType.Straight:
-                    return transform.forward;
-
-                case SpawnerSpawnType.ConeRandom:
-                    return onUnitCone(ConeHalfAngle, false);
-
-                case SpawnerSpawnType.ConeBoundary:
-                    return onUnitCone(ConeHalfAngle, true);
-
-                case SpawnerSpawnType.SphereRandom:
-                    return U.Random.onUnitSphere;
-
-                default:
-                    throw new NotImplementedException();
+                case SpawnerSpawnType.Point: return Vector3.zero;
+                case SpawnerSpawnType.Straight: return transform.forward;
+                case SpawnerSpawnType.ConeRandom: return onUnitCone(ConeHalfAngle, false);
+                case SpawnerSpawnType.ConeBoundary: return onUnitCone(ConeHalfAngle, true);
+                case SpawnerSpawnType.SphereRandom: return U.Random.onUnitSphere;
+                default: throw new NotImplementedException();
             }
         }
         private float getSpeed() {
