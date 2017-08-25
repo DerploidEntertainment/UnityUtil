@@ -1,94 +1,63 @@
 ﻿using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.Assertions;
 using System;
 
 namespace Danware.Unity {
 
     public class Health : MonoBehaviour {
+
         // ABSTRACT DATA TYPES
         public enum ChangeMode {
             Absolute,
             PercentCurrent,
             PercentMax,
         }
-        public class HealthEventArgs : EventArgs {
-            public HealthEventArgs(Health health) {
-                Health = health;
-            }
-            public Health Health { get; }
-        }
-        public class ChangedEventArgs : HealthEventArgs {
-            public ChangedEventArgs(Health health, float oldValue, float newValue) : base(health) {
-                OldValue = oldValue;
-                NewValue = newValue;
-            }
-            public float OldValue;
-            public float NewValue;
-        }
-
-        // HIDDEN FIELDS
-        private EventHandler<ChangedEventArgs> _healthInvoker;
+        /// <summary>
+        /// Type arguments are (float oldHealth, float newHealth)
+        /// </summary>
+        [Serializable]
+        public class HealthEvent : UnityEvent<float, float> { }
 
         // INSPECTOR FIELDS
         public float CurrentHealth;
         public float MaxHealth;
-        public event EventHandler<ChangedEventArgs> HealthChanged {
-            add { _healthInvoker += value; }
-            remove { _healthInvoker -= value; }
-        }
+        public HealthEvent FullyHealed = new HealthEvent();
+        public HealthEvent HealthChanged = new HealthEvent();
+        public HealthEvent Killed = new HealthEvent();
 
         // API INTERFACE
         public void Heal(float amount, ChangeMode changeMode = ChangeMode.Absolute) {
-            Debug.AssertFormat(amount >= 0, "Tried to heal Health {0} by a negative amount!", name);
-            doHeal(amount, changeMode);
+            Assert.IsTrue(amount >= 0, $"Cannot heal {nameof(Health)} {transform.parent.name}.{name} by a negative amount!");
+            doChangeHealth(amount, changeMode);
         }
-        public void HealCompletely() => doHeal(MaxHealth - CurrentHealth, ChangeMode.Absolute);
+        public void HealCompletely() => doChangeHealth(MaxHealth - CurrentHealth, ChangeMode.Absolute);
         public void Damage(float amount, ChangeMode changeMode = ChangeMode.Absolute) {
-            Debug.AssertFormat(amount >= 0, "Tried to wound Health {0} by a negative amount!", name);
-            doDamage(amount, changeMode);
+            Assert.IsTrue(amount >= 0, $"Cannot wound Health {nameof(Health)} {transform.parent.name}.{name} by a negative amount!");
+            doChangeHealth(-amount, changeMode);
         }
-        public void Kill() => doDamage(CurrentHealth, ChangeMode.Absolute);
+        public void Kill() => doChangeHealth(-CurrentHealth, ChangeMode.Absolute);
 
         // HELPER FUNCTIONS
-        private void doHeal(float amount, ChangeMode changeMode) {
-            // Raise the Current Health
+        private void doChangeHealth(float amount, ChangeMode changeMode) {
+            // Change the Current Health
             float old = CurrentHealth;
-            float hp = hpFromAmount(amount, changeMode);
-            CurrentHealth = Mathf.Min(old + hp, MaxHealth);
-
-            // Raise the HealthChanged event, if a change actually occurred
-            if (CurrentHealth != old) {
-                var args = new ChangedEventArgs(this, old, CurrentHealth);
-                _healthInvoker?.Invoke(this, args);
-            }
-        }
-        private void doDamage(float amount, ChangeMode changeMode) {
-            // Lower the Current Health
-            float old = CurrentHealth;
-            float hp = hpFromAmount(amount, changeMode);
-            CurrentHealth = Mathf.Max(old - hp, 0f);
-
-            // Raise the HealthChanged event, if a change actually occurred
-            if (CurrentHealth != old) {
-                var args = new ChangedEventArgs(this, old, CurrentHealth);
-                _healthInvoker?.Invoke(this, args);
-            }
-        }
-        private float hpFromAmount(float amount, ChangeMode changeMode) {
             float hp = amount;
-
-            // Determine the actual amount of HP based on the HealthChangeMode
             switch (changeMode) {
-                case ChangeMode.PercentCurrent:
-                    hp = amount * CurrentHealth;
-                    break;
-
-                case ChangeMode.PercentMax:
-                    hp = amount * MaxHealth;
-                    break;
+                case ChangeMode.PercentCurrent: hp = amount * CurrentHealth; break;
+                case ChangeMode.PercentMax:     hp = amount * MaxHealth;     break;
             }
+            CurrentHealth = Mathf.Max(old + hp, 0f);
 
-            return hp;
+            // Raise Health Changed events, if a change actually occurred
+            if (CurrentHealth != old)
+                HealthChanged.Invoke(old, CurrentHealth);
+            if (CurrentHealth == MaxHealth)
+                FullyHealed.Invoke(old, MaxHealth);
+            if (CurrentHealth == 0f)
+                Killed.Invoke(old, 0f);
         }
+
     }
 
 }
