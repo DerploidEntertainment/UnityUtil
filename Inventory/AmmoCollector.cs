@@ -22,33 +22,29 @@ namespace Danware.Unity.Inventory {
         }
         private void OnDrawGizmos() => Gizmos.DrawWireSphere(transform.position, Radius);
         private void OnTriggerEnter(Collider other) {
-            // If no AmmoCollectible was found then just return
-            AmmoCollectible a = other.attachedRigidbody.GetComponent<AmmoCollectible>();
-            if (a == null)
+            // If no collectible was found then just return
+            AmmoCollectible ac = other.attachedRigidbody.GetComponent<AmmoCollectible>();
+            if (ac == null)
                 return;
 
-            // Try to find a Weapon with a matching name in the Inventory
-            Weapon weapon = Inventory.GetComponentsInChildren<Weapon>(true)
-                                     .SingleOrDefault(w => w.WeaponName == a.WeaponTypeName);
-            if (weapon == null)
-                return;
-
-            // If one was found, then adjust its current ammo as necessary
-            int ammo = 0;
-            int currAmmo = weapon.BackupAmmo + weapon.CurrentClipAmmo;
-            int maxAmmo = weapon.MaxClips * weapon.MaxClipAmmo;
-            if (currAmmo != maxAmmo) {
-                ammo = Mathf.Min(maxAmmo - currAmmo, a.AmmoAmount);
-                weapon.Load(ammo);
-                a.AmmoAmount -= ammo;
+            // Try to find a Weapon with a matching name in the Inventory and adjust its ammo
+            bool ammoUsed = false;
+            AmmoTool tool = Inventory.GetComponentsInChildren<AmmoTool>(true)
+                                     .SingleOrDefault(t => t.AmmoTypeName == ac.AmmoTypeName);
+            if (tool != null) {
+                int leftover = tool.Load(ac.Ammo);
+                ammoUsed = (leftover < ac.Ammo);
+                ac.Ammo = leftover;
             }
 
-            // Destroy the AmmoCollectible's GameObject as necessary
-            bool detectDestroy = (a.DestroyMode == CollectibleDestroyMode.WhenDetected);
-            bool useDestroy = (a.DestroyMode == CollectibleDestroyMode.WhenUsed && ammo > 0f);
-            bool emptyDestroy = (a.DestroyMode == CollectibleDestroyMode.WhenEmptied && a.AmmoAmount == 0f);
-            if (detectDestroy || useDestroy || emptyDestroy)
-                Destroy(a.gameObject);
+            // Destroy the collectible's GameObject as necessary
+            if (
+                (ac.DestroyMode == CollectibleDestroyMode.WhenUsed && ammoUsed) ||
+                (ac.DestroyMode == CollectibleDestroyMode.WhenEmptied && ac.Ammo == 0f) ||
+                (ac.DestroyMode == CollectibleDestroyMode.WhenDetected))
+            {
+                Destroy(ac.Root);
+            }
         }
     }
 

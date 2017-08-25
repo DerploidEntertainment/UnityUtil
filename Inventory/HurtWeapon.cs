@@ -6,35 +6,31 @@ namespace Danware.Unity.Inventory {
     [RequireComponent(typeof(Weapon))]
     public class HurtWeapon : MonoBehaviour {
 
-        // HIDDEN FIELDS
         private Weapon _weapon;
 
         // INSPECTOR FIELDS
         public float Damage = 10f;
         public Health.ChangeMode HealthChangeMode = Health.ChangeMode.Absolute;
+        [Tooltip("If true, then only the closest Health attacked by the BaseWeapon will be damaged.  If false, then all attacked Healths will be damaged.")]
+        public bool OnlyHurtClosest = false;
 
         // EVENT HANDLERS
         private void Awake() {
             _weapon = GetComponent<Weapon>();
-            _weapon.Attacked += Weapon_Attacked;
+            _weapon.Attacked.AddListener(hurt);
         }
-        private void Weapon_Attacked(object sender, Weapon.AttackEventArgs e) {
-            // Narrow this list down to those targets with Health components
-            RaycastHit[] hits = (from h in e.Hits
-                                 where h.collider.GetComponent<PhysTarget>()?.TargetComponent as Health != null
-                                 where !h.collider.CompareTag("Player")
-                                 select h).ToArray();
-            if (hits.Count() > 0) {
-                var td = new Weapon.TargetData();
-                td.Callback += affectTarget;
-                e.Add(hits[0], td);
+        private void hurt(Vector3 direction, RaycastHit[] hits) {
+            // Hurt the associated Healths of all hit colliders (or of the closest one only, if requested)
+            if (OnlyHurtClosest && hits.Length > 0) {
+                Health health = hits.OrderBy(h => h.distance).First().collider.attachedRigidbody?.GetComponent<Health>();
+                health?.Damage(Damage, HealthChangeMode);
             }
-
-        }
-        private void affectTarget(RaycastHit hit) {
-            // Damage the target, if it has a Health component
-            var h = hit.collider.GetComponent<PhysTarget>()?.TargetComponent as Health;
-            h?.Damage(Damage, HealthChangeMode);
+            else {
+                for (int h = 0; h < hits.Length; ++h) {
+                    Health health = hits[h].collider.attachedRigidbody?.GetComponent<Health>();
+                    health?.Damage(Damage, HealthChangeMode);
+                }
+            }
         }
 
     }

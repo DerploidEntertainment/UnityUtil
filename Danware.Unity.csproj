@@ -46,6 +46,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GameStateManagerSingleton.cs" />
+    <Compile Include="Inventory\AmmoTool.cs" />
+    <Compile Include="Inventory\OverheatTool.cs" />
+    <Compile Include="Inventory\Tool.cs" />
     <Compile Include="Triggers\JointBreakTrigger.cs" />
     <Compile Include="Triggers\ButtonTrigger.cs" />
     <Compile Include="Triggers\AnimationEventTrigger.cs" />
@@ -62,7 +65,7 @@
     <Compile Include="Inventory\HealthCollectible.cs" />
     <Compile Include="Inventory\HurtWeapon.cs" />
     <Compile Include="Inventory\InventoryCollectible.cs" />
-    <Compile Include="Inventory\ProjectileWeapon.cs" />
+    <Compile Include="Inventory\ProjectileTool.cs" />
     <Compile Include="Inventory\PushWeapon.cs" />
     <Compile Include="Inventory\Weapon.cs" />
     <Compile Include="DontDestroy.cs" />
