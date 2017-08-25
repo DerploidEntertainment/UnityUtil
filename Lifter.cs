@@ -103,7 +103,7 @@ namespace Danware.Unity {
                 rb = hitInfo.collider.attachedRigidbody;
                 if (rb != null && rb.mass <= MaxMass) {
                     _liftable = rb.GetComponent<Liftable>();
-                    if (!_liftable.CanLift)
+                    if (!_liftable?.CanLift ?? false)
                         _liftable = null;
                 }
             }
