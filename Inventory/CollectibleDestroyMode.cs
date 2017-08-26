@@ -1,7 +1,9 @@
-﻿namespace Danware.Unity.Inventory {
+﻿using UnityEngine;
+
+namespace Danware.Unity.Inventory {
 
     /// <summary>
-    /// Determines under what circumstances, if any, a Collectible's GameObject will be destroyed.
+    /// Determines under what circumstances, if any, a Collectible's <see cref="GameObject"/> will be destroyed.
     /// </summary>
     public enum CollectibleDestroyMode {
         /// <summary>
