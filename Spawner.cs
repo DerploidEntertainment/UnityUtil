@@ -6,31 +6,30 @@ using System;
 
 namespace Danware.Unity {
 
+    public enum SpawnDirection {
+        Straight,
+        ConeRandom,
+        ConeBoundary,
+        AnyDirection,
+    }
+
     public class Spawner : MonoBehaviour {
-        // ABSTRACT DATA TYPES
-        public enum SpawnerSpawnType {
-            Point,
-            Straight,
-            ConeRandom,
-            ConeBoundary,
-            SphereRandom
-        }
 
         // HIDDEN FIELDS
         private GameObject _previous;
         private long _count = 0;
 
         // INSPECTOR FIELDS
-        public Transform Prefab;
+        public GameObject Prefab;
         public Transform SpawnParent;
         [Tooltip("All spawned instances of the Prefab will be given this name, along with a numeric suffix.  If DestroyPrevious is true, then the numeric suffix will not be added.")]
         public string BaseName = "Object";
         public bool DestroyPrevious;
-        public float RigidbodySpeed = 10f;
         public float MinSpeed = 0f;
         public float MaxSpeed = 10f;
-        public bool UseRandomSpeed = false;
-        public SpawnerSpawnType SpawnType = SpawnerSpawnType.Straight;
+        [Tooltip("This property defines the direction in which spawned Prefab instances will move.")]
+        public SpawnDirection SpawnDirection = SpawnDirection.Straight;
+        [Range(0f, 90f)]
         public float ConeHalfAngle = 30f;
 
         private void Awake() =>
@@ -43,44 +42,57 @@ namespace Danware.Unity {
                 Destroy(_previous);
 
             // Instantiating a Prefab can sometimes give a GameObject or a Transform...we want the GameObject
-            U.Object obj;
-            if (SpawnParent == null)
-                obj = Instantiate(Prefab, transform.position, transform.rotation);
-            else
-                obj = Instantiate(Prefab, transform.position, transform.rotation, SpawnParent);
-            _previous = (obj is GameObject) ? obj as GameObject : (obj as Transform).gameObject;
-            _previous.name = $"{BaseName}{(DestroyPrevious ? "" : "_" + _count)}";
+            GameObject obj = (SpawnParent == null) ?
+                Instantiate(Prefab, transform.position, transform.rotation) :
+                Instantiate(Prefab, transform.position, transform.rotation, SpawnParent);
+            obj.name = $"{BaseName}{(DestroyPrevious ? "" : "_" + _count)}";
             if (!DestroyPrevious)
                 ++_count;
 
             // If the Prefab has a Rigidbody, apply the requested velocity
-            Rigidbody rb = _previous.GetComponent<Rigidbody>();
+#if DEBUG_2D
+            Rigidbody2D rb = obj.GetComponent<Rigidbody2D>();
+#else
+            Rigidbody rb = obj.GetComponent<Rigidbody>();
+#endif
             if (rb != null) {
+#if DEBUG_2D
+                Vector2 dir = getSpawnDirection();
+#else
                 Vector3 dir = getSpawnDirection();
-                float speed = getSpeed();
+#endif
+                float speed = U.Random.Range(MinSpeed, MaxSpeed);
                 if (rb.isKinematic)
                     rb.velocity = speed * dir;
                 else
+#if DEBUG_2D
                     rb.AddForce(speed * dir, ForceMode.VelocityChange);
+#else
+                    rb.AddForce(speed * dir, ForceMode.VelocityChange);
+#endif
             }
 
-            Debug.Log($"{nameof(Spawner)} {transform.parent.name}.{name} spawned {_previous.name} in frame {Time.frameCount}");
+            Debug.Log($"{nameof(Spawner)} {transform.parent.name}.{name} spawned {obj.name} in frame {Time.frameCount}");
+            _previous = obj;
         }
 
         // HELPER FUNCTIONS
+#if DEBUG_2D
+        private Vector2 getSpawnDirection() {
+#else
         private Vector3 getSpawnDirection() {
-            switch (SpawnType) {
-                case SpawnerSpawnType.Point: return Vector3.zero;
-                case SpawnerSpawnType.Straight: return transform.forward;
-                case SpawnerSpawnType.ConeRandom: return onUnitCone(ConeHalfAngle, false);
-                case SpawnerSpawnType.ConeBoundary: return onUnitCone(ConeHalfAngle, true);
-                case SpawnerSpawnType.SphereRandom: return U.Random.onUnitSphere;
-                default: throw new NotImplementedException();
+#endif
+            switch (SpawnDirection) {
+                case SpawnDirection.Straight: return transform.forward;
+                case SpawnDirection.ConeRandom: return onUnitCone(ConeHalfAngle, false);
+                case SpawnDirection.ConeBoundary: return onUnitCone(ConeHalfAngle, true);
+#if DEBUG_2D
+                case SpawnDirection.AnyDirection: return U.Random.insideUnitCircle.normalized;
+#else
+                case SpawnDirection.AnyDirection: return U.Random.onUnitSphere;
+#endif
+                default: throw new NotImplementedException($"Gah!  We haven't accounted for {nameof(Unity.SpawnDirection)} {SpawnDirection} yet!");
             }
-        }
-        private float getSpeed() {
-            float speed = UseRandomSpeed ? U.Random.Range(MinSpeed, MaxSpeed) : RigidbodySpeed;
-            return speed;
         }
         private Vector3 onUnitCone(float halfAngle, bool onlyBoundary) {
             float minZ = Mathf.Cos(Mathf.Deg2Rad * halfAngle);

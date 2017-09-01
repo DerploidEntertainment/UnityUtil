@@ -57,6 +57,7 @@
   <ItemGroup>
     <Compile Include="CancellableUnityEvent.cs" />
     <Compile Include="Destroyer.cs" />
+    <Compile Include="Physics2DExtensions.cs" />
     <Compile Include="GameStateManagerSingleton.cs" />
     <Compile Include="Inventory\AmmoTool.cs" />
     <Compile Include="Inventory\OverheatTool.cs" />
