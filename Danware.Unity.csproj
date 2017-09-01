@@ -96,6 +96,7 @@
     <Compile Include="Movement\MouseLookVert.cs" />
     <Compile Include="Lifter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Triggers\RandomTrigger.cs" />
     <Compile Include="Triggers\SimpleTrigger.cs" />
     <Compile Include="Spawner.cs" />
     <Compile Include="Movement\TargetFlyer.cs" />
