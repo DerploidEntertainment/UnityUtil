@@ -16,7 +16,6 @@ namespace Danware.Unity.Triggers {
             int currFrame = Time.frameCount;
             if (!OnlyOncePerFrame || currFrame != _lastTriggerFrame) {
                 _lastTriggerFrame = currFrame;
-                Debug.Log($"{nameof(SimpleTrigger)} {name} triggered in frame {Time.frameCount}.");
                 Triggered.Invoke();
             }
         }
