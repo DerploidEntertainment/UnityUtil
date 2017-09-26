@@ -63,6 +63,7 @@
     <Compile Include="Inventory\OverheatTool.cs" />
     <Compile Include="Inventory\Tool.cs" />
     <Compile Include="SocialWrapperSingleton.cs" />
+    <Compile Include="Triggers\IntTrigger.cs" />
     <Compile Include="Triggers\JointBreakTrigger.cs" />
     <Compile Include="Triggers\ButtonTrigger.cs" />
     <Compile Include="Triggers\AnimationEventTrigger.cs" />
