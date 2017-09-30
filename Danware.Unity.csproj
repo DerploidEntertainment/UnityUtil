@@ -63,6 +63,7 @@
     <Compile Include="Inventory\OverheatTool.cs" />
     <Compile Include="Inventory\Tool.cs" />
     <Compile Include="SocialWrapperSingleton.cs" />
+    <Compile Include="Triggers\OrTrigger.cs" />
     <Compile Include="Triggers\IntTrigger.cs" />
     <Compile Include="Triggers\JointBreakTrigger.cs" />
     <Compile Include="Triggers\ButtonTrigger.cs" />
@@ -104,6 +105,8 @@
     <Compile Include="Movement\TargetFlyer.cs" />
     <Compile Include="Movement\TransformMover.cs" />
     <Compile Include="Triggers\TimerTrigger.cs" />
+    <Compile Include="Triggers\TriggerCondition.cs" />
+    <Compile Include="Triggers\AndTrigger.cs" />
     <Compile Include="Triggers\ToggleTrigger.cs" />
     <Compile Include="Triggers\TriggerExitTrigger.cs" />
     <Compile Include="Triggers\TriggerEnterTrigger.cs" />
