@@ -37,7 +37,10 @@ namespace Danware.Unity.Triggers {
         [Tooltip("Trigger event is raised every time the encapsulated number is incremented by this amount.  Ignored if Mode is not Repeat.")]
         public int RepeatIncrementAmount;
 
-        public IntEvent Triggered = new IntEvent();
+        [Tooltip("This event is raised whenever the encapsulated number DOES NOT reach a desired value.")]
+        public IntEvent ValueNotReached = new IntEvent();
+        [Tooltip("This event is raised whenever the encapsulated number reaches a desired value.")]
+        public IntEvent ValueReached = new IntEvent();
 
         public void Increment() => checkValue(++_number);
         public void Decrement() => checkValue(--_number);
@@ -49,8 +52,8 @@ namespace Danware.Unity.Triggers {
                 case IntTriggerMode.TargetValue:
                     for (int n = 0; n < TargetValues.Length; ++n) {
                         if (number == TargetValues[n]) {
-                            Triggered.Invoke(number);
-                            break;
+                            ValueReached.Invoke(number);
+                            return;
                         }
                     }
                     break;
@@ -58,8 +61,9 @@ namespace Danware.Unity.Triggers {
                 // If the value has incremented by the requested amount, raise the trigger event
                 case IntTriggerMode.Repeat:
                     if (number - _lastTriggerVal == RepeatIncrementAmount) {
-                        Triggered.Invoke(number);
+                        ValueReached.Invoke(number);
                         _lastTriggerVal = number;
+                        return;
                     }
                     break;
 
@@ -67,6 +71,8 @@ namespace Danware.Unity.Triggers {
                     throw new NotImplementedException($"Gah!  We didn't account for {nameof(IntTriggerMode)} {Mode}!");
             }
 
+            // If no desired values were reached above, then raise the ValueNotReached event
+            ValueNotReached.Invoke(number);
         }
 
     }
