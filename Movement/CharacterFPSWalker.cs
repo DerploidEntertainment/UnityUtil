@@ -1,13 +1,15 @@
 ﻿using UnityEngine;
+using UnityEngine.Assertions;
 
 using Danware.Unity.Input;
 
 namespace Danware.Unity.Movement {
 
-    [RequireComponent(typeof(CharacterController))]
-    [DisallowMultipleComponent]
     public class CharacterFPSWalker : MonoBehaviour {
+
         // INSPECTOR FIELDS
+        public CharacterController ControllerToMove;
+
         [Header("Inputs")]
         public StartStopInput SprintInput;
         public StartStopInput CrouchInput;
@@ -18,7 +20,7 @@ namespace Danware.Unity.Movement {
         [Header("Speed")]
         public float WalkSpeed = 15f;
         public float SprintSpeed = 30f;
-        public bool CanSprint = true;        
+        public bool CanSprint = true;
         public float CrouchSpeed = 5f;
         public bool CanCrouch = true;
         public float CrouchHeight = 1f;
@@ -32,16 +34,13 @@ namespace Danware.Unity.Movement {
 
 
         // HIDDEN FIELDS
-        private Rigidbody _rigidBody;
-        private CharacterController _controller;
         private float _oldHeight;
 
         // EVENT HANDLERS
         private void Awake() {
-            _controller = GetComponent<CharacterController>();
-            _rigidBody = GetComponent<Rigidbody>();
+            Assert.IsNotNull(ControllerToMove, $"{GetType().Name} {transform.parent?.name}.{name} was not associated with a {nameof(ControllerToMove)}!");
 
-            _oldHeight = _controller.height;
+            _oldHeight = ControllerToMove.height;
             CrouchHeight = Mathf.Min(CrouchHeight, _oldHeight);
         }
         private void Update() {
@@ -64,7 +63,7 @@ namespace Danware.Unity.Movement {
             crouch(CanCrouch && crouching);
 
             // Move the rigidbody to the target velocity
-            _controller.Move(targetV * Time.deltaTime);
+            ControllerToMove.Move(targetV * Time.deltaTime);
         }
 
         // HELPER FUNCTIONS
@@ -74,7 +73,7 @@ namespace Danware.Unity.Movement {
             float g = Physics.gravity.magnitude * Mass;
 
             // Account for jumping (if it is allowed and the button was pressed) 
-            if (jumping && _controller.isGrounded)
+            if (jumping && ControllerToMove.isGrounded)
                 jumpV.y += Mathf.Sqrt(2f * g * JumpHeight);
             else
                 jumpV.y -= g * Time.deltaTime;
@@ -82,14 +81,14 @@ namespace Danware.Unity.Movement {
             return jumpV;
         }
         private void crouch(bool crouching) =>
-            _controller.height = (crouching ? CrouchHeight : _oldHeight);
+            ControllerToMove.height = (crouching ? CrouchHeight : _oldHeight);
         private Vector3 moveComponent(float horz, float vert, bool sprinting, bool crouching) {
             // Determine the slope of the ground
             bool hitGround = Physics.Raycast(transform.position, Vector3.down, out RaycastHit hitInfo, float.PositiveInfinity);
             float slopeAngle = (hitGround ? Vector3.Angle(Vector3.up, hitInfo.normal) : 0f);
 
             // Get the target movement vector (speed + direction)
-            Vector3 currentV = _controller.velocity;
+            Vector3 currentV = ControllerToMove.velocity;
             Vector3 targetV = Vector3.zero;
             float targetSpeed = getTargetSpeed(horz, vert, sprinting, crouching, slopeAngle);
             Vector3 unitDir = (transform.forward * vert + transform.right * horz).normalized;
@@ -116,7 +115,7 @@ namespace Danware.Unity.Movement {
 
             // Account for slopes
             // If speed decreases with slope, then speed = 0 when slope = slopeLimit
-            float slopeRatio = (_controller.slopeLimit - slopeAngle) / _controller.slopeLimit;
+            float slopeRatio = 1f - slopeAngle / ControllerToMove.slopeLimit;
             speed *= slopeRatio;
 
             return speed;
