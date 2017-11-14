@@ -57,6 +57,7 @@
   <ItemGroup>
     <Compile Include="CancellableUnityEvent.cs" />
     <Compile Include="Destroyer.cs" />
+    <Compile Include="HoverForce.cs" />
     <Compile Include="Physics2DExtensions.cs" />
     <Compile Include="GameStateManagerSingleton.cs" />
     <Compile Include="Inventory\AmmoTool.cs" />
@@ -64,6 +65,7 @@
     <Compile Include="Inventory\Tool.cs" />
     <Compile Include="Movement\LookAt.cs" />
     <Compile Include="SocialWrapperSingleton.cs" />
+    <Compile Include="TorqueStabilizer.cs" />
     <Compile Include="Triggers\OrTrigger.cs" />
     <Compile Include="Triggers\IntTrigger.cs" />
     <Compile Include="Triggers\JointBreakTrigger.cs" />
@@ -113,6 +115,7 @@
     <Compile Include="Triggers\TriggerEnterTrigger.cs" />
     <Compile Include="UnityLayer.cs" />
     <Compile Include="ExtensionMethods.cs" />
+    <Compile Include="UpwardDirectionType.cs" />
     <Compile Include="ValueChangedEventArgs.cs" />
   </ItemGroup>
   <ItemGroup>
