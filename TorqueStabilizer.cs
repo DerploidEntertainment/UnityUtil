@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.Assertions;
 
 namespace Danware.Unity {
@@ -6,11 +7,17 @@ namespace Danware.Unity {
     public class TorqueStabilizer : MonoBehaviour {
 
         // INSPECTOR FIELDS
+        [Tooltip("The Rigidbody to which the stabilizing torque will be applied.")]
         public Rigidbody RigidbodyToStabilize;
-        public float MaxStabilizingTorque = 10f;
-        public float MaxStabilizingAngle = 45f;
-        public UpwardDirectionType UpwardDirectionType = UpwardDirectionType.OppositeGravity;
-        public Vector3 CustomUpwardDirection = Vector3.up;
+        [Tooltip("The maximum torque that can be applied to stabilize the associated Rigidbody about the upward direction.  That is, if a larger torque than this is applied to the Rigidbody, this " + nameof(Danware.Unity.TorqueStabilizer) + " will not be able to stabilize against it.")]
+        public float MaxStabilizingTorque;
+        [Tooltip("If the associated Rigidbody's angle of deflection from the upward direction is greater than this angle, then stabilizing torques will not be applied.  That is, beyond this deflection angle, the Rigidbody will just 'tip over'.")]
+        [Range(0f, 180f)]
+        public float MaxStabilizingAngle;
+        [Tooltip("What axis should be considered upward?  That is, towards what axis will the stabilizing torque act to keep the associated Rigidbody upright?")]
+        public AxisDirection UpwardDirectionType;
+        [Tooltip("Only required if " + nameof(UpwardDirectionType) + " is " + nameof(AxisDirection.CustomWorldSpace) + " or " + nameof(AxisDirection.CustomLocalSpace) + ".")]
+        public Vector3 CustomUpwardDirection;
 
         /// <summary>
         /// Returns the unit vector in which this <see cref="HoverForce"/> will attempt to hover.
@@ -27,6 +34,12 @@ namespace Danware.Unity {
         }
 
         // EVENT HANDLERS
+        private void Reset() {
+            MaxStabilizingTorque = 10f;
+            MaxStabilizingAngle = 180f;
+            UpwardDirectionType = AxisDirection.OppositeGravity;
+            CustomUpwardDirection = Vector3.up;
+        }
         private void Awake() {
             Assert.IsNotNull(RigidbodyToStabilize, $"{GetType().Name} {transform.parent?.name}.{name} must be associated with a {nameof(RigidbodyToStabilize)}");
         }
