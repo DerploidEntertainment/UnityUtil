@@ -59,6 +59,7 @@ namespace Danware.Unity.Inventory {
         public void ReloadClip() => doReloadClip();
 
         public AmmoEvent Loaded = new AmmoEvent();
+        public AmmoEvent AmmoReduced = new AmmoEvent();
 
         // EVENT HANDLERS
         private void Awake() {
@@ -72,8 +73,11 @@ namespace Danware.Unity.Inventory {
             _tool = GetComponent<Tool>();
             _tool.Using.AddListener(() =>
                 _tool.Using.Cancel = (CurrentClipAmmo == 0));
-            _tool.Used.AddListener(() =>
-                CurrentClipAmmo = Mathf.Max(0, CurrentClipAmmo - 1));
+            _tool.Used.AddListener(() => {
+                int oldClip = CurrentClipAmmo;
+                CurrentClipAmmo = CurrentClipAmmo - 1;
+                AmmoReduced.Invoke(oldClip, CurrentBackupAmmo, CurrentClipAmmo, CurrentBackupAmmo);
+            });
         }
         private void Update() {
             if (ReloadInput?.Started() ?? false)
