@@ -115,7 +115,7 @@
     <Compile Include="Triggers\TriggerEnterTrigger.cs" />
     <Compile Include="UnityLayer.cs" />
     <Compile Include="ExtensionMethods.cs" />
-    <Compile Include="UpwardDirectionType.cs" />
+    <Compile Include="AxisDirection.cs" />
     <Compile Include="ValueChangedEventArgs.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -23,10 +23,11 @@ namespace Danware.Unity {
         public Vector3 GetUpwardUnitVector() {
             Vector3 up = Vector3.zero;
             switch (UpwardDirectionType) {
-                case UpwardDirectionType.OppositeGravity: return -Physics.gravity.normalized;
-                case UpwardDirectionType.TransformUp: return transform.up;
-                case UpwardDirectionType.Custom: return CustomUpwardDirection.normalized;
-                default: throw new NotImplementedException($"Gah!  We haven't accounted for {nameof(Danware.Unity.UpwardDirectionType)} {UpwardDirectionType}!");
+                case AxisDirection.WithGravity: return Physics.gravity.normalized;
+                case AxisDirection.OppositeGravity: return -Physics.gravity.normalized;
+                case AxisDirection.CustomWorldSpace: return CustomUpwardDirection.normalized;
+                case AxisDirection.CustomLocalSpace: return transform.TransformDirection(CustomUpwardDirection.normalized);
+                default: throw new NotImplementedException($"Gah!  We haven't accounted for {nameof(Danware.Unity.AxisDirection)} {UpwardDirectionType}!");
             }
         }
 

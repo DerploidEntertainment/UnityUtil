@@ -12,7 +12,21 @@ namespace Danware.Unity {
         public UpwardDirectionType UpwardDirectionType = UpwardDirectionType.OppositeGravity;
         public Vector3 CustomUpwardDirection = Vector3.up;
 
-        // HIDDEN FIELDS
+        /// <summary>
+        /// Returns the unit vector in which this <see cref="HoverForce"/> will attempt to hover.
+        /// </summary>
+        /// <returns>The unit vector in which this <see cref="HoverForce"/> will attempt to hover.</returns>
+        public Vector3 GetUpwardUnitVector() {
+            switch (UpwardDirectionType) {
+                case AxisDirection.WithGravity: return Physics.gravity.normalized;
+                case AxisDirection.OppositeGravity: return -Physics.gravity.normalized;
+                case AxisDirection.CustomWorldSpace: return CustomUpwardDirection.normalized;
+                case AxisDirection.CustomLocalSpace: return transform.TransformDirection(CustomUpwardDirection.normalized);
+                default: throw new NotImplementedException($"Gah!  We haven't accounted for {nameof(Danware.Unity.AxisDirection)} {UpwardDirectionType}!");
+            }
+        }
+
+        // EVENT HANDLERS
         private void Awake() {
             Assert.IsNotNull(RigidbodyToStabilize, $"{GetType().Name} {transform.parent?.name}.{name} must be associated with a {nameof(RigidbodyToStabilize)}");
         }
@@ -20,12 +34,7 @@ namespace Danware.Unity {
             Gizmos.DrawLine(RigidbodyToStabilize.position, RigidbodyToStabilize.position + CustomUpwardDirection);
         private void FixedUpdate() {
             // Determine the upward direction
-            Vector3 up = Vector3.zero;
-            switch (UpwardDirectionType) {
-                case UpwardDirectionType.OppositeGravity: up = -Physics.gravity.normalized; break;
-                case UpwardDirectionType.TransformUp: up = transform.up; break;
-                case UpwardDirectionType.Custom: up = CustomUpwardDirection.normalized; break;
-            }
+            Vector3 up = GetUpwardUnitVector();
 
             // Apply a torque to stabilize the Rigidbody that scales inversely with the angle of deflection
             float angle = Vector3.Angle(RigidbodyToStabilize.transform.up, up);
