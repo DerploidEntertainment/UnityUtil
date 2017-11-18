@@ -39,7 +39,7 @@ namespace Danware.Unity.Movement {
                 case AxisDirection.WithGravity: return Physics.gravity.normalized;
                 case AxisDirection.OppositeGravity: return -Physics.gravity.normalized;
                 case AxisDirection.CustomWorldSpace: return CustomAxisDirection.normalized;
-                case AxisDirection.CustomLocalSpace: return transform.TransformDirection(CustomAxisDirection.normalized);
+                case AxisDirection.CustomLocalSpace: return (UsePhysicsToLook ? RigidbodyToRotate.transform : TransformToRotate).TransformDirection(CustomAxisDirection.normalized);
                 default: throw new NotImplementedException($"Gah!  We haven't accounted for {nameof(Danware.Unity.AxisDirection)} {AxisDirectionType}!");
             }
         }
@@ -79,7 +79,6 @@ namespace Danware.Unity.Movement {
 
             // Rotate the requested number of degrees around the upward axis, using the desired method
             float deltaAngle = (_deltaSinceLast > 0) ? Mathf.Min(MaxPositiveAngle - _angle, _deltaSinceLast) : Mathf.Max(MaxNegativeAngle - _angle, _deltaSinceLast);
-            Debug.Log($"Delta: {deltaAngle}, Total: {_angle}");
             if (UsePhysicsToLook)
                 RigidbodyToRotate.MoveRotation(RigidbodyToRotate.rotation * Quaternion.AngleAxis(deltaAngle, up));
             else

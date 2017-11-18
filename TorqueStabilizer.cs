@@ -28,7 +28,7 @@ namespace Danware.Unity {
                 case AxisDirection.WithGravity: return Physics.gravity.normalized;
                 case AxisDirection.OppositeGravity: return -Physics.gravity.normalized;
                 case AxisDirection.CustomWorldSpace: return CustomUpwardDirection.normalized;
-                case AxisDirection.CustomLocalSpace: return transform.TransformDirection(CustomUpwardDirection.normalized);
+                case AxisDirection.CustomLocalSpace: return RigidbodyToStabilize.transform.TransformDirection(CustomUpwardDirection.normalized);
                 default: throw new NotImplementedException($"Gah!  We haven't accounted for {nameof(Danware.Unity.AxisDirection)} {UpwardDirectionType}!");
             }
         }

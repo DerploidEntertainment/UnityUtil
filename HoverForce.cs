@@ -57,7 +57,7 @@ namespace Danware.Unity {
             // If there is a surface below the hovering Rigidbody, and its angle is not too oblique,
             // then apply a hover force to the Rigidbody that scales inversely with the distance from the surface
             Vector3 down = -up;
-            Vector3 pos = transform.position;
+            Vector3 pos = HoveringRigidbody.position;
             bool surfaceBelow = Physics.Raycast(pos, down, out RaycastHit hitInfo, HoverHeight, GroundLayerMask);
             if (surfaceBelow) {
                 float angle = Vector3.Angle(up, hitInfo.normal);
