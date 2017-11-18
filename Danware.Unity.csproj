@@ -58,6 +58,7 @@
     <Compile Include="CancellableUnityEvent.cs" />
     <Compile Include="Destroyer.cs" />
     <Compile Include="HoverForce.cs" />
+    <Compile Include="Updating\IFixedUpdatable.cs" />
     <Compile Include="Movement\MouseLook.cs" />
     <Compile Include="Physics2DExtensions.cs" />
     <Compile Include="GameStateManagerSingleton.cs" />
@@ -115,6 +116,14 @@
     <Compile Include="UnityLayer.cs" />
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="AxisDirection.cs" />
+    <Compile Include="Updating\IUpdatable.cs" />
+    <Compile Include="Updating\FixedUpdatable.cs" />
+    <Compile Include="Updating\IFixedUpdater.cs" />
+    <Compile Include="Updating\Updatable.cs" />
+    <Compile Include="Updating\IUpdater.cs" />
+    <Compile Include="Updating\FixedUpdater.cs" />
+    <Compile Include="Updating\UpdaterSingleton.cs" />
+    <Compile Include="Updating\Updater.cs" />
     <Compile Include="ValueChangedEventArgs.cs" />
   </ItemGroup>
   <ItemGroup>
