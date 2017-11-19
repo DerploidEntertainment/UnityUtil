@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace Danware.Unity.Updating {
 
@@ -21,8 +22,9 @@ namespace Danware.Unity.Updating {
         public bool Unregister(IFixedUpdatable updatable) => _updatables.Remove(updatable);
         /// <inheritdoc/>
         public void FixedUpdateAll() {
-            foreach (IFixedUpdatable fu in _updatables)
-                fu.UpdatableFixedUpdate();
+            IFixedUpdatable[] updatables = _updatables.ToArray();
+            foreach (IUpdatable fu in updatables)
+                fu.UpdatableUpdate();
         }
 
     }

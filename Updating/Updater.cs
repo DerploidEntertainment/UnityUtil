@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Linq;
+using System.Collections.Generic;
 
 namespace Danware.Unity.Updating {
 
@@ -21,7 +22,8 @@ namespace Danware.Unity.Updating {
         public bool Unregister(IUpdatable updatable) => _updatables.Remove(updatable);
         /// <inheritdoc/>
         public void UpdateAll() {
-            foreach (IUpdatable u in _updatables)
+            IUpdatable[] updatables = _updatables.ToArray();
+            foreach (IUpdatable u in updatables)
                 u.UpdatableUpdate();
         }
 
