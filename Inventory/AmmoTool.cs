@@ -1,14 +1,8 @@
-﻿using UnityEngine;
-using U = UnityEngine;
-using UnityEngine.Events;
-using UnityEngine.Assertions;
-
+﻿using Danware.Unity.Input;
 using System;
-using System.Linq;
-using System.Collections;
-using System.Collections.Generic;
-
-using Danware.Unity.Input;
+using UnityEngine;
+using UnityEngine.Assertions;
+using UnityEngine.Events;
 
 namespace Danware.Unity.Inventory {
 
@@ -24,16 +18,8 @@ namespace Danware.Unity.Inventory {
         private Tool _tool;
 
         // INSPECTOR FIELDS
+        public AmmoToolInfo Info;
         public StartStopInput ReloadInput;
-        [Space]
-        [Tooltip("A case-insensitive string to identify different types of ammo for collecting (e.g., 'Pistol').")]
-        public string AmmoTypeName = "Gun";
-        [Tooltip("The maximum ammo that can be in a clip.")]
-        public int MaxClipAmmo;
-        [Tooltip("The maximum number of backup clips.  These clips may or may not all be filled.")]
-        public int MaxBackupClips;
-        [Tooltip("The amount of ammo that this Tool has when instantiated.  Must be <= MaxClipAmmo * (MaxBackupClips + 1).")]
-        public int StartingAmmo;
 
         // API INTERFACE
         /// <summary>
@@ -63,11 +49,12 @@ namespace Danware.Unity.Inventory {
 
         // EVENT HANDLERS
         private void Awake() {
-            Assert.IsNotNull(ReloadInput, $"{nameof(AmmoTool)} {transform.parent.name}.{name} must be associated with an {nameof(this.ReloadInput)}!");
-            Assert.IsTrue(StartingAmmo <= MaxClipAmmo * (MaxBackupClips + 1), $"{nameof(AmmoTool)} {transform.parent.name}.{name} was started with {nameof(this.StartingAmmo)} ammo but it can only store a max of {MaxClipAmmo} * ({MaxBackupClips} + 1) = {MaxClipAmmo * (MaxBackupClips + 1)}!");
+            Assert.IsNotNull(Info, $"{GetType().Name} {transform.parent?.name}.{name} must be associated with a {nameof(Danware.Unity.Inventory.AmmoToolInfo)}!");
+            Assert.IsNotNull(ReloadInput, $"{GetType().Name} {transform.parent?.name}.{name} must be associated with a {nameof(this.ReloadInput)}!");
+            Assert.IsTrue(Info.StartingAmmo <= Info.MaxClipAmmo * (Info.MaxBackupClips + 1), $"{GetType().Name} {transform.parent?.name}.{name} was started with {nameof(this.Info.StartingAmmo)} ammo but it can only store a max of {Info.MaxClipAmmo} * ({Info.MaxBackupClips} + 1) = {Info.MaxClipAmmo * (Info.MaxBackupClips + 1)}!");
 
             // Initialize ammo
-            doLoad(StartingAmmo);
+            doLoad(Info.StartingAmmo);
 
             // Register Tool events
             _tool = GetComponent<Tool>();
@@ -88,7 +75,7 @@ namespace Danware.Unity.Inventory {
         private void doReloadClip() {
             // Fill the current clip as much as possible from backup ammo
             int oldClip = CurrentClipAmmo;
-            int neededAmmo = Mathf.Clamp(MaxClipAmmo - CurrentClipAmmo, 0, CurrentBackupAmmo);
+            int neededAmmo = Mathf.Clamp(Info.MaxClipAmmo - CurrentClipAmmo, 0, CurrentBackupAmmo);
             CurrentClipAmmo += neededAmmo;
             CurrentBackupAmmo -= neededAmmo;
 
@@ -101,15 +88,15 @@ namespace Danware.Unity.Inventory {
             int oldBackup = CurrentBackupAmmo;
 
             // Fill the current clip as much as possible
-            if (CurrentClipAmmo < MaxClipAmmo) {
-                int usableAmmo = Mathf.Min(MaxClipAmmo - CurrentClipAmmo, ammo);
+            if (CurrentClipAmmo < Info.MaxClipAmmo) {
+                int usableAmmo = Mathf.Min(Info.MaxClipAmmo - CurrentClipAmmo, ammo);
                 CurrentClipAmmo += usableAmmo;
                 ammo -= usableAmmo;
             }
 
             // Fill the backup ammo as much as possible
-            if (CurrentBackupAmmo < MaxClipAmmo * MaxBackupClips) {
-                int usableAmmo = Mathf.Min(MaxBackupClips * MaxClipAmmo - CurrentBackupAmmo, ammo);
+            if (CurrentBackupAmmo < Info.MaxClipAmmo * Info.MaxBackupClips) {
+                int usableAmmo = Mathf.Min(Info.MaxBackupClips * Info.MaxClipAmmo - CurrentBackupAmmo, ammo);
                 CurrentBackupAmmo += usableAmmo;
                 ammo -= usableAmmo;
             }

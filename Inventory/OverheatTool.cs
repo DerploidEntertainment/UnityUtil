@@ -1,14 +1,8 @@
-﻿using UnityEngine;
-using U = UnityEngine;
-using UnityEngine.Events;
-using UnityEngine.Assertions;
-
-using System;
-using System.Linq;
+﻿using System;
 using System.Collections;
-using System.Collections.Generic;
-
-using Danware.Unity.Input;
+using UnityEngine;
+using UnityEngine.Assertions;
+using UnityEngine.Events;
 
 namespace Danware.Unity.Inventory {
 
@@ -26,18 +20,7 @@ namespace Danware.Unity.Inventory {
         private Coroutine _overheatRoutine;
 
         // INSPECTOR FIELDS
-        [Tooltip("The maximum amount of heat that can be generated before the Weapon becomes unusable (overheats).")]
-        public float MaxHeat = 100f;
-        [Tooltip("The amount of heat generated per use.")]
-        public float HeatGeneratedPerUse = 50f;
-        [Tooltip("If true, then the Weapon cools by an absolute amount per second.  If false, then the Weapon cools by a fraction of MaxHeat per second.")]
-        public bool AbsoluteHeat = true;
-        [Tooltip("The Weapon will cool by this many units (or this fraction of MaxHeat) per second, unless overheated.")]
-        public float CoolRate = 75f;
-        [Tooltip("Once overheated, this many seconds must pass before the Weapon will start cooling again.")]
-        public float OverheatDuration = 2f;
-        [Tooltip("The amount of heat that this Tool has when instantiated.  Must be <= MaxHeat.")]
-        public int StartingHeat;
+        public OverheatToolInfo Info;
 
         // API INTERFACE
         public float CurrentHeat { get; private set; } = 0f;
@@ -45,19 +28,20 @@ namespace Danware.Unity.Inventory {
 
         // EVENT HANDLERS
         private void Awake() {
-            Assert.IsTrue(StartingHeat <= MaxHeat, $"{nameof(OverheatTool)} {transform.parent.name}.{name} was started with {nameof(this.StartingHeat)} heat but it can only store a max of {MaxHeat}!");
+            Assert.IsNotNull(Info, $"{GetType().Name} {transform.parent?.name}.{name} must be associated with a {nameof(Danware.Unity.Inventory.OverheatToolInfo)}!");
+            Assert.IsTrue(Info.StartingHeat <= Info.MaxHeat, $"{GetType().Name} {transform.parent?.name}.{name} was started with {nameof(this.Info.StartingHeat)} heat but it can only store a max of {this.Info.MaxHeat}!");
 
             // Initialize heat
-            CurrentHeat = StartingHeat;
+            CurrentHeat = Info.StartingHeat;
 
             // Register Tool events
             _tool = GetComponent<Tool>();
             _tool.Using.AddListener(() =>
-                _tool.Using.Cancel = CurrentHeat > MaxHeat);
+                _tool.Using.Cancel = CurrentHeat > Info.MaxHeat);
             _tool.Used.AddListener(() => {
-                float heat = HeatGeneratedPerUse * (AbsoluteHeat ? 1f : MaxHeat);
+                float heat = Info.HeatGeneratedPerUse * (Info.AbsoluteHeat ? 1f : Info.MaxHeat);
                 CurrentHeat += heat;
-                if (CurrentHeat > MaxHeat) {
+                if (CurrentHeat > Info.MaxHeat) {
                     OverheatStateChanged.Invoke(true);
                     _overheatRoutine = StartCoroutine(doOverheatDuration());
                 }
@@ -66,14 +50,14 @@ namespace Danware.Unity.Inventory {
         private void Update() {
             // Cool this Tool, unless it is overheated
             if (CurrentHeat > 0 && _overheatRoutine == null) {
-                float rate = AbsoluteHeat ? CoolRate : CoolRate * MaxHeat;
+                float rate = Info.AbsoluteHeat ? Info.CoolRate : Info.CoolRate * Info.MaxHeat;
                 CurrentHeat = Mathf.Max(0, CurrentHeat - Time.deltaTime * rate);
             }
         }
 
         // HELPERS
         private IEnumerator doOverheatDuration() {
-            yield return new WaitForSeconds(OverheatDuration);
+            yield return new WaitForSeconds(Info.OverheatDuration);
             OverheatStateChanged.Invoke(false);
 
             _overheatRoutine = null;

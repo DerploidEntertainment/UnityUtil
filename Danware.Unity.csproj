@@ -58,6 +58,13 @@
     <Compile Include="CancellableUnityEvent.cs" />
     <Compile Include="Destroyer.cs" />
     <Compile Include="HoverForce.cs" />
+    <Compile Include="Inventory\AmmoToolInfo.cs" />
+    <Compile Include="Inventory\HurtWeaponInfo.cs" />
+    <Compile Include="Inventory\OverheatToolInfo.cs" />
+    <Compile Include="Inventory\ProjectileToolInfo.cs" />
+    <Compile Include="Inventory\PushToolInfo.cs" />
+    <Compile Include="Inventory\ToolInfo.cs" />
+    <Compile Include="Inventory\WeaponInfo.cs" />
     <Compile Include="Updating\IFixedUpdatable.cs" />
     <Compile Include="Movement\MouseLook.cs" />
     <Compile Include="Physics2DExtensions.cs" />
@@ -87,7 +94,7 @@
     <Compile Include="Inventory\HurtWeapon.cs" />
     <Compile Include="Inventory\InventoryCollectible.cs" />
     <Compile Include="Inventory\ProjectileTool.cs" />
-    <Compile Include="Inventory\PushWeapon.cs" />
+    <Compile Include="Inventory\PushTool.cs" />
     <Compile Include="Inventory\Weapon.cs" />
     <Compile Include="DontDestroy.cs" />
     <Compile Include="PhysTarget.cs" />

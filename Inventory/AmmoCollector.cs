@@ -30,7 +30,7 @@ namespace Danware.Unity.Inventory {
             // Try to find a Weapon with a matching name in the Inventory and adjust its ammo
             bool ammoUsed = false;
             AmmoTool tool = Inventory.GetComponentsInChildren<AmmoTool>(true)
-                                     .SingleOrDefault(t => t.AmmoTypeName == ac.AmmoTypeName);
+                                     .SingleOrDefault(t => t.Info.AmmoTypeName == ac.AmmoTypeName);
             if (tool != null) {
                 int leftover = tool.Load(ac.Ammo);
                 ammoUsed = (leftover < ac.Ammo);

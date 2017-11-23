@@ -1,12 +1,8 @@
-﻿using UnityEngine;
-using U = UnityEngine;
-using UnityEngine.Events;
+﻿using System;
+using UnityEngine;
 using UnityEngine.Assertions;
-
-using System;
-using System.Linq;
-using System.Collections;
-using System.Collections.Generic;
+using UnityEngine.Events;
+using U = UnityEngine;
 
 namespace Danware.Unity.Inventory {
 
@@ -21,34 +17,23 @@ namespace Danware.Unity.Inventory {
         private float _accuracyLerpT = 0f;
 
         // INSPECTOR FIELDS
-        [Space]
-        public LayerMask AttackLayerMask;
-        public float Range;
-
-        [Header("Accuracy")]
-        [Range(0f, 90f)]
-        public float InitialConeHalfAngle = 0f;
-        [Range(0f, 90f)]
-        public float FinalConeHalfAngle = 0f;
-        [Tooltip("For automatic Weapons, the accuracy cone's half angle will lerp from the initial to the final value in this many seconds")]
-        public float AccuracyLerpTime = 1f;
-        [Tooltip("If true, then all colliders within Range and on the AttackLayerMask will be attacked, using the relatively expensive Physics.RaycastAll() method.  If false, only the closest collider will be attacked, using the cheaper Physics.Raycast() method.")]
-        public bool RaycastAll = false;
+        public WeaponInfo Info;
 
         // API INTERFACE
         public AttackEvent Attacked = new AttackEvent();
-        public float AccuracyConeHalfAngle => Mathf.LerpAngle(InitialConeHalfAngle, FinalConeHalfAngle, _accuracyLerpT);
+        public float AccuracyConeHalfAngle => Mathf.LerpAngle(Info.InitialConeHalfAngle, Info.FinalConeHalfAngle, _accuracyLerpT);
 
         // EVENT HANDLERS
         private void Awake() {
+            Assert.IsNotNull(Info, $"{GetType().Name} {transform.parent?.name}.{name} must be associated with a {nameof(Danware.Unity.Inventory.WeaponInfo)}!");
+
             // Register Tool events
             _tool = GetComponent<Tool>();
-            _tool.Using.AddListener(() =>
-                _accuracyLerpT = 0f);
+            _tool.Using.AddListener(() => _accuracyLerpT = 0f);
             _tool.Used.AddListener(attack);
         }
         private void OnDrawGizmos() =>
-            Gizmos.DrawLine(transform.position, transform.position + Range * transform.forward);
+            Gizmos.DrawLine(transform.position, transform.position + Info.Range * transform.forward);
 
         // HELPERS
         private void attack() {
@@ -62,16 +47,16 @@ namespace Danware.Unity.Inventory {
             // Raycast into the scene with the given LayerMask
             // Raise the Attacked event, allowing other components to select which components to affect
             RaycastHit[] hits;
-            if (RaycastAll)
-                hits = Physics.RaycastAll(ray, Range, AttackLayerMask);
+            if (Info.RaycastAll)
+                hits = Physics.RaycastAll(ray, Info.Range, Info.AttackLayerMask);
             else {
-                bool somethingHit = Physics.Raycast(ray, out RaycastHit hitInfo, Range, AttackLayerMask);
+                bool somethingHit = Physics.Raycast(ray, out RaycastHit hitInfo, Info.Range, Info.AttackLayerMask);
                 hits = somethingHit ? new[] { hitInfo } : new RaycastHit[0];
             }
             Attacked.Invoke(ray.direction, hits);
 
             // Adjust accuracy for the next attack, assuming the base Tool is automatic
-            _accuracyLerpT = (AccuracyLerpTime == 0 ? 1f : _accuracyLerpT + (1f / _tool.AutomaticUseRate) / AccuracyLerpTime);
+            _accuracyLerpT = (Info.AccuracyLerpTime == 0 ? 1f : _accuracyLerpT + (1f / _tool.Info.AutomaticUseRate) / Info.AccuracyLerpTime);
         }
 
     }

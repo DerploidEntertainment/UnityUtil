@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Linq;
+using UnityEngine.Assertions;
 
 namespace Danware.Unity.Inventory {
     
@@ -9,15 +10,12 @@ namespace Danware.Unity.Inventory {
         private Weapon _weapon;
 
         // INSPECTOR FIELDS
-        public float Damage = 10f;
-        public Health.ChangeMode HealthChangeMode = Health.ChangeMode.Absolute;
-        [Tooltip("If true, then only the closest Health attacked by this Weapon will be damaged.  If false, then all attacked Healths will be damaged.")]
-        public bool OnlyHurtClosest = true;
-        [Tooltip("If a Collider has any of these tags, then it will be ignored, allowing Colliders inside/behind it to be affected.")]
-        public string[] IgnoreColliderTags;
+        public HurtWeaponInfo Info;
 
         // EVENT HANDLERS
         private void Awake() {
+            Assert.IsNotNull(Info, $"{GetType().Name} {transform.parent?.name}.{name} must be associated with a {nameof(Danware.Unity.Inventory.HurtWeaponInfo)}!");
+
             _weapon = GetComponent<Weapon>();
             _weapon.Attacked.AddListener(hurt);
         }
@@ -25,14 +23,14 @@ namespace Danware.Unity.Inventory {
             // If we should only damage the closest Health, then scan for the Health to damage
             // through the hit Colliders in increasing order of distance, ignoring Colliders with the specified tags
             // Otherwise, damage the Healths on all Colliders that are not ignored with one of the specified tags
-            RaycastHit[] newHits = (OnlyHurtClosest && hits.Length > 0) ? hits.OrderBy(h => h.distance).ToArray() : hits;
+            RaycastHit[] newHits = (Info.OnlyHurtClosest && hits.Length > 0) ? hits.OrderBy(h => h.distance).ToArray() : hits;
             for (int h = 0; h < newHits.Length; ++h) {
                 RaycastHit hit = newHits[h];
-                if (!IgnoreColliderTags.Contains(hit.collider.tag)) {
+                if (!Info.IgnoreColliderTags.Contains(hit.collider.tag)) {
                     Health health = hit.collider.attachedRigidbody?.GetComponent<Health>();
                     if (health != null) {
-                        health.Damage(Damage, HealthChangeMode);
-                        if (OnlyHurtClosest && hits.Length > 0)
+                        health.Damage(Info.Damage, Info.HealthChangeMode);
+                        if (Info.OnlyHurtClosest && hits.Length > 0)
                             break;
                     }
                 }
