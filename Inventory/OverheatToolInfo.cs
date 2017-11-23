@@ -2,6 +2,7 @@
 
 namespace Danware.Unity.Inventory {
 
+    [CreateAssetMenu(fileName = "overheat-tool", menuName = "UnityUtil/OverheatToolInfo")]
     public class OverheatToolInfo : ScriptableObject {
 
         [Tooltip("The maximum amount of heat that can be generated before the Weapon becomes unusable (overheats).")]

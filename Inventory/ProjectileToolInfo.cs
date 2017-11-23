@@ -2,6 +2,7 @@
 
 namespace Danware.Unity.Inventory {
 
+    [CreateAssetMenu(fileName = "projectile-tool", menuName = "UnityUtil/ProjectileToolInfo")]
     public class ProjectileToolInfo : ScriptableObject {
 
         public GameObject ProjectilePrefab;

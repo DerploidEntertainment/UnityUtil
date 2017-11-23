@@ -8,6 +8,7 @@ namespace Danware.Unity.Inventory {
         FullyAutomatic,
     }
 
+    [CreateAssetMenu(fileName = "tool", menuName = "UnityUtil/ToolInfo")]
     public class ToolInfo : ScriptableObject {
 
         public AutomaticMode AutomaticMode;

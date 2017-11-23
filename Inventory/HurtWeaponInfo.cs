@@ -2,6 +2,7 @@
 
 namespace Danware.Unity.Inventory {
 
+    [CreateAssetMenu(fileName = "hurt-weapon", menuName = "UnityUtil/HurtWeaponInfo")]
     public class HurtWeaponInfo : ScriptableObject {
 
         [Tooltip("Attacked " + nameof(Danware.Unity.Health) + "s will be damaged by this amount.  How this amount is applied depends on the value of " + nameof(HealthChangeMode) + ".")]

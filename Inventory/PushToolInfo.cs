@@ -2,6 +2,7 @@
 
 namespace Danware.Unity.Inventory {
 
+    [CreateAssetMenu(fileName = "push-tool", menuName = "UnityUtil/PushToolInfo")]
     public class PushToolInfo : ScriptableObject {
 
         // INSPECTOR FIELDS

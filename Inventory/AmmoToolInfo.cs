@@ -2,6 +2,7 @@
 
 namespace Danware.Unity.Inventory {
 
+    [CreateAssetMenu(fileName = "ammo-tool", menuName = "UnityUtil/AmmoToolInfo")]
     public class AmmoToolInfo : ScriptableObject {
 
         [Tooltip("A case-insensitive string to identify different types of ammo for collecting (e.g., 'Pistol').")]

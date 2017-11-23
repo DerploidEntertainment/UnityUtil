@@ -2,6 +2,7 @@
 
 namespace Danware.Unity.Inventory {
 
+    [CreateAssetMenu(fileName = "weapon", menuName = "UnityUtil/WeaponInfo")]
     public class WeaponInfo : ScriptableObject {
 
         [Tooltip("Only colliders matching this layer mask will be attacked.")]
