@@ -105,7 +105,6 @@
     <Compile Include="CollisionSounds.cs" />
     <Compile Include="Detonator.cs" />
     <Compile Include="Health.cs" />
-    <Compile Include="Inventory\Hotbar.cs" />
     <Compile Include="Inventory\Inventory.cs" />
     <Compile Include="Lifter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
