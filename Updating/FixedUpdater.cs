@@ -23,8 +23,8 @@ namespace Danware.Unity.Updating {
         /// <inheritdoc/>
         public void FixedUpdateAll() {
             IFixedUpdatable[] updatables = _updatables.ToArray();
-            foreach (IUpdatable fu in updatables)
-                fu.UpdatableUpdate();
+            foreach (IFixedUpdatable fu in updatables)
+                fu.UpdatableFixedUpdate();
         }
 
     }

@@ -9,11 +9,11 @@ namespace Danware.Unity.Updating {
 
         private void OnEnable() {
             FixedUpdater.Instance.Register(this);
-            updatableOnEnable();
+            fixedUpdatableOnEnable();
         }
         private void OnDisable() {
             FixedUpdater.Instance.Unregister(this);
-            updatableOnDisable();
+            fixedUpdatableOnDisable();
         }
 
         /// <summary>
@@ -21,13 +21,13 @@ namespace Danware.Unity.Updating {
         /// Since the base <see cref="Updatable"/> already has an <see cref="this.OnEnable"/> method,
         /// logic that would otherwise have been placed in a MonoBehaviour's OnEnable() method should be placed here.
         /// </summary>
-        protected virtual void updatableOnEnable() { }
+        protected virtual void fixedUpdatableOnEnable() { }
         /// <summary>
         /// This function is called when the object becomes disabled or inactive.
         /// Since the base <see cref="Updatable"/> already has an <see cref="this.OnDisable"/> method,
         /// logic that would otherwise have been placed in a MonoBehaviour's OnDisable() method should be placed here.
         /// </summary>
-        protected virtual void updatableOnDisable() { }
+        protected virtual void fixedUpdatableOnDisable() { }
 
     }
 
