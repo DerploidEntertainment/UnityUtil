@@ -1,7 +1,4 @@
-﻿using UnityEngine;
-using UnityEngine.Events;
-
-namespace Danware.Unity.Triggers {
+﻿namespace Danware.Unity.Triggers {
 
     public class ToggleTrigger : TriggerCondition {
 
