@@ -56,6 +56,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CancellableUnityEvent.cs" />
+    <Compile Include="ConditionalLogger.cs" />
     <Compile Include="DependencyInjection\DependencyInjector.cs" />
     <Compile Include="DependencyInjection\ServiceCollectionSingleton.cs" />
     <Compile Include="DependencyInjection\IDependsOn.cs" />
