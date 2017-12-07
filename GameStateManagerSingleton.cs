@@ -1,13 +1,16 @@
 ﻿using Danware.Unity.Input;
 using UnityEngine;
+using UnityEngine.Assertions;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 
 namespace Danware.Unity {
 
+    [DisallowMultipleComponent]
     public class GameStateManagerSingleton : MonoBehaviour {
 
         // HIDDEN FIELDS
+        private static int s_refs = 0;
 
         // INSPECTOR INTERFACE
         [Tooltip("The input to use to toggle the paused state of the game.  If not set, then the game can only be paused programmatically.")]
@@ -38,6 +41,12 @@ namespace Danware.Unity {
         }
         public void Quit() => Application.Quit();
 
+        // EVENT HANDLERS
+        private void Awake() {
+            // Make sure this component is a singleton
+            ++s_refs;
+            Assert.IsTrue(s_refs == 1, $"There can be only one instance of {typeof(GameStateManagerSingleton)} in a scene!  You have {s_refs}!");
+        }
         private void Update() {
             if (TogglePauseInput?.Started() ?? false)
                 SetPaused(!IsPaused);

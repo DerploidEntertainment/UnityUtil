@@ -7,13 +7,13 @@ namespace Danware.Unity.Updating {
     public class UpdaterSingleton : MonoBehaviour {
 
         // HIDDEN FIELDS
-        private static int s_refCount = 0;
+        private static int s_refs = 0;
 
         // EVENT HANDLERS
         private void Awake() {
             // Make sure this component is a singleton
-            ++s_refCount;
-            Assert.IsTrue(s_refCount == 1, $"There can be only one instance of {typeof(UpdaterSingleton)} in a scene!  You have {s_refCount}!");
+            ++s_refs;
+            Assert.IsTrue(s_refs == 1, $"There can be only one instance of {typeof(UpdaterSingleton)} in a scene!  You have {s_refs}!");
         }
 
         private void Update()      => Updater.Instance.UpdateAll();

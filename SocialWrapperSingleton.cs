@@ -1,7 +1,8 @@
-﻿using UnityEngine;
-using UnityEngine.SocialPlatforms;
+﻿using System;
+using UnityEngine;
+using UnityEngine.Assertions;
 using UnityEngine.Events;
-using System;
+using UnityEngine.SocialPlatforms;
 
 namespace Danware.Unity {
 
@@ -14,9 +15,19 @@ namespace Danware.Unity {
 
     public class SocialWrapperSingleton : MonoBehaviour {
 
+        // HIDDEN FIELDS
+        private static int s_refs = 0;
+
+        // INSPECTOR FIELDS
         public UserEvent AuthenticationFailed = new UserEvent();
         public UserEvent AuthenticationSucceeded = new UserEvent();
 
+        // EVENT HANDLERS
+        private void Awake() {
+            // Make sure this component is a singleton
+            ++s_refs;
+            Assert.IsTrue(s_refs == 1, $"There can be only one instance of {typeof(SocialWrapperSingleton)} in a scene!  You have {s_refs}!");
+        }
         private void Start() {
             ILocalUser user = Social.localUser;
             user.Authenticate((success, errors) => {

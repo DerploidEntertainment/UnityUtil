@@ -1,95 +1,75 @@
 ﻿using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.Assertions;
 
 using System;
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 
 namespace Danware.Unity.Inventory {
-    
+
+    [Serializable]
+    public class InventoryItemEvent : UnityEvent<InventoryCollectible> { }
+
     public class Inventory : MonoBehaviour {
-        // ABSTRACT DATA TYPES
-        public class InventoryEventArgs : EventArgs {
-            public InventoryEventArgs(Inventory inventory) {
-                Inventory = inventory;
-            }
-            public Inventory Inventory { get; }
-        }
-        public class InventoryItemEventArgs : InventoryEventArgs {
-            public InventoryItemEventArgs(Inventory inventory, InventoryCollectible item) : base(inventory) {
-                Collectible = item;
-            }
-            public InventoryCollectible Collectible { get; }
-        }
 
         // HIDDEN FIELDS
-        private IList<InventoryCollectible> _collectibles = new List<InventoryCollectible>();
-        private EventHandler<InventoryItemEventArgs> _collectedInvoker;
-        private EventHandler<InventoryItemEventArgs> _droppedInvoker;
+        private HashSet<InventoryCollectible> _collectibles = new HashSet<InventoryCollectible>();
 
         // INSPECTOR FIELDS
         public int MaxItems = 10;
-        [Tooltip("If dropped, items will take this many seconds to become collectible again")]
+        [Tooltip("If true, then this Inventory can collect multiple items with the same name.")]
+        public bool AllowMultiple = false;
+        [Tooltip("If dropped, items will take this many seconds to become collectible again.")]
         public float DropRefactoryPeriod = 1.5f;
         public Vector3 LocalDropOffset = Vector3.one;
-        public event EventHandler<InventoryItemEventArgs> ItemCollected {
-            add { _collectedInvoker += value; }
-            remove { _collectedInvoker -= value; }
-        }
-        public event EventHandler<InventoryItemEventArgs> ItemDropped {
-            add { _droppedInvoker += value; }
-            remove { _droppedInvoker -= value; }
-        }
+        public InventoryItemEvent ItemCollected = new InventoryItemEvent();
+        public InventoryItemEvent ItemDropped = new InventoryItemEvent();
 
         // INTERFACE FUNCTIONS
-        public ReadOnlyCollection<GameObject> Items {
-            get {
-                IList<GameObject> items = _collectibles.Select(c => c.ItemRoot).ToList();
-                return new ReadOnlyCollection<GameObject>(items);
-            }
-        }
+        public InventoryCollectible[] GetCollectibles() => _collectibles.ToArray();
+        public GameObject[] GetItems() => _collectibles.Select(c => c.ItemRoot).ToArray();
         public bool Collect(InventoryCollectible collectible) {
             // Make sure an actual Collectible was provided, and that there is room for it
-            Assert.IsNotNull(collectible, $"{nameof(Inventory)} {transform.parent.name}.{name} was told to collect null in frame {Time.frameCount}!");
+            Assert.IsNotNull(collectible, $"{GetType().Name} {transform.parent.name}.{name} cannot collect null!");
 
-            // Collect it, if there is room
-            bool canCollect = (_collectibles.Count < MaxItems && !_collectibles.Contains(collectible));
-            if (canCollect)
-                doCollect(collectible);
+            // If there is no room for the item, then just return that it wasn't collected
+            if (_collectibles.Count == MaxItems)
+                return false;
+            if (!AllowMultiple && _collectibles.Select(c => c.ItemRoot.name).Contains(collectible.ItemRoot.name))
+                return false;
 
-            return canCollect;
-        }
-        public void Drop(InventoryCollectible collectible) {
-            // Make sure a valid collectible was provided
-            Assert.IsNotNull(collectible, $"{nameof(Inventory)} {transform.parent.name}.{name} cannot drop null!");
-            Assert.IsTrue(_collectibles.Contains(collectible), $"{nameof(Inventory)} {transform.parent.name}.{name} was told to drop an {nameof(InventoryCollectible)} that it never collected!");
-
-            StartCoroutine(doDrop(collectible));
-        }
-        public void DropAll() {
-            IList<InventoryCollectible> collectibles = _collectibles;
-            collectibles.DoWith(c => doDrop(c));
-        }
-
-        // HELPERS
-        private void doCollect(InventoryCollectible collectible) {
-            // Place the collectible in the Inventory
-            _collectibles.Add(collectible);
-
-            // Do collect actions
+            // Otherwise, do collect actions
             Transform itemTrans = collectible.ItemRoot.transform;
             itemTrans.parent = transform;
             itemTrans.localPosition = new Vector3(0f, 0f, 0f);
             itemTrans.localRotation = Quaternion.identity;
             collectible.Root.SetActive(false);
 
+            // Place the collectible in the Inventory
+            _collectibles.Add(collectible);
+
             // Raise the item collected event
-            Debug.Log($"{nameof(Inventory)} {name} collected {collectible.ItemRoot.name} in frame {Time.frameCount}");
-            var args = new InventoryItemEventArgs(this, collectible);
-            _collectedInvoker?.Invoke(this, args);
+            Debug.Log($"{GetType().Name} {transform.parent.name}.{name} collected {collectible.ItemRoot.name} in frame {Time.frameCount}");
+            ItemCollected.Invoke(collectible);
+
+            return true;
         }
+        public void Drop(InventoryCollectible collectible) {
+            // Make sure a valid collectible was provided
+            Assert.IsNotNull(collectible, $"{GetType().Name} {transform.parent.name}.{name} cannot drop null!");
+            Assert.IsTrue(_collectibles.Contains(collectible), $"{GetType().Name} {transform.parent.name}.{name} was told to drop an {typeof(InventoryCollectible).Name} that it never collected!");
+
+            StartCoroutine(doDrop(collectible));
+        }
+        public void DropAll() {
+            InventoryCollectible[] collectibles = _collectibles.ToArray();
+            for (int c = 0; c < collectibles.Length; ++c)
+                StartCoroutine(doDrop(collectibles[c]));
+        }
+
+        // HELPERS
         private IEnumerator doDrop(InventoryCollectible collectible) {
             // Drop it as a new Collectible
             collectible.Root.SetActive(true);
@@ -101,14 +81,15 @@ namespace Danware.Unity.Inventory {
             _collectibles.Remove(collectible);
 
             // Raise the item dropped event
-            Debug.Log($"{nameof(Inventory)} {name} dropped {collectible.ItemRoot.name} in frame {Time.frameCount}");
-            var args = new InventoryItemEventArgs(this, collectible);
-            _droppedInvoker?.Invoke(this, args);
+            Debug.Log($"{GetType().Name} {transform.parent.name}.{name} dropped {collectible.ItemRoot.name} in frame {Time.frameCount}");
+            ItemDropped.Invoke(collectible);
 
             // Prevent its re-collection for the requested duration
-            collectible.CollidersToToggle.DoWith(c => c.enabled = false);
+            for (int c = 0; c < collectible.CollidersToToggle.Length; ++c)
+                collectible.CollidersToToggle[c].enabled = false;
             yield return new WaitForSeconds(DropRefactoryPeriod);
-            collectible.CollidersToToggle.DoWith(c => c.enabled = true);
+            for (int c = 0; c < collectible.CollidersToToggle.Length; ++c)
+                collectible.CollidersToToggle[c].enabled = true;
         }
 
     }
