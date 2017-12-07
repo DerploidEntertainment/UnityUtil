@@ -1,26 +1,57 @@
-﻿namespace Danware.Unity.Updating {
+﻿using System;
+
+namespace Danware.Unity.Updating {
 
     public interface IUpdater {
 
         /// <summary>
-        /// Register an <see cref="IUpdatable"/> to receive updates every frame.
+        /// Register an <see cref="Action"/> to be called every frame for the component with a given instance ID.
         /// </summary>
-        /// <param name="updatable">The <see cref="IUpdatable"/> to receive updates every frame.</param>
-        /// <returns>
-        /// <see langword="true"/> if <paramref name="updatable"/> is added to the set of <see cref="IUpdatable"/>s; 
-        /// <see langword="false"/> if it was already present.
-        /// </returns>
-        bool Register(IUpdatable updatable);
+        /// <param name="instanceId">The instance ID of the component that will be updated every frame (returned by <see cref="Unity.Object.GetInstanceID"/>).</param>
+        /// <param name="updateAction">The <see cref="Action"/> to be called every frame.</param>
+        void RegisterUpdate(int instanceId, Action updateAction);
         /// <summary>
-        /// Unregister an <see cref="IUpdatable"/> from receiving updates every frame.
+        /// Unregister an <see cref="Action"/> from being called every frame for the component with the specified instance ID.
         /// </summary>
-        /// <param name="updatable">The <see cref="IUpdatable"/> that no longer needs to receive updates every frame.</param>
-        /// <returns><see langword="true"/> if <paramref name="updatable"/> is successfully found and removed; otherwise, <see langword="false"/>.</returns>
-        bool Unregister(IUpdatable updatable);
+        /// <param name="instanceId">The instance ID of the component that no longer needs to be updated every frame (returned by <see cref="Unity.Object.GetInstanceID"/>).</param>
+        void UnregisterUpdate(int instanceId);
+
         /// <summary>
-        /// Calls the <see cref="IUpdatable.UpdatableUpdate"/> method of every registered <see cref="IUpdatable"/>.
+        /// Register an <see cref="Action"/> to be called physics every frame for the component with the specified instance ID.
+        /// </summary>
+        /// <param name="instanceId">The instance ID of the component that will be updated every physics frame (returned by <see cref="Unity.Object.GetInstanceID"/>).</param>
+        /// <param name="fixedUpdateAction">The <see cref="Action"/> to be called every physics frame.</param>
+        void RegisterFixedUpdate(int instanceId, Action fixedUpdateAction);
+        /// <summary>
+        /// Unregister an <see cref="Action"/> from being called every physics frame for the component with the specified instance ID.
+        /// </summary>
+        /// <param name="instanceId">The instance ID of the component that no longer needs to be updated every physics frame (returned by <see cref="Unity.Object.GetInstanceID"/>).</param>
+        void UnregisterFixedUpdate(int instanceId);
+
+        /// <summary>
+        /// Register an <see cref="Action"/> to be called at the end of every frame for the component with the specified instance ID.
+        /// </summary>
+        /// <param name="instanceId">The instance ID of the component that will be updated at the end of every frame (returned by <see cref="Unity.Object.GetInstanceID"/>).</param>
+        /// <param name="lateUpdateAction">The <see cref="Action"/> to be called at the end of every frame.</param>
+        void RegisterLateUpdate(int instanceId, Action lateUpdateAction);
+        /// <summary>
+        /// Unregister an <see cref="Action"/> from being called at the end of every frame for the component with the specified instance ID.
+        /// </summary>
+        /// <param name="instanceId">The instance ID of the component that no longer needs to be updated at the end of every frame (returned by <see cref="Unity.Object.GetInstanceID"/>).</param>
+        void UnregisterLateUpdate(int instanceId);
+
+        /// <summary>
+        /// Calls the Update action associated with every registered <see cref="IUpdatable"/>.
         /// </summary>
         void UpdateAll();
+        /// <summary>
+        /// Calls the FixedUpdate action associated with every registered <see cref="IUpdatable"/>.
+        /// </summary>
+        void FixedUpdateAll();
+        /// <summary>
+        /// Calls the LateUpdate action associated with every registered <see cref="IUpdatable"/>.
+        /// </summary>
+        void LateUpdateAll();
 
     }
 
