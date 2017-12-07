@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
@@ -18,7 +17,7 @@ namespace Danware.Unity.DependencyInjection {
     public class ServiceCollectionSingleton : MonoBehaviour {
 
         // HIDDEN FIELDS
-        private static int s_refCount = 0;
+        private static int s_refs = 0;
         private static IDictionary<Type, MonoBehaviour> s_services = new Dictionary<Type, MonoBehaviour>();
 
         // INSPECTOR FIELDS
@@ -27,8 +26,8 @@ namespace Danware.Unity.DependencyInjection {
         // EVENT HANDLERS
         private void Awake() {
             // Make sure this component is a singleton
-            ++s_refCount;
-            Assert.IsTrue(s_refCount == 1, $"There can be only one instance of {typeof(ServiceCollectionSingleton)} in a scene!  You have {s_refCount}!");
+            ++s_refs;
+            Assert.IsTrue(s_refs == 1, this.GetSingletonAssertion(s_refs));
 
             // Add every service specified in the Inspector to the service collection
             // Each service instance will be associated with the named Type (which could be, e.g., some base class or interface type)

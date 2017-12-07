@@ -26,17 +26,17 @@ namespace Danware.Unity {
         private void Awake() {
             // Make sure this component is a singleton
             ++s_refs;
-            Assert.IsTrue(s_refs == 1, $"There can be only one instance of {typeof(SocialWrapperSingleton)} in a scene!  You have {s_refs}!");
+            Assert.IsTrue(s_refs == 1, this.GetSingletonAssertion(s_refs));
         }
         private void Start() {
             ILocalUser user = Social.localUser;
             user.Authenticate((success, errors) => {
                 if (!success) {
-                    Debug.Log("Authentication failed!");
+                    this.Log("Authentication failed!");
                     AuthenticationFailed.Invoke(null, errors);
                 }
                 else {
-                    Debug.Log("Authentication succeeded!");
+                    this.Log("Authentication succeeded!");
                     AuthenticationSucceeded.Invoke(user.id, null);
                 }
             });

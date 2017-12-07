@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.Assertions;
+using UnityEngine.Events;
 
 namespace Danware.Unity.Triggers {
 
@@ -41,24 +41,24 @@ namespace Danware.Unity.Triggers {
 
         // API INTERFACE
         public void StartTimer() {
-            Assert.IsTrue(gameObject.activeInHierarchy, $"Cannot stop {nameof(TimerTrigger)} {transform.parent.name}.{name} because its GameObject is inactive!");
-            Assert.IsTrue(enabled, $"Cannot stop {nameof(TimerTrigger)} {transform.parent.name}.{name} because it is disabled!");
+            Assert.IsTrue(gameObject.activeInHierarchy, $"Cannot stop {this.GetHierarchyNameWithType()} because its GameObject is inactive!");
+            Assert.IsTrue(enabled, $"Cannot stop {this.GetHierarchyNameWithType()} because it is disabled!");
             if (_timerCoroutine != null)
                 return;
 
             doStart();
         }
         public void RestartTimer() {
-            Assert.IsTrue(gameObject.activeInHierarchy, $"Cannot stop {nameof(TimerTrigger)} {transform.parent.name}.{name} because its GameObject is inactive!");
-            Assert.IsTrue(enabled, $"Cannot stop {nameof(TimerTrigger)} {transform.parent.name}.{name} because it is disabled!");
+            Assert.IsTrue(gameObject.activeInHierarchy, $"Cannot stop {this.GetHierarchyNameWithType()} because its GameObject is inactive!");
+            Assert.IsTrue(enabled, $"Cannot stop {this.GetHierarchyNameWithType()} because it is disabled!");
 
             if (_timerCoroutine != null)
                 doStop();
             doStart();
         }
         public void StopTimer() {
-            Assert.IsTrue(gameObject.activeInHierarchy, $"Cannot stop {nameof(TimerTrigger)} {transform.parent.name}.{name} because its GameObject is inactive!");
-            Assert.IsTrue(enabled, $"Cannot stop {nameof(TimerTrigger)} {transform.parent.name}.{name} because it is disabled!");
+            Assert.IsTrue(gameObject.activeInHierarchy, $"Cannot stop {this.GetHierarchyNameWithType()} because its GameObject is inactive!");
+            Assert.IsTrue(enabled, $"Cannot stop {this.GetHierarchyNameWithType()} because it is disabled!");
 
             if (_timerCoroutine == null)
                 return;
@@ -68,7 +68,7 @@ namespace Danware.Unity.Triggers {
 
         // HELPERS
         private void doStart() {
-            Debug.Log($"{nameof(TimerTrigger)} {name} starting in frame {Time.frameCount}.");
+            this.Log(" starting.");
             Starting.Invoke();
 
             _timerCoroutine = StartCoroutine(runTimer());
@@ -77,20 +77,20 @@ namespace Danware.Unity.Triggers {
             StopCoroutine(_timerCoroutine);
             _timerCoroutine = null;
 
-            Debug.Log($"{nameof(TimerTrigger)} {name} stopped in frame {Time.frameCount}.");
+            this.Log($" stopped.");
             Stopped.Invoke();
         }
         private IEnumerator runTimer() {
             int numTicks = 1;
             do {
                 yield return new WaitForSeconds(TimeBeforeTick);
-                Debug.Log($"{nameof(TimerTrigger)} {name}: tick {numTicks} / {(TickForever ? "infinity" : NumTicks.ToString())}.");
+                this.Log($": tick {numTicks} / {(TickForever ? "infinity" : NumTicks.ToString())}.");
                 Tick.Invoke(numTicks);
                 ++numTicks;
             } while (TickForever || numTicks <= NumTicks);
 
             // If the desired number of ticks was reached, stop the Timer
-            Debug.Log($"{nameof(TimerTrigger)} {name} reached {NumTicks} ticks in frame {Time.frameCount}.");
+            this.Log($" reached {NumTicks} ticks.");
             NumTicksReached.Invoke();
 
             if (_timerCoroutine != null)

@@ -1,11 +1,10 @@
-﻿using UnityEngine;
-using UnityEngine.Events;
-using UnityEngine.Assertions;
-
-using System;
-using System.Linq;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
+using UnityEngine.Assertions;
+using UnityEngine.Events;
 
 namespace Danware.Unity.Inventory {
 
@@ -32,7 +31,7 @@ namespace Danware.Unity.Inventory {
         public GameObject[] GetItems() => _collectibles.Select(c => c.ItemRoot).ToArray();
         public bool Collect(InventoryCollectible collectible) {
             // Make sure an actual Collectible was provided, and that there is room for it
-            Assert.IsNotNull(collectible, $"{GetType().Name} {transform.parent.name}.{name} cannot collect null!");
+            Assert.IsNotNull(collectible, $"{this.GetHierarchyNameWithType()} cannot collect null!");
 
             // If there is no room for the item, then just return that it wasn't collected
             if (_collectibles.Count == MaxItems)
@@ -51,15 +50,15 @@ namespace Danware.Unity.Inventory {
             _collectibles.Add(collectible);
 
             // Raise the item collected event
-            Debug.Log($"{GetType().Name} {transform.parent.name}.{name} collected {collectible.ItemRoot.name} in frame {Time.frameCount}");
+            this.Log($" collected {collectible.ItemRoot?.GetHierarchyName()}");
             ItemCollected.Invoke(collectible);
 
             return true;
         }
         public void Drop(InventoryCollectible collectible) {
             // Make sure a valid collectible was provided
-            Assert.IsNotNull(collectible, $"{GetType().Name} {transform.parent.name}.{name} cannot drop null!");
-            Assert.IsTrue(_collectibles.Contains(collectible), $"{GetType().Name} {transform.parent.name}.{name} was told to drop an {typeof(InventoryCollectible).Name} that it never collected!");
+            Assert.IsNotNull(collectible, $"{this.GetHierarchyNameWithType()} cannot drop null!");
+            Assert.IsTrue(_collectibles.Contains(collectible), $"{this.GetHierarchyNameWithType()} was told to drop an {typeof(InventoryCollectible)} that it never collected!");
 
             StartCoroutine(doDrop(collectible));
         }
@@ -81,7 +80,7 @@ namespace Danware.Unity.Inventory {
             _collectibles.Remove(collectible);
 
             // Raise the item dropped event
-            Debug.Log($"{GetType().Name} {transform.parent.name}.{name} dropped {collectible.ItemRoot.name} in frame {Time.frameCount}");
+            this.Log($" dropped {collectible.ItemRoot.GetHierarchyName()}");
             ItemDropped.Invoke(collectible);
 
             // Prevent its re-collection for the requested duration

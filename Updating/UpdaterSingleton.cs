@@ -13,7 +13,7 @@ namespace Danware.Unity.Updating {
         private void Awake() {
             // Make sure this component is a singleton
             ++s_refs;
-            Assert.IsTrue(s_refs == 1, $"There can be only one instance of {typeof(UpdaterSingleton)} in a scene!  You have {s_refs}!");
+            Assert.IsTrue(s_refs == 1, this.GetSingletonAssertion(s_refs));
         }
 
         private void Update()      => Updater.Instance.UpdateAll();

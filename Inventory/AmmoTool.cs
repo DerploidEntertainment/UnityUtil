@@ -36,7 +36,7 @@ namespace Danware.Unity.Inventory {
         /// <param name="ammo">The amount of ammo with which to load the <see cref="AmmoTool"/>.</param>
         /// <returns>The amount of left-over ammo that could not be stored in the <see cref="AmmoTool"/>'s clips.  Will always be >= 0.</returns>
         public int Load(int ammo) {
-            Assert.IsTrue(ammo >= 0, $"Cannot load {nameof(AmmoTool)} {transform.parent.name}.{name} with a negative amount of ammo!");
+            Assert.IsTrue(ammo >= 0, $"Cannot load {this.GetHierarchyNameWithType()} with a negative amount of ammo!");
             return doLoad(ammo);
         }
         /// <summary>
@@ -49,9 +49,9 @@ namespace Danware.Unity.Inventory {
 
         // EVENT HANDLERS
         private void Awake() {
-            Assert.IsNotNull(Info, $"{GetType().Name} {transform.parent?.name}.{name} must be associated with a {nameof(Danware.Unity.Inventory.AmmoToolInfo)}!");
-            Assert.IsNotNull(ReloadInput, $"{GetType().Name} {transform.parent?.name}.{name} must be associated with a {nameof(this.ReloadInput)}!");
-            Assert.IsTrue(Info.StartingAmmo <= Info.MaxClipAmmo * (Info.MaxBackupClips + 1), $"{GetType().Name} {transform.parent?.name}.{name} was started with {nameof(this.Info.StartingAmmo)} ammo but it can only store a max of {Info.MaxClipAmmo} * ({Info.MaxBackupClips} + 1) = {Info.MaxClipAmmo * (Info.MaxBackupClips + 1)}!");
+            Assert.IsNotNull(Info, this.GetAssociationAssertion(nameof(Danware.Unity.Inventory.AmmoToolInfo)));
+            Assert.IsNotNull(ReloadInput, this.GetAssociationAssertion(nameof(this.ReloadInput)));
+            Assert.IsTrue(Info.StartingAmmo <= Info.MaxClipAmmo * (Info.MaxBackupClips + 1), $"{this.GetHierarchyNameWithType()} was started with {nameof(this.Info.StartingAmmo)} ammo but it can only store a max of {this.Info.MaxClipAmmo} * ({this.Info.MaxClipAmmo * (this.Info.MaxBackupClips + 1)}!");
 
             // Initialize ammo
             doLoad(Info.StartingAmmo);

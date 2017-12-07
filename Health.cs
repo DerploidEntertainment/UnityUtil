@@ -1,7 +1,7 @@
-﻿using UnityEngine;
-using UnityEngine.Events;
+﻿using System;
+using UnityEngine;
 using UnityEngine.Assertions;
-using System;
+using UnityEngine.Events;
 
 namespace Danware.Unity {
 
@@ -28,12 +28,12 @@ namespace Danware.Unity {
 
         // API INTERFACE
         public void Heal(float amount, ChangeMode changeMode = ChangeMode.Absolute) {
-            Assert.IsTrue(amount >= 0, $"Cannot heal {nameof(Health)} {transform.parent.name}.{name} by a negative amount!");
+            Assert.IsTrue(amount >= 0, $"Cannot heal {this.GetHierarchyNameWithType()} by a negative amount!");
             doChangeHealth(amount, changeMode);
         }
         public void HealCompletely() => doChangeHealth(MaxHealth - CurrentHealth, ChangeMode.Absolute);
         public void Damage(float amount, ChangeMode changeMode = ChangeMode.Absolute) {
-            Assert.IsTrue(amount >= 0, $"Cannot wound Health {nameof(Health)} {transform.parent.name}.{name} by a negative amount!");
+            Assert.IsTrue(amount >= 0, $"Cannot wound {this.GetHierarchyNameWithType()} by a negative amount!");
             doChangeHealth(-amount, changeMode);
         }
         public void Kill() => doChangeHealth(-CurrentHealth, ChangeMode.Absolute);

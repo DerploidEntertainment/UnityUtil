@@ -2,7 +2,7 @@
 using UnityEngine.Assertions;
 
 namespace Danware.Unity.Inventory {
-    
+
     public class HealthCollectible : MonoBehaviour {
 
         // INSPECTOR FIELDS
@@ -12,8 +12,8 @@ namespace Danware.Unity.Inventory {
         public CollectibleDestroyMode DestroyMode = CollectibleDestroyMode.WhenUsed;
 
         private void Awake() {
-            Assert.IsNotNull(Root, $"{nameof(HealthCollectible)} {transform.parent.name}.{name} must be associated with a {nameof(this.Root)}!");
-            Assert.IsTrue(Health >= 0, $"{nameof(HealthCollectible)} {transform.parent.name}.{name} must have a positive amount of {nameof(this.Health)}!");
+            Assert.IsNotNull(Root, this.GetAssociationAssertion(nameof(this.Root)));
+            Assert.IsTrue(Health >= 0, $"{this.GetHierarchyNameWithType()} must have a positive amount of {nameof(this.Health)}!");
         }
 
     }

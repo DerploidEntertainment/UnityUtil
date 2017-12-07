@@ -27,8 +27,8 @@ namespace Danware.Unity.Inventory {
 
         // EVENT HANDLERS
         private void Awake() {
-            Assert.IsNotNull(Info, $"{GetType().Name} {transform.parent?.name}.{name} must be associated with a {nameof(Danware.Unity.Inventory.ToolInfo)}!");
-            Assert.IsNotNull(UseInput, $"{GetType().Name} {transform.parent?.name}.{name} must be associated with a {nameof(this.UseInput)}!");
+            Assert.IsNotNull(Info, this.GetAssociationAssertion(nameof(Danware.Unity.Inventory.ToolInfo)));
+            Assert.IsNotNull(UseInput, this.GetAssociationAssertion(nameof(this.UseInput)));
         }
         private void Update() {
             // Start using when the use input starts

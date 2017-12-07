@@ -13,7 +13,7 @@ namespace Danware.Unity.Inventory {
 
         // EVENT HANDLERS
         private void Awake() {
-            Assert.IsNotNull(Health, $"{nameof(HealthCollector)} {transform.parent.name}.{name} must be associated with a {nameof(this.Health)}!");
+            Assert.IsNotNull(Health, this.GetAssociationAssertion(nameof(this.Health)));
 
             _sphere = gameObject.AddComponent<SphereCollider>();
             _sphere.radius = Radius;

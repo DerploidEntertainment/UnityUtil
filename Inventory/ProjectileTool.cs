@@ -15,7 +15,7 @@ namespace Danware.Unity.Inventory {
 
         // EVENT HANDLERS
         private void Awake() {
-            Assert.IsNotNull(Info, $"{GetType().Name} {transform.parent?.name}.{name} must be associated with a {nameof(Danware.Unity.Inventory.ProjectileToolInfo)}!");
+            Assert.IsNotNull(Info, this.GetAssociationAssertion(nameof(Danware.Unity.Inventory.ProjectileToolInfo)));
 
             _tool = GetComponent<Tool>();
             _tool.Used.AddListener(spawnProjectile);

@@ -1,6 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Linq;
+using UnityEngine;
 using UnityEngine.Assertions;
-using System.Linq;
 
 namespace Danware.Unity.Inventory {
 
@@ -14,7 +14,7 @@ namespace Danware.Unity.Inventory {
 
         // EVENT HANDLERS
         private void Awake() {
-            Assert.IsNotNull(Inventory, $"{nameof(AmmoCollector)} {transform.parent.name}.{name} must be associated with an {nameof(this.Inventory)}!");
+            Assert.IsNotNull(Inventory, this.GetAssociationAssertion(nameof(this.Inventory)));
 
             _sphere = gameObject.AddComponent<SphereCollider>();
             _sphere.radius = Radius;

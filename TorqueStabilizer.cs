@@ -29,7 +29,7 @@ namespace Danware.Unity {
                 case AxisDirection.OppositeGravity: return -Physics.gravity.normalized;
                 case AxisDirection.CustomWorldSpace: return CustomUpwardDirection.normalized;
                 case AxisDirection.CustomLocalSpace: return RigidbodyToStabilize.transform.TransformDirection(CustomUpwardDirection.normalized);
-                default: throw new NotImplementedException($"Gah!  We haven't accounted for {nameof(Danware.Unity.AxisDirection)} {UpwardDirectionType}!");
+                default: throw new NotImplementedException(ConditionalLogger.GetSwitchDefault(UpwardDirectionType));
             }
         }
 
@@ -40,9 +40,8 @@ namespace Danware.Unity {
             UpwardDirectionType = AxisDirection.OppositeGravity;
             CustomUpwardDirection = Vector3.up;
         }
-        private void Awake() {
-            Assert.IsNotNull(RigidbodyToStabilize, $"{GetType().Name} {transform.parent?.name}.{name} must be associated with a {nameof(RigidbodyToStabilize)}");
-        }
+        private void Awake() =>
+            Assert.IsNotNull(RigidbodyToStabilize, this.GetAssociationAssertion(nameof(this.RigidbodyToStabilize)));
         private void OnDrawGizmos() =>
             Gizmos.DrawLine(RigidbodyToStabilize.position, RigidbodyToStabilize.position + CustomUpwardDirection);
         private void FixedUpdate() {

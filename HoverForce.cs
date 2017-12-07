@@ -34,7 +34,7 @@ namespace Danware.Unity {
                 case AxisDirection.OppositeGravity: return -Physics.gravity.normalized;
                 case AxisDirection.CustomWorldSpace: return CustomUpwardDirection.normalized;
                 case AxisDirection.CustomLocalSpace: return transform.TransformDirection(CustomUpwardDirection.normalized);
-                default: throw new NotImplementedException($"Gah!  We haven't accounted for {nameof(Danware.Unity.AxisDirection)} {UpwardDirectionType}!");
+                default: throw new NotImplementedException(ConditionalLogger.GetSwitchDefault(UpwardDirectionType));
             }
         }
 
@@ -47,8 +47,8 @@ namespace Danware.Unity {
             CustomUpwardDirection = Vector3.up;
         }
         private void Awake() {
-            Assert.IsNotNull(HoveringRigidbody, $"{GetType().Name} {transform.parent?.name}.{name} must be associated with a {nameof(this.HoveringRigidbody)}");
-            Assert.IsTrue(HoverHeight <= MaxHoverHeight, $"{GetType().Name} {transform.parent?.name}.{name} cannot have a {nameof(this.HoverHeight)} higher than its {nameof(this.MaxHoverHeight)}!");
+            Assert.IsNotNull(HoveringRigidbody, this.GetAssociationAssertion(nameof(this.HoveringRigidbody)));
+            Assert.IsTrue(HoverHeight <= MaxHoverHeight, $"{this.GetHierarchyNameWithType()} cannot have a {nameof(this.HoverHeight)} higher than its {nameof(this.MaxHoverHeight)}!");
         }
         private void FixedUpdate() {
             // Determine the upward direction

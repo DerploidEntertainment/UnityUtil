@@ -1,10 +1,9 @@
-﻿using UnityEngine;
-using UnityEngine.Events;
-using UnityEngine.Assertions;
-
-using Danware.Unity.Input;
+﻿using Danware.Unity.Input;
 using Danware.Unity.Triggers;
 using System;
+using UnityEngine;
+using UnityEngine.Assertions;
+using UnityEngine.Events;
 
 namespace Danware.Unity {
 
@@ -63,7 +62,7 @@ namespace Danware.Unity {
         private void Awake() {
             Assert.IsTrue(
                 (LiftUsingPhysics && LiftingJoint != null) || (!LiftUsingPhysics && LiftingObject != null),
-                $"You must provide a {nameof(this.LiftingJoint)} if {nameof(this.LiftUsingPhysics)} is set to true, or a {nameof(this.LiftingObject)} if {nameof(this.LiftUsingPhysics)} is set to false.");
+                $"{this.GetHierarchyNameWithType()} must have a {nameof(this.LiftingJoint)} if {nameof(this.LiftUsingPhysics)} is set to true, or a {nameof(this.LiftingObject)} if {nameof(this.LiftUsingPhysics)} is set to false.");
         }
         private void Update() {
             // Get user input

@@ -2,7 +2,7 @@
 using UnityEngine.Assertions;
 
 namespace Danware.Unity.Inventory {
-    
+
     public class InventoryCollectible : MonoBehaviour {
 
         // INSPECTOR FIELDS
@@ -12,8 +12,8 @@ namespace Danware.Unity.Inventory {
         public Collider[] CollidersToToggle;
 
         private void Awake() {
-            Assert.IsNotNull(Root, $"{nameof(InventoryCollectible)} {transform.parent.name}.{name} must be associated with a {nameof(this.Root)}!");
-            Assert.IsNotNull(ItemRoot, $"{nameof(InventoryCollectible)} {transform.parent.name}.{name} must be associated with a {nameof(this.ItemRoot)}!");
+            Assert.IsNotNull(Root, this.GetAssociationAssertion(nameof(this.Root)));
+            Assert.IsNotNull(ItemRoot, this.GetAssociationAssertion(nameof(this.ItemRoot)));
         }
 
     }

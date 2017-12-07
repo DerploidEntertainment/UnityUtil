@@ -10,8 +10,8 @@ namespace Danware.Unity {
         public bool FlipOnLocalY = false;
 
         private void Awake() {
-            Assert.IsNotNull(TransformToRotate, $"{GetType().Name} {transform.parent.name}.{name} must be associated with a {nameof(this.TransformToRotate)}!");
-            Assert.IsNotNull(TransformToLookAt, $"{GetType().Name} {transform.parent.name}.{name} must be associated with a {nameof(this.TransformToLookAt)}!");
+            Assert.IsNotNull(TransformToRotate, this.GetAssociationAssertion(nameof(this.TransformToRotate)));
+            Assert.IsNotNull(TransformToLookAt, this.GetAssociationAssertion(nameof(this.TransformToLookAt)));
         }
         private void Update() {
             TransformToRotate.LookAt(TransformToLookAt, -Physics.gravity);

@@ -28,7 +28,7 @@ namespace Danware.Unity {
             Time.timeScale = IsPaused ? 0f : 1f;
 
             // Raise the corresponding event
-            Debug.Log($"Game {(IsPaused ? "paused" : "resumed")} in frame {Time.frameCount}");
+            this.Log($"Game {(IsPaused ? "paused" : "resumed")}");
             (IsPaused ? Paused : Unpaused).Invoke();
         }
         public void LoadScene(string sceneName) => SceneManager.LoadScene(sceneName, LoadSceneMode);
@@ -45,7 +45,7 @@ namespace Danware.Unity {
         private void Awake() {
             // Make sure this component is a singleton
             ++s_refs;
-            Assert.IsTrue(s_refs == 1, $"There can be only one instance of {typeof(GameStateManagerSingleton)} in a scene!  You have {s_refs}!");
+            Assert.IsTrue(s_refs == 1, this.GetSingletonAssertion(s_refs));
         }
         private void Update() {
             if (TogglePauseInput?.Started() ?? false)

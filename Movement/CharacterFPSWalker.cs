@@ -1,7 +1,6 @@
-﻿using UnityEngine;
+﻿using Danware.Unity.Input;
+using UnityEngine;
 using UnityEngine.Assertions;
-
-using Danware.Unity.Input;
 
 namespace Danware.Unity.Movement {
 
@@ -38,7 +37,7 @@ namespace Danware.Unity.Movement {
 
         // EVENT HANDLERS
         private void Awake() {
-            Assert.IsNotNull(ControllerToMove, $"{GetType().Name} {transform.parent?.name}.{name} was not associated with a {nameof(ControllerToMove)}!");
+            Assert.IsNotNull(ControllerToMove, this.GetAssociationAssertion(nameof(this.ControllerToMove)));
 
             _oldHeight = ControllerToMove.height;
             CrouchHeight = Mathf.Min(CrouchHeight, _oldHeight);

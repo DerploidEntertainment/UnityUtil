@@ -1,8 +1,7 @@
-﻿using UnityEngine;
-
-using Danware.Unity.Input;
-using UnityEngine.Assertions;
+﻿using Danware.Unity.Input;
 using System;
+using UnityEngine;
+using UnityEngine.Assertions;
 
 namespace Danware.Unity.Movement {
 
@@ -40,7 +39,7 @@ namespace Danware.Unity.Movement {
                 case AxisDirection.OppositeGravity: return -Physics.gravity.normalized;
                 case AxisDirection.CustomWorldSpace: return CustomAxisDirection.normalized;
                 case AxisDirection.CustomLocalSpace: return (UsePhysicsToLook ? RigidbodyToRotate.transform : TransformToRotate).TransformDirection(CustomAxisDirection.normalized);
-                default: throw new NotImplementedException($"Gah!  We haven't accounted for {nameof(Danware.Unity.AxisDirection)} {AxisDirectionType}!");
+                default: throw new NotImplementedException(ConditionalLogger.GetSwitchDefault(AxisDirectionType));
             }
         }
 
@@ -53,11 +52,11 @@ namespace Danware.Unity.Movement {
         }
         private void Awake() {
             if (UsePhysicsToLook)
-                Assert.IsNotNull(TransformToRotate, $"{GetType().Name} {transform.parent?.name}.{name} was not associated with a {nameof(this.RigidbodyToRotate)}!");
+                Assert.IsNotNull(RigidbodyToRotate, this.GetAssociationAssertion(nameof(this.RigidbodyToRotate)));
             else
-                Assert.IsNotNull(TransformToRotate, $"{GetType().Name} {transform.parent?.name}.{name} was not associated with a {nameof(this.TransformToRotate)}!");
+                Assert.IsNotNull(TransformToRotate, this.GetAssociationAssertion(nameof(this.TransformToRotate)));
 
-            Assert.IsNotNull(LookInput, $"{GetType().Name} {transform.parent?.name}.{name} was not associated with a {nameof(this.LookInput)}!");
+            Assert.IsNotNull(LookInput, this.GetAssociationAssertion(nameof(this.LookInput)));
         }
         private void Update() {
             _deltaSinceLast += LookInput.Value();

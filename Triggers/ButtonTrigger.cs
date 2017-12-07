@@ -19,7 +19,7 @@ namespace Danware.Unity.Triggers {
         // HIDDEN FUNCTIONS
         private void press() {
             // Raise the trigger event
-            Debug.Log($"Button {this.name} pressed in frame {Time.frameCount}");
+            this.Log($" pressed.");
             Triggered.Invoke();
 
             // Prevent the button from being pressed for the desired period

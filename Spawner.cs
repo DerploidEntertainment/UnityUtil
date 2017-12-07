@@ -1,8 +1,7 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.Assertions;
 using U = UnityEngine;
-
-using System;
 
 namespace Danware.Unity {
 
@@ -32,8 +31,8 @@ namespace Danware.Unity {
         [Range(0f, 90f)]
         public float ConeHalfAngle = 30f;
 
-        private void Awake() =>
-            Assert.IsNotNull(Prefab, $"{nameof(Spawner)} {transform.parent.name}.{name} must be associated with a {nameof(this.Prefab)}!");
+        private void Awake() => 
+            Assert.IsNotNull(Prefab, this.GetAssociationAssertion(nameof(this.Prefab)));
 
         // API INTERFACE
         public void Spawn() {
@@ -72,7 +71,7 @@ namespace Danware.Unity {
 #endif
             }
 
-            Debug.Log($"{nameof(Spawner)} {transform.parent.name}.{name} spawned {obj.name} in frame {Time.frameCount}");
+            this.Log($" spawned {obj.name}");
             _previous = obj;
         }
 
@@ -91,7 +90,7 @@ namespace Danware.Unity {
 #else
                 case SpawnDirection.AnyDirection: return U.Random.onUnitSphere;
 #endif
-                default: throw new NotImplementedException($"Gah!  We haven't accounted for {nameof(Unity.SpawnDirection)} {SpawnDirection} yet!");
+                default: throw new NotImplementedException(ConditionalLogger.GetSwitchDefault(SpawnDirection));
             }
         }
         private Vector3 onUnitCone(float halfAngle, bool onlyBoundary) {

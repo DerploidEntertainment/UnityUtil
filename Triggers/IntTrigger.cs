@@ -68,7 +68,7 @@ namespace Danware.Unity.Triggers {
                     break;
 
                 default:
-                    throw new NotImplementedException($"Gah!  We didn't account for {nameof(IntTriggerMode)} {Mode}!");
+                    throw new NotImplementedException(ConditionalLogger.GetSwitchDefault(Mode));
             }
 
             // If no desired values were reached above, then raise the ValueNotReached event

@@ -1,9 +1,9 @@
-﻿using UnityEngine;
-using System.Linq;
+﻿using System.Linq;
+using UnityEngine;
 using UnityEngine.Assertions;
 
 namespace Danware.Unity.Inventory {
-    
+
     [RequireComponent(typeof(Weapon))]
     public class HurtWeapon : MonoBehaviour {
 
@@ -14,7 +14,7 @@ namespace Danware.Unity.Inventory {
 
         // EVENT HANDLERS
         private void Awake() {
-            Assert.IsNotNull(Info, $"{GetType().Name} {transform.parent?.name}.{name} must be associated with a {nameof(Danware.Unity.Inventory.HurtWeaponInfo)}!");
+            Assert.IsNotNull(Info, this.GetAssociationAssertion(nameof(Danware.Unity.Inventory.HurtWeaponInfo)));
 
             _weapon = GetComponent<Weapon>();
             _weapon.Attacked.AddListener(hurt);

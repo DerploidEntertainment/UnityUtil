@@ -12,7 +12,7 @@ namespace Danware.Unity.Triggers {
 
         private void Awake() {
             TriggerCollider = GetComponent<Collider>();
-            Assert.IsTrue(TriggerCollider.isTrigger, $"{nameof(TriggerExitTrigger)} {transform.parent.name}.{name} is associated with a Collider, but the Collider is not a trigger!");
+            Assert.IsTrue(TriggerCollider.isTrigger, $"{this.GetHierarchyNameWithType()} is associated with a Collider, but the Collider is not a trigger!");
         }
 
         private void OnTriggerExit(Collider other) => ColliderExited.Invoke(other);
