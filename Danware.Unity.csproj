@@ -121,7 +121,6 @@
     <Compile Include="Triggers\ToggleTrigger.cs" />
     <Compile Include="Triggers\TriggerExitTrigger.cs" />
     <Compile Include="Triggers\TriggerEnterTrigger.cs" />
-    <Compile Include="UnityLayer.cs" />
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="AxisDirection.cs" />
     <Compile Include="Updating\IUpdater.cs" />

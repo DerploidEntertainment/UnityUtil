@@ -32,8 +32,8 @@ namespace Danware.Unity {
         public Collider[] CollidersToDuplicate;
         [Tooltip("Select the behavior for changing the 'isTrigger' field of all duplicate Colliders")]
         public ChangeTriggerMode ChangeTriggerMode = ChangeTriggerMode.KeepOriginal;
-        [Tooltip("All duplicate Colliders will be placed in this Layer.")]
-        public UnityLayer DuplicateLayer;
+        [Tooltip("All duplicate Colliders will be placed in the Layer with this name.")]
+        public string DuplicateLayerName;
         [Tooltip("If set, all duplicate Colliders will have a PhysTarget component attached that targets this value.")]
         public MonoBehaviour PhysicsTarget;
 
@@ -170,7 +170,7 @@ namespace Danware.Unity {
 
             // Copy general Collider properties
             newColl.material = collider.material;
-            newColl.gameObject.layer = DuplicateLayer.LayerIndex;
+            newColl.gameObject.layer = LayerMask.NameToLayer(DuplicateLayerName);
             switch (ChangeTriggerMode) {
                 case ChangeTriggerMode.KeepOriginal:
                     newColl.isTrigger = collider.isTrigger;
