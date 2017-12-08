@@ -29,8 +29,10 @@ namespace Danware.Unity {
         public static string GetHierarchyNameWithType<T>(this T component, int numParents = 1) where T : MonoBehaviour =>
             $"{typeof(T).Name} {getName(component.transform, numParents)}";
 
-        public static string GetAssociationAssertion<T>(this T component, string memberName) where T : MonoBehaviour {
-            string componentStr = component.GetHierarchyNameWithType();
+        public static string GetSingletonName<T>(this T component) where T : MonoBehaviour => $"The {typeof(T)}";
+
+        public static string GetAssociationAssertion<T>(this T component, string memberName, bool singleton = false) where T : MonoBehaviour {
+            string componentStr = singleton ? component.GetSingletonName() : component.GetHierarchyNameWithType();
             return $"{componentStr} was not associated with any {memberName}!";
         }
         public static string GetSingletonAssertion<T>(this T component, int refs) where T : MonoBehaviour =>
