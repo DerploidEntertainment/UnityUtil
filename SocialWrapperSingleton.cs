@@ -32,11 +32,11 @@ namespace Danware.Unity {
             ILocalUser user = Social.localUser;
             user.Authenticate((success, errors) => {
                 if (!success) {
-                    this.Log("Authentication failed!");
+                    this.SingletonLog(" failed to authenticate!");
                     AuthenticationFailed.Invoke(null, errors);
                 }
                 else {
-                    this.Log("Authentication succeeded!");
+                    this.SingletonLog(" successfully authenticated!");
                     AuthenticationSucceeded.Invoke(user.id, null);
                 }
             });

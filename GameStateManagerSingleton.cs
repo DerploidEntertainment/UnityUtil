@@ -28,7 +28,7 @@ namespace Danware.Unity {
             Time.timeScale = IsPaused ? 0f : 1f;
 
             // Raise the corresponding event
-            this.Log($"Game {(IsPaused ? "paused" : "resumed")}");
+            this.SingletonLog($" {(IsPaused ? "paused" : "resumed")} the game.");
             (IsPaused ? Paused : Unpaused).Invoke();
         }
         public void LoadScene(string sceneName) => SceneManager.LoadScene(sceneName, LoadSceneMode);
