@@ -23,28 +23,11 @@ namespace Danware.Unity {
         public static void LogError<T>(this T component, object message, bool framePrefix = true, bool componentPrefix = true) where T : MonoBehaviour =>
             U.Debug.LogError(getLog(component, message, framePrefix, componentPrefix));
 
-        public static string GetHierarchyName(this GameObject gameObject, int numParents = 1) {
-            Transform trans = gameObject.transform;
-            string name = trans.name;
-            for (int p = 0; p < numParents; ++p) {
-                trans = trans.parent;
-                name += (trans == null) ? string.Empty : trans.name + ".";
-            }
 
-            return name;
-        }
-        public static string GetHierarchyName<T>(this T component, int numParents = 1) where T : MonoBehaviour {
-            Transform trans = component.transform;
-            string name = trans.name;
-            for (int p = 0; p < numParents; ++p) {
-                trans = trans.parent;
-                name += (trans == null) ? string.Empty : trans.name + ".";
-            }
-
-            return name;
-        }
+        public static string GetHierarchyName(this GameObject gameObject, int numParents = 1) => getName(gameObject.transform, numParents);
+        public static string GetHierarchyName<T>(this T component, int numParents = 1) where T : MonoBehaviour => getName(component.transform, numParents);
         public static string GetHierarchyNameWithType<T>(this T component, int numParents = 1) where T : MonoBehaviour =>
-            $"{typeof(T).Name} {GetHierarchyName(component, numParents)}";
+            $"{typeof(T).Name} {getName(component.transform, numParents)}";
 
         public static string GetAssociationAssertion<T>(this T component, string memberName) where T : MonoBehaviour {
             string componentStr = component.GetHierarchyNameWithType();
@@ -64,6 +47,16 @@ namespace Danware.Unity {
             string frameStr = framePrefix ? $"Frame {Time.frameCount}: " : string.Empty;
             string componentStr = componentPrefix ? $"{component.GetHierarchyNameWithType()}" : string.Empty;
             return frameStr + componentStr + message;
+        }
+        private static string getName(Transform transform, int numParents) {
+            Transform trans = transform;
+            string name = trans.name;
+            for (int p = 0; p < numParents; ++p) {
+                trans = trans.parent;
+                name += (trans == null) ? string.Empty : trans.name + ".";
+            }
+
+            return name;
         }
 
 
