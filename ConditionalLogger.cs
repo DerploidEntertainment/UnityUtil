@@ -23,6 +23,15 @@ namespace Danware.Unity {
         public static void LogError<T>(this T component, object message, bool framePrefix = true, bool componentPrefix = true) where T : MonoBehaviour =>
             U.Debug.LogError(getLog(component, message, framePrefix, componentPrefix));
 
+        [Conditional("DEBUG"), Conditional("UNITY_ASSERTIONS")]
+        public static void SingletonLog<T>(this T component, object message, bool framePrefix = true) where T : MonoBehaviour =>
+            U.Debug.Log(getSingletonLog(component, message, framePrefix));
+        [Conditional("DEBUG"), Conditional("UNITY_ASSERTIONS")]
+        public static void SingletonLogWarning<T>(this T component, object message, bool framePrefix = true) where T : MonoBehaviour =>
+            U.Debug.LogWarning(getSingletonLog(component, message, framePrefix));
+        [Conditional("DEBUG"), Conditional("UNITY_ASSERTIONS")]
+        public static void SingletonLogError<T>(this T component, object message, bool framePrefix = true) where T : MonoBehaviour =>
+            U.Debug.LogError(getSingletonLog(component, message, framePrefix));
 
         public static string GetHierarchyName(this GameObject gameObject, int numParents = 1) => getName(gameObject.transform, numParents);
         public static string GetHierarchyName<T>(this T component, int numParents = 1) where T : MonoBehaviour => getName(component.transform, numParents);
@@ -49,6 +58,10 @@ namespace Danware.Unity {
             string frameStr = framePrefix ? $"Frame {Time.frameCount}: " : string.Empty;
             string componentStr = componentPrefix ? $"{component.GetHierarchyNameWithType()}" : string.Empty;
             return frameStr + componentStr + message;
+        }
+        private static string getSingletonLog<T>(T component, object message, bool framePrefix) where T : MonoBehaviour {
+            string frameStr = framePrefix ? $"Frame {Time.frameCount}: " : string.Empty;
+            return frameStr + component.GetSingletonName() + message;
         }
         private static string getName(Transform transform, int numParents) {
             Transform trans = transform;
