@@ -38,16 +38,16 @@ namespace Danware.Unity {
         public static string GetHierarchyNameWithType<T>(this T component, int numParents = 1) where T : MonoBehaviour =>
             $"{typeof(T).Name} {getName(component.transform, numParents)}";
 
-        public static string GetSingletonName<T>(this T component) where T : MonoBehaviour => $"The {typeof(T)}";
+        public static string GetSingletonName<T>(this T component) where T : MonoBehaviour => $"The {typeof(T).Name}";
 
         public static string GetAssociationAssertion<T>(this T component, string memberName, bool singleton = false) where T : MonoBehaviour {
             string componentStr = singleton ? component.GetSingletonName() : component.GetHierarchyNameWithType();
             return $"{componentStr} was not associated with any {memberName}!";
         }
         public static string GetSingletonAssertion<T>(this T component, int refs) where T : MonoBehaviour =>
-            $"There can be only one instance of {typeof(T)} in a scene!  You have {refs}!";
+            $"There can be only one instance of {typeof(T).Name} in a scene!  You have {refs}!";
 
-        public static string GetSwitchDefault<T>(T value) => $"Gah!  We haven't accounted for {typeof(T)} {value} yet!";
+        public static string GetSwitchDefault<T>(T value) => $"Gah!  We haven't accounted for {typeof(T).Name} {value} yet!";
 
         // HELPERS
         private static string getLog(object message, bool framePrefix) {
@@ -68,10 +68,10 @@ namespace Danware.Unity {
             string name = trans.name;
             for (int p = 0; p < numParents; ++p) {
                 trans = trans.parent;
-                name += (trans == null) ? string.Empty : trans.name + ".";
+                name = ((trans == null) ? string.Empty : trans.name + ".") + name;
             }
 
-            return name;
+            return "\"" + name + "\"";
         }
 
 

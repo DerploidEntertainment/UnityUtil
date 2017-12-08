@@ -58,7 +58,7 @@ namespace Danware.Unity.Inventory {
         public void Drop(InventoryCollectible collectible) {
             // Make sure a valid collectible was provided
             Assert.IsNotNull(collectible, $"{this.GetHierarchyNameWithType()} cannot drop null!");
-            Assert.IsTrue(_collectibles.Contains(collectible), $"{this.GetHierarchyNameWithType()} was told to drop an {typeof(InventoryCollectible)} that it never collected!");
+            Assert.IsTrue(_collectibles.Contains(collectible), $"{this.GetHierarchyNameWithType()} was told to drop an {typeof(InventoryCollectible).Name} that it never collected!");
 
             StartCoroutine(doDrop(collectible));
         }
