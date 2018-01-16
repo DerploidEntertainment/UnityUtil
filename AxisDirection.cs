@@ -1,4 +1,4 @@
-﻿namespace Danware.Unity {
+﻿namespace UnityUtil {
 
     public enum AxisDirection {
         WithGravity,

@@ -1,10 +1,10 @@
-﻿using Danware.Unity.Input;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
+using UnityUtil.Input;
 
-namespace Danware.Unity {
+namespace UnityUtil {
 
     [DisallowMultipleComponent]
     public class GameStateManagerSingleton : MonoBehaviour {

@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.Assertions;
 
-namespace Danware.Unity {
+namespace UnityUtil {
 
     public class HoverForce : MonoBehaviour {
 
@@ -10,12 +10,12 @@ namespace Danware.Unity {
         public Rigidbody HoveringRigidbody;
         [Tooltip("The current height at which the associated Rigidbody can be kept aloft.  Note that the hover force will automatically scale down for lower hover heights.")]
         public float HoverHeight;
-        [Tooltip("The maximum height at which this " + nameof(Danware.Unity.HoverForce) + " will attempt to keep the associated Rigidbody aloft.  Must not be greater than " + nameof(MaxHoverHeight) + ".  Note that the hover force will automatically scale down for lower hover heights.")]
+        [Tooltip("The maximum height at which this " + nameof(UnityUtil.HoverForce) + " will attempt to keep the associated Rigidbody aloft.  Must not be greater than " + nameof(MaxHoverHeight) + ".  Note that the hover force will automatically scale down for lower hover heights.")]
         public float MaxHoverHeight;
         [Tooltip("If the ground beneath the hovering Rigidbody makes an angle to the upward direction that is steeper than this angle, then the hover force will not be applied.  This prevents the hovering Rigidbody from 'climbing' steep walls.")]
         [Range(0f, 90f)]
         public float MaxAngleToSurface;
-        [Tooltip("The maximum mass of associated Rigidbody that this " + nameof(Danware.Unity.HoverForce) + " can keep aloft at the " + nameof(MaxHoverHeight) + ".  If set to Infinity, then Rigidbodies of any mass can be kept aloft at the same " + nameof(HoverHeight) + "; otherwise, Rigidbodies more massive than this value will sink to the ground.  Note that the hover force will automatically scale down for lower hover heights and Rigidbody masses.")]
+        [Tooltip("The maximum mass of associated Rigidbody that this " + nameof(UnityUtil.HoverForce) + " can keep aloft at the " + nameof(MaxHoverHeight) + ".  If set to Infinity, then Rigidbodies of any mass can be kept aloft at the same " + nameof(HoverHeight) + "; otherwise, Rigidbodies more massive than this value will sink to the ground.  Note that the hover force will automatically scale down for lower hover heights and Rigidbody masses.")]
         public float MaxHoverableMass;
         [Tooltip("Only colliders matching this layer mask will be repeled against by the hover force.  That is, the associated Rigidbody will 'fall through' colliders that are not in this layer mask.")]
         public LayerMask GroundLayerMask;

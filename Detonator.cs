@@ -1,8 +1,8 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.Events;
-using System;
 
-namespace Danware.Unity {
+namespace UnityUtil {
 
     [Serializable]
     public class DetonateEvent : UnityEvent<Collider[]> { }

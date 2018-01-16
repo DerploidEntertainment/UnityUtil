@@ -1,8 +1,7 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
-using System.Collections.Generic;
-
-namespace Danware.Unity {
+namespace UnityUtil {
 
     [RequireComponent(typeof(Collider))]
     public class CollisionSounds : MonoBehaviour {

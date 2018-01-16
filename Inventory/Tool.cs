@@ -1,10 +1,10 @@
-﻿using Danware.Unity.Input;
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Events;
+using UnityUtil.Input;
 
-namespace Danware.Unity.Inventory {
+namespace UnityUtil.Inventory {
 
     public class Tool : MonoBehaviour {
         // HIDDEN FIELDS
@@ -27,7 +27,7 @@ namespace Danware.Unity.Inventory {
 
         // EVENT HANDLERS
         private void Awake() {
-            Assert.IsNotNull(Info, this.GetAssociationAssertion(nameof(Danware.Unity.Inventory.ToolInfo)));
+            Assert.IsNotNull(Info, this.GetAssociationAssertion(nameof(UnityUtil.Inventory.ToolInfo)));
             Assert.IsNotNull(UseInput, this.GetAssociationAssertion(nameof(this.UseInput)));
         }
         private void Update() {

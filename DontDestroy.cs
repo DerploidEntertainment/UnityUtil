@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Danware.Unity {
+namespace UnityUtil {
 
     public class DontDestroy : MonoBehaviour {
 

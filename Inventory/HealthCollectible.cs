@@ -1,14 +1,14 @@
 ﻿using UnityEngine;
 using UnityEngine.Assertions;
 
-namespace Danware.Unity.Inventory {
+namespace UnityUtil.Inventory {
 
     public class HealthCollectible : MonoBehaviour {
 
         // INSPECTOR FIELDS
         public GameObject Root;
         public float Health = 25f;
-        public Health.ChangeMode HealthChangeMode = Unity.Health.ChangeMode.Absolute;
+        public Health.ChangeMode HealthChangeMode = UnityUtil.Health.ChangeMode.Absolute;
         public CollectibleDestroyMode DestroyMode = CollectibleDestroyMode.WhenUsed;
 
         private void Awake() {

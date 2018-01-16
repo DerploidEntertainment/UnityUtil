@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Assertions;
 
-namespace Danware.Unity {
+namespace UnityUtil {
 
     public class LookAt : MonoBehaviour {
 

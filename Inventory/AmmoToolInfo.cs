@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Danware.Unity.Inventory {
+namespace UnityUtil.Inventory {
 
     [CreateAssetMenu(fileName = "ammo-tool", menuName = "UnityUtil/AmmoToolInfo")]
     public class AmmoToolInfo : ScriptableObject {

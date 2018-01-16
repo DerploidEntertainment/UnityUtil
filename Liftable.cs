@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
-namespace Danware.Unity {
-    
+namespace UnityUtil {
+
     [DisallowMultipleComponent]
     public class Liftable : MonoBehaviour {
 

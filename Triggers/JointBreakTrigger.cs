@@ -1,8 +1,8 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.Events;
-using System;
 
-namespace Danware.Unity.Triggers {
+namespace UnityUtil.Triggers {
 
     [Serializable]
     public class JointEvent : UnityEvent<Joint> { }

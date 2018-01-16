@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Events;
 
-namespace Danware.Unity {
+namespace UnityUtil {
 
     public class Health : MonoBehaviour {
 

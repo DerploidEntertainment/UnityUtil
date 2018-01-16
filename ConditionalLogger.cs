@@ -2,7 +2,7 @@
 using UnityEngine;
 using U = UnityEngine;
 
-namespace Danware.Unity {
+namespace UnityUtil {
 
     public static class ConditionalLogger {
 

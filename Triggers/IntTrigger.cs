@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace Danware.Unity.Triggers {
+namespace UnityUtil.Triggers {
 
     public enum IntTriggerMode {
         /// <summary>

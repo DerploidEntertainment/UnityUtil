@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.Assertions;
 using U = UnityEngine;
 
-namespace Danware.Unity {
+namespace UnityUtil {
 
     public enum SpawnDirection {
         Straight,

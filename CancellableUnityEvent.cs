@@ -1,7 +1,7 @@
-﻿using UnityEngine.Events;
-using System;
+﻿using System;
+using UnityEngine.Events;
 
-namespace Danware.Unity {
+namespace UnityUtil {
 
     [Serializable]
     public class CancellableUnityEvent : UnityEvent {

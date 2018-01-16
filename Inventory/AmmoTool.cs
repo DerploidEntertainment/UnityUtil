@@ -1,10 +1,10 @@
-﻿using Danware.Unity.Input;
-using System;
+﻿using System;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Events;
+using UnityUtil.Input;
 
-namespace Danware.Unity.Inventory {
+namespace UnityUtil.Inventory {
 
     [RequireComponent(typeof(Tool))]
     public class AmmoTool : MonoBehaviour {
@@ -49,7 +49,7 @@ namespace Danware.Unity.Inventory {
 
         // EVENT HANDLERS
         private void Awake() {
-            Assert.IsNotNull(Info, this.GetAssociationAssertion(nameof(Danware.Unity.Inventory.AmmoToolInfo)));
+            Assert.IsNotNull(Info, this.GetAssociationAssertion(nameof(UnityUtil.Inventory.AmmoToolInfo)));
             Assert.IsNotNull(ReloadInput, this.GetAssociationAssertion(nameof(this.ReloadInput)));
             Assert.IsTrue(Info.StartingAmmo <= Info.MaxClipAmmo * (Info.MaxBackupClips + 1), $"{this.GetHierarchyNameWithType()} was started with {nameof(this.Info.StartingAmmo)} ammo but it can only store a max of {this.Info.MaxClipAmmo} * ({this.Info.MaxClipAmmo * (this.Info.MaxBackupClips + 1)}!");
 

@@ -4,7 +4,7 @@ using System.Reflection;
 using UnityEngine;
 using UnityEngine.Assertions;
 
-namespace Danware.Unity.DependencyInjection {
+namespace UnityUtil.DependencyInjection {
 
     [Serializable]
     public struct Service {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Danware.Unity {
+namespace UnityUtil {
 
     public class ValueChangedEventArgs<T> : EventArgs {
         public ValueChangedEventArgs(T oldValue, T newValue) {

@@ -1,10 +1,8 @@
-﻿using System.Linq;
-using System.Collections.Generic;
-
+﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
-using System;
 
-namespace Danware.Unity {
+namespace UnityUtil {
 
     public enum ChildColliderDuplicateMode {
         None,

@@ -1,11 +1,11 @@
-﻿using Danware.Unity.Input;
-using Danware.Unity.Triggers;
-using System;
+﻿using System;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Events;
+using UnityUtil.Input;
+using UnityUtil.Triggers;
 
-namespace Danware.Unity {
+namespace UnityUtil {
 
     /// <summary>
     /// Represents the means by which a <see cref="Liftable"/> came to be released from a <see cref="Lifter"/>.

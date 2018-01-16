@@ -7,8 +7,8 @@
     <ProjectGuid>{567FE3BC-52EE-4BF6-92BE-A356F8F08DBE}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Danware.Unity</RootNamespace>
-    <AssemblyName>Danware.Unity</AssemblyName>
+    <RootNamespace>UnityUtil</RootNamespace>
+    <AssemblyName>UnityUtil</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile>Unity Subset v3.5</TargetFrameworkProfile>
@@ -87,7 +87,6 @@
     <Compile Include="Movement\RigidbodyMover.cs" />
     <Compile Include="Movement\RigidbodyMovement.cs" />
     <Compile Include="Movement\TargetOffsetMovement.cs" />
-    <Compile Include="Movement\TransformMovement.cs" />
     <Compile Include="Inventory\AmmoCollector.cs" />
     <Compile Include="Inventory\HealthCollector.cs" />
     <Compile Include="Inventory\InventoryCollector.cs" />
@@ -115,7 +114,6 @@
     <Compile Include="Triggers\SimpleTrigger.cs" />
     <Compile Include="Spawner.cs" />
     <Compile Include="Movement\TargetFlyer.cs" />
-    <Compile Include="Movement\TransformMover.cs" />
     <Compile Include="Triggers\TimerTrigger.cs" />
     <Compile Include="Triggers\TriggerCondition.cs" />
     <Compile Include="Triggers\AndTrigger.cs" />
@@ -130,9 +128,9 @@
     <Compile Include="ValueChangedEventArgs.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Danware.Unity.Input\Danware.Unity.Input.csproj">
+    <ProjectReference Include="..\UnityUtil.Input\UnityUtil.Input.csproj">
       <Project>{b4a989c3-c0eb-4145-a1f9-293ebc23fbce}</Project>
-      <Name>Danware.Unity.Input</Name>
+      <Name>UnityUtil.Input</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

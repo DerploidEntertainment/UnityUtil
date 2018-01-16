@@ -1,4 +1,4 @@
-﻿namespace Danware.Unity.Triggers {
+﻿namespace UnityUtil.Triggers {
 
     public class ToggleTrigger : TriggerCondition {
 

@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
-namespace Danware.Unity.Movement {
-    
+namespace UnityUtil.Movement {
+
     public abstract class RigidbodyMovement : MonoBehaviour {
 
         public void Move(Rigidbody rb) => doMove(rb);

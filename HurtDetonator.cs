@@ -1,7 +1,7 @@
-﻿using UnityEngine;
-using System.Linq;
+﻿using System.Linq;
+using UnityEngine;
 
-namespace Danware.Unity {
+namespace UnityUtil {
 
     [RequireComponent(typeof(Detonator))]
     public class HurtDetonator : MonoBehaviour {

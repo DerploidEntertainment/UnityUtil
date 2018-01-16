@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Assertions;
 
-namespace Danware.Unity.Updating {
+namespace UnityUtil.Updating {
 
     [DisallowMultipleComponent]
     public class UpdaterSingleton : MonoBehaviour {

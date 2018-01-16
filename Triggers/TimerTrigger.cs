@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Events;
 
-namespace Danware.Unity.Triggers {
+namespace UnityUtil.Triggers {
 
     [Serializable]
     public class CountEvent : UnityEvent<int> { }

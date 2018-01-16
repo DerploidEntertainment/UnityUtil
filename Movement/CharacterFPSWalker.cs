@@ -1,8 +1,8 @@
-﻿using Danware.Unity.Input;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Assertions;
+using UnityUtil.Input;
 
-namespace Danware.Unity.Movement {
+namespace UnityUtil.Movement {
 
     public class CharacterFPSWalker : MonoBehaviour {
 

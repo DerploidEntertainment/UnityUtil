@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Danware.Unity.Updating {
+namespace UnityUtil.Updating {
 
     public interface IUpdater {
 

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Danware.Unity.Inventory {
+namespace UnityUtil.Inventory {
 
     [CreateAssetMenu(fileName = "weapon", menuName = "UnityUtil/WeaponInfo")]
     public class WeaponInfo : ScriptableObject {
@@ -11,13 +11,13 @@ namespace Danware.Unity.Inventory {
         public float Range;
 
         [Header("Accuracy")]
-        [Tooltip("For automatic " + nameof(Danware.Unity.Inventory.Weapon) + "s, the accuracy cone's half angle will interpolate linearly from " + nameof(InitialConeHalfAngle) + " to " + nameof(FinalConeHalfAngle) + " in " + nameof(AccuracyLerpTime) + " seconds.")]
+        [Tooltip("For automatic " + nameof(UnityUtil.Inventory.Weapon) + "s, the accuracy cone's half angle will interpolate linearly from " + nameof(InitialConeHalfAngle) + " to " + nameof(FinalConeHalfAngle) + " in " + nameof(AccuracyLerpTime) + " seconds.")]
         [Range(0f, 90f)]
         public float InitialConeHalfAngle = 0f;
-        [Tooltip("For automatic " + nameof(Danware.Unity.Inventory.Weapon) + "s, the accuracy cone's half angle will interpolate linearly from " + nameof(InitialConeHalfAngle) + " to " + nameof(FinalConeHalfAngle) + " in " + nameof(AccuracyLerpTime) + " seconds.")]
+        [Tooltip("For automatic " + nameof(UnityUtil.Inventory.Weapon) + "s, the accuracy cone's half angle will interpolate linearly from " + nameof(InitialConeHalfAngle) + " to " + nameof(FinalConeHalfAngle) + " in " + nameof(AccuracyLerpTime) + " seconds.")]
         [Range(0f, 90f)]
         public float FinalConeHalfAngle = 0f;
-        [Tooltip("For automatic " + nameof(Danware.Unity.Inventory.Weapon) + "s, the accuracy cone's half angle will interpolate linearly from " + nameof(InitialConeHalfAngle) + " to " + nameof(FinalConeHalfAngle) + " in " + nameof(AccuracyLerpTime) + " seconds.")]
+        [Tooltip("For automatic " + nameof(UnityUtil.Inventory.Weapon) + "s, the accuracy cone's half angle will interpolate linearly from " + nameof(InitialConeHalfAngle) + " to " + nameof(FinalConeHalfAngle) + " in " + nameof(AccuracyLerpTime) + " seconds.")]
         public float AccuracyLerpTime = 1f;
         [Tooltip("If true, then all colliders within " + nameof(Range) + " and on the " + nameof(AttackLayerMask) + " will be attacked, using the relatively expensive Physics.RaycastAll() method.  If false, only the closest collider will be attacked, using the cheaper Physics.Raycast() method.")]
         public bool RaycastAll = false;

@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Events;
 
-namespace Danware.Unity.Inventory {
+namespace UnityUtil.Inventory {
 
     [RequireComponent(typeof(Tool))]
     public class OverheatTool : MonoBehaviour {
@@ -28,7 +28,7 @@ namespace Danware.Unity.Inventory {
 
         // EVENT HANDLERS
         private void Awake() {
-            Assert.IsNotNull(Info, this.GetAssociationAssertion(nameof(Danware.Unity.Inventory.OverheatToolInfo)));
+            Assert.IsNotNull(Info, this.GetAssociationAssertion(nameof(UnityUtil.Inventory.OverheatToolInfo)));
             Assert.IsTrue(Info.StartingHeat <= Info.MaxHeat, $"{this.GetHierarchyNameWithType()} was started with {nameof(this.Info.StartingHeat)} heat but it can only store a max of {this.Info.MaxHeat}!");
 
             // Initialize heat

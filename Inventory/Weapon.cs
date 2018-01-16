@@ -4,7 +4,7 @@ using UnityEngine.Assertions;
 using UnityEngine.Events;
 using U = UnityEngine;
 
-namespace Danware.Unity.Inventory {
+namespace UnityUtil.Inventory {
 
     [RequireComponent(typeof(Tool))]
     public class Weapon : MonoBehaviour {
@@ -25,7 +25,7 @@ namespace Danware.Unity.Inventory {
 
         // EVENT HANDLERS
         private void Awake() {
-            Assert.IsNotNull(Info, this.GetAssociationAssertion(nameof(Danware.Unity.Inventory.WeaponInfo)));
+            Assert.IsNotNull(Info, this.GetAssociationAssertion(nameof(UnityUtil.Inventory.WeaponInfo)));
 
             // Register Tool events
             _tool = GetComponent<Tool>();

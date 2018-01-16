@@ -1,8 +1,8 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.Events;
-using System;
 
-namespace Danware.Unity {
+namespace UnityUtil {
 
     [RequireComponent(typeof(Animator))]
     public class AnimationEventTrigger : MonoBehaviour {

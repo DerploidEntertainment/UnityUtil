@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Assertions;
 
-namespace Danware.Unity.Inventory {
+namespace UnityUtil.Inventory {
 
     public class AmmoCollectible : MonoBehaviour {
 

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Danware.Unity.DependencyInjection {
+namespace UnityUtil.DependencyInjection {
 
     public class DependencyInjector : MonoBehaviour {
 

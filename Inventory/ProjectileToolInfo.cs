@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Danware.Unity.Inventory {
+namespace UnityUtil.Inventory {
 
     [CreateAssetMenu(fileName = "projectile-tool", menuName = "UnityUtil/ProjectileToolInfo")]
     public class ProjectileToolInfo : ScriptableObject {

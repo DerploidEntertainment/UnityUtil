@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Danware.Unity.Inventory {
+namespace UnityUtil.Inventory {
 
     [CreateAssetMenu(fileName = "push-tool", menuName = "UnityUtil/PushToolInfo")]
     public class PushToolInfo : ScriptableObject {

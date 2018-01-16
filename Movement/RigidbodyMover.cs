@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Assertions;
 
-namespace Danware.Unity.Movement {
+namespace UnityUtil.Movement {
 
     public class RigidbodyMover : MonoBehaviour {
 

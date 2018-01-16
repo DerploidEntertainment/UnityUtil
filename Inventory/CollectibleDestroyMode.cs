@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-
-namespace Danware.Unity.Inventory {
+﻿namespace UnityUtil.Inventory {
 
     /// <summary>
     /// Determines under what circumstances, if any, a Collectible's <see cref="GameObject"/> will be destroyed.

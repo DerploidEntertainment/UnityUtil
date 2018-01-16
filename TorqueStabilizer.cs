@@ -2,14 +2,14 @@
 using UnityEngine;
 using UnityEngine.Assertions;
 
-namespace Danware.Unity {
+namespace UnityUtil {
 
     public class TorqueStabilizer : MonoBehaviour {
 
         // INSPECTOR FIELDS
         [Tooltip("The Rigidbody to which the stabilizing torque will be applied.")]
         public Rigidbody RigidbodyToStabilize;
-        [Tooltip("The maximum torque that can be applied to stabilize the associated Rigidbody about the upward direction.  That is, if a larger torque than this is applied to the Rigidbody, this " + nameof(Danware.Unity.TorqueStabilizer) + " will not be able to stabilize against it.")]
+        [Tooltip("The maximum torque that can be applied to stabilize the associated Rigidbody about the upward direction.  That is, if a larger torque than this is applied to the Rigidbody, this " + nameof(UnityUtil.TorqueStabilizer) + " will not be able to stabilize against it.")]
         public float MaxStabilizingTorque;
         [Tooltip("If the associated Rigidbody's angle of deflection from the upward direction is greater than this angle, then stabilizing torques will not be applied.  That is, beyond this deflection angle, the Rigidbody will just 'tip over'.")]
         [Range(0f, 180f)]
