@@ -58,8 +58,6 @@
     <Compile Include="CancellableUnityEvent.cs" />
     <Compile Include="ConditionalLogger.cs" />
     <Compile Include="DependencyInjection\DependencyInjector.cs" />
-    <Compile Include="DependencyInjection\ServiceCollectionSingleton.cs" />
-    <Compile Include="DependencyInjection\IDependsOn.cs" />
     <Compile Include="Destroyer.cs" />
     <Compile Include="HoverForce.cs" />
     <Compile Include="Inventory\AmmoToolInfo.cs" />
