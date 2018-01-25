@@ -36,18 +36,18 @@ namespace UnityUtil {
         public static string GetHierarchyName(this GameObject gameObject, int numParents = 1) => getName(gameObject.transform, numParents);
         public static string GetHierarchyName<T>(this T component, int numParents = 1) where T : MonoBehaviour => getName(component.transform, numParents);
         public static string GetHierarchyNameWithType<T>(this T component, int numParents = 1) where T : MonoBehaviour =>
-            $"{typeof(T).Name} {getName(component.transform, numParents)}";
+            $"{component.GetType().Name} {getName(component.transform, numParents)}";
 
-        public static string GetSingletonName<T>(this T component) where T : MonoBehaviour => $"The {typeof(T).Name}";
+        public static string GetSingletonName<T>(this T component) where T : MonoBehaviour => $"The {component.GetType().Name}";
 
         public static string GetAssociationAssertion<T>(this T component, string memberName, bool singleton = false) where T : MonoBehaviour {
             string componentStr = singleton ? component.GetSingletonName() : component.GetHierarchyNameWithType();
             return $"{componentStr} was not associated with any {memberName}!";
         }
         public static string GetSingletonAssertion<T>(this T component, int refs) where T : MonoBehaviour =>
-            $"There can be only one instance of {typeof(T).Name} in a scene!  You have {refs}!";
+            $"There can be only one instance of {component.GetType().Name} in a scene!  You have {refs}!";
 
-        public static string GetSwitchDefault<T>(T value) => $"Gah!  We haven't accounted for {typeof(T).Name} {value} yet!";
+        public static string GetSwitchDefault<T>(T value) => $"Gah!  We haven't accounted for {value.GetType().Name} {value} yet!";
 
         // HELPERS
         private static string getLog(object message, bool framePrefix) {
