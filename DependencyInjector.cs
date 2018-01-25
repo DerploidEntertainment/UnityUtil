@@ -7,51 +7,11 @@ using UnityEngine.SceneManagement;
 
 namespace UnityUtil {
 
-    /// <summary>
-    /// Determines how this <see cref="DependencyInjector"/> locates clients
-    /// </summary>
-    public enum DependencyInjectionMode {
-        /// <summary>
-        /// Required dependencies will only be injected into the <see cref="GameObject"/>s specified in the <see cref="DependencyInjector.Clients"/> array.  Use this if you know, at design time, exactly which <see cref="GameObject"/>s require dependencies.
-        /// </summary>
-        SpecifiedClients,
-
-        /// <summary>
-        /// Required dependencies will be injected into the <see cref="GameObject"/>s specified in the <see cref="DependencyInjector.Clients"/> array, as well as all of their child objects (recursively).  Use this if you know that all objects requiring dependencies will be parented to a specific <see cref="GameObject"/>.
-        /// </summary>
-        SpecifiedClientsPlusChildren,
-
-        /// <summary>
-        /// Every <see cref="GameObject"/> in the Scene will be checked for required dependencies, and have those dependencies injected.  This is the easiest option, guaranteeing that all <see cref="MonoBehaviour"/>s in the scene will be associated with their correct dependencies, but is also the slowest slowest option, but 
-        /// </summary>
-        EntireScene
-    }
-
     [Serializable]
     public struct Service {
         [Tooltip("Optional.  All services are associated with a System.Type.  This Type can be any Type in the service's inheritance hierarchy.  For example, a service component derived from Monobehaviour could be associated with its actual runtime Type, with Monobehaviour, with Unity.Object, or with System.Object.  The actual declared Type is assumed if you leave this field blank.")]
         public string TypeName;
         public MonoBehaviour Instance;
-    }
-
-    /// <summary>
-    /// Inject the service configured with this field's <see cref="Type"/> and an optional Inspector tag.
-    /// </summary>
-    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
-    public sealed class InjectAttribute : PropertyAttribute {
-
-        /// <summary></summary>
-        public InjectAttribute() { }
-        /// <summary></summary>
-        /// <param name="tag">The service <see cref="MonoBehaviour"/> with this tag (set in the Inspector) will be injected.  Use when there must be multiple services with the same Type.</param>
-        public InjectAttribute(string tag) {
-            Tag = tag;
-        }
-
-        /// <summary>
-        /// The service <see cref="MonoBehaviour"/> with this tag (set in the Inspector) will be injected.  Use when there must be multiple services with the same Type.
-        /// </summary>
-        public string Tag { get; }
     }
 
     public class DependencyInjector : MonoBehaviour {
