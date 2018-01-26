@@ -1,11 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.15
+VisualStudioVersion = 15.0.27130.2024
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnityUtil", "UnityUtil.csproj", "{567FE3BC-52EE-4BF6-92BE-A356F8F08DBE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnityUtil.Input", "..\Danware.Unity.Input\UnityUtil.Input.csproj", "{B4A989C3-C0EB-4145-A1F9-293EBC23FBCE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnityUtil.Input", "..\UnityUtil.Input\UnityUtil.Input.csproj", "{B4A989C3-C0EB-4145-A1F9-293EBC23FBCE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
