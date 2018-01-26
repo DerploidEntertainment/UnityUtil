@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace UnityUtil.Updating {
+namespace UnityUtil {
 
     public interface IUpdater {
 
@@ -39,19 +39,6 @@ namespace UnityUtil.Updating {
         /// </summary>
         /// <param name="instanceId">The instance ID of the component that no longer needs to be updated at the end of every frame (returned by <see cref="Unity.Object.GetInstanceID"/>).</param>
         void UnregisterLateUpdate(int instanceId);
-
-        /// <summary>
-        /// Calls the Update action associated with every registered <see cref="IUpdatable"/>.
-        /// </summary>
-        void UpdateAll();
-        /// <summary>
-        /// Calls the FixedUpdate action associated with every registered <see cref="IUpdatable"/>.
-        /// </summary>
-        void FixedUpdateAll();
-        /// <summary>
-        /// Calls the LateUpdate action associated with every registered <see cref="IUpdatable"/>.
-        /// </summary>
-        void LateUpdateAll();
 
     }
 

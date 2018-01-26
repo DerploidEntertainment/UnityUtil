@@ -124,7 +124,6 @@
     <Compile Include="AxisDirection.cs" />
     <Compile Include="Updating\IUpdater.cs" />
     <Compile Include="Updating\UpdaterSingleton.cs" />
-    <Compile Include="Updating\Updater.cs" />
     <Compile Include="ValueChangedEventArgs.cs" />
   </ItemGroup>
   <ItemGroup>
