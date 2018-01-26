@@ -9,7 +9,7 @@ namespace UnityUtil {
 
     [Serializable]
     public struct Service {
-        [Tooltip("Optional.  All services are associated with a System.Type.  This Type can be any Type in the service's inheritance hierarchy.  For example, a service component derived from Monobehaviour could be associated with its actual runtime Type, with Monobehaviour, with Unity.Object, or with System.Object.  The actual declared Type is assumed if you leave this field blank.")]
+        [Tooltip("Optional.  All services are associated with a System.Type.  This Type can be any Type in the service's inheritance hierarchy, but must be a [Serializable] Type.  For example, a service component derived from Monobehaviour could be associated with its actual declared Type, with Monobehaviour, or with UnityEngine.Object.  The actual declared Type is assumed if you leave this field blank.")]
         public string TypeName;
         public MonoBehaviour Instance;
     }
@@ -38,7 +38,29 @@ namespace UnityUtil {
             for (int s = 0; s < Services.Length; ++s) {
                 Service service = Services[s];
                 MonoBehaviour instance = service.Instance;
-                Type type = string.IsNullOrEmpty(service.TypeName) ? service.Instance.GetType() : Type.GetType(service.TypeName);
+
+                // Get the service's Type
+                Type type;
+                if (string.IsNullOrEmpty(service.TypeName))
+                    type = service.Instance.GetType();
+                else {
+                    try {
+                        type = Type.GetType(service.TypeName);
+                        if (type == null)
+                            throw new InvalidOperationException($"Could not load Type '{service.TypeName}'.  Make sure you provided its fully qualified name.");
+                        if (!type.IsAssignableFrom(service.Instance.GetType()))
+                            throw new InvalidOperationException($"The service instance configured for Type '{service.TypeName}' is not actually derived from that Type!");
+                        if (!type.IsSubclassOf(typeof(UnityEngine.Object)))
+                            if (type.GetCustomAttributes(typeof(SerializableAttribute), inherit: true).Length == 0)
+                                throw new InvalidOperationException($"Type '{service.TypeName}' is not Serializable nor derived from UnityEngine.Object.");
+                    }
+                    catch(Exception ex) {
+                        ConditionalLogger.LogError($"Could not configure service of Type '{service.TypeName}': {ex.Message}");
+                        continue;
+                    }
+                }
+
+                // Add the service to the service collection, throwing an error if it's Type/Tag have already been configured
                 bool typeAdded = _services.TryGetValue(type, out IDictionary<string, MonoBehaviour> typedServices);
                 if (typeAdded) {
                     bool tagAdded = typedServices.TryGetValue(instance.tag, out MonoBehaviour taggedService);
@@ -102,10 +124,12 @@ namespace UnityUtil {
                     if (attrs.Length == 0)
                         continue;
 
-                    // If this field isn't of a Type derived from MonoBehaviour then skip it with an error
-                    if (!field.FieldType.IsSubclassOf(typeof(MonoBehaviour))) {
-                        client.LogError($" tried to inject dependency into field \"{field.Name}\", which does not have a Type derived from MonoBehaviour.", framePrefix: false);
-                        continue;
+                    // If this field's Type is not Serializable nor derived from UnityEngine.Object, then skip it with an error
+                    if (!field.FieldType.IsSubclassOf(typeof(UnityEngine.Object))) {
+                        if (field.FieldType.GetCustomAttributes(typeof(SerializableAttribute), inherit: true).Length == 0) {
+                            client.LogError($" tried to inject dependency into field '{field.Name}', whose Type is not Serializable, nor derived from UnityEngine.Object.", framePrefix: false);
+                            continue;
+                        }
                     }
 
                     // Warn if a dependency with this Type has already been injected
