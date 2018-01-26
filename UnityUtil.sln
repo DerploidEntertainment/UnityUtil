@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnityUtil", "UnityUtil.cspr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnityUtil.Input", "..\UnityUtil.Input\UnityUtil.Input.csproj", "{B4A989C3-C0EB-4145-A1F9-293EBC23FBCE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnityUtil.Editor", "..\UnityUtil.Editor\UnityUtil.Editor.csproj", "{A87CA533-A845-4EA8-AE61-A3C9C99B0C63}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,8 +23,15 @@ Global
 		{B4A989C3-C0EB-4145-A1F9-293EBC23FBCE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B4A989C3-C0EB-4145-A1F9-293EBC23FBCE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B4A989C3-C0EB-4145-A1F9-293EBC23FBCE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A87CA533-A845-4EA8-AE61-A3C9C99B0C63}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A87CA533-A845-4EA8-AE61-A3C9C99B0C63}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A87CA533-A845-4EA8-AE61-A3C9C99B0C63}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A87CA533-A845-4EA8-AE61-A3C9C99B0C63}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A909A0B3-E6EC-4825-98D8-E36088C6B9CB}
 	EndGlobalSection
 EndGlobal
