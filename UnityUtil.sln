@@ -3,11 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2024
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnityUtil", "UnityUtil.csproj", "{567FE3BC-52EE-4BF6-92BE-A356F8F08DBE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnityUtil", "UnityUtil\UnityUtil.csproj", "{567FE3BC-52EE-4BF6-92BE-A356F8F08DBE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnityUtil.Input", "..\UnityUtil.Input\UnityUtil.Input.csproj", "{B4A989C3-C0EB-4145-A1F9-293EBC23FBCE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnityUtil.Input", "UnityUtil.Input\UnityUtil.Input.csproj", "{B4A989C3-C0EB-4145-A1F9-293EBC23FBCE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnityUtil.Editor", "..\UnityUtil.Editor\UnityUtil.Editor.csproj", "{A87CA533-A845-4EA8-AE61-A3C9C99B0C63}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnityUtil.Editor", "UnityUtil.Editor\UnityUtil.Editor.csproj", "{A87CA533-A845-4EA8-AE61-A3C9C99B0C63}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0F66D08B-7775-46C2-80DE-A24FA57037B1}"
+	ProjectSection(SolutionItems) = preProject
+		.gitattributes = .gitattributes
+		.gitignore = .gitignore
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

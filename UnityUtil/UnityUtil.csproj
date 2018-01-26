@@ -46,15 +46,14 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
     <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>C:\Program Files\Unity\Editor\Data\Managed\UnityEngine.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AbsoluteAnimation.cs" />
+    <Compile Include="AbsoluteParticleSystem.cs" />
+    <Compile Include="AbsoluteUpdater.cs" />
     <Compile Include="CancellableUnityEvent.cs" />
     <Compile Include="ConditionalLogger.cs" />
     <Compile Include="DependencyInjection\DependencyInjectionMode.cs" />
@@ -132,10 +131,6 @@
       <Project>{b4a989c3-c0eb-4145-a1f9-293ebc23fbce}</Project>
       <Name>UnityUtil.Input</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include=".gitattributes" />
-    <Content Include=".gitignore" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
