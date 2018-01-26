@@ -122,6 +122,7 @@
     <Compile Include="Triggers\TriggerEnterTrigger.cs" />
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="AxisDirection.cs" />
+    <Compile Include="Updating\BetterBehaviour.cs" />
     <Compile Include="Updating\IUpdater.cs" />
     <Compile Include="Updating\UpdaterSingleton.cs" />
     <Compile Include="ValueChangedEventArgs.cs" />
