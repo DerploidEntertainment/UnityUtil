@@ -57,9 +57,9 @@
   <ItemGroup>
     <Compile Include="CancellableUnityEvent.cs" />
     <Compile Include="ConditionalLogger.cs" />
-    <Compile Include="DependencyInjectionMode.cs" />
-    <Compile Include="InjectAttribute.cs" />
-    <Compile Include="DependencyInjector.cs" />
+    <Compile Include="DependencyInjection\DependencyInjectionMode.cs" />
+    <Compile Include="DependencyInjection\InjectAttribute.cs" />
+    <Compile Include="DependencyInjection\DependencyInjector.cs" />
     <Compile Include="Destroyer.cs" />
     <Compile Include="HoverForce.cs" />
     <Compile Include="Inventory\AmmoToolInfo.cs" />
