@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 namespace UnityUtil {
 
@@ -15,6 +16,8 @@ namespace UnityUtil {
         public UpdaterSingleton Updater;
 
         protected void Awake() {
+            Assert.IsNotNull(Updater, this.GetAssociationAssertion(nameof(this.Updater), singleton: true));
+
             _instanceID = GetInstanceID();
 
             BetterAwake();
