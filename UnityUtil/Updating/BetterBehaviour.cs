@@ -31,6 +31,11 @@ namespace UnityUtil {
         }
         protected void OnEnable() {
             if (RegisterUpdatesAutomatically) {
+                // Validate that Components with auto-update-registeration have provided at least one Update Action for registration
+                Assert.IsFalse(
+                    BetterUpdate == null && BetterFixedUpdate == null && BetterLateUpdate == null,
+                    this.GetHierarchyNameWithType() + " did not set any Update Actions for automatic registration!"
+                );
                 if (BetterUpdate != null)
                     Updater.RegisterUpdate(InstanceID, BetterUpdate);
                 if (BetterFixedUpdate != null)
