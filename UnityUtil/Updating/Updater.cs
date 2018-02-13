@@ -6,10 +6,7 @@ using UnityEngine.Assertions;
 namespace UnityUtil {
 
     [DisallowMultipleComponent]
-    public class UpdaterSingleton : MonoBehaviour, IUpdater {
-
-        // HIDDEN FIELDS
-        private static int s_refs = 0;
+    public class Updater : MonoBehaviour, IUpdater {
 
         private IDictionary<int, int> _updateIndices = new Dictionary<int, int>();
         private IDictionary<int, int> _fixedIndices = new Dictionary<int, int>();
@@ -103,11 +100,6 @@ namespace UnityUtil {
         }
 
         // EVENT HANDLERS
-        private void Awake() {
-            // Make sure this component is a singleton
-            ++s_refs;
-            Assert.IsTrue(s_refs == 1, this.GetSingletonAssertion(s_refs));
-        }
         private void Update() {
             for (int u = 0; u < _updates.Count; ++u)
                 _updates[u]?.Invoke();

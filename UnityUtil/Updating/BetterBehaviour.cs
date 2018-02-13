@@ -20,10 +20,10 @@ namespace UnityUtil {
         protected Action BetterLateUpdate;
 
         [Inject]
-        public UpdaterSingleton Updater;
+        public Updater Updater;
 
         protected void Awake() {
-            Assert.IsNotNull(Updater, this.GetAssociationAssertion(nameof(this.Updater), singleton: true));
+            Assert.IsNotNull(Updater, this.GetAssociationAssertion(nameof(this.Updater)));
 
             InstanceID = GetInstanceID();
 
@@ -31,7 +31,7 @@ namespace UnityUtil {
         }
         protected void OnEnable() {
             if (RegisterUpdatesAutomatically) {
-                // Validate that Components with auto-update-registeration have provided at least one Update Action for registration
+                // Validate that Components with auto-update-registration have provided at least one Update Action for registration
                 Assert.IsFalse(
                     BetterUpdate == null && BetterFixedUpdate == null && BetterLateUpdate == null,
                     this.GetHierarchyNameWithType() + " did not set any Update Actions for automatic registration!"

@@ -60,6 +60,7 @@
     <Compile Include="DependencyInjection\InjectAttribute.cs" />
     <Compile Include="DependencyInjection\DependencyInjector.cs" />
     <Compile Include="Destroyer.cs" />
+    <Compile Include="GameStateManager.cs" />
     <Compile Include="HoverForce.cs" />
     <Compile Include="Inventory\AmmoToolInfo.cs" />
     <Compile Include="Inventory\HurtWeaponInfo.cs" />
@@ -70,12 +71,11 @@
     <Compile Include="Inventory\WeaponInfo.cs" />
     <Compile Include="Movement\MouseLook.cs" />
     <Compile Include="Physics2DExtensions.cs" />
-    <Compile Include="GameStateManagerSingleton.cs" />
     <Compile Include="Inventory\AmmoTool.cs" />
     <Compile Include="Inventory\OverheatTool.cs" />
     <Compile Include="Inventory\Tool.cs" />
     <Compile Include="Movement\LookAt.cs" />
-    <Compile Include="SocialWrapperSingleton.cs" />
+    <Compile Include="SocialWrapper.cs" />
     <Compile Include="TorqueStabilizer.cs" />
     <Compile Include="Triggers\OrTrigger.cs" />
     <Compile Include="Triggers\IntTrigger.cs" />
@@ -123,7 +123,7 @@
     <Compile Include="AxisDirection.cs" />
     <Compile Include="Updating\BetterBehaviour.cs" />
     <Compile Include="Updating\IUpdater.cs" />
-    <Compile Include="Updating\UpdaterSingleton.cs" />
+    <Compile Include="Updating\Updater.cs" />
     <Compile Include="ValueChangedEventArgs.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -11,7 +11,7 @@ namespace UnityUtil {
         protected float _delta;
 
         // INSPECTOR FIELDS
-        public GameStateManagerSingleton GameStateManager;
+        public GameStateManager GameStateManager;
         public bool PauseWhenGameIsPaused = true;
 
         private void Awake() {

@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityEngine.Assertions;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using UnityUtil.Input;
@@ -7,10 +6,7 @@ using UnityUtil.Input;
 namespace UnityUtil {
 
     [DisallowMultipleComponent]
-    public class GameStateManagerSingleton : MonoBehaviour {
-
-        // HIDDEN FIELDS
-        private static int s_refs = 0;
+    public class GameStateManager : MonoBehaviour {
 
         // INSPECTOR INTERFACE
         [Tooltip("The input to use to toggle the paused state of the game.  If not set, then the game can only be paused programmatically.")]
@@ -28,7 +24,7 @@ namespace UnityUtil {
             Time.timeScale = IsPaused ? 0f : 1f;
 
             // Raise the corresponding event
-            this.SingletonLog($" {(IsPaused ? "paused" : "resumed")} the game.");
+            this.Log($" {(IsPaused ? "paused" : "resumed")} the game.");
             (IsPaused ? Paused : Unpaused).Invoke();
         }
         public void LoadScene(string sceneName) => SceneManager.LoadScene(sceneName, LoadSceneMode);
@@ -42,11 +38,6 @@ namespace UnityUtil {
         public void Quit() => Application.Quit();
 
         // EVENT HANDLERS
-        private void Awake() {
-            // Make sure this component is a singleton
-            ++s_refs;
-            Assert.IsTrue(s_refs == 1, this.GetSingletonAssertion(s_refs));
-        }
         private void Update() {
             if (TogglePauseInput?.Started() ?? false)
                 SetPaused(!IsPaused);
