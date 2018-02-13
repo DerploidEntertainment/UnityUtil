@@ -51,9 +51,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AbsoluteAnimation.cs" />
-    <Compile Include="AbsoluteParticleSystem.cs" />
-    <Compile Include="AbsoluteUpdater.cs" />
+    <Compile Include="Updating\AbsoluteAnimation.cs" />
+    <Compile Include="Updating\AbsoluteParticleSystem.cs" />
+    <Compile Include="Updating\AbsoluteUpdater.cs" />
     <Compile Include="CancellableUnityEvent.cs" />
     <Compile Include="ConditionalLogger.cs" />
     <Compile Include="DependencyInjection\DependencyInjectionMode.cs" />
@@ -61,7 +61,7 @@
     <Compile Include="DependencyInjection\DependencyInjector.cs" />
     <Compile Include="Destroyer.cs" />
     <Compile Include="GameStateManager.cs" />
-    <Compile Include="HoverForce.cs" />
+    <Compile Include="Physics\HoverForce.cs" />
     <Compile Include="Inventory\AmmoToolInfo.cs" />
     <Compile Include="Inventory\HurtWeaponInfo.cs" />
     <Compile Include="Inventory\OverheatToolInfo.cs" />
@@ -70,26 +70,26 @@
     <Compile Include="Inventory\ToolInfo.cs" />
     <Compile Include="Inventory\WeaponInfo.cs" />
     <Compile Include="Movement\MouseLook.cs" />
-    <Compile Include="Physics2DExtensions.cs" />
+    <Compile Include="Physics\Physics2DExtensions.cs" />
     <Compile Include="Inventory\AmmoTool.cs" />
     <Compile Include="Inventory\OverheatTool.cs" />
     <Compile Include="Inventory\Tool.cs" />
     <Compile Include="Movement\LookAt.cs" />
     <Compile Include="SocialWrapper.cs" />
-    <Compile Include="TorqueStabilizer.cs" />
+    <Compile Include="Physics\TorqueStabilizer.cs" />
     <Compile Include="Triggers\OrTrigger.cs" />
     <Compile Include="Triggers\IntTrigger.cs" />
     <Compile Include="Triggers\JointBreakTrigger.cs" />
     <Compile Include="Triggers\ButtonTrigger.cs" />
     <Compile Include="Triggers\AnimationEventTrigger.cs" />
-    <Compile Include="ColliderDuplicator.cs" />
+    <Compile Include="Physics\ColliderDuplicator.cs" />
     <Compile Include="Movement\RigidbodyMover.cs" />
     <Compile Include="Movement\RigidbodyMovement.cs" />
     <Compile Include="Movement\TargetOffsetMovement.cs" />
     <Compile Include="Inventory\AmmoCollector.cs" />
     <Compile Include="Inventory\HealthCollector.cs" />
     <Compile Include="Inventory\InventoryCollector.cs" />
-    <Compile Include="HurtDetonator.cs" />
+    <Compile Include="Physics\HurtDetonator.cs" />
     <Compile Include="Inventory\AmmoCollectible.cs" />
     <Compile Include="Inventory\HealthCollectible.cs" />
     <Compile Include="Inventory\HurtWeapon.cs" />
@@ -97,17 +97,17 @@
     <Compile Include="Inventory\ProjectileTool.cs" />
     <Compile Include="Inventory\PushTool.cs" />
     <Compile Include="Inventory\Weapon.cs" />
-    <Compile Include="DontDestroy.cs" />
-    <Compile Include="PhysTarget.cs" />
-    <Compile Include="PushDetonator.cs" />
-    <Compile Include="Liftable.cs" />
+    <Compile Include="DontDestroyOnLoad.cs" />
+    <Compile Include="Physics\PhysTarget.cs" />
+    <Compile Include="Physics\PushDetonator.cs" />
+    <Compile Include="Physics\Liftable.cs" />
     <Compile Include="Movement\CharacterFPSWalker.cs" />
     <Compile Include="Inventory\CollectibleDestroyMode.cs" />
-    <Compile Include="CollisionSounds.cs" />
-    <Compile Include="Detonator.cs" />
+    <Compile Include="Physics\CollisionSounds.cs" />
+    <Compile Include="Physics\Detonator.cs" />
     <Compile Include="Health.cs" />
     <Compile Include="Inventory\Inventory.cs" />
-    <Compile Include="Lifter.cs" />
+    <Compile Include="Physics\Lifter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Triggers\RandomTrigger.cs" />
     <Compile Include="Triggers\SimpleTrigger.cs" />
@@ -119,8 +119,7 @@
     <Compile Include="Triggers\ToggleTrigger.cs" />
     <Compile Include="Triggers\TriggerExitTrigger.cs" />
     <Compile Include="Triggers\TriggerEnterTrigger.cs" />
-    <Compile Include="ExtensionMethods.cs" />
-    <Compile Include="AxisDirection.cs" />
+    <Compile Include="Physics\AxisDirection.cs" />
     <Compile Include="Updating\BetterBehaviour.cs" />
     <Compile Include="Updating\IUpdater.cs" />
     <Compile Include="Updating\Updater.cs" />
