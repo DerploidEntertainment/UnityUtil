@@ -3,19 +3,14 @@ using UnityEngine.Assertions;
 
 namespace UnityUtil.Inventory {
 
+    [RequireComponent(typeof(Collectible))]
     public class AmmoCollectible : MonoBehaviour {
 
         // INSPECTOR FIELDS
-        public GameObject Root;
-        public int Ammo;
         public string AmmoTypeName;
-        public CollectibleDestroyMode DestroyMode = CollectibleDestroyMode.WhenUsed;
 
-        private void Awake() {
-            Assert.IsNotNull(Root, this.GetAssociationAssertion(nameof(this.Root)));
-            Assert.IsTrue(Ammo >= 0, $"{this.GetHierarchyNameWithType()} must have a positive amount of {nameof(this.Ammo)}!");
+        private void Awake() =>
             Assert.IsTrue(AmmoTypeName != "", $"{this.GetHierarchyNameWithType()} must specify a value for {nameof(this.AmmoTypeName)}!");
-        }
 
     }
 

@@ -51,6 +51,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Inventory\Collectible.cs" />
+    <Compile Include="Inventory\QuantityCollectible.cs" />
+    <Compile Include="Inventory\Collector.cs" />
+    <Compile Include="Inventory\QuantityWeaponInfo.cs" />
+    <Compile Include="ManagedQuantity.cs" />
     <Compile Include="Updating\AbsoluteAnimation.cs" />
     <Compile Include="Updating\AbsoluteParticleSystem.cs" />
     <Compile Include="Updating\AbsoluteUpdater.cs" />
@@ -63,7 +68,6 @@
     <Compile Include="GameStateManager.cs" />
     <Compile Include="Physics\HoverForce.cs" />
     <Compile Include="Inventory\AmmoToolInfo.cs" />
-    <Compile Include="Inventory\HurtWeaponInfo.cs" />
     <Compile Include="Inventory\OverheatToolInfo.cs" />
     <Compile Include="Inventory\ProjectileToolInfo.cs" />
     <Compile Include="Inventory\PushToolInfo.cs" />
@@ -87,12 +91,11 @@
     <Compile Include="Movement\RigidbodyMovement.cs" />
     <Compile Include="Movement\TargetOffsetMovement.cs" />
     <Compile Include="Inventory\AmmoCollector.cs" />
-    <Compile Include="Inventory\HealthCollector.cs" />
+    <Compile Include="Inventory\QuantityCollector.cs" />
     <Compile Include="Inventory\InventoryCollector.cs" />
-    <Compile Include="Physics\HurtDetonator.cs" />
+    <Compile Include="Physics\QuantityDetonator.cs" />
     <Compile Include="Inventory\AmmoCollectible.cs" />
-    <Compile Include="Inventory\HealthCollectible.cs" />
-    <Compile Include="Inventory\HurtWeapon.cs" />
+    <Compile Include="Inventory\QuantityWeapon.cs" />
     <Compile Include="Inventory\InventoryCollectible.cs" />
     <Compile Include="Inventory\ProjectileTool.cs" />
     <Compile Include="Inventory\PushTool.cs" />
@@ -105,7 +108,6 @@
     <Compile Include="Inventory\CollectibleDestroyMode.cs" />
     <Compile Include="Physics\CollisionSounds.cs" />
     <Compile Include="Physics\Detonator.cs" />
-    <Compile Include="Health.cs" />
     <Compile Include="Inventory\Inventory.cs" />
     <Compile Include="Physics\Lifter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
