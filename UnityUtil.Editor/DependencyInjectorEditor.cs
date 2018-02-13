@@ -12,7 +12,7 @@ namespace HighHandHoldem {
 
             var injector = (DependencyInjector)target;
             if (GUILayout.Button("Inject"))
-                injector.Inject();
+                injector.InjectAll();
         }
 
     }
