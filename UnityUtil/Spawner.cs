@@ -64,11 +64,14 @@ namespace UnityUtil {
             if (_previous != null && DestroyPrevious)
                 Destroy(_previous);
 
+            string newName = $"{BaseName}{(DestroyPrevious ? "" : "_" + _count)}";
+            this.Log($" spawning {newName}");
+
             // Instantiating a Prefab can sometimes give a GameObject or a Transform...we want the GameObject
             GameObject obj = (SpawnParent == null) ?
                 Instantiate(Prefab, transform.position, transform.rotation) :
                 Instantiate(Prefab, transform.position, transform.rotation, SpawnParent);
-            obj.name = $"{BaseName}{(DestroyPrevious ? "" : "_" + _count)}";
+            obj.name = newName;
             if (!DestroyPrevious)
                 ++_count;
 
@@ -95,7 +98,6 @@ namespace UnityUtil {
 #endif
             }
 
-            this.Log($" spawned {obj.name}");
             _previous = obj;
         }
 
