@@ -5,10 +5,28 @@ using U = UnityEngine;
 
 namespace UnityUtil {
 
+    /// <summary>
+    /// Determines the direction in which <see cref="Spawner.Prefab"/> instances spawned by a <see cref="UnityUtil.Spawner"/> are launched.
+    /// </summary>
     public enum SpawnDirection {
+        /// <summary>
+        /// Spawned <see cref="Spawner.Prefab"/> instances will be launched along the <see cref="UnityUtil.Spawner"/>'s forward vector.
+        /// </summary>
         Straight,
+
+        /// <summary>
+        /// Spawned <see cref="Spawner.Prefab"/> instances will be launched along a random vector within a cone centered around the <see cref="UnityUtil.Spawner"/>'s forward vector.
+        /// </summary>
         ConeRandom,
+
+        /// <summary>
+        /// Spawned <see cref="Spawner.Prefab"/> instances will be launched along a random vector on the boundary of a cone centered around the <see cref="UnityUtil.Spawner"/>'s forward vector.
+        /// </summary>
         ConeBoundary,
+
+        /// <summary>
+        /// Spawned <see cref="Spawner.Prefab"/> instances will be launched along any random vector.
+        /// </summary>
         AnyDirection,
     }
 
@@ -19,15 +37,21 @@ namespace UnityUtil {
         private long _count = 0;
 
         // INSPECTOR FIELDS
+        [Tooltip("The actual Unity prefab to spawn.  We highly recommend using a PREFAB, as opposed to an existing GameObject in the Scene, though either will technically work.")]
         public GameObject Prefab;
+        [Tooltip("All spawned instances of " + nameof(Spawner.Prefab) + " will be parented to this Transform.")]
         public Transform SpawnParent;
-        [Tooltip("All spawned instances of the Prefab will be given this name, along with a numeric suffix.  If DestroyPrevious is true, then the numeric suffix will not be added.")]
+        [Tooltip("All spawned " + nameof(Spawner.Prefab) + " instances will be given this name, along with a numeric suffix.  If " + nameof(Spawner.DestroyPrevious) + " is true, then the numeric suffix will not be added.")]
         public string BaseName = "Object";
+        [Tooltip("If true, then previously spawned " + nameof(Spawner.Prefab) + " instances will be destroyed before the next instance is spawned, so there will only ever be one spawned instance in existence.  If false, then multiple instances may be spawned.")]
         public bool DestroyPrevious;
+        [Tooltip("All spawned " + nameof(Spawner.Prefab) + " instances will be launched in the " + nameof(Spawner.SpawnDirection) + ", with at least this speed.  Setting both " + nameof(Spawner.MinSpeed) + " and " + nameof(Spawner.MaxSpeed) + " to zero will spawn instances right at this " + nameof(UnityUtil.Spawner) + "'s position, without any launching.")]
         public float MinSpeed = 0f;
+        [Tooltip("All spawned " + nameof(Spawner.Prefab) + " instances will be launched in the " + nameof(Spawner.SpawnDirection) + ", with at most this speed.  Setting both " + nameof(Spawner.MinSpeed) + " and " + nameof(Spawner.MaxSpeed) + " to zero will spawn instances right at this " + nameof(UnityUtil.Spawner) + "'s position, without any launching.")]
         public float MaxSpeed = 10f;
-        [Tooltip("This property defines the direction in which spawned Prefab instances will move.")]
+        [Tooltip("This property defines the direction in which spawned " + nameof(Spawner.Prefab) + " instances will be  launched.")]
         public SpawnDirection SpawnDirection = SpawnDirection.Straight;
+        [Tooltip("If " + nameof(Spawner.SpawnDirection) + " is set to " + nameof(SpawnDirection.ConeRandom) + " or " + nameof(SpawnDirection.ConeBoundary) + ", then this value determines the half-angle of that cone.  Otherwise, this value is ignored.")]
         [Range(0f, 90f)]
         public float ConeHalfAngle = 30f;
 
