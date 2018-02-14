@@ -61,7 +61,6 @@
     <Compile Include="Updating\AbsoluteUpdater.cs" />
     <Compile Include="CancellableUnityEvent.cs" />
     <Compile Include="ConditionalLogger.cs" />
-    <Compile Include="DependencyInjection\DependencyInjectionMode.cs" />
     <Compile Include="DependencyInjection\InjectAttribute.cs" />
     <Compile Include="DependencyInjection\DependencyInjector.cs" />
     <Compile Include="Destroyer.cs" />

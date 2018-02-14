@@ -8,11 +8,9 @@ namespace HighHandHoldem {
     public class DependencyInjectorEditor : Editor {
 
         public override void OnInspectorGUI() {
-            DrawDefaultInspector();
+            GUILayout.Label($"Make sure you tag this {nameof(UnityUtil.DependencyInjector)}\nas '{DependencyInjector.Tag}'!");
 
-            var injector = (DependencyInjector)target;
-            if (GUILayout.Button("Inject"))
-                injector.InjectAll();
+            DrawDefaultInspector();
         }
 
     }

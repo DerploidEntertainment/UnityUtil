@@ -20,48 +20,40 @@ namespace UnityUtil {
         private IDictionary<Type, IDictionary<string, MonoBehaviour>> _services = new Dictionary<Type, IDictionary<string, MonoBehaviour>>();
 
         // INSPECTOR FIELDS
-        [Tooltip("Determines how this " + nameof(UnityUtil.DependencyInjector) + " locates clients.  Changing this to a value other than " + nameof(DependencyInjectionMode.EntireScene) + " and supplying client objects in the " + nameof(DependencyInjector.Clients) + " array can significantly speed up injection times.")]
-        public DependencyInjectionMode InjectionMode = DependencyInjectionMode.EntireScene;
         [Tooltip("The service collection from which dependencies will be resolved")]
-        public Service[] Services;
-        [Tooltip("The specific GameObjects that require (and/or whose children require) dependency injection.  Only required if " + nameof(DependencyInjector.InjectionMode) + " has a value other than " + nameof(DependencyInjectionMode.EntireScene) + ".")]
-        public GameObject[] Clients;
+        public Service[] ServiceCollection;
 
         // INTERFACE
-        /// <summary>
-        /// Inject all dependencies into all specified clients.
-        /// Because this function may enumerate the entire scene hierarchy (depending on the value of <see cref="DependencyInjector.InjectionMode"/>),
-        /// it is only meant to be called at design time by Editor scripts.
-        /// </summary>
-        public void InjectAll() {
-            configureServices();
-            IEnumerable<MonoBehaviour> clients = getClients(InjectionMode);
-            Inject(clients);
-        }
+        public static string Tag = "DependencyInjector";
         /// <summary>
         /// Inject all dependencies into the specified clients.
         /// Can be called at runtime to satisfy dependencies of procedurally generated components, e.g., by a spawner.
         /// </summary>
         /// <param name="clients">A collection of clients with service dependencies that need to be resolved.</param>
-        public void Inject(params MonoBehaviour[] clients) => Inject(clients);
+        public void Inject(params MonoBehaviour[] clients) => Inject(clients as IEnumerable<MonoBehaviour>);
         /// <summary>
         /// Inject all dependencies into the specified clients.
         /// Can be called at runtime to satisfy dependencies of procedurally generated components, e.g., by a spawner.
         /// </summary>
         /// <param name="clients">A collection of clients with service dependencies that need to be resolved.</param>
         public void Inject(IEnumerable<MonoBehaviour> clients) {
+            var injectedTypes = new HashSet<Type>();
+            BindingFlags fieldBindingFlags = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public;
+
             // For each client component, get the actual dependency fields/properties,
             // then resolve and inject those dependencies!
-            int attempts = 0;
-            int successes = 0;
             foreach (MonoBehaviour client in clients) {
-                FieldInfo[] fields = client.GetType().GetFields();
-                var injectedTypes = new HashSet<Type>();
+                injectedTypes.Clear();
+                FieldInfo[] fields = client.GetType().GetFields(fieldBindingFlags);
                 foreach (FieldInfo field in fields) {
-                    // If this isn't field doesn't have a service dependency then skip it
+                    // If this field doesn't have a service dependency then skip it
                     object[] attrs = field.GetCustomAttributes(typeof(InjectAttribute), inherit: false);
                     if (attrs.Length == 0)
                         continue;
+
+                    // Warn the user if this field is public
+                    if (field.IsPublic)
+                        client.LogWarning($"dependency '{field.Name}' is declared public.  Dependencies should not be declared public, so as to avoid confusion at design time.");
 
                     // If this field's Type is not Serializable nor derived from UnityEngine.Object, then skip it with an error
                     if (!field.FieldType.IsSubclassOf(typeof(UnityEngine.Object))) {
@@ -77,7 +69,6 @@ namespace UnityUtil {
                         client.LogWarning($" injecting multiple dependencies of Type '{field.FieldType.Name}'.", framePrefix: false);
 
                     // If this dependency can't be resolved, then skip it with an error and clear the field
-                    ++attempts;
                     bool resolved = _services.TryGetValue(field.FieldType, out IDictionary<string, MonoBehaviour> typedServices);
                     if (!resolved) {
                         field.SetValue(client, null);
@@ -96,24 +87,20 @@ namespace UnityUtil {
 
                     // If this dependency has not already been correctly injected, then inject it now with a log message
                     field.SetValue(client, service);
-                    ++successes;
                     client.Log($" injected dependency of Type '{field.FieldType.Name}'{(untagged ? "" : " with tag '{tag}'")} into field '{field.Name}'.", framePrefix: false);
                 }
             }
-
-            // Log how many new dependency injections were made
-            this.Log($" successfully resolved {successes} out of {attempts} dependencies", framePrefix: false);
         }
 
-        // HELPERS
-        private void configureServices() {
+        // EVENT HANDLERS
+        private void Awake() {
             // Add every service specified in the Inspector to the private service collection
             // Each service instance will be associated with the named Type (which could be, e.g., some base class or interface type)
             // If no Type name was provided, then use the actual name of the service's runtime instance type
             ConditionalLogger.Log($"Refreshing configured services...", false);
             int successes = 0;
             _services.Clear();  // Better to Clear() rather than make a new collection, as the old collection should already have the capacity we need
-            foreach (Service service in Services) {
+            foreach (Service service in ServiceCollection) {
                 MonoBehaviour instance = service.Instance;
 
                 // Get the service's Type
@@ -166,41 +153,13 @@ namespace UnityUtil {
                 _services.Add(thisType, new Dictionary<string, MonoBehaviour>() { { tag, this } });
 
             // Log whether or not all services were configured successfully
-            string successMsg = $" successfully configured {successes} out of {Services.Length} services.";
-            if (successes == Services.Length)
+            string successMsg = $" successfully configured {successes} out of {ServiceCollection.Length} services.";
+            if (successes == ServiceCollection.Length)
                 this.Log(successMsg, framePrefix: false);
             else {
                 string errorMsg = $"Please resolve the above errors and try again.";
                 this.Log($"{successMsg}  {errorMsg}", framePrefix: false);
             }
-        }
-        private IEnumerable<MonoBehaviour> getClients(DependencyInjectionMode injectionMode) {
-            ConditionalLogger.Log($"Searching for client components...", false);
-
-            // Determine which components require dependecies, based on the injection mode
-            IEnumerable<MonoBehaviour> clients;
-            switch (injectionMode) {
-                case DependencyInjectionMode.SpecifiedClients:
-                    clients = Clients.SelectMany(c => c.GetComponents<MonoBehaviour>());
-                    break;
-
-                case DependencyInjectionMode.SpecifiedClientsPlusChildren:
-                    clients = Clients.SelectMany(c => c.GetComponentsInChildren<MonoBehaviour>());
-                    break;
-
-                case DependencyInjectionMode.EntireScene:
-                    clients = SceneManager.GetActiveScene()
-                                          .GetRootGameObjects()
-                                          .SelectMany(r => r.GetComponentsInChildren<MonoBehaviour>());
-                    break;
-
-                default:
-                    throw new NotImplementedException(ConditionalLogger.GetSwitchDefault(injectionMode));
-            }
-
-            ConditionalLogger.Log($"Found {clients.Count()} potential client components", false);
-
-            return clients;
         }
 
     }
