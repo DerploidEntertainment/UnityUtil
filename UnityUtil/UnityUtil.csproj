@@ -121,7 +121,7 @@
     <Compile Include="Triggers\TriggerExitTrigger.cs" />
     <Compile Include="Triggers\TriggerEnterTrigger.cs" />
     <Compile Include="Physics\AxisDirection.cs" />
-    <Compile Include="Updating\BetterBehaviour.cs" />
+    <Compile Include="BetterBehaviour.cs" />
     <Compile Include="Updating\IUpdater.cs" />
     <Compile Include="Updating\Updater.cs" />
     <Compile Include="ValueChangedEventArgs.cs" />
