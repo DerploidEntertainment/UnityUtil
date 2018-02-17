@@ -1,11 +1,10 @@
 ﻿using System.Diagnostics;
 using UnityEngine;
-using UnityEngine.Assertions;
 using U = UnityEngine;
 
 namespace UnityUtil {
 
-    public static class ConditionalLogger {
+    public static class BetterLogger {
 
         [Conditional("DEBUG"), Conditional("UNITY_ASSERTIONS")]
         public static void Log(object message, bool framePrefix = true) => U.Debug.Log(getLog(message, framePrefix));
@@ -29,8 +28,8 @@ namespace UnityUtil {
         public static string GetHierarchyNameWithType<T>(this T component, int numParents = 1) where T : MonoBehaviour =>
             $"{component.GetType().Name} {getName(component.transform, numParents)}";
 
-        public static void AssertDependency<T>(this T component, object member) where T : MonoBehaviour =>
-            Assert.IsNotNull(member, $"{component.GetHierarchyNameWithType()}'s {nameof(member)} dependency was not satisfied!");
+        public static string GetDependencyAssertion<T>(this T component, string memberName) where T : MonoBehaviour =>
+            $"{component.GetHierarchyNameWithType()}'s {memberName} dependency was not satisfied!";
         public static string GetAssociationAssertion<T>(this T component, string memberName) where T : MonoBehaviour =>
             $"{component.GetHierarchyNameWithType()} was not associated with any {memberName}!";
 

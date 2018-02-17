@@ -72,7 +72,7 @@ namespace UnityUtil {
                     bool resolved = _services.TryGetValue(field.FieldType, out IDictionary<string, MonoBehaviour> typedServices);
                     if (!resolved) {
                         field.SetValue(client, null);
-                        ConditionalLogger.LogError($"No services configured with Type '{field.FieldType.Name}'", framePrefix: false);
+                        BetterLogger.LogError($"No services configured with Type '{field.FieldType.Name}'.  Did you incorrectly tag a service or forget to put " + nameof(UnityUtil.DependencyInjector) + " first in the project's Script Execution Order?", framePrefix: false);
                         continue;
                     }
                     var injAttr = attrs[0] as InjectAttribute;
@@ -81,7 +81,7 @@ namespace UnityUtil {
                     resolved = typedServices.TryGetValue(tag, out MonoBehaviour service);
                     if (!resolved) {
                         field.SetValue(client, null);
-                        ConditionalLogger.LogError($"No services configured with Type '{field.FieldType.Name}' and tag '{tag}'", framePrefix: false);
+                        BetterLogger.LogError($"No services configured with Type '{field.FieldType.Name}' and tag '{tag}'", framePrefix: false);
                         continue;
                     }
 
@@ -97,7 +97,7 @@ namespace UnityUtil {
             // Add every service specified in the Inspector to the private service collection
             // Each service instance will be associated with the named Type (which could be, e.g., some base class or interface type)
             // If no Type name was provided, then use the actual name of the service's runtime instance type
-            ConditionalLogger.Log($"Refreshing configured services...", false);
+            BetterLogger.Log($"Refreshing configured services...", false);
             int successes = 0;
             _services.Clear();  // Better to Clear() rather than make a new collection, as the old collection should already have the capacity we need
             foreach (Service service in ServiceCollection) {
@@ -119,7 +119,7 @@ namespace UnityUtil {
                                 throw new InvalidOperationException($"Type '{service.TypeName}' is not Serializable nor derived from UnityEngine.Object.");
                     }
                     catch (Exception ex) {
-                        ConditionalLogger.LogError($"Could not configure service of Type '{service.TypeName}': {ex.Message}");
+                        BetterLogger.LogError($"Could not configure service of Type '{service.TypeName}': {ex.Message}");
                         continue;
                     }
                 }
@@ -129,7 +129,7 @@ namespace UnityUtil {
                 if (typeAdded) {
                     bool tagAdded = typedServices.TryGetValue(instance.tag, out MonoBehaviour taggedService);
                     if (tagAdded) {
-                        ConditionalLogger.LogError($"Multiple services were configured with Type '{type.Name}' and tag '{instance.tag}'", framePrefix: false);
+                        BetterLogger.LogError($"Multiple services were configured with Type '{type.Name}' and tag '{instance.tag}'", framePrefix: false);
                         continue;
                     }
                     else {

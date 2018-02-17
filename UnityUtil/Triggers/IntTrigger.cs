@@ -68,7 +68,7 @@ namespace UnityUtil.Triggers {
                     break;
 
                 default:
-                    throw new NotImplementedException(ConditionalLogger.GetSwitchDefault(Mode));
+                    throw new NotImplementedException(BetterLogger.GetSwitchDefault(Mode));
             }
 
             // If no desired values were reached above, then raise the ValueNotReached event

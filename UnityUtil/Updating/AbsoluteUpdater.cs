@@ -28,7 +28,7 @@ namespace UnityUtil {
             // especially if this script is attached to an object that is created when the scene is loaded
             // In that case, discard this update.
             if (_delta < 0) {
-                ConditionalLogger.LogWarning($"Delta time was negative ({_delta})...discarding.");
+                BetterLogger.LogWarning($"Delta time was negative ({_delta})...discarding.");
                 _delta = 0;
             }
 

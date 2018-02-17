@@ -51,7 +51,7 @@ namespace UnityUtil {
                 case ChangeMode.PercentCurrent: change = amount * Value;    break;
                 case ChangeMode.PercentMax:     change = amount * MaxValue; break;
                 default:
-                    ConditionalLogger.LogError(ConditionalLogger.GetSwitchDefault(changeMode));
+                    BetterLogger.LogError(BetterLogger.GetSwitchDefault(changeMode));
                     change = 0f;
                     break;
             }

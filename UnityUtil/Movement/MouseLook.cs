@@ -39,7 +39,7 @@ namespace UnityUtil.Movement {
                 case AxisDirection.OppositeGravity: return -Physics.gravity.normalized;
                 case AxisDirection.CustomWorldSpace: return CustomAxisDirection.normalized;
                 case AxisDirection.CustomLocalSpace: return (UsePhysicsToLook ? RigidbodyToRotate.transform : TransformToRotate).TransformDirection(CustomAxisDirection.normalized);
-                default: throw new NotImplementedException(ConditionalLogger.GetSwitchDefault(AxisDirectionType));
+                default: throw new NotImplementedException(BetterLogger.GetSwitchDefault(AxisDirectionType));
             }
         }
 

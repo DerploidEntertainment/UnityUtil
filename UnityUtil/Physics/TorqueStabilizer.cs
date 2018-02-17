@@ -29,7 +29,7 @@ namespace UnityUtil {
                 case AxisDirection.OppositeGravity: return -Physics.gravity.normalized;
                 case AxisDirection.CustomWorldSpace: return CustomUpwardDirection.normalized;
                 case AxisDirection.CustomLocalSpace: return RigidbodyToStabilize.transform.TransformDirection(CustomUpwardDirection.normalized);
-                default: throw new NotImplementedException(ConditionalLogger.GetSwitchDefault(UpwardDirectionType));
+                default: throw new NotImplementedException(BetterLogger.GetSwitchDefault(UpwardDirectionType));
             }
         }
 

@@ -116,7 +116,7 @@ namespace UnityUtil {
 #else
                 case SpawnDirection.AnyDirection: return U.Random.onUnitSphere;
 #endif
-                default: throw new NotImplementedException(ConditionalLogger.GetSwitchDefault(SpawnDirection));
+                default: throw new NotImplementedException(BetterLogger.GetSwitchDefault(SpawnDirection));
             }
         }
         private Vector3 onUnitCone(float halfAngle, bool onlyBoundary) {

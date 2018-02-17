@@ -60,7 +60,7 @@
     <Compile Include="Updating\AbsoluteParticleSystem.cs" />
     <Compile Include="Updating\AbsoluteUpdater.cs" />
     <Compile Include="CancellableUnityEvent.cs" />
-    <Compile Include="ConditionalLogger.cs" />
+    <Compile Include="BetterLogger.cs" />
     <Compile Include="DependencyInjection\InjectAttribute.cs" />
     <Compile Include="DependencyInjection\DependencyInjector.cs" />
     <Compile Include="Destroyer.cs" />
