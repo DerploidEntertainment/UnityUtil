@@ -7,7 +7,6 @@ namespace UnityUtil {
     public abstract class BetterBehaviour : MonoBehaviour {
 
         // HIDDEN FIELDS
-        private static DependencyInjector s_injector;
 
         /// <summary>
         /// If <see langword="true"/>, then this <see cref="UnityUtil.BetterBehaviour"/> will have its Update actions registered/unregistered automatically when it is enabled/disabled.
@@ -21,12 +20,20 @@ namespace UnityUtil {
         protected Action BetterFixedUpdate;
         protected Action BetterLateUpdate;
 
+        private static DependencyInjector s_injector;
+        protected DependencyInjector DependencyInjector {
+            get {
+                s_injector = s_injector ?? GameObject.FindWithTag(DependencyInjector.Tag)?.GetComponent<DependencyInjector>();
+                return s_injector;
+            }
+        }
+
         [Inject]
         public Updater Updater;
 
+        // EVENT HANDLERS
         protected void Awake() {
-            s_injector = s_injector ?? GameObject.FindWithTag(DependencyInjector.Tag)?.GetComponent<DependencyInjector>();
-            s_injector?.Inject(this);
+            DependencyInjector.Inject(this);
 
             Assert.IsNotNull(Updater, this.GetDependencyAssertion(nameof(this.Updater)));
 
