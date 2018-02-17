@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using UnityEngine;
-using UnityEngine.SceneManagement;
+using UnityEngine.Assertions;
 
 namespace UnityUtil {
 
@@ -94,6 +93,9 @@ namespace UnityUtil {
 
         // EVENT HANDLERS
         private void Awake() {
+            // Make sure we are correctly tagged
+            Assert.AreEqual(Tag, tag, $"{this.GetHierarchyNameWithType()} must be tagged '{DependencyInjector.Tag}', not '{tag}'!");
+
             // Add every service specified in the Inspector to the private service collection
             // Each service instance will be associated with the named Type (which could be, e.g., some base class or interface type)
             // If no Type name was provided, then use the actual name of the service's runtime instance type
