@@ -14,9 +14,11 @@ namespace HighHandHoldem {
             // Using BeginProperty/EndProperty on this property will allow prefab override logic
             EditorGUI.BeginProperty(position, label, property);
 
-            // Cache the indentLevel so that it can be reset at the end
+            // Cache GUI properties that will need to be reset at the end
             int origIndent = EditorGUI.indentLevel;
             EditorGUI.indentLevel = 0;
+            Color origColor = GUI.contentColor;
+            GUI.contentColor = Color.yellow;
 
             // Draw Label
             position = EditorGUI.PrefixLabel(position, GUIUtility.GetControlID(FocusType.Passive), label);
@@ -29,6 +31,7 @@ namespace HighHandHoldem {
             position = EditorGUI.PrefixLabel(serviceRect, GUIUtility.GetControlID(FocusType.Passive), serviceLbl);
 
             // Clean up
+            GUI.contentColor = origColor;
             EditorGUI.indentLevel = origIndent;
             EditorGUI.EndProperty();
         }

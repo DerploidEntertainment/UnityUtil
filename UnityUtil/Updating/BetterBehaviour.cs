@@ -22,13 +22,13 @@ namespace UnityUtil {
         protected Action BetterLateUpdate;
 
         [Inject]
-        protected Updater Updater;
+        public Updater Updater;
 
         protected void Awake() {
-            s_injector = s_injector ?? GameObject.FindWithTag(DependencyInjector.Tag).GetComponent<DependencyInjector>();
-            s_injector.Inject(this);
+            s_injector = s_injector ?? GameObject.FindWithTag(DependencyInjector.Tag)?.GetComponent<DependencyInjector>();
+            s_injector?.Inject(this);
 
-            Assert.IsNotNull(Updater, this.GetAssociationAssertion(nameof(this.Updater)));
+            Assert.IsNotNull(Updater, this.GetDependencyAssertion(nameof(this.Updater)));
 
             InstanceID = GetInstanceID();
 
