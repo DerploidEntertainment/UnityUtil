@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using UnityEngine.Assertions;
+using U = UnityEngine;
 
 namespace UnityUtil {
 
@@ -28,8 +29,11 @@ namespace UnityUtil {
             }
         }
 
+        [Header(nameof(UnityUtil.BetterBehaviour) + " Fields")]
         [Inject]
         public Updater Updater;
+        [Tooltip("If true, then this GameObject will not be destroyed automatically when this Scene is unloaded.  If false, then it will be destroyed as normal when the Scene unloads.  Changing this value in the Inspector while in Play mode will have no affect.")]
+        public bool DontDestroyOnLoad;
 
         // EVENT HANDLERS
         protected void Awake() {
@@ -38,6 +42,9 @@ namespace UnityUtil {
             Assert.IsNotNull(Updater, this.GetDependencyAssertion(nameof(this.Updater)));
 
             InstanceID = GetInstanceID();
+
+            if (DontDestroyOnLoad)
+                U.Object.DontDestroyOnLoad(this);
 
             BetterAwake();
         }

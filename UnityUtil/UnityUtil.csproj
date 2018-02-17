@@ -99,7 +99,6 @@
     <Compile Include="Inventory\ProjectileTool.cs" />
     <Compile Include="Inventory\PushTool.cs" />
     <Compile Include="Inventory\Weapon.cs" />
-    <Compile Include="DontDestroyOnLoad.cs" />
     <Compile Include="Physics\PhysTarget.cs" />
     <Compile Include="Physics\PushDetonator.cs" />
     <Compile Include="Physics\Liftable.cs" />
