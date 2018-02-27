@@ -32,7 +32,7 @@ namespace UnityUtil {
         [Header(nameof(UnityUtil.BetterBehaviour) + " Fields")]
         [Inject]
         public Updater Updater;
-        [Tooltip("If true, then this GameObject will not be destroyed automatically when this Scene is unloaded.  If false, then it will be destroyed as normal when the Scene unloads.  Changing this value in the Inspector while in Play mode will have no affect.")]
+        [Tooltip("If true, then this GameObject will not be destroyed automatically when this Scene is unloaded.  If false, then it will be destroyed as normal when the Scene unloads.  Changing this value in the Inspector while in Play mode will have no effect.")]
         public bool DontDestroyOnLoad;
 
         // EVENT HANDLERS
