@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Assertions;
 
 namespace UnityUtil {
 
@@ -101,16 +100,28 @@ namespace UnityUtil {
 
         // EVENT HANDLERS
         private void Update() {
-            for (int u = 0; u < _updates.Count; ++u)
-                _updates[u]?.Invoke();
+            // Apparently Visual Studio won't f*cking debug the invoked methods when the null-conditional operator is used...
+            // so this code isn't thread-safe, but hey neither is Unity
+            for (int u = 0; u < _updates.Count; ++u) {
+                if (_updates[u] != null)
+                    _updates[u]();
+            }
         }
         private void FixedUpdate() {
-            for (int fu = 0; fu < _fixed.Count; ++fu)
-                _fixed[fu]?.Invoke();
+            // Apparently Visual Studio won't f*cking debug the invoked methods when the null-conditional operator is used...
+            // so this code isn't thread-safe, but hey neither is Unity
+            for (int fu = 0; fu < _fixed.Count; ++fu) {
+                if (_fixed[fu] != null)
+                    _fixed[fu]();
+            }
         }
         private void LateUpdate() {
-            for (int lu = 0; lu < _late.Count; ++lu)
-                _late[lu]?.Invoke();
+            // Apparently Visual Studio won't f*cking debug the invoked methods when the null-conditional operator is used...
+            // so this code isn't thread-safe, but hey neither is Unity
+            for (int lu = 0; lu < _late.Count; ++lu) {
+                if (_late[lu] != null)
+                    _late[lu]();
+            }
         }
 
     }
