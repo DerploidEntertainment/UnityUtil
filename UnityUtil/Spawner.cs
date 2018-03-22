@@ -109,8 +109,8 @@ namespace UnityUtil {
 #endif
             switch (SpawnDirection) {
                 case SpawnDirection.Straight: return transform.forward;
-                case SpawnDirection.ConeRandom: return onUnitCone(ConeHalfAngle, false);
-                case SpawnDirection.ConeBoundary: return onUnitCone(ConeHalfAngle, true);
+                case SpawnDirection.ConeRandom:   return MoreMath.RandomConeVector(transform, ConeHalfAngle, onlyBoundary: false);
+                case SpawnDirection.ConeBoundary: return MoreMath.RandomConeVector(transform, ConeHalfAngle, onlyBoundary: true);
 #if DEBUG_2D
                 case SpawnDirection.AnyDirection: return U.Random.insideUnitCircle.normalized;
 #else
@@ -118,15 +118,6 @@ namespace UnityUtil {
 #endif
                 default: throw new NotImplementedException(BetterLogger.GetSwitchDefault(SpawnDirection));
             }
-        }
-        private Vector3 onUnitCone(float halfAngle, bool onlyBoundary) {
-            float minZ = Mathf.Cos(Mathf.Deg2Rad * halfAngle);
-            float z = U.Random.Range(minZ, onlyBoundary ? minZ : 1f);
-            float theta = U.Random.Range(0f, 2 * Mathf.PI);
-            float sqrtPart = Mathf.Sqrt(1 - z * z);
-
-            var dir = new Vector3(sqrtPart * Mathf.Cos(theta), sqrtPart * Mathf.Sin(theta), z);
-            return transform.TransformDirection(dir);
         }
     }
 
