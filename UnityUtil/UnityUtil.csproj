@@ -53,6 +53,8 @@
   <ItemGroup>
     <Compile Include="Input\Interaction\CursorInteractor.cs" />
     <Compile Include="Input\Interaction\CursorInteractor2D.cs" />
+    <Compile Include="Input\Interaction\LookAtInteractor.cs" />
+    <Compile Include="Input\Interaction\LookAtInteractor2D.cs" />
     <Compile Include="Input\Interaction\StartInteractor.cs" />
     <Compile Include="Input\Interaction\StartInteractor2D.cs" />
     <Compile Include="Input\Interaction\TapInteractor.cs" />
