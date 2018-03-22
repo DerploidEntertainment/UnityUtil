@@ -1,18 +1,24 @@
 ﻿using UnityEngine;
+using UnityUtil.Triggers;
 using U = UnityEngine;
 
 namespace UnityUtil.Input {
 
-    public class CursorInteractor : MonoBehaviour {
+    public class CursorInteractor : BetterBehaviour {
 
         public LayerMask InteractLayerMask;
         public StartStopInput Input;
 
-        private void Update() {
+        protected override void BetterAwake() {
+            RegisterUpdatesAutomatically = true;
+            BetterUpdate = raycastScreen;
+        }
+
+        private void raycastScreen() {
             if (Input.Started()) {
                 Ray ray = Camera.main.ScreenPointToRay(U.Input.mousePosition);
                 if (Physics.Raycast(ray, out RaycastHit hitInfo, Mathf.Infinity, InteractLayerMask))
-                    hitInfo.collider.GetComponent<Interactable>()?.Interact();
+                    hitInfo.collider.GetComponent<SimpleTrigger>()?.Trigger();
             }
         }
 
