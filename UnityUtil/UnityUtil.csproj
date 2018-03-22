@@ -72,6 +72,7 @@
     <Compile Include="Inventory\QuantityWeaponInfo.cs" />
     <Compile Include="ManagedQuantity.cs" />
     <Compile Include="MoreMathf.cs" />
+    <Compile Include="Movement\LookAtRaycast.cs" />
     <Compile Include="Triggers\ComponentLifecycleTrigger.cs" />
     <Compile Include="Updating\AbsoluteAnimation.cs" />
     <Compile Include="Updating\AbsoluteParticleSystem.cs" />
