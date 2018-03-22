@@ -51,6 +51,21 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Input\Interaction\CursorInteractor.cs" />
+    <Compile Include="Input\Interaction\CursorInteractor2D.cs" />
+    <Compile Include="Input\Interaction\Interactable.cs" />
+    <Compile Include="Input\Interaction\Interactable2D.cs" />
+    <Compile Include="Input\Interaction\StartInteractor.cs" />
+    <Compile Include="Input\Interaction\StartInteractor2D.cs" />
+    <Compile Include="Input\Interaction\TapInteractor.cs" />
+    <Compile Include="Input\Interaction\TapInteractor2D.cs" />
+    <Compile Include="Input\StartStopInputs\ButtonInput.cs" />
+    <Compile Include="Input\StartStopInputs\KeyCodeInput.cs" />
+    <Compile Include="Input\StartStopInputs\StartStopInput.cs" />
+    <Compile Include="Input\StartStopInputs\StartStopInputArray.cs" />
+    <Compile Include="Input\ValueInputs\AxisInput.cs" />
+    <Compile Include="Input\ValueInputs\ValueInput.cs" />
+    <Compile Include="Input\ValueInputs\ValueInputArray.cs" />
     <Compile Include="Inventory\Collectible.cs" />
     <Compile Include="Inventory\QuantityCollectible.cs" />
     <Compile Include="Inventory\Collector.cs" />
@@ -127,11 +142,6 @@
     <Compile Include="Updating\Updater.cs" />
     <Compile Include="ValueChangedEventArgs.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\UnityUtil.Input\UnityUtil.Input.csproj">
-      <Project>{b4a989c3-c0eb-4145-a1f9-293ebc23fbce}</Project>
-      <Name>UnityUtil.Input</Name>
-    </ProjectReference>
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
