@@ -42,8 +42,10 @@ namespace UnityUtil {
         }
         private void Awake() =>
             Assert.IsNotNull(RigidbodyToStabilize, this.GetAssociationAssertion(nameof(this.RigidbodyToStabilize)));
-        private void OnDrawGizmos() =>
-            Gizmos.DrawLine(RigidbodyToStabilize.position, RigidbodyToStabilize.position + CustomUpwardDirection);
+        private void OnDrawGizmos() {
+            if (RigidbodyToStabilize != null)
+                Gizmos.DrawLine(RigidbodyToStabilize.position, RigidbodyToStabilize.position + CustomUpwardDirection);
+        }
         private void FixedUpdate() {
             // Determine the upward direction
             Vector3 up = GetUpwardUnitVector();
