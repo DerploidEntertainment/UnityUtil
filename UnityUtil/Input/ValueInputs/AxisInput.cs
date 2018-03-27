@@ -3,7 +3,7 @@ using U = UnityEngine;
 
 namespace UnityUtil.Input {
 
-    [DisallowMultipleComponent]
+    [CreateAssetMenu(fileName = "axis-input", menuName = "UnityUtil/Input/axis-input")]
     public sealed class AxisInput : ValueInput {
 
         public string AxisName;

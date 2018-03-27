@@ -3,7 +3,8 @@ using UnityEngine;
 
 namespace UnityUtil.Input {
 
-    public class ValueInputArray : MonoBehaviour {
+    [CreateAssetMenu(fileName = "value-input-array", menuName = "UnityUtil/Input/value-input-array")]
+    public class ValueInputArray : ScriptableObject {
         // API INTERFACE
         public ValueInput[] Inputs;
 

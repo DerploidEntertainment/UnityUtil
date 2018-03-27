@@ -3,7 +3,7 @@ using U = UnityEngine;
 
 namespace UnityUtil.Input {
 
-    [DisallowMultipleComponent]
+    [CreateAssetMenu(fileName = "key-code-input", menuName = "UnityUtil/Input/key-code-input")]
     public sealed class KeyCodeInput : StartStopInput {
         
         public KeyCode KeyCode;

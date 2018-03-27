@@ -3,7 +3,7 @@ using U = UnityEngine;
 
 namespace UnityUtil.Input {
 
-    [DisallowMultipleComponent]
+    [CreateAssetMenu(fileName = "button-input", menuName = "UnityUtil/Input/button-input")]
     public sealed class ButtonInput : StartStopInput {
         
         public string ButtonName;

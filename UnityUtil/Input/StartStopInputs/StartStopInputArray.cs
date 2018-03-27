@@ -4,7 +4,8 @@ using UnityEngine;
 
 namespace UnityUtil.Input {
 
-    public class StartStopInputArray : MonoBehaviour {
+    [CreateAssetMenu(fileName = "start-stop-input-array", menuName = "UnityUtil/Input/start-stop-input-array")]
+    public class StartStopInputArray : ScriptableObject {
         // API INTERFACE
         public StartStopInput[] Inputs;
 
