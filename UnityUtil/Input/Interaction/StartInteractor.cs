@@ -8,6 +8,7 @@ namespace UnityUtil.Input {
         public StartStopInput Input;
         public float Range;
         public LayerMask InteractLayerMask;
+        public QueryTriggerInteraction QueryTriggerInteraction = QueryTriggerInteraction.UseGlobal;
 
         protected override void BetterAwake() {
             RegisterUpdatesAutomatically = true;
@@ -16,7 +17,7 @@ namespace UnityUtil.Input {
 
         private void raycast() {
             if (Input.Started()) {
-                bool somethingHit = Physics.Raycast(transform.position, transform.forward, out RaycastHit hitInfo, Range, InteractLayerMask);
+                bool somethingHit = Physics.Raycast(transform.position, transform.forward, out RaycastHit hitInfo, Range, InteractLayerMask, QueryTriggerInteraction);
                 if (somethingHit)
                     hitInfo.collider.GetComponent<SimpleTrigger>()?.Trigger();
             }
