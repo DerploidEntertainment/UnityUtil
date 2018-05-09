@@ -10,13 +10,15 @@ namespace UnityUtil {
     public struct Service {
         [Tooltip("Optional.  All services are associated with a System.Type.  This Type can be any Type in the service's inheritance hierarchy, but must be a [Serializable] Type.  For example, a service component derived from Monobehaviour could be associated with its actual declared Type, with Monobehaviour, or with UnityEngine.Object.  The actual declared Type is assumed if you leave this field blank.")]
         public string TypeName;
+        [HideInInspector, NonSerialized]
+        public string Tag;
         public MonoBehaviour Instance;
     }
 
     public class DependencyInjector : MonoBehaviour {
 
         // HIDDEN FIELDS
-        private static IDictionary<Type, IDictionary<string, MonoBehaviour>> s_services = new Dictionary<Type, IDictionary<string, MonoBehaviour>>();
+        private static IDictionary<Type, IDictionary<string, Service>> s_services = new Dictionary<Type, IDictionary<string, Service>>();
 
         // INSPECTOR FIELDS
         [Tooltip("The service collection from which dependencies will be resolved")]
@@ -64,7 +66,7 @@ namespace UnityUtil {
                         client.LogWarning($" injecting multiple dependencies of Type '{field.FieldType.Name}'.", framePrefix: false);
 
                     // If this dependency can't be resolved, then skip it with an error and clear the field
-                    bool resolved = s_services.TryGetValue(field.FieldType, out IDictionary<string, MonoBehaviour> typedServices);
+                    bool resolved = s_services.TryGetValue(field.FieldType, out IDictionary<string, Service> typedServices);
                     if (!resolved) {
                         field.SetValue(client, null);
                         BetterLogger.LogError($"No services configured with Type '{field.FieldType.Name}'.  Did you incorrectly tag a service or forget to put " + nameof(UnityUtil.DependencyInjector) + " first in the project's Script Execution Order?", framePrefix: false);
@@ -73,7 +75,7 @@ namespace UnityUtil {
                     var injAttr = attrs[0] as InjectAttribute;
                     bool untagged = string.IsNullOrEmpty(injAttr.Tag);
                     string tag = untagged ? "Untagged" : injAttr.Tag;
-                    resolved = typedServices.TryGetValue(tag, out MonoBehaviour service);
+                    resolved = typedServices.TryGetValue(tag, out Service service);
                     if (!resolved) {
                         field.SetValue(client, null);
                         BetterLogger.LogError($"No services configured with Type '{field.FieldType.Name}' and tag '{tag}'", framePrefix: false);
@@ -81,7 +83,7 @@ namespace UnityUtil {
                     }
 
                     // If this dependency has not already been correctly injected, then inject it now with a log message
-                    field.SetValue(client, service);
+                    field.SetValue(client, service.Instance);
                     client.Log($" injected dependency of Type '{field.FieldType.Name}'{(untagged ? "" : " with tag '{tag}'")} into field '{field.Name}'.", framePrefix: false);
                 }
             }
@@ -97,45 +99,48 @@ namespace UnityUtil {
             // If no Type name was provided, then use the actual name of the service's runtime instance type
             this.Log($" awaking, adding services...");
             int successes = 0;
-            foreach (Service service in ServiceCollection) {
-                MonoBehaviour instance = service.Instance;
+            for (int s=0; s<ServiceCollection.Length;++s) {
+                Service service = ServiceCollection[s];
+
+                // Update the service's Type/Tag
+                if (string.IsNullOrEmpty(service.TypeName)) {
+                    service.TypeName = service.Instance.GetType().AssemblyQualifiedName;
+                    service.Tag = service.Instance.tag;
+                    ServiceCollection[s] = service;
+                }
 
                 // Get the service's Type, if it is valid
                 Type type;
-                if (string.IsNullOrEmpty(service.TypeName))
-                    type = service.Instance.GetType();
-                else {
-                    try {
-                        type = Type.GetType(service.TypeName);
-                        if (type == null)
-                            throw new InvalidOperationException($"Could not load Type '{service.TypeName}'.  Make sure that you provided its fully qualified name and that its assembly is laoded.");
-                        if (!type.IsAssignableFrom(service.Instance.GetType()))
-                            throw new InvalidOperationException($"The service instance configured for Type '{service.TypeName}' is not actually derived from that Type!");
-                        if (!type.IsSubclassOf(typeof(UnityEngine.Object)))
-                            if (type.GetCustomAttributes(typeof(SerializableAttribute), inherit: true).Length == 0)
-                                throw new InvalidOperationException($"Type '{service.TypeName}' is not Serializable nor derived from UnityEngine.Object.");
-                    }
-                    catch (Exception ex) {
-                        this.LogError($" could not configure service of Type '{service.TypeName}': {ex.Message}");
-                        continue;
-                    }
+                try {
+                    type = Type.GetType(service.TypeName);
+                    if (type == null)
+                        throw new InvalidOperationException($"Could not load Type '{service.TypeName}'.  Make sure that you provided its fully qualified name and that its assembly is laoded.");
+                    if (!type.IsAssignableFrom(service.Instance.GetType()))
+                        throw new InvalidOperationException($"The service instance configured for Type '{service.TypeName}' is not actually derived from that Type!");
+                    if (!type.IsSubclassOf(typeof(UnityEngine.Object)))
+                        if (type.GetCustomAttributes(typeof(SerializableAttribute), inherit: true).Length == 0)
+                            throw new InvalidOperationException($"Type '{service.TypeName}' is not Serializable nor derived from UnityEngine.Object.");
+                }
+                catch (Exception ex) {
+                    this.LogError($" could not configure service of Type '{service.TypeName}': {ex.Message}");
+                    continue;
                 }
 
                 // Add the service to the service collection, throwing an error if it's Type/Tag have already been configured
-                bool typeAdded = s_services.TryGetValue(type, out IDictionary<string, MonoBehaviour> typedServices);
+                bool typeAdded = s_services.TryGetValue(type, out IDictionary<string, Service> typedServices);
                 if (typeAdded) {
-                    bool tagAdded = typedServices.TryGetValue(instance.tag, out MonoBehaviour taggedService);
+                    bool tagAdded = typedServices.TryGetValue(service.Tag, out Service taggedService);
                     if (tagAdded) {
-                        this.LogError($" configured multiple services with Type '{type.Name}' and tag '{instance.tag}'");
+                        this.LogError($" configured multiple services with Type '{type.Name}' and tag '{service.Tag}'");
                         continue;
                     }
                     else {
-                        typedServices.Add(instance.tag, instance);
+                        typedServices.Add(service.Tag, service);
                         ++successes;
                     }
                 }
                 else {
-                    s_services.Add(type, new Dictionary<string, MonoBehaviour> { { instance.tag, instance } });
+                    s_services.Add(type, new Dictionary<string, Service> { { service.Tag, service } });
                     ++successes;
                 }
             }
@@ -153,8 +158,8 @@ namespace UnityUtil {
             // Remove every service specified in the Inspector from the private service collection
             this.Log($" being destroyed, removing services...");
             int successes = 0;
-            foreach (Service service in ServiceCollection) {
-                MonoBehaviour instance = service.Instance;
+            for (int s = 0; s < ServiceCollection.Length; ++s) {
+                Service service = ServiceCollection[s];
 
                 // Get the service's Type, if it is valid
                 Type type;
@@ -171,17 +176,17 @@ namespace UnityUtil {
                 }
 
                 // Remove the service from the service collection
-                bool typeAdded = s_services.TryGetValue(type, out IDictionary<string, MonoBehaviour> typedServices);
+                bool typeAdded = s_services.TryGetValue(type, out IDictionary<string, Service> typedServices);
                 if (typeAdded) {
-                    bool tagAdded = typedServices.TryGetValue(instance.tag, out MonoBehaviour taggedService);
+                    bool tagAdded = typedServices.TryGetValue(service.Tag, out Service taggedService);
                     if (tagAdded) {
-                        typedServices.Remove(instance.tag);
+                        typedServices.Remove(service.Tag);
                         if (typedServices.Count == 0)
                             s_services.Remove(type);
                         ++successes;
                     }
                     else {
-                        this.LogError($" couldn't remove service with Type '{type}' and tag '{instance.tag}' because somehow it wasn't present in the service collection!");
+                        this.LogError($" couldn't remove service with Type '{type}' and tag '{service.Tag}' because somehow it wasn't present in the service collection!");
                         continue;
                     }
                 }
