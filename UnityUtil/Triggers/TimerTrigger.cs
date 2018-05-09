@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Events;
@@ -7,21 +6,23 @@ using UnityEngine.Events;
 namespace UnityUtil.Triggers {
 
     [Serializable]
-    public class CountEvent : UnityEvent<int> { }
+    public class CountEvent : UnityEvent<uint> { }
 
-    public class TimerTrigger : MonoBehaviour {
+    public class TimerTrigger : BetterBehaviour {
 
         // HIDDEN FIELDS
-        private Coroutine _timerCoroutine;
+        private bool _running = false;
 
         // INSPECTOR FIELDS
-        [Tooltip("The time, in seconds, before the next (or first) Tick event.")]
-        public float TimeBeforeTick = 1;
-        [Tooltip("Should the timer Tick forever?  NumRepeats value will be ignored if this is set.")]
-        public bool TickForever = true;
-        [Tooltip("How many Ticks should be raised before stopping?  Ignored if RepeatForever is true.")]
-        public int NumTicks = 1;
-        [Tooltip("Should the Timer be restarted every time it is re-enabled?")]
+        [Tooltip("The time, in seconds, before the next (or first) " + nameof(TimerTrigger.Tick) + " event.")]
+        public float TimeBeforeTick = 1f;
+        [Tooltip("The time, in seconds, that has passed since the previous Tick event.")]
+        public float TimeSincePreviousTick = 0f;
+        [Tooltip("How many " + nameof(TimerTrigger.Tick) + "s should be raised before stopping?  Set to 'Infinity' to tick forever.")]
+        public uint NumTicks = 1u;
+        [Tooltip("Number of " + nameof(TimerTrigger.Tick) + " eventss that have already been raised.")]
+        public uint NumPassedTicks = 0u;
+        [Tooltip("Should this " + nameof(Triggers.TimerTrigger) + " be restarted every time it is re-enabled?")]
         public bool StartOnEnable = false;
 
         public UnityEvent Starting = new UnityEvent();
@@ -30,12 +31,16 @@ namespace UnityUtil.Triggers {
         public UnityEvent NumTicksReached = new UnityEvent();
 
         // EVENT HANDLERS
-        private void OnEnable() {
+        protected override void BetterAwake() {
+            BetterUpdate = updateTimer;
+            RegisterUpdatesAutomatically = true;
+        }
+        protected override void BetterOnEnable() {
             if (StartOnEnable)
                 doStart();
         }
-        private void OnDisable() {
-            if (_timerCoroutine != null)
+        protected override void BetterOnDisable() {
+            if (_running)
                 doStop();
         }
 
@@ -43,7 +48,7 @@ namespace UnityUtil.Triggers {
         public void StartTimer() {
             Assert.IsTrue(gameObject.activeInHierarchy, $"Cannot stop {this.GetHierarchyNameWithType()} because its GameObject is inactive!");
             Assert.IsTrue(enabled, $"Cannot stop {this.GetHierarchyNameWithType()} because it is disabled!");
-            if (_timerCoroutine != null)
+            if (_running)
                 return;
 
             doStart();
@@ -52,7 +57,7 @@ namespace UnityUtil.Triggers {
             Assert.IsTrue(gameObject.activeInHierarchy, $"Cannot stop {this.GetHierarchyNameWithType()} because its GameObject is inactive!");
             Assert.IsTrue(enabled, $"Cannot stop {this.GetHierarchyNameWithType()} because it is disabled!");
 
-            if (_timerCoroutine != null)
+            if (_running)
                 doStop();
             doStart();
         }
@@ -60,7 +65,7 @@ namespace UnityUtil.Triggers {
             Assert.IsTrue(gameObject.activeInHierarchy, $"Cannot stop {this.GetHierarchyNameWithType()} because its GameObject is inactive!");
             Assert.IsTrue(enabled, $"Cannot stop {this.GetHierarchyNameWithType()} because it is disabled!");
 
-            if (_timerCoroutine == null)
+            if (!_running)
                 return;
 
             doStop();
@@ -71,30 +76,37 @@ namespace UnityUtil.Triggers {
             this.Log(" starting.");
             Starting.Invoke();
 
-            _timerCoroutine = StartCoroutine(runTimer());
+            TimeSincePreviousTick = 0f;
+            NumPassedTicks = 0u;
+            _running = true;
         }
         private void doStop() {
-            StopCoroutine(_timerCoroutine);
-            _timerCoroutine = null;
+            _running = false;
+            TimeSincePreviousTick = 0f;
 
             this.Log($" stopped.");
             Stopped.Invoke();
         }
-        private IEnumerator runTimer() {
-            int numTicks = 1;
-            do {
-                yield return new WaitForSeconds(TimeBeforeTick);
-                this.Log($": tick {numTicks} / {(TickForever ? "infinity" : NumTicks.ToString())}.");
-                Tick.Invoke(numTicks);
-                ++numTicks;
-            } while (TickForever || numTicks <= NumTicks);
+        private void updateTimer() {
+            // Update the time elapsed, if the Timer is running
+            if (!_running)
+                return;
+            TimeSincePreviousTick += Time.deltaTime;
 
-            // If the desired number of ticks was reached, stop the Timer
+            // If another Tick period has passed, then raise the Tick event
+            if (TimeSincePreviousTick >= TimeBeforeTick) {
+                this.Log($": tick {NumPassedTicks} / {NumTicks}");
+                Tick.Invoke(NumPassedTicks);
+                TimeSincePreviousTick = 0f;
+                ++NumPassedTicks;
+            }
+            if (NumPassedTicks < NumTicks)
+                return;
+
+            // If the desired number of ticks was reached, then stop the Timer
             this.Log($" reached {NumTicks} ticks.");
             NumTicksReached.Invoke();
-
-            if (_timerCoroutine != null)
-                doStop();
+            doStop();
         }
 
 
