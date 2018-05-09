@@ -21,14 +21,6 @@ namespace UnityUtil {
         protected Action BetterFixedUpdate;
         protected Action BetterLateUpdate;
 
-        private static DependencyInjector s_injector;
-        protected DependencyInjector DependencyInjector {
-            get {
-                s_injector = s_injector ?? GameObject.FindWithTag(DependencyInjector.Tag)?.GetComponent<DependencyInjector>();
-                return s_injector;
-            }
-        }
-
         [Header(nameof(UnityUtil.BetterBehaviour) + " Fields")]
         [Inject]
         public Updater Updater;

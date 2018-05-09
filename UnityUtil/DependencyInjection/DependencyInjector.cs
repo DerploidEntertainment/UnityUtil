@@ -23,19 +23,19 @@ namespace UnityUtil {
         public Service[] ServiceCollection;
 
         // INTERFACE
-        public static string Tag = "DependencyInjector";
+        public const string REQUIRED_TAG = "DependencyInjector";
         /// <summary>
         /// Inject all dependencies into the specified clients.
         /// Can be called at runtime to satisfy dependencies of procedurally generated components, e.g., by a spawner.
         /// </summary>
         /// <param name="clients">A collection of clients with service dependencies that need to be resolved.</param>
-        public void Inject(params MonoBehaviour[] clients) => Inject(clients as IEnumerable<MonoBehaviour>);
+        public static void Inject(params MonoBehaviour[] clients) => Inject(clients as IEnumerable<MonoBehaviour>);
         /// <summary>
         /// Inject all dependencies into the specified clients.
         /// Can be called at runtime to satisfy dependencies of procedurally generated components, e.g., by a spawner.
         /// </summary>
         /// <param name="clients">A collection of clients with service dependencies that need to be resolved.</param>
-        public void Inject(IEnumerable<MonoBehaviour> clients) {
+        public static void Inject(IEnumerable<MonoBehaviour> clients) {
             var injectedTypes = new HashSet<Type>();
             BindingFlags fieldBindingFlags = BindingFlags.Instance | BindingFlags.Public;
 
@@ -90,7 +90,7 @@ namespace UnityUtil {
         // EVENT HANDLERS
         private void Awake() {
             // Make sure we are correctly tagged
-            Assert.AreEqual(Tag, tag, $"{this.GetHierarchyNameWithType()} must be tagged '{DependencyInjector.Tag}', not '{tag}'!");
+            Assert.AreEqual(REQUIRED_TAG, tag, $"{this.GetHierarchyNameWithType()} must be tagged '{DependencyInjector.REQUIRED_TAG}', not '{tag}'!");
 
             // Add every service specified in the Inspector to the private service collection
             // Each service instance will be associated with the named Type (which could be, e.g., some base class or interface type)
