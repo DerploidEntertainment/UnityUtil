@@ -39,7 +39,7 @@ namespace UnityUtil {
         /// <param name="clients">A collection of clients with service dependencies that need to be resolved.</param>
         public static void Inject(IEnumerable<MonoBehaviour> clients) {
             var injectedTypes = new HashSet<Type>();
-            BindingFlags fieldBindingFlags = BindingFlags.Instance | BindingFlags.Public;
+            BindingFlags fieldBindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
 
             // For each client component, get the actual dependency fields/properties,
             // then resolve and inject those dependencies!

@@ -7,6 +7,8 @@ namespace UnityUtil {
     public abstract class BetterBehaviour : MonoBehaviour {
 
         // HIDDEN FIELDS
+        [Inject]
+        protected Updater Updater;
 
         /// <summary>
         /// If <see langword="true"/>, then this <see cref="UnityUtil.BetterBehaviour"/> will have its Update actions registered/unregistered automatically when it is enabled/disabled.
@@ -17,10 +19,6 @@ namespace UnityUtil {
         protected Action BetterUpdate;
         protected Action BetterFixedUpdate;
         protected Action BetterLateUpdate;
-
-        [Header(nameof(UnityUtil.BetterBehaviour) + " Fields")]
-        [Inject]
-        public Updater Updater;
 
         // EVENT HANDLERS
         protected void Awake() {
