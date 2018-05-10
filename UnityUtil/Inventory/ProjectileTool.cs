@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Assertions;
 
-namespace UnityUtil.Inventory {
+namespace UnityEngine.Inventory {
 
     [RequireComponent(typeof(Tool))]
     public class ProjectileTool : MonoBehaviour {
@@ -15,7 +15,7 @@ namespace UnityUtil.Inventory {
 
         // EVENT HANDLERS
         private void Awake() {
-            Assert.IsNotNull(Info, this.GetAssociationAssertion(nameof(UnityUtil.Inventory.ProjectileToolInfo)));
+            Assert.IsNotNull(Info, this.GetAssociationAssertion(nameof(UnityEngine.Inventory.ProjectileToolInfo)));
 
             _tool = GetComponent<Tool>();
             _tool.Used.AddListener(spawnProjectile);

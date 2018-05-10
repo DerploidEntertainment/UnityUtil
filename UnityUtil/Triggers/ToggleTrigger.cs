@@ -1,4 +1,4 @@
-﻿namespace UnityUtil.Triggers {
+﻿namespace UnityEngine.Triggers {
 
     public class ToggleTrigger : TriggerCondition {
 

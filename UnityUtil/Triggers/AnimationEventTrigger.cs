@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace UnityUtil {
+namespace UnityEngine {
 
     [RequireComponent(typeof(Animator))]
     public class AnimationEventTrigger : MonoBehaviour {

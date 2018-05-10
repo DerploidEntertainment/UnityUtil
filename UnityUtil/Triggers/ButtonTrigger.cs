@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
 
-namespace UnityUtil.Triggers {
+namespace UnityEngine.Triggers {
 
     public class ButtonTrigger : MonoBehaviour {
         // INSPECTOR FIELDS

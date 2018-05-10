@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
 
-namespace UnityUtil.Inventory {
+namespace UnityEngine.Inventory {
 
     /// <summary>
     /// Type arguments are (Collector collector, Collectible collectible)

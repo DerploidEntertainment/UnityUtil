@@ -7,7 +7,7 @@
     <ProjectGuid>{567FE3BC-52EE-4BF6-92BE-A356F8F08DBE}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>UnityUtil</RootNamespace>
+    <RootNamespace>UnityEngine</RootNamespace>
     <AssemblyName>UnityUtil</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

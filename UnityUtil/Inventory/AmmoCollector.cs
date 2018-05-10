@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.Assertions;
 
-namespace UnityUtil.Inventory {
+namespace UnityEngine.Inventory {
 
     [RequireComponent(typeof(Collector))]
     public class AmmoCollector : MonoBehaviour {

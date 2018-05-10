@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Assertions;
 
-namespace UnityUtil {
+namespace UnityEngine {
 
     public class LookAt : Updatable {
 

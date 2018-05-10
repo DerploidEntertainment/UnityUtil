@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace UnityUtil {
+namespace UnityEngine {
 
     public class AbsoluteParticleSystem : AbsoluteUpdater {
 

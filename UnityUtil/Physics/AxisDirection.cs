@@ -1,4 +1,4 @@
-﻿namespace UnityUtil {
+﻿namespace UnityEngine {
 
     public enum AxisDirection {
         WithGravity,

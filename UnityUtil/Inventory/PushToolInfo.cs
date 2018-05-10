@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace UnityUtil.Inventory {
+namespace UnityEngine.Inventory {
 
     [CreateAssetMenu(fileName = "push-tool", menuName = "UnityUtil/PushToolInfo")]
     public class PushToolInfo : ScriptableObject {

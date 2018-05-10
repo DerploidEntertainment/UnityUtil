@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using UnityEngine;
 
-namespace UnityUtil {
+namespace UnityEngine {
 
     [RequireComponent(typeof(Detonator))]
     public class PushDetonator : MonoBehaviour {

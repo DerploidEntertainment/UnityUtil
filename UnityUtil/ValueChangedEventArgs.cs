@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace UnityUtil {
+namespace UnityEngine {
 
     public class ValueChangedEventArgs<T> : EventArgs {
         public ValueChangedEventArgs(T oldValue, T newValue) {

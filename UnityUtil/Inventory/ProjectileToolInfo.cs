@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace UnityUtil.Inventory {
+namespace UnityEngine.Inventory {
 
     [CreateAssetMenu(fileName = "projectile-tool", menuName = "UnityUtil/ProjectileToolInfo")]
     public class ProjectileToolInfo : ScriptableObject {

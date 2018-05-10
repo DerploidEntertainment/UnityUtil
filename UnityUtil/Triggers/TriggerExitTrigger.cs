@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Assertions;
 
-namespace UnityUtil.Triggers {
+namespace UnityEngine.Triggers {
 
     [RequireComponent(typeof(Collider))]
     public class TriggerExitTrigger : MonoBehaviour {

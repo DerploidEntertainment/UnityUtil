@@ -3,24 +3,24 @@ using UnityEngine;
 using UnityEngine.Assertions;
 using U = UnityEngine;
 
-namespace UnityUtil {
+namespace UnityEngine {
 
     /// <summary>
-    /// Determines the direction in which <see cref="Spawner.Prefab"/> instances spawned by a <see cref="UnityUtil.Spawner"/> are launched.
+    /// Determines the direction in which <see cref="Spawner.Prefab"/> instances spawned by a <see cref="UnityEngine.Spawner"/> are launched.
     /// </summary>
     public enum SpawnDirection {
         /// <summary>
-        /// Spawned <see cref="Spawner.Prefab"/> instances will be launched along the <see cref="UnityUtil.Spawner"/>'s forward vector.
+        /// Spawned <see cref="Spawner.Prefab"/> instances will be launched along the <see cref="UnityEngine.Spawner"/>'s forward vector.
         /// </summary>
         Straight,
 
         /// <summary>
-        /// Spawned <see cref="Spawner.Prefab"/> instances will be launched along a random vector within a cone centered around the <see cref="UnityUtil.Spawner"/>'s forward vector.
+        /// Spawned <see cref="Spawner.Prefab"/> instances will be launched along a random vector within a cone centered around the <see cref="UnityEngine.Spawner"/>'s forward vector.
         /// </summary>
         ConeRandom,
 
         /// <summary>
-        /// Spawned <see cref="Spawner.Prefab"/> instances will be launched along a random vector on the boundary of a cone centered around the <see cref="UnityUtil.Spawner"/>'s forward vector.
+        /// Spawned <see cref="Spawner.Prefab"/> instances will be launched along a random vector on the boundary of a cone centered around the <see cref="UnityEngine.Spawner"/>'s forward vector.
         /// </summary>
         ConeBoundary,
 
@@ -45,9 +45,9 @@ namespace UnityUtil {
         public string BaseName = "Object";
         [Tooltip("If true, then previously spawned " + nameof(Spawner.Prefab) + " instances will be destroyed before the next instance is spawned, so there will only ever be one spawned instance in existence.  If false, then multiple instances may be spawned.")]
         public bool DestroyPrevious;
-        [Tooltip("All spawned " + nameof(Spawner.Prefab) + " instances will be launched in the " + nameof(Spawner.SpawnDirection) + ", with at least this speed.  Setting both " + nameof(Spawner.MinSpeed) + " and " + nameof(Spawner.MaxSpeed) + " to zero will spawn instances right at this " + nameof(UnityUtil.Spawner) + "'s position, without any launching.")]
+        [Tooltip("All spawned " + nameof(Spawner.Prefab) + " instances will be launched in the " + nameof(Spawner.SpawnDirection) + ", with at least this speed.  Setting both " + nameof(Spawner.MinSpeed) + " and " + nameof(Spawner.MaxSpeed) + " to zero will spawn instances right at this " + nameof(UnityEngine.Spawner) + "'s position, without any launching.")]
         public float MinSpeed = 0f;
-        [Tooltip("All spawned " + nameof(Spawner.Prefab) + " instances will be launched in the " + nameof(Spawner.SpawnDirection) + ", with at most this speed.  Setting both " + nameof(Spawner.MinSpeed) + " and " + nameof(Spawner.MaxSpeed) + " to zero will spawn instances right at this " + nameof(UnityUtil.Spawner) + "'s position, without any launching.")]
+        [Tooltip("All spawned " + nameof(Spawner.Prefab) + " instances will be launched in the " + nameof(Spawner.SpawnDirection) + ", with at most this speed.  Setting both " + nameof(Spawner.MinSpeed) + " and " + nameof(Spawner.MaxSpeed) + " to zero will spawn instances right at this " + nameof(UnityEngine.Spawner) + "'s position, without any launching.")]
         public float MaxSpeed = 10f;
         [Tooltip("This property defines the direction in which spawned " + nameof(Spawner.Prefab) + " instances will be  launched.")]
         public SpawnDirection SpawnDirection = SpawnDirection.Straight;

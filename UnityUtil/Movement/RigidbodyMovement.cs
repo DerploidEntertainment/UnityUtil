@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace UnityUtil.Movement {
+namespace UnityEngine.Movement {
 
     public abstract class RigidbodyMovement : MonoBehaviour {
 

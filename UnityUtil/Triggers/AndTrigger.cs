@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using UnityEngine;
 
-namespace UnityUtil.Triggers {
+namespace UnityEngine.Triggers {
 
     public class AndTrigger : TriggerCondition {
 

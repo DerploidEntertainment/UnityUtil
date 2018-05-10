@@ -2,7 +2,7 @@
 
 using UnityEngine;
 
-namespace UnityUtil.Input {
+namespace UnityEngine.Input {
 
     [CreateAssetMenu(fileName = "start-stop-input-array", menuName = "UnityUtil/Input/start-stop-input-array")]
     public class StartStopInputArray : ScriptableObject {

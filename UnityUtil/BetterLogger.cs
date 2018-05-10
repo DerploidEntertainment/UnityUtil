@@ -2,7 +2,7 @@
 using UnityEngine;
 using U = UnityEngine;
 
-namespace UnityUtil {
+namespace UnityEngine {
 
     public static class BetterLogger {
 

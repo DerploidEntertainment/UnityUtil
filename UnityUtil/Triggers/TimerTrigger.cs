@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Events;
 
-namespace UnityUtil.Triggers {
+namespace UnityEngine.Triggers {
 
     [Serializable]
     public class CountEvent : UnityEvent<uint> { }

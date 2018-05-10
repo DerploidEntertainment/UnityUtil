@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
-using UnityUtil.Triggers;
+using UnityEngine.Triggers;
 
-namespace UnityUtil.Input {
+namespace UnityEngine.Input {
 
     public class StartInteractor : Updatable {
 

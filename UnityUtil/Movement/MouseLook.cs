@@ -1,9 +1,9 @@
 ﻿using System;
 using UnityEngine;
 using UnityEngine.Assertions;
-using UnityUtil.Input;
+using UnityEngine.Input;
 
-namespace UnityUtil.Movement {
+namespace UnityEngine.Movement {
 
     public class MouseLook : MonoBehaviour {
         // HIDDEN FIELDS

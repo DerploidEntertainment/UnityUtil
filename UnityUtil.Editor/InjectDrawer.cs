@@ -1,6 +1,6 @@
 ﻿using UnityEditor;
 using UnityEngine;
-using UnityUtil;
+using UnityEngine;
 
 namespace HighHandHoldem {
 

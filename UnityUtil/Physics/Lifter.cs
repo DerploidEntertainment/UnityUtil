@@ -2,10 +2,10 @@
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Events;
-using UnityUtil.Input;
-using UnityUtil.Triggers;
+using UnityEngine.Input;
+using UnityEngine.Triggers;
 
-namespace UnityUtil {
+namespace UnityEngine {
 
     /// <summary>
     /// Represents the means by which a <see cref="Liftable"/> came to be released from a <see cref="Lifter"/>.

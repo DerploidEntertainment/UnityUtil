@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace UnityUtil {
+namespace UnityEngine {
 
     [RequireComponent(typeof(Collider))]
     public class CollisionSounds : MonoBehaviour {

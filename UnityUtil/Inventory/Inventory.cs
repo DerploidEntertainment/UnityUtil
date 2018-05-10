@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Events;
 
-namespace UnityUtil.Inventory {
+namespace UnityEngine.Inventory {
 
     [Serializable]
     public class InventoryItemEvent : UnityEvent<InventoryCollectible> { }

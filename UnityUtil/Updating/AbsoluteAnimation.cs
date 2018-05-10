@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace UnityUtil {
+namespace UnityEngine {
 
     public class AbsoluteAnimation : AbsoluteUpdater {
 

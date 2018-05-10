@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.Assertions;
 
-namespace UnityUtil.Inventory {
+namespace UnityEngine.Inventory {
 
     [RequireComponent(typeof(Weapon))]
     public class PushTool : MonoBehaviour {
@@ -14,7 +14,7 @@ namespace UnityUtil.Inventory {
 
         // EVENT HANDLERS
         private void Awake() {
-            Assert.IsNotNull(Info, this.GetAssociationAssertion(nameof(UnityUtil.Inventory.PushToolInfo)));
+            Assert.IsNotNull(Info, this.GetAssociationAssertion(nameof(UnityEngine.Inventory.PushToolInfo)));
 
             _weapon = GetComponent<Weapon>();
             _weapon.Attacked.AddListener(push);

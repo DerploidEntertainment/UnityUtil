@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace UnityUtil {
+namespace UnityEngine {
 
     /// <summary>
     /// Inject the service configured with this field's <see cref="Type"/> and an optional Inspector tag.

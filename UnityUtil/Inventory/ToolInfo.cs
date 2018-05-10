@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace UnityUtil.Inventory {
+namespace UnityEngine.Inventory {
 
     public enum AutomaticMode {
         SingleAction,

@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using U = UnityEngine;
 
-namespace UnityUtil.Input {
+namespace UnityEngine.Input {
 
     [CreateAssetMenu(fileName = "key-code-input", menuName = "UnityUtil/Input/key-code-input")]
     public sealed class KeyCodeInput : StartStopInput {

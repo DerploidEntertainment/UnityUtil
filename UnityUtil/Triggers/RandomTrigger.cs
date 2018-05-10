@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace UnityUtil.Triggers {
+namespace UnityEngine.Triggers {
 
     public class RandomTrigger : MonoBehaviour {
 

@@ -1,9 +1,9 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
-using UnityUtil.Input;
+using UnityEngine.Input;
 
-namespace UnityUtil {
+namespace UnityEngine {
 
     [DisallowMultipleComponent]
     public class GameStateManager : MonoBehaviour {

@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using U = UnityEngine;
 
-namespace UnityUtil.Input {
+namespace UnityEngine.Input {
 
     [CreateAssetMenu(fileName = "axis-input", menuName = "UnityUtil/Input/axis-input")]
     public sealed class AxisInput : ValueInput {

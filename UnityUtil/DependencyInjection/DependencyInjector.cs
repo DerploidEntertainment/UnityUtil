@@ -4,7 +4,7 @@ using System.Reflection;
 using UnityEngine;
 using UnityEngine.Assertions;
 
-namespace UnityUtil {
+namespace UnityEngine {
 
     [Serializable]
     public struct Service {
@@ -69,7 +69,7 @@ namespace UnityUtil {
                     bool resolved = s_services.TryGetValue(field.FieldType, out IDictionary<string, Service> typedServices);
                     if (!resolved) {
                         field.SetValue(client, null);
-                        BetterLogger.LogError($"No services configured with Type '{field.FieldType.FullName}'.  Did you incorrectly tag a service or forget to put " + nameof(UnityUtil.DependencyInjector) + " first in the project's Script Execution Order?", framePrefix: false);
+                        BetterLogger.LogError($"No services configured with Type '{field.FieldType.FullName}'.  Did you incorrectly tag a service or forget to put " + nameof(UnityEngine.DependencyInjector) + " first in the project's Script Execution Order?", framePrefix: false);
                         continue;
                     }
                     var injAttr = attrs[0] as InjectAttribute;

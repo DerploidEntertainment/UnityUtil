@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace UnityUtil {
+namespace UnityEngine {
 
     [Serializable]
     public class DetonateEvent : UnityEvent<Collider[]> { }

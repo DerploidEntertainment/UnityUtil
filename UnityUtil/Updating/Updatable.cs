@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.Assertions;
 
-namespace UnityUtil {
+namespace UnityEngine {
 
     public abstract class Updatable : MonoBehaviour {
 
@@ -11,7 +11,7 @@ namespace UnityUtil {
         protected Updater Updater;
 
         /// <summary>
-        /// If <see langword="true"/>, then this <see cref="UnityUtil.Updatable"/> will have its Update actions registered/unregistered automatically when it is enabled/disabled.
+        /// If <see langword="true"/>, then this <see cref="UnityEngine.Updatable"/> will have its Update actions registered/unregistered automatically when it is enabled/disabled.
         /// If <see langword="false"/>, then the Update actions must be registered/unregistered manually (best for when updates are only meant to be registered under specific/rare circumstances).
         /// <summary>
         protected bool RegisterUpdatesAutomatically = false;
@@ -61,15 +61,15 @@ namespace UnityUtil {
         }
 
         /// <summary>
-        /// Actions to run during Awake().  Declaring Awake() on a subclass would hide the implementation in <see cref="UnityUtil.Updatable"/>, so this method was provided for subclasses to provide additional Awake() functionality.
+        /// Actions to run during Awake().  Declaring Awake() on a subclass would hide the implementation in <see cref="UnityEngine.Updatable"/>, so this method was provided for subclasses to provide additional Awake() functionality.
         /// </summary>
         protected virtual void BetterAwake() { }
         /// <summary>
-        /// Actions to run during OnEnable().  Declaring OnEnable() on a subclass would hide the implementation in <see cref="UnityUtil.Updatable"/>, so this method was provided for subclasses to provide additional OnEnable() functionality.
+        /// Actions to run during OnEnable().  Declaring OnEnable() on a subclass would hide the implementation in <see cref="UnityEngine.Updatable"/>, so this method was provided for subclasses to provide additional OnEnable() functionality.
         /// </summary>
         protected virtual void BetterOnEnable() { }
         /// <summary>
-        /// Actions to run during OnDisable().  Declaring OnDisable() on a subclass would hide the implementation in <see cref="UnityUtil.Updatable"/>, so this method was provided for subclasses to provide additional OnDisable() functionality.
+        /// Actions to run during OnDisable().  Declaring OnDisable() on a subclass would hide the implementation in <see cref="UnityEngine.Updatable"/>, so this method was provided for subclasses to provide additional OnDisable() functionality.
         /// </summary>
         protected virtual void BetterOnDisable() { }
 

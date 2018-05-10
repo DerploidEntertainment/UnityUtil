@@ -4,7 +4,7 @@ using UnityEngine.Assertions;
 using UnityEngine.Events;
 using UnityEngine.SocialPlatforms;
 
-namespace UnityUtil {
+namespace UnityEngine {
 
     /// <summary>
     /// Parameters are (string userId, string errors)

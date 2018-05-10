@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.Assertions;
 
-namespace UnityUtil {
+namespace UnityEngine {
 
     public abstract class AbsoluteUpdater : MonoBehaviour {
 

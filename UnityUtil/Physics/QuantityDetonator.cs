@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using UnityEngine;
 
-namespace UnityUtil {
+namespace UnityEngine {
 
     [RequireComponent(typeof(Detonator))]
     public class HurtDetonator : MonoBehaviour {
@@ -9,9 +9,9 @@ namespace UnityUtil {
         private Detonator _detonator;
 
         // INSPECTOR FIELDS
-        [Tooltip("Nearby " + nameof(UnityUtil.ManagedQuantity) + "s will be changed by this amount, at most.  How this amount is applied depends on the value of " + nameof(ChangeMode) + ", and the distance from this " + nameof(UnityUtil.Detonator) + ".")]
+        [Tooltip("Nearby " + nameof(UnityEngine.ManagedQuantity) + "s will be changed by this amount, at most.  How this amount is applied depends on the value of " + nameof(ChangeMode) + ", and the distance from this " + nameof(UnityEngine.Detonator) + ".")]
         public float MaxAmount = 10f;
-        [Tooltip("Determines how the value of " + nameof(MaxAmount) + " is used to change nearby " + nameof(UnityUtil.ManagedQuantity) + "s.")]
+        [Tooltip("Determines how the value of " + nameof(MaxAmount) + " is used to change nearby " + nameof(UnityEngine.ManagedQuantity) + "s.")]
         public ManagedQuantity.ChangeMode ChangeMode = ManagedQuantity.ChangeMode.Absolute;
 
         // EVENT HANDLERS

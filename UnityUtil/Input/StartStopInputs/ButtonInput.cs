@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using U = UnityEngine;
 
-namespace UnityUtil.Input {
+namespace UnityEngine.Input {
 
     [CreateAssetMenu(fileName = "button-input", menuName = "UnityUtil/Input/button-input")]
     public sealed class ButtonInput : StartStopInput {

@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace UnityUtil {
+namespace UnityEngine {
 
     public class ManagedQuantity : MonoBehaviour {
 

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace UnityUtil.Inventory {
+namespace UnityEngine.Inventory {
 
     [CreateAssetMenu(fileName = "overheat-tool", menuName = "UnityUtil/OverheatToolInfo")]
     public class OverheatToolInfo : ScriptableObject {

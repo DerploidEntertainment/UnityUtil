@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace UnityUtil.Input {
+namespace UnityEngine.Input {
 
     public abstract class StartStopInput : ScriptableObject {
         

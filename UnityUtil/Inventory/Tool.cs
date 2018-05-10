@@ -2,9 +2,9 @@
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Events;
-using UnityUtil.Input;
+using UnityEngine.Input;
 
-namespace UnityUtil.Inventory {
+namespace UnityEngine.Inventory {
 
     public class Tool : MonoBehaviour {
         // HIDDEN FIELDS
@@ -27,7 +27,7 @@ namespace UnityUtil.Inventory {
 
         // EVENT HANDLERS
         private void Awake() {
-            Assert.IsNotNull(Info, this.GetAssociationAssertion(nameof(UnityUtil.Inventory.ToolInfo)));
+            Assert.IsNotNull(Info, this.GetAssociationAssertion(nameof(UnityEngine.Inventory.ToolInfo)));
             Assert.IsNotNull(UseInput, this.GetAssociationAssertion(nameof(this.UseInput)));
         }
         private void Update() {
