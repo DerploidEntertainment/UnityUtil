@@ -63,13 +63,13 @@ namespace UnityUtil {
                     // Warn if a dependency with this Type has already been injected
                     bool firstInjection = injectedTypes.Add(field.FieldType);
                     if (!firstInjection)
-                        client.LogWarning($" injecting multiple dependencies of Type '{field.FieldType.Name}'.", framePrefix: false);
+                        client.LogWarning($" injecting multiple dependencies of Type '{field.FieldType.FullName}'.", framePrefix: false);
 
                     // If this dependency can't be resolved, then skip it with an error and clear the field
                     bool resolved = s_services.TryGetValue(field.FieldType, out IDictionary<string, Service> typedServices);
                     if (!resolved) {
                         field.SetValue(client, null);
-                        BetterLogger.LogError($"No services configured with Type '{field.FieldType.Name}'.  Did you incorrectly tag a service or forget to put " + nameof(UnityUtil.DependencyInjector) + " first in the project's Script Execution Order?", framePrefix: false);
+                        BetterLogger.LogError($"No services configured with Type '{field.FieldType.FullName}'.  Did you incorrectly tag a service or forget to put " + nameof(UnityUtil.DependencyInjector) + " first in the project's Script Execution Order?", framePrefix: false);
                         continue;
                     }
                     var injAttr = attrs[0] as InjectAttribute;
@@ -78,13 +78,13 @@ namespace UnityUtil {
                     resolved = typedServices.TryGetValue(tag, out Service service);
                     if (!resolved) {
                         field.SetValue(client, null);
-                        BetterLogger.LogError($"No services configured with Type '{field.FieldType.Name}' and tag '{tag}'", framePrefix: false);
+                        BetterLogger.LogError($"No services configured with Type '{field.FieldType.FullName}' and tag '{tag}'", framePrefix: false);
                         continue;
                     }
 
                     // If this dependency has not already been correctly injected, then inject it now with a log message
                     field.SetValue(client, service.Instance);
-                    client.Log($" injected dependency of Type '{field.FieldType.Name}'{(untagged ? "" : " with tag '{tag}'")} into field '{field.Name}'.", framePrefix: false);
+                    client.Log($" injected dependency of Type '{field.FieldType.FullName}'{(untagged ? "" : " with tag '{tag}'")} into field '{field.Name}'.", framePrefix: false);
                 }
             }
         }
@@ -98,8 +98,7 @@ namespace UnityUtil {
             // Each service instance will be associated with the named Type (which could be, e.g., some base class or interface type)
             // If no Type name was provided, then use the actual name of the service's runtime instance type
             this.Log($" awaking, adding services...");
-            int successes = 0;
-            for (int s=0; s<ServiceCollection.Length;++s) {
+            for (int s = 0; s < ServiceCollection.Length; ++s) {
                 Service service = ServiceCollection[s];
 
                 // Update the service's Type/Tag
@@ -131,27 +130,16 @@ namespace UnityUtil {
                 if (typeAdded) {
                     bool tagAdded = typedServices.TryGetValue(service.Tag, out Service taggedService);
                     if (tagAdded) {
-                        this.LogError($" configured multiple services with Type '{type.Name}' and tag '{service.Tag}'");
+                        this.LogError($" configured multiple services with Type '{service.TypeName}' and tag '{service.Tag}'");
                         continue;
                     }
                     else {
                         typedServices.Add(service.Tag, service);
-                        ++successes;
+                        this.Log($" successfully configured service of type '{service.TypeName}' and tag '{service.Tag}'.", framePrefix: false);
                     }
                 }
-                else {
+                else
                     s_services.Add(type, new Dictionary<string, Service> { { service.Tag, service } });
-                    ++successes;
-                }
-            }
-
-            // Log whether or not all services were configured successfully
-            string successMsg = $" successfully configured {successes} out of {ServiceCollection.Length} services.";
-            if (successes == ServiceCollection.Length)
-                this.Log(successMsg);
-            else {
-                string errorMsg = $"Please resolve the above errors and try again.";
-                this.LogError($"{successMsg}  {errorMsg}");
             }
         }
         private void OnDestroy() {
