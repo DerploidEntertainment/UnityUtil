@@ -14,8 +14,6 @@ namespace UnityUtil {
         /// <summary>
         protected bool RegisterUpdatesAutomatically = false;
 
-        protected int InstanceID;
-
         protected Action BetterUpdate;
         protected Action BetterFixedUpdate;
         protected Action BetterLateUpdate;
@@ -30,8 +28,6 @@ namespace UnityUtil {
 
             Assert.IsNotNull(Updater, this.GetDependencyAssertion(nameof(this.Updater)));
 
-            InstanceID = GetInstanceID();
-
             BetterAwake();
         }
         protected void OnEnable() {
@@ -41,24 +37,26 @@ namespace UnityUtil {
                     BetterUpdate == null && BetterFixedUpdate == null && BetterLateUpdate == null,
                     this.GetHierarchyNameWithType() + " did not set any Update Actions for automatic registration!"
                 );
+                int id = GetInstanceID();
                 if (BetterUpdate != null)
-                    Updater.RegisterUpdate(InstanceID, BetterUpdate);
+                    Updater.RegisterUpdate(id, BetterUpdate);
                 if (BetterFixedUpdate != null)
-                    Updater.RegisterFixedUpdate(InstanceID, BetterFixedUpdate);
+                    Updater.RegisterFixedUpdate(id, BetterFixedUpdate);
                 if (BetterLateUpdate != null)
-                    Updater.RegisterLateUpdate(InstanceID, BetterLateUpdate);
+                    Updater.RegisterLateUpdate(id, BetterLateUpdate);
             }
 
             BetterOnEnable();
         }
         protected void OnDisable() {
             if (RegisterUpdatesAutomatically) {
+                int id = GetInstanceID();
                 if (BetterUpdate != null)
-                    Updater.UnregisterUpdate(InstanceID);
+                    Updater.UnregisterUpdate(id);
                 if (BetterFixedUpdate != null)
-                    Updater.UnregisterFixedUpdate(InstanceID);
+                    Updater.UnregisterFixedUpdate(id);
                 if (BetterLateUpdate != null)
-                    Updater.UnregisterLateUpdate(InstanceID);
+                    Updater.UnregisterLateUpdate(id);
             }
 
             BetterOnDisable();
