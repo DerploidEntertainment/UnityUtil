@@ -102,11 +102,10 @@ namespace UnityUtil {
                 Service service = ServiceCollection[s];
 
                 // Update the service's Type/Tag
-                if (string.IsNullOrEmpty(service.TypeName)) {
+                if (string.IsNullOrEmpty(service.TypeName))
                     service.TypeName = service.Instance.GetType().AssemblyQualifiedName;
-                    service.Tag = service.Instance.tag;
-                    ServiceCollection[s] = service;
-                }
+                service.Tag = service.Instance.tag;
+                ServiceCollection[s] = service;
 
                 // Get the service's Type, if it is valid
                 Type type;
