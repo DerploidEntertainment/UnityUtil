@@ -5,7 +5,7 @@ using UnityUtil.Inventory;
 
 namespace UnityUtil {
 
-    public class LookAtRaycast : BetterBehaviour {
+    public class LookAtRaycast : Updatable {
 
         [Tooltip("This Transform will always rotate to look at whatever the " + nameof(RaycastingTransform) + " is looking at.  This point is at most " + nameof(Range) + " units ahead, but will be closer if an object matching " + nameof(LayerMask) + " is closer.")]
         public Transform TransformToRotate;

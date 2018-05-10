@@ -8,7 +8,7 @@ namespace UnityUtil.Triggers {
     [Serializable]
     public class CountEvent : UnityEvent<uint> { }
 
-    public class TimerTrigger : BetterBehaviour {
+    public class TimerTrigger : Updatable {
 
         // HIDDEN FIELDS
         private bool _running = false;

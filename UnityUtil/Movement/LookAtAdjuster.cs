@@ -6,7 +6,7 @@ namespace UnityUtil {
     /// <summary>
     /// Tells all associated <see cref="UnityUtil.LookAt"/> components when to look at a new <see cref="Transform"/>.
     /// </summary>
-    public class LookAtAdjuster : BetterBehaviour {
+    public class LookAtAdjuster : Updatable {
 
         [Tooltip("These are the " + nameof(UnityUtil.LookAt) + " components that will be told what new Transforms to look at.")]
         public LookAt[] AssociatedLookAts;

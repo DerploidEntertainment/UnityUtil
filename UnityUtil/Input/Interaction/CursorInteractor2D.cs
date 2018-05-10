@@ -4,7 +4,7 @@ using U = UnityEngine;
 
 namespace UnityUtil.Input {
 
-    public class CursorInteractor2D : BetterBehaviour {
+    public class CursorInteractor2D : Updatable {
 
         public LayerMask InteractLayerMask;
         public StartStopInput Input;

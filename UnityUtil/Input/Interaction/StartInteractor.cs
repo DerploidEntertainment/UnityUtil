@@ -3,7 +3,7 @@ using UnityUtil.Triggers;
 
 namespace UnityUtil.Input {
 
-    public class StartInteractor : BetterBehaviour {
+    public class StartInteractor : Updatable {
 
         public StartStopInput Input;
         public float Range;

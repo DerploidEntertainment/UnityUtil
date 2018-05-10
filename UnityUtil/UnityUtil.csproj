@@ -78,6 +78,7 @@
     <Compile Include="Movement\LookAtAdjuster.cs" />
     <Compile Include="Movement\LookAtRaycast.cs" />
     <Compile Include="Triggers\ComponentLifecycleTrigger.cs" />
+    <Compile Include="Updating\Updatable.cs" />
     <Compile Include="Updating\AbsoluteAnimation.cs" />
     <Compile Include="Updating\AbsoluteParticleSystem.cs" />
     <Compile Include="Updating\AbsoluteUpdater.cs" />
@@ -142,7 +143,6 @@
     <Compile Include="Triggers\TriggerExitTrigger.cs" />
     <Compile Include="Triggers\TriggerEnterTrigger.cs" />
     <Compile Include="Physics\AxisDirection.cs" />
-    <Compile Include="BetterBehaviour.cs" />
     <Compile Include="Updating\IUpdater.cs" />
     <Compile Include="Updating\Updater.cs" />
     <Compile Include="ValueChangedEventArgs.cs" />

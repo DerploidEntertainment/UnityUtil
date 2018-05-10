@@ -4,7 +4,7 @@ using U = UnityEngine;
 
 namespace UnityUtil.Input {
 
-    public class TapInteractor : BetterBehaviour {
+    public class TapInteractor : Updatable {
 
         public LayerMask InteractLayerMask;
 

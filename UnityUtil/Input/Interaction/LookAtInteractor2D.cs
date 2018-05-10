@@ -3,7 +3,7 @@ using UnityUtil.Triggers;
 
 namespace UnityUtil.Input {
 
-    public class LookAtInteractor2D : BetterBehaviour {
+    public class LookAtInteractor2D : Updatable {
 
         private ToggleTrigger _trigger;
 

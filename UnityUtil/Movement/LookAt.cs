@@ -3,7 +3,7 @@ using UnityEngine.Assertions;
 
 namespace UnityUtil {
 
-    public class LookAt : BetterBehaviour {
+    public class LookAt : Updatable {
 
         public Transform TransformToRotate;
         public Transform TransformToLookAt;
