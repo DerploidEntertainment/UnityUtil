@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-
-namespace UnityEngine.Input {
+﻿namespace UnityEngine.Inputs {
 
     public abstract class ValueInput : ScriptableObject {
         

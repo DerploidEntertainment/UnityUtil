@@ -54,21 +54,21 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DontDestroyOnLoad.cs" />
-    <Compile Include="Input\Interaction\CursorInteractor.cs" />
-    <Compile Include="Input\Interaction\CursorInteractor2D.cs" />
-    <Compile Include="Input\Interaction\LookAtInteractor.cs" />
-    <Compile Include="Input\Interaction\LookAtInteractor2D.cs" />
-    <Compile Include="Input\Interaction\StartInteractor.cs" />
-    <Compile Include="Input\Interaction\StartInteractor2D.cs" />
-    <Compile Include="Input\Interaction\TapInteractor.cs" />
-    <Compile Include="Input\Interaction\TapInteractor2D.cs" />
-    <Compile Include="Input\StartStopInputs\ButtonInput.cs" />
-    <Compile Include="Input\StartStopInputs\KeyCodeInput.cs" />
-    <Compile Include="Input\StartStopInputs\StartStopInput.cs" />
-    <Compile Include="Input\StartStopInputs\StartStopInputArray.cs" />
-    <Compile Include="Input\ValueInputs\AxisInput.cs" />
-    <Compile Include="Input\ValueInputs\ValueInput.cs" />
-    <Compile Include="Input\ValueInputs\ValueInputArray.cs" />
+    <Compile Include="Inputs\Interaction\CursorInteractor.cs" />
+    <Compile Include="Inputs\Interaction\CursorInteractor2D.cs" />
+    <Compile Include="Inputs\Interaction\LookAtInteractor.cs" />
+    <Compile Include="Inputs\Interaction\LookAtInteractor2D.cs" />
+    <Compile Include="Inputs\Interaction\StartInteractor.cs" />
+    <Compile Include="Inputs\Interaction\StartInteractor2D.cs" />
+    <Compile Include="Inputs\Interaction\TapInteractor.cs" />
+    <Compile Include="Inputs\Interaction\TapInteractor2D.cs" />
+    <Compile Include="Inputs\StartStopInputs\ButtonInput.cs" />
+    <Compile Include="Inputs\StartStopInputs\KeyCodeInput.cs" />
+    <Compile Include="Inputs\StartStopInputs\StartStopInput.cs" />
+    <Compile Include="Inputs\StartStopInputs\StartStopInputArray.cs" />
+    <Compile Include="Inputs\ValueInputs\AxisInput.cs" />
+    <Compile Include="Inputs\ValueInputs\ValueInput.cs" />
+    <Compile Include="Inputs\ValueInputs\ValueInputArray.cs" />
     <Compile Include="Inventory\Collectible.cs" />
     <Compile Include="Inventory\QuantityCollectible.cs" />
     <Compile Include="Inventory\Collector.cs" />

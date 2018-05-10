@@ -1,8 +1,7 @@
-﻿using UnityEngine;
-using UnityEngine.Triggers;
+﻿using UnityEngine.Triggers;
 using U = UnityEngine;
 
-namespace UnityEngine.Input {
+namespace UnityEngine.Inputs {
 
     public class CursorInteractor : Updatable {
 

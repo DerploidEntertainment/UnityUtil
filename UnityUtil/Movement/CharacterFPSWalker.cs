@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.Assertions;
-using UnityEngine.Input;
+using UnityEngine.Inputs;
 
 namespace UnityEngine.Movement {
 

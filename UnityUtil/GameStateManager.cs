@@ -1,7 +1,6 @@
-﻿using UnityEngine;
-using UnityEngine.Events;
+﻿using UnityEngine.Events;
+using UnityEngine.Inputs;
 using UnityEngine.SceneManagement;
-using UnityEngine.Input;
 
 namespace UnityEngine {
 

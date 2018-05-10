@@ -1,7 +1,6 @@
-﻿using UnityEngine;
-using UnityEngine.Triggers;
+﻿using UnityEngine.Triggers;
 
-namespace UnityEngine.Input {
+namespace UnityEngine.Inputs {
 
     public class LookAtInteractor2D : Updatable {
 

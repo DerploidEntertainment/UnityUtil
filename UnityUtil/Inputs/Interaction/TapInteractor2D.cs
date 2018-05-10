@@ -1,8 +1,6 @@
-﻿using UnityEngine;
-using UnityEngine.Triggers;
-using U = UnityEngine;
+﻿using UnityEngine.Triggers;
 
-namespace UnityEngine.Input {
+namespace UnityEngine.Inputs {
 
     public class TapInteractor2D : Updatable {
 
@@ -14,8 +12,8 @@ namespace UnityEngine.Input {
         }
 
         private void tap() {
-            if (U.Input.touchCount == 1) {
-                Ray ray = Camera.main.ScreenPointToRay(U.Input.touches[0].position);
+            if (Input.touchCount == 1) {
+                Ray ray = Camera.main.ScreenPointToRay(Input.touches[0].position);
                 RaycastHit2D hit = Physics2D.Raycast(ray.origin, ray.direction, Mathf.Infinity, InteractLayerMask);
                 hit.collider?.GetComponent<SimpleTrigger>()?.Trigger();
             }
