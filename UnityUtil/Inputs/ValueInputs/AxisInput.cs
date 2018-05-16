@@ -1,6 +1,6 @@
 ﻿namespace UnityEngine.Inputs {
 
-    [CreateAssetMenu(fileName = "axis-input", menuName = "UnityUtil/Input/axis-input")]
+    [CreateAssetMenu(fileName = "axis-input", menuName = nameof(UnityEngine.Inputs) + "/" + nameof(UnityEngine.Inputs.AxisInput))]
     public sealed class AxisInput : ValueInput {
 
         public string AxisName;

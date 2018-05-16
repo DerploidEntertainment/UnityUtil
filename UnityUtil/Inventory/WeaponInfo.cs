@@ -1,8 +1,6 @@
-﻿using UnityEngine;
+﻿namespace UnityEngine.Inventory {
 
-namespace UnityEngine.Inventory {
-
-    [CreateAssetMenu(fileName = "weapon", menuName = "UnityUtil/WeaponInfo")]
+    [CreateAssetMenu(fileName = "weapon", menuName = nameof(UnityEngine.Inventory) + "/" + nameof(UnityEngine.Inventory.WeaponInfo))]
     public class WeaponInfo : ScriptableObject {
 
         [Tooltip("Only colliders matching this layer mask will be attacked.")]

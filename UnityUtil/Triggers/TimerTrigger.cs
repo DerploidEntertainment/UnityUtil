@@ -1,5 +1,4 @@
 ﻿using System;
-using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Events;
 
@@ -16,7 +15,7 @@ namespace UnityEngine.Triggers {
         // INSPECTOR FIELDS
         [Tooltip("The time, in seconds, before the next (or first) " + nameof(TimerTrigger.Tick) + " event.")]
         public float TimeBeforeTick = 1f;
-        [Tooltip("The time, in seconds, that has passed since the previous Tick event.")]
+        [Tooltip("The time, in seconds, that has passed since the previous " + nameof(TimerTrigger.Tick) + " event.")]
         public float TimeSincePreviousTick = 0f;
         [Tooltip("How many " + nameof(TimerTrigger.Tick) + "s should be raised before stopping?  Ignored if " + nameof(TimerTrigger.TickForever) + " is true.")]
         public uint NumTicks = 1u;
