@@ -18,9 +18,11 @@ namespace UnityEngine.Triggers {
         public float TimeBeforeTick = 1f;
         [Tooltip("The time, in seconds, that has passed since the previous Tick event.")]
         public float TimeSincePreviousTick = 0f;
-        [Tooltip("How many " + nameof(TimerTrigger.Tick) + "s should be raised before stopping?  Set to 'Infinity' to tick forever.")]
+        [Tooltip("How many " + nameof(TimerTrigger.Tick) + "s should be raised before stopping?  Ignored if " + nameof(TimerTrigger.TickForever) + " is true.")]
         public uint NumTicks = 1u;
-        [Tooltip("Number of " + nameof(TimerTrigger.Tick) + " eventss that have already been raised.")]
+        [Tooltip("If true, then this " + nameof(Triggers.TimerTrigger) + " will raise " + nameof(TimerTrigger.Tick) + " events forever.  If false, then it will only " + nameof(TimerTrigger.Tick) + " " + nameof(TimerTrigger.NumTicks) + " times.")]
+        public bool TickForever = false;
+        [Tooltip("Number of " + nameof(TimerTrigger.Tick) + " events that have already been raised.")]
         public uint NumPassedTicks = 0u;
         [Tooltip("Should this " + nameof(Triggers.TimerTrigger) + " be restarted every time it is re-enabled?")]
         public bool StartOnEnable = false;
@@ -95,12 +97,12 @@ namespace UnityEngine.Triggers {
 
             // If another Tick period has passed, then raise the Tick event
             if (TimeSincePreviousTick >= TimeBeforeTick) {
-                this.Log($": tick {NumPassedTicks} / {NumTicks}");
+                this.Log(TickForever ? ": tick!" : $": tick {NumPassedTicks} / {NumTicks}");
                 Tick.Invoke(NumPassedTicks);
                 TimeSincePreviousTick = 0f;
                 ++NumPassedTicks;
             }
-            if (NumPassedTicks < NumTicks)
+            if (NumPassedTicks < NumTicks || TickForever)
                 return;
 
             // If the desired number of ticks was reached, then stop the Timer
