@@ -28,12 +28,12 @@ namespace UnityEngine {
 
         // API
         public float Increase(float amount, ChangeMode changeMode = ChangeMode.Absolute) {
-            if (amount >= 0)
+            if (amount < 0)
                 throw new ArgumentOutOfRangeException(nameof(amount), amount, $"Cannot increase {this.GetHierarchyNameWithType()} by a negative amount!");
             return doChange(amount, changeMode);
         }
         public float Decrease(float amount, ChangeMode changeMode = ChangeMode.Absolute) {
-            if (amount >= 0)
+            if (amount < 0)
                 throw new ArgumentOutOfRangeException(nameof(amount), amount, $"Cannot decrease {this.GetHierarchyNameWithType()} by a negative amount!");
             return doChange(-amount, changeMode);
         }
