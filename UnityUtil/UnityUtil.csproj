@@ -77,6 +77,7 @@
     <Compile Include="MoreMathf.cs" />
     <Compile Include="Movement\LookAtAdjuster.cs" />
     <Compile Include="Movement\LookAtRaycast.cs" />
+    <Compile Include="TransformExtensions.cs" />
     <Compile Include="Triggers\ComponentLifecycleTrigger.cs" />
     <Compile Include="Updating\Updatable.cs" />
     <Compile Include="Updating\AbsoluteAnimation.cs" />
