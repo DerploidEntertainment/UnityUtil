@@ -1,11 +1,10 @@
 ﻿using System;
-using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Inputs;
 
 namespace UnityEngine.Movement {
 
-    public class MouseLook : MonoBehaviour {
+    public class MouseLook : Updatable {
         // HIDDEN FIELDS
         private float _angle = 0f;
         private float _deltaSinceLast = 0f;
@@ -50,28 +49,29 @@ namespace UnityEngine.Movement {
             UsePhysicsToLook = true;
             CustomAxisDirection = Vector3.up;
         }
-        private void Awake() {
-            if (UsePhysicsToLook)
-                Assert.IsNotNull(RigidbodyToRotate, this.GetAssociationAssertion(nameof(this.RigidbodyToRotate)));
-            else
-                Assert.IsNotNull(TransformToRotate, this.GetAssociationAssertion(nameof(this.TransformToRotate)));
-
+        protected override void BetterAwake() {
             Assert.IsNotNull(LookInput, this.GetAssociationAssertion(nameof(this.LookInput)));
+
+            RegisterUpdatesAutomatically = true;
+            BetterUpdate = doUpdate;
+            BetterFixedUpdate = doFixedUpdate;
         }
-        private void Update() {
+        private void doUpdate() {
             _deltaSinceLast += LookInput.Value();
 
-            if (!UsePhysicsToLook) {
+            if (!UsePhysicsToLook && TransformToRotate != null) {
                 doLookRotation();
                 _deltaSinceLast = 0f;
             }
         }
-        private void FixedUpdate() {
-            if (UsePhysicsToLook) {
+        private void doFixedUpdate() {
+            if (UsePhysicsToLook && RigidbodyToRotate != null) {
                 doLookRotation();
                 _deltaSinceLast = 0f;
             }
         }
+
+        // HELPERS
         private void doLookRotation() {
             // Determine the upward direction
             Vector3 up = GetUpwardUnitVector();

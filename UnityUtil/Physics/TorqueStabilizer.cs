@@ -1,6 +1,4 @@
 ﻿using System;
-using UnityEngine;
-using UnityEngine.Assertions;
 
 namespace UnityEngine {
 
@@ -40,13 +38,14 @@ namespace UnityEngine {
             UpwardDirectionType = AxisDirection.OppositeGravity;
             CustomUpwardDirection = Vector3.up;
         }
-        private void Awake() =>
-            Assert.IsNotNull(RigidbodyToStabilize, this.GetAssociationAssertion(nameof(this.RigidbodyToStabilize)));
         private void OnDrawGizmos() {
             if (RigidbodyToStabilize != null)
                 Gizmos.DrawLine(RigidbodyToStabilize.position, RigidbodyToStabilize.position + CustomUpwardDirection);
         }
         private void FixedUpdate() {
+            if (RigidbodyToStabilize == null)
+                return;
+
             // Determine the upward direction
             Vector3 up = GetUpwardUnitVector();
 

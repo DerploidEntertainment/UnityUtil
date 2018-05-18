@@ -38,8 +38,6 @@ namespace UnityEngine {
 
         // EVENT HANDLERS
         protected override void BetterAwake() {
-            Assert.IsNotNull(RaycastingTransform, this.GetAssociationAssertion(nameof(this.RaycastingTransform)));
-
             RegisterUpdatesAutomatically = true;
             BetterUpdate = doUpdate;
         }
@@ -48,6 +46,9 @@ namespace UnityEngine {
             Gizmos.DrawLine(TransformToRotate.position, TransformToRotate.TransformPoint(range * Vector3.forward));
         }
         private void doUpdate() {
+            if (RaycastingTransform == null || TransformToRotate == null)
+                return;
+
             // Determine the point that the raycasting transform is looking at.
             // May be a point on an actual collider up ahead, or just a point out at its max range.
             float range = WeaponInfo?.Range ?? Range;

@@ -1,5 +1,4 @@
 ﻿using System;
-using UnityEngine;
 using UnityEngine.Assertions;
 
 namespace UnityEngine {
@@ -47,10 +46,12 @@ namespace UnityEngine {
             CustomUpwardDirection = Vector3.up;
         }
         private void Awake() {
-            Assert.IsNotNull(HoveringRigidbody, this.GetAssociationAssertion(nameof(this.HoveringRigidbody)));
             Assert.IsTrue(HoverHeight <= MaxHoverHeight, $"{this.GetHierarchyNameWithType()} cannot have a {nameof(this.HoverHeight)} higher than its {nameof(this.MaxHoverHeight)}!");
         }
         private void FixedUpdate() {
+            if (HoveringRigidbody == null)
+                return;
+
             // Determine the upward direction
             Vector3 up = GetUpwardUnitVector();
 
