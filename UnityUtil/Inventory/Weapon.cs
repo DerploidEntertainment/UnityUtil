@@ -1,5 +1,5 @@
 ﻿using System;
-using UnityEngine;
+using System.Linq;
 using UnityEngine.Assertions;
 using UnityEngine.Events;
 using U = UnityEngine;
@@ -10,7 +10,7 @@ namespace UnityEngine.Inventory {
     public class Weapon : MonoBehaviour {
         // ABSTRACT DATA TYPES
         [Serializable]
-        public class AttackEvent : UnityEvent<Vector3, RaycastHit[]> { }
+        public class AttackEvent : UnityEvent<Ray, RaycastHit[]> { }
 
         // HIDDEN FIELDS
         private Tool _tool;
@@ -46,14 +46,18 @@ namespace UnityEngine.Inventory {
 
             // Raycast into the scene with the given LayerMask
             // Raise the Attacked event, allowing other components to select which components to affect
-            RaycastHit[] hits;
-            if (Info.RaycastAll)
-                hits = Physics.RaycastAll(ray, Info.Range, Info.AttackLayerMask);
-            else {
-                bool somethingHit = Physics.Raycast(ray, out RaycastHit hitInfo, Info.Range, Info.AttackLayerMask);
-                hits = somethingHit ? new[] { hitInfo } : new RaycastHit[0];
+            var hits = new RaycastHit[0];
+            if (Info.AttackAllInRange || Info.MaxAttacks > 1) {
+                RaycastHit[] allHits = Physics.RaycastAll(ray, Info.Range, Info.AttackLayerMask);
+                hits = allHits;
             }
-            Attacked.Invoke(ray.direction, hits);
+            else if (Info.MaxAttacks == 1) {
+                bool somethingHit = Physics.Raycast(ray, out RaycastHit hit, Info.Range, Info.AttackLayerMask);
+                if (somethingHit)
+                    hits = new[] { hit };
+            }
+            hits = hits.OrderBy(h => h.distance).Take((int)Info.MaxAttacks).ToArray();
+            Attacked.Invoke(ray, hits);
 
             // Adjust accuracy for the next attack, assuming the base Tool is automatic
             _accuracyLerpT = (Info.AccuracyLerpTime == 0 ? 1f : _accuracyLerpT + (1f / _tool.Info.AutomaticUseRate) / Info.AccuracyLerpTime);
