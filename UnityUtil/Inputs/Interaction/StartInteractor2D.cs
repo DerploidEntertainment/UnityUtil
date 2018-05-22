@@ -1,4 +1,5 @@
-﻿using UnityEngine.Triggers;
+﻿using System;
+using UnityEngine.Triggers;
 
 namespace UnityEngine.Inputs {
 
@@ -8,6 +9,8 @@ namespace UnityEngine.Inputs {
         public float Range;
         public LayerMask InteractLayerMask;
 
+        public event EventHandler<InteractionEventArgs> Interacted;
+
         protected override void BetterAwake() {
             RegisterUpdatesAutomatically = true;
             BetterUpdate = raycast;
@@ -16,7 +19,11 @@ namespace UnityEngine.Inputs {
         private void raycast() {
             if (Input.Started()) {
                 RaycastHit2D hit = Physics2D.Raycast(transform.position, transform.forward, Range, InteractLayerMask);
-                hit.collider?.GetComponent<SimpleTrigger>()?.Trigger();
+                if (hit.collider != null) {
+                    SimpleTrigger st = hit.collider.GetComponent<SimpleTrigger>();
+                    st?.Trigger();
+                    Interacted?.Invoke(this, new InteractionEventArgs() { InteractedTrigger = st });
+                }
             }
         }
 
