@@ -54,14 +54,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DontDestroyOnLoad.cs" />
-    <Compile Include="Inputs\Interaction\CursorInteractor.cs" />
-    <Compile Include="Inputs\Interaction\CursorInteractor2D.cs" />
-    <Compile Include="Inputs\Interaction\LookAtInteractor.cs" />
-    <Compile Include="Inputs\Interaction\LookAtInteractor2D.cs" />
-    <Compile Include="Inputs\Interaction\StartInteractor.cs" />
-    <Compile Include="Inputs\Interaction\StartInteractor2D.cs" />
-    <Compile Include="Inputs\Interaction\TapInteractor.cs" />
-    <Compile Include="Inputs\Interaction\TapInteractor2D.cs" />
+    <Compile Include="Interaction\CursorInteractor.cs" />
+    <Compile Include="Interaction\CursorInteractor2D.cs" />
+    <Compile Include="Interaction\LookAtInteractor.cs" />
+    <Compile Include="Interaction\LookAtInteractor2D.cs" />
+    <Compile Include="Interaction\StartInteractor.cs" />
+    <Compile Include="Interaction\StartInteractor2D.cs" />
+    <Compile Include="Interaction\TapInteractor.cs" />
+    <Compile Include="Interaction\TapInteractor2D.cs" />
     <Compile Include="Inputs\StartStopInputs\ButtonInput.cs" />
     <Compile Include="Inputs\StartStopInputs\KeyCodeInput.cs" />
     <Compile Include="Inputs\StartStopInputs\StartStopInput.cs" />
