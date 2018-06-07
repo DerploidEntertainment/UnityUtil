@@ -1,5 +1,4 @@
 ﻿using System;
-using UnityEngine;
 using UnityEngine.Assertions;
 
 namespace UnityEngine {
@@ -9,6 +8,9 @@ namespace UnityEngine {
         // HIDDEN FIELDS
         [Inject]
         protected Updater Updater;
+
+        [HideInInspector, NonSerialized]
+        public int InstanceID;
 
         /// <summary>
         /// If <see langword="true"/>, then this <see cref="UnityEngine.Updatable"/> will have its Update actions registered/unregistered automatically when it is enabled/disabled.
@@ -24,6 +26,8 @@ namespace UnityEngine {
         protected void Awake() {
             DependencyInjector.Inject(this);
 
+            InstanceID = GetInstanceID();   // A cached int is faster than repeated GetInstanceID() calls, due to method call overhead and some unsafe code in that method
+
             Assert.IsNotNull(Updater, this.GetDependencyAssertion(nameof(this.Updater)));
 
             BetterAwake();
@@ -35,26 +39,24 @@ namespace UnityEngine {
                     BetterUpdate == null && BetterFixedUpdate == null && BetterLateUpdate == null,
                     this.GetHierarchyNameWithType() + " did not set any Update Actions for automatic registration!"
                 );
-                int id = GetInstanceID();
                 if (BetterUpdate != null)
-                    Updater.RegisterUpdate(id, BetterUpdate);
+                    Updater.RegisterUpdate(InstanceID, BetterUpdate);
                 if (BetterFixedUpdate != null)
-                    Updater.RegisterFixedUpdate(id, BetterFixedUpdate);
+                    Updater.RegisterFixedUpdate(InstanceID, BetterFixedUpdate);
                 if (BetterLateUpdate != null)
-                    Updater.RegisterLateUpdate(id, BetterLateUpdate);
+                    Updater.RegisterLateUpdate(InstanceID, BetterLateUpdate);
             }
 
             BetterOnEnable();
         }
         protected void OnDisable() {
             if (RegisterUpdatesAutomatically) {
-                int id = GetInstanceID();
                 if (BetterUpdate != null)
-                    Updater.UnregisterUpdate(id);
+                    Updater.UnregisterUpdate(InstanceID);
                 if (BetterFixedUpdate != null)
-                    Updater.UnregisterFixedUpdate(id);
+                    Updater.UnregisterFixedUpdate(InstanceID);
                 if (BetterLateUpdate != null)
-                    Updater.UnregisterLateUpdate(id);
+                    Updater.UnregisterLateUpdate(InstanceID);
             }
 
             BetterOnDisable();

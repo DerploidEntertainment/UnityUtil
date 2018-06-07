@@ -6,121 +6,127 @@ namespace UnityEngine {
     [DisallowMultipleComponent]
     public class Updater : MonoBehaviour, IUpdater {
 
+        private struct UpdateAction {
+            public int InstanceID;
+            public Action Action;
+        }
+
+        private float _tSinceTrim = 0f;
+
         private IDictionary<int, int> _updateIndices = new Dictionary<int, int>();
         private IDictionary<int, int> _fixedIndices = new Dictionary<int, int>();
         private IDictionary<int, int> _lateIndices = new Dictionary<int, int>();
 
-        private IList<Action> _updates = new List<Action>();
-        private IList<Action> _fixed = new List<Action>();
-        private IList<Action> _late = new List<Action>();
+        private List<UpdateAction> _updates = new List<UpdateAction>();
+        private List<UpdateAction> _fixed = new List<UpdateAction>();
+        private List<UpdateAction> _late = new List<UpdateAction>();
 
-        private Stack<int> _updateNextIndex = new Stack<int>(new[] { 0 });     // These could be Queues too, doesn't really matter
-        private Stack<int> _fixedNextIndex = new Stack<int>(new[] { 0 });
-        private Stack<int> _lateNextIndex = new Stack<int>(new[] { 0 });
+        // INSPECTOR FIELDS
+        [Tooltip("Every time this many seconds passes (in real time, not game time), the update action lists will have their capacities trimmed, if possible, using the List<T>.TrimExcess() method.")]
+        public float TrimPeriod = 30f;
 
-        // INTERFACE
+        // API INTERFACE
         /// <inheritdoc/>
-        public void RegisterUpdate(int instanceID, Action updateAction) {
-            if (updateAction == null)
+        public void RegisterUpdate(int instanceID, Action action) {
+            if (action == null)
                 throw new ArgumentNullException(nameof(instanceID));
-
-            // Store the index of this new Update action, making sure not to Pop that index until it has been used
-            int index = _updateNextIndex.Peek();
-            _updateIndices.Add(instanceID, index);
-            _updateNextIndex.Pop();
+            if (_updateIndices.ContainsKey(instanceID))
+                throw new ArgumentException($"{this.GetHierarchyNameWithType()} has already registered an object with {nameof(instanceID)} {instanceID} for updates!", nameof(instanceID));
 
             // Store the new Update action at that index
-            if (index == _updates.Count) {
-                _updates.Add(updateAction);
-                _updateNextIndex.Push(_updates.Count);
-            }
-            else
-                _updates[index] = updateAction;
+            // Store the index of this new Update action
+            _updateIndices.Add(instanceID, _updates.Count);
+            _updates.Add(new UpdateAction() {
+                InstanceID = instanceID,
+                Action = action
+            });
         }
         /// <inheritdoc/>
         public void UnregisterUpdate(int instanceID) {
-            int index = _updateIndices[instanceID];
+            if (!_updateIndices.TryGetValue(instanceID, out int index))
+                throw new ArgumentException($"{this.GetHierarchyNameWithType()} cannot unregister the update Action for the object with {nameof(instanceID)} {instanceID} because no such Action was ever registered!", nameof(instanceID));
+
+            UpdateAction lastAction = _updates[_updates.Count - 1];
+            _updateIndices[lastAction.InstanceID] = index;
+            _updates[index] = lastAction;
+            _updates.RemoveAt(_updates.Count - 1);
             _updateIndices.Remove(instanceID);
-            _updates[index] = null;
-            _updateNextIndex.Push(index);
         }
 
         /// <inheritdoc/>
-        public void RegisterFixedUpdate(int instanceID, Action fixedUpdateAction) {
-            if (fixedUpdateAction == null)
+        public void RegisterFixedUpdate(int instanceID, Action action) {
+            if (action == null)
                 throw new ArgumentNullException(nameof(instanceID));
+            if (_fixedIndices.ContainsKey(instanceID))
+                throw new ArgumentException($"{this.GetHierarchyNameWithType()} has already registered an object with {nameof(instanceID)} {instanceID} for FixedUpdate!", nameof(instanceID));
 
-            // Store the index of this new FixedUpdate action, making sure not to Pop that index until it has been used
-            int index = _fixedNextIndex.Peek();
-            _fixedIndices.Add(instanceID, index);
-            _fixedNextIndex.Pop();
-
-            // Store the index of this new FixedUpdate action, making sure not to Pop that index until it has been used
-            if (index == _fixed.Count) {
-                _fixed.Add(fixedUpdateAction);
-                _fixedNextIndex.Push(_fixed.Count);
-            }
-            else
-                _fixed[index] = fixedUpdateAction;
+            // Store the new Update action at that index
+            // Store the index of this new Update action
+            _fixedIndices.Add(instanceID, _fixed.Count);
+            _fixed.Add(new UpdateAction() {
+                InstanceID = instanceID,
+                Action = action
+            });
         }
         /// <inheritdoc/>
         public void UnregisterFixedUpdate(int instanceID) {
-            int index = _fixedIndices[instanceID];
+            if (!_fixedIndices.TryGetValue(instanceID, out int index))
+                throw new ArgumentException($"{this.GetHierarchyNameWithType()} cannot unregister the FixedUpdate action for the object with {nameof(instanceID)} {instanceID} because no such action was ever registered!", nameof(instanceID));
+
+            UpdateAction lastAction = _fixed[_fixed.Count - 1];
+            _fixedIndices[lastAction.InstanceID] = index;
+            _fixed[index] = lastAction;
+            _fixed.RemoveAt(_fixed.Count - 1);
             _fixedIndices.Remove(instanceID);
-            _fixed[index] = null;
-            _fixedNextIndex.Push(index);
         }
 
         /// <inheritdoc/>
-        public void RegisterLateUpdate(int instanceID, Action lateUpdateAction) {
-            if (lateUpdateAction == null)
+        public void RegisterLateUpdate(int instanceID, Action action) {
+            if (action == null)
                 throw new ArgumentNullException(nameof(instanceID));
+            if (_lateIndices.ContainsKey(instanceID))
+                throw new ArgumentException($"{this.GetHierarchyNameWithType()} has already registered an object with {nameof(instanceID)} {instanceID} for LateUpdate!", nameof(instanceID));
 
-            // Store the index of this new LateUpdate action, making sure not to Pop that index until it has been used
-            int index = _lateNextIndex.Peek();
-            _lateIndices.Add(instanceID, index);
-            _lateNextIndex.Pop();
-
-            // Store the index of this new LateUpdate action, making sure not to Pop that index until it has been used
-            if (index == _late.Count) {
-                _late.Add(lateUpdateAction);
-                _lateNextIndex.Push(_late.Count);
-            }
-            else
-                _late[index] = lateUpdateAction;
+            // Store the new Update action at that index
+            // Store the index of this new Update action
+            _lateIndices.Add(instanceID, _late.Count);
+            _late.Add(new UpdateAction() {
+                InstanceID = instanceID,
+                Action = action
+            });
         }
         /// <inheritdoc/>
         public void UnregisterLateUpdate(int instanceID) {
-            int index = _lateIndices[instanceID];
+            if (!_lateIndices.TryGetValue(instanceID, out int index))
+                throw new ArgumentException($"{this.GetHierarchyNameWithType()} cannot unregister the LateUpdate action for the object with {nameof(instanceID)} {instanceID} because no such action was ever registered!", nameof(instanceID));
+
+            UpdateAction lastAction = _late[_late.Count - 1];
+            _lateIndices[lastAction.InstanceID] = index;
+            _late[index] = lastAction;
+            _late.RemoveAt(_late.Count - 1);
             _lateIndices.Remove(instanceID);
-            _late[index] = null;
-            _lateNextIndex.Push(index);
         }
 
         // EVENT HANDLERS
         private void Update() {
-            // Apparently Visual Studio won't f*cking debug the invoked methods when the null-conditional operator is used...
-            // so this code isn't thread-safe, but hey neither is Unity
-            for (int u = 0; u < _updates.Count; ++u) {
-                if (_updates[u] != null)
-                    _updates[u]();
+            _tSinceTrim += Time.unscaledDeltaTime;
+            if (_tSinceTrim >= TrimPeriod) {
+                _tSinceTrim -= TrimPeriod;
+                _updates.TrimExcess();
+                _late.TrimExcess();
+                _fixed.TrimExcess();
             }
+
+            for (int u = 0; u < _updates.Count; ++u)
+                _updates[u].Action?.Invoke();
         }
         private void FixedUpdate() {
-            // Apparently Visual Studio won't f*cking debug the invoked methods when the null-conditional operator is used...
-            // so this code isn't thread-safe, but hey neither is Unity
-            for (int fu = 0; fu < _fixed.Count; ++fu) {
-                if (_fixed[fu] != null)
-                    _fixed[fu]();
-            }
+            for (int fu = 0; fu < _fixed.Count; ++fu)
+                _fixed[fu].Action?.Invoke();
         }
         private void LateUpdate() {
-            // Apparently Visual Studio won't f*cking debug the invoked methods when the null-conditional operator is used...
-            // so this code isn't thread-safe, but hey neither is Unity
-            for (int lu = 0; lu < _late.Count; ++lu) {
-                if (_late[lu] != null)
-                    _late[lu]();
-            }
+            for (int lu = 0; lu < _late.Count; ++lu)
+                _late[lu].Action?.Invoke();
         }
 
     }
