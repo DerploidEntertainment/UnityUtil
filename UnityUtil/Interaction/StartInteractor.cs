@@ -4,6 +4,7 @@ using UnityEngine.Triggers;
 namespace UnityEngine.Inputs {
 
     public class InteractionEventArgs : EventArgs {
+        public RaycastHit HitInfo;
         public SimpleTrigger InteractedTrigger;
     }
 
@@ -30,7 +31,7 @@ namespace UnityEngine.Inputs {
                 if (somethingHit) {
                     SimpleTrigger st = hitInfo.collider.GetComponent<SimpleTrigger>();
                     st?.Trigger();
-                    Interacted?.Invoke(this, new InteractionEventArgs() { InteractedTrigger = st });
+                    Interacted?.Invoke(this, new InteractionEventArgs() { HitInfo = hitInfo, InteractedTrigger = st });
                 }
             }
         }
