@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+﻿using System;
 using UnityEngine.Events;
 
 namespace UnityEngine.Inventory {
@@ -6,6 +6,7 @@ namespace UnityEngine.Inventory {
     /// <summary>
     /// Type arguments are (Collector collector, Collectible collectible)
     /// </summary>
+    [Serializable]
     public class CollectEvent : UnityEvent<Collector, Collectible> { }
 
     public class Collector : MonoBehaviour {

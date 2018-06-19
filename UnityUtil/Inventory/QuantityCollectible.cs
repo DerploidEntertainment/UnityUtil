@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-
-namespace UnityEngine.Inventory {
+﻿namespace UnityEngine.Inventory {
 
     [RequireComponent(typeof(Collectible))]
     public class QuantityCollectible : MonoBehaviour {

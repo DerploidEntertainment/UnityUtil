@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using UnityEngine;
 using UnityEngine.Assertions;
 
 namespace UnityEngine.Inventory {
@@ -18,7 +17,7 @@ namespace UnityEngine.Inventory {
             GetComponent<Collector>().Collected.AddListener(collect);
         }
         private void collect(Collector collector, Collectible collectible) {
-            // If no collectible was found then just return
+            // If no Ammo Collectible was found then just return
             AmmoCollectible ac = collectible.GetComponent<AmmoCollectible>();
             if (ac == null)
                 return;
