@@ -1,5 +1,4 @@
-﻿using UnityEngine;
-using UnityEngine.Assertions;
+﻿using UnityEngine.Assertions;
 
 namespace UnityEngine.Triggers {
 
@@ -8,6 +7,10 @@ namespace UnityEngine.Triggers {
 
         public Collider TriggerCollider { get; private set; }
 
+        [Tooltip("If non-null, this value will be used to filter OnTriggerEnter events to only those where the attached Rigidbody of the enterring Collider MATCHES or DOES NOT MATCH this Tag, depending on the value of " + nameof(TriggerEnterTrigger.FilterIsBlacklist) + ".")]
+        public string AttachedRigidbodyTagFilter;
+        [Tooltip("If true, then the " + nameof(TriggerEnterTrigger.AttachedRigidbodyTagFilter) + " will be used as a blacklist (i.e., any enterring Collider will raise the UnityEvent EXCEPT those with an attached Rigidbody matching that Tag); if false, then " + nameof(TriggerEnterTrigger.AttachedRigidbodyTagFilter) + " will be used as whitelist (i.e., only enterring Colliders with attached Rigidbodies MATCHING the filter will raise the event.)")]
+        public bool FilterIsBlacklist = false;
         public TriggerColliderEvent ColliderExited = new TriggerColliderEvent();
 
         private void Awake() {
@@ -15,7 +18,16 @@ namespace UnityEngine.Triggers {
             Assert.IsTrue(TriggerCollider.isTrigger, $"{this.GetHierarchyNameWithType()} is associated with a Collider, but the Collider is not a trigger!");
         }
 
-        private void OnTriggerExit(Collider other) => ColliderExited.Invoke(other);
+        private void OnTriggerExit(Collider other) {
+            Rigidbody rb = other.attachedRigidbody;
+            bool raiseEvent =
+                rb == null ||
+                string.IsNullOrEmpty(AttachedRigidbodyTagFilter) ||
+                (FilterIsBlacklist && !rb.CompareTag(AttachedRigidbodyTagFilter)) ||
+                (!FilterIsBlacklist && rb.CompareTag(AttachedRigidbodyTagFilter));
+            if (raiseEvent)
+                ColliderExited.Invoke(other);
+        }
 
     }
 
