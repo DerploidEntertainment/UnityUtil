@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using UnityEngine;
 
 namespace UnityEngine {
 
@@ -14,7 +13,6 @@ namespace UnityEngine {
         public List<AudioClip> AudioClips;
 
         // EVENT HANDLERS
-        private void Awake() { }
         private void OnCollisionEnter(Collision collision) {
             if (AudioClips.Count == 0)
                 return;
