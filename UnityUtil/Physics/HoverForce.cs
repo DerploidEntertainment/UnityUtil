@@ -59,7 +59,7 @@ namespace UnityEngine {
             // then apply a hover force to the Rigidbody that scales inversely with the distance from the surface
             Vector3 down = -up;
             Vector3 pos = HoveringRigidbody.position;
-            bool surfaceBelow = Physics.Raycast(pos, down, out RaycastHit hitInfo, HoverHeight, GroundLayerMask);
+            bool surfaceBelow = Physics.Raycast(pos, down, out RaycastHit hitInfo, HoverHeight, GroundLayerMask, QueryTriggerInteraction.Ignore);
             if (surfaceBelow) {
                 float angle = Vector3.Angle(up, hitInfo.normal);
                 if (angle <= MaxAngleToSurface)
