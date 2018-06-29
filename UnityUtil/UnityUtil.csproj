@@ -53,6 +53,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DestroyZone.cs" />
     <Compile Include="DontDestroyOnLoad.cs" />
     <Compile Include="Interaction\CursorInteractor.cs" />
     <Compile Include="Interaction\CursorInteractor2D.cs" />
