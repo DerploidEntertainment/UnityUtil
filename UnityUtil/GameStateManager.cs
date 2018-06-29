@@ -35,6 +35,9 @@ namespace UnityEngine {
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
         public void Quit() => Application.Quit();
+        public void SetCursorConfined() => Cursor.lockState = CursorLockMode.Confined;
+        public void SetCursorLocked() => Cursor.lockState = CursorLockMode.Locked;
+        public void SetCursorUnlocked() => Cursor.lockState = CursorLockMode.None;
 
         // EVENT HANDLERS
         private void Update() {
