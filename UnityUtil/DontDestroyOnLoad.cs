@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-
-namespace UnityEngine {
+﻿namespace UnityEngine {
 
     public class DontDestroyOnLoad : MonoBehaviour {
 
