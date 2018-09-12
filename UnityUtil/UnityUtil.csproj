@@ -1,154 +1,17 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{567FE3BC-52EE-4BF6-92BE-A356F8F08DBE}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>UnityEngine</RootNamespace>
-    <AssemblyName>UnityUtil</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <DebugType>full</DebugType>   <!-- So that Unity can generate its .mdb debug symbol files -->
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;UNITY_ASSERTIONS</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <LangVersion>latest</LangVersion>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup>
-    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug2D|AnyCPU'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\Debug2D\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;UNITY_ASSERTIONS;DEBUG_2D</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <LangVersion>default</LangVersion>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="UnityEngine">
       <HintPath>C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\Managed\UnityEngine.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEngine.UI">
+      <HintPath>C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\UnityExtensions\Unity\GUISystem\UnityEngine.UI.dll</HintPath>
+    </Reference>
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="DestroyZone.cs" />
-    <Compile Include="DontDestroyOnLoad.cs" />
-    <Compile Include="Interaction\CursorInteractor.cs" />
-    <Compile Include="Interaction\CursorInteractor2D.cs" />
-    <Compile Include="Interaction\LookAtInteractor.cs" />
-    <Compile Include="Interaction\LookAtInteractor2D.cs" />
-    <Compile Include="Interaction\StartInteractor.cs" />
-    <Compile Include="Interaction\StartInteractor2D.cs" />
-    <Compile Include="Interaction\TapInteractor.cs" />
-    <Compile Include="Interaction\TapInteractor2D.cs" />
-    <Compile Include="Inputs\StartStopInputs\ButtonInput.cs" />
-    <Compile Include="Inputs\StartStopInputs\KeyCodeInput.cs" />
-    <Compile Include="Inputs\StartStopInputs\StartStopInput.cs" />
-    <Compile Include="Inputs\StartStopInputs\StartStopInputArray.cs" />
-    <Compile Include="Inputs\ValueInputs\AxisInput.cs" />
-    <Compile Include="Inputs\ValueInputs\ValueInput.cs" />
-    <Compile Include="Inputs\ValueInputs\ValueInputArray.cs" />
-    <Compile Include="Inventory\Collectible.cs" />
-    <Compile Include="Inventory\QuantityCollectible.cs" />
-    <Compile Include="Inventory\Collector.cs" />
-    <Compile Include="Inventory\QuantityWeaponInfo.cs" />
-    <Compile Include="ManagedQuantity.cs" />
-    <Compile Include="MoreMathf.cs" />
-    <Compile Include="Movement\LookAtAdjuster.cs" />
-    <Compile Include="Movement\LookAtRaycast.cs" />
-    <Compile Include="TransformExtensions.cs" />
-    <Compile Include="Triggers\ComponentLifecycleTrigger.cs" />
-    <Compile Include="Updating\Updatable.cs" />
-    <Compile Include="Updating\AbsoluteAnimation.cs" />
-    <Compile Include="Updating\AbsoluteParticleSystem.cs" />
-    <Compile Include="Updating\AbsoluteUpdater.cs" />
-    <Compile Include="CancellableUnityEvent.cs" />
-    <Compile Include="BetterLogger.cs" />
-    <Compile Include="DependencyInjection\InjectAttribute.cs" />
-    <Compile Include="DependencyInjection\DependencyInjector.cs" />
-    <Compile Include="Destroyer.cs" />
-    <Compile Include="GameStateManager.cs" />
-    <Compile Include="Physics\HoverForce.cs" />
-    <Compile Include="Inventory\AmmoToolInfo.cs" />
-    <Compile Include="Inventory\OverheatToolInfo.cs" />
-    <Compile Include="Inventory\ProjectileToolInfo.cs" />
-    <Compile Include="Inventory\PushToolInfo.cs" />
-    <Compile Include="Inventory\ToolInfo.cs" />
-    <Compile Include="Inventory\WeaponInfo.cs" />
-    <Compile Include="Movement\MouseLook.cs" />
-    <Compile Include="Physics\Physics2DExtensions.cs" />
-    <Compile Include="Inventory\AmmoTool.cs" />
-    <Compile Include="Inventory\OverheatTool.cs" />
-    <Compile Include="Inventory\Tool.cs" />
-    <Compile Include="Movement\LookAt.cs" />
-    <Compile Include="SocialWrapper.cs" />
-    <Compile Include="Physics\TorqueStabilizer.cs" />
-    <Compile Include="Triggers\OrTrigger.cs" />
-    <Compile Include="Triggers\IntTrigger.cs" />
-    <Compile Include="Triggers\JointBreakTrigger.cs" />
-    <Compile Include="Triggers\ButtonTrigger.cs" />
-    <Compile Include="Triggers\AnimationEventTrigger.cs" />
-    <Compile Include="Physics\ColliderDuplicator.cs" />
-    <Compile Include="Movement\RigidbodyMover.cs" />
-    <Compile Include="Movement\RigidbodyMovement.cs" />
-    <Compile Include="Movement\TargetOffsetMovement.cs" />
-    <Compile Include="Inventory\AmmoCollector.cs" />
-    <Compile Include="Inventory\QuantityCollector.cs" />
-    <Compile Include="Inventory\InventoryCollector.cs" />
-    <Compile Include="Physics\QuantityDetonator.cs" />
-    <Compile Include="Inventory\AmmoCollectible.cs" />
-    <Compile Include="Inventory\QuantityWeapon.cs" />
-    <Compile Include="Inventory\InventoryCollectible.cs" />
-    <Compile Include="Inventory\ProjectileTool.cs" />
-    <Compile Include="Inventory\PushTool.cs" />
-    <Compile Include="Inventory\Weapon.cs" />
-    <Compile Include="Physics\PhysTarget.cs" />
-    <Compile Include="Physics\PushDetonator.cs" />
-    <Compile Include="Physics\Liftable.cs" />
-    <Compile Include="Movement\CharacterFPSWalker.cs" />
-    <Compile Include="Inventory\CollectibleDestroyMode.cs" />
-    <Compile Include="Physics\CollisionSounds.cs" />
-    <Compile Include="Physics\Detonator.cs" />
-    <Compile Include="Inventory\Inventory.cs" />
-    <Compile Include="Physics\Lifter.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Triggers\RandomTrigger.cs" />
-    <Compile Include="Triggers\SimpleTrigger.cs" />
-    <Compile Include="Spawner.cs" />
-    <Compile Include="Movement\TargetFlyer.cs" />
-    <Compile Include="Triggers\TimerTrigger.cs" />
-    <Compile Include="Triggers\TriggerCondition.cs" />
-    <Compile Include="Triggers\AndTrigger.cs" />
-    <Compile Include="Triggers\ToggleTrigger.cs" />
-    <Compile Include="Triggers\TriggerExitTrigger.cs" />
-    <Compile Include="Triggers\TriggerEnterTrigger.cs" />
-    <Compile Include="Physics\AxisDirection.cs" />
-    <Compile Include="Updating\IUpdater.cs" />
-    <Compile Include="Updating\Updater.cs" />
-    <Compile Include="ValueChangedEventArgs.cs" />
-  </ItemGroup>
-  <ItemGroup />
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+
 </Project>
