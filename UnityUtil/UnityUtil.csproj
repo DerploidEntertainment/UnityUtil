@@ -2,15 +2,16 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <DebugType>full</DebugType>   <!-- So that Unity can generate its .mdb debug symbol files -->
+    <DebugType>full</DebugType>
+    <LangVersion>latest</LangVersion>   <!-- So that Unity can generate its .mdb debug symbol files -->
   </PropertyGroup>
 
   <ItemGroup>
     <Reference Include="UnityEngine">
-      <HintPath>C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\Managed\UnityEngine.dll</HintPath>
+      <HintPath>C:\Program Files\Unity\Hub\Editor\2018.2.10f1\Editor\Data\Managed\UnityEngine.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UI">
-      <HintPath>C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\UnityExtensions\Unity\GUISystem\UnityEngine.UI.dll</HintPath>
+      <HintPath>C:\Program Files\Unity\Hub\Editor\2018.2.10f1\Editor\Data\UnityExtensions\Unity\GUISystem\UnityEngine.UI.dll</HintPath>
     </Reference>
   </ItemGroup>
 
