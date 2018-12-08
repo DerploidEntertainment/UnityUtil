@@ -6,7 +6,8 @@ namespace UnityEngine {
 
     public static class MoreMath {
 
-        public const float SQRT2 = 1.41421f;
+        public const float Sqrt2 = 1.41421f;
+        public const float TwoPi = 2 * Mathf.PI;
 
         /// <summary>
         /// Returns a random unit vector within a cone of the provided half-angle around the provided <see cref="Transform"/>'s forward vector (uniformly distributed).
@@ -49,7 +50,7 @@ namespace UnityEngine {
             // Get random direction in cone centered around Vector3.forward
             float minZ = Mathf.Cos(Mathf.Deg2Rad * halfAngle);
             float z = U.Random.Range(minZ, onlyBoundary ? minZ : 1f);
-            float phi = U.Random.Range(0f, 2f * Mathf.PI);
+            float phi = U.Random.Range(0f, TwoPi);
             float sqrtPart = Mathf.Sqrt(1f - z * z);
             var result = new Vector3(sqrtPart * Mathf.Cos(phi), sqrtPart * Mathf.Sin(phi), z);
 

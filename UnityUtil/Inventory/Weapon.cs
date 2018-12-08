@@ -57,7 +57,7 @@ namespace UnityEngine.Inventory {
 
             // Get a random Ray within the accuracy cone
             float z = U.Random.Range(Mathf.Cos(Mathf.Deg2Rad * AccuracyConeHalfAngle), 1f);
-            float theta = U.Random.Range(0f, 2 * Mathf.PI);
+            float theta = U.Random.Range(0f, MoreMath.TwoPi);
             float sqrtPart = Mathf.Sqrt(1 - z * z);
             var dir = new Vector3(sqrtPart * Mathf.Cos(theta), sqrtPart * Mathf.Sin(theta), z);
             var ray = new Ray(transform.position, transform.TransformDirection(dir));

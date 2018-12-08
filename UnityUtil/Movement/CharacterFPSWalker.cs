@@ -110,7 +110,7 @@ namespace UnityEngine.Movement {
             // Account for diagonal motion
             bool isDiagonal = (horz != 0f && vert != 0f);
             if (isDiagonal && LimitDiagonalSpeed)
-                speed /= Mathf.Sqrt(2f);
+                speed /= MoreMath.Sqrt2;
 
             // Account for slopes
             // If speed decreases with slope, then speed = 0 when slope = slopeLimit
