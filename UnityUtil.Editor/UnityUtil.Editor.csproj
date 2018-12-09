@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <DebugType>full</DebugType>
-    <LangVersion>latest</LangVersion>   <!-- So that Unity can generate its .mdb debug symbol files -->
+    <DebugType>full</DebugType>   <!-- So that Unity can generate its .mdb debug symbol files -->
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
