@@ -1,5 +1,4 @@
 ﻿using System;
-using UnityEngine;
 using U = UnityEngine;
 
 namespace UnityEngine {
@@ -8,6 +7,25 @@ namespace UnityEngine {
 
         public const float Sqrt2 = 1.41421f;
         public const float TwoPi = 2 * Mathf.PI;
+
+        public static int RandomWeightedIndex(float[] indexWeights) {
+            // Get a random float between 0 and 1 (inclusive)
+            float val = Random.value;
+
+            // Picture a set of ranges between 0 and 1, with sizes determined by the index weights
+            // |-------|----------------------|---|--------|
+            // |------------------^------------------------|
+            // The carrot represents the random value
+            // The probability of choosing index i according to the specified weights
+            // is the same as that of the random value falling within the (i+1)th range (left-bound inclusive).
+            // Therefore, the index at which the cumulative probability is greater than the random value is our "chosen" index
+            float sum = indexWeights[0];
+            int w;
+            for (w = 0; w < indexWeights.Length - 1 && sum <= val; ++w)
+                sum += indexWeights[w + 1];
+
+            return w;
+        }
 
         /// <summary>
         /// Returns a random unit vector within a cone of the provided half-angle around the provided <see cref="Transform"/>'s forward vector (uniformly distributed).
