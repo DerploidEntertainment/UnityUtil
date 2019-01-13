@@ -1,7 +1,7 @@
 ﻿using UnityEditor;
 using UnityEngine;
 
-namespace HighHandHoldem {
+namespace UnityUtil.Editor {
 
     [CustomPropertyDrawer(typeof(InjectAttribute))]
     public class InjectDrawer : PropertyDrawer {
