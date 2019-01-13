@@ -2,7 +2,7 @@
 
 namespace UnityEngine {
 
-    [CreateAssetMenu(menuName = nameof(UnityEngine) + "/" + nameof(UnityEngine.AsciiSprites), fileName = "ascii-sprites")]
+    [CreateAssetMenu(menuName = "UnityUtil/" + nameof(UnityEngine.AsciiSprites), fileName = "ascii-sprites")]
     public class AsciiSprites : ScriptableObject {
 
         private const int NUM_PRINTABLES = 95;
