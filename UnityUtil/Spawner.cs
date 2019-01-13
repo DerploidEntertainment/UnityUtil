@@ -55,7 +55,7 @@ namespace UnityEngine {
         [Range(0f, 90f)]
         public float ConeHalfAngle = 30f;
 
-        private void Awake() => 
+        private void Awake() =>
             Assert.IsNotNull(Prefab, this.GetAssociationAssertion(nameof(this.Prefab)));
 
         // API INTERFACE

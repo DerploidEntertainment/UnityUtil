@@ -10,7 +10,7 @@ namespace UnityEngine.Triggers {
         [Tooltip("If true, then the Trigger event can only be raised once per frame, even if there are multiple calls to Trigger() in a single frame.")]
         public bool OnlyOncePerFrame;
         public UnityEvent Triggered = new UnityEvent();
-        
+
         public void Trigger() {
             // Make sure we only get triggered once per frame
             int currFrame = Time.frameCount;

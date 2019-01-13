@@ -2,7 +2,7 @@
 
     [CreateAssetMenu(fileName = "button-input", menuName = nameof(UnityEngine.Inputs) + "/" + nameof(UnityEngine.Inputs.ButtonInput))]
     public sealed class ButtonInput : StartStopInput {
-        
+
         public string ButtonName;
 
         public override bool Started() => Input.GetButtonDown(ButtonName);

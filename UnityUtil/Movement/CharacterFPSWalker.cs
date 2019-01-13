@@ -71,7 +71,7 @@ namespace UnityEngine.Movement {
             Vector3 jumpV = Vector3.zero;
             float g = Physics.gravity.magnitude * Mass;
 
-            // Account for jumping (if it is allowed and the button was pressed) 
+            // Account for jumping (if it is allowed and the button was pressed)
             if (jumping && ControllerToMove.isGrounded)
                 jumpV.y += Mathf.Sqrt(2f * g * JumpHeight);
             else

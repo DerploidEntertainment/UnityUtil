@@ -2,7 +2,7 @@
 
     [CreateAssetMenu(fileName = "key-code-input", menuName = nameof(UnityEngine.Inputs) + "/" + nameof(UnityEngine.Inputs.KeyCodeInput))]
     public sealed class KeyCodeInput : StartStopInput {
-        
+
         public KeyCode KeyCode;
 
         public override bool Started() => Input.GetKeyDown(KeyCode);

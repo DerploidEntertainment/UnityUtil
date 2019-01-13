@@ -117,7 +117,7 @@ namespace UnityEngine {
             _oldUseGravity = rb.useGravity;
             rb.useGravity = false;
             if (LiftUsingPhysics) {
-                loadTrans.position = transform.TransformPoint(_liftable.LiftOffset); 
+                loadTrans.position = transform.TransformPoint(_liftable.LiftOffset);
                 if (_liftable.UsePreferredRotation)
                     loadTrans.rotation = transform.rotation * Quaternion.Euler(_liftable.PreferredLiftRotation);
                 LiftingJoint.Joint.connectedBody = rb;

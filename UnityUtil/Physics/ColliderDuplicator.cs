@@ -55,15 +55,15 @@ namespace UnityEngine {
             // Duplicate child Colliders, as requested...
             IList<Transform> dupls = new List<Transform>();
             switch (ChildColliderDuplication) {
-                
+
                 case ChildColliderDuplicateMode.ImmediateChildCollidersOnly:
                     dupls = duplicateImmediateChildren();
                     break;
-                    
+
                 case ChildColliderDuplicateMode.AllChildCollidersFlattened:
                     dupls = duplicateAllChildrenFlat();
                     break;
-                    
+
                 case ChildColliderDuplicateMode.AllChildCollidersHierarchy:
                     dupls = duplicateAllChildrenHierarchy(newParent);
                     break;
@@ -119,7 +119,7 @@ namespace UnityEngine {
             // Get Colliders on immediate children
             IEnumerable<Transform> origChildren = origParent.GetComponentsInChildren<Transform>()
                                                         .Where(t => t.parent == origParent);
-            
+
             // Duplicate each of these Colliders on a new child of the new GameObject
             // Then recursively duplicate grandchildren
             foreach (Transform origChild in origChildren) {
