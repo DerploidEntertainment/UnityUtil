@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using U = UnityEngine;
 
 namespace UnityEngine {
@@ -9,6 +10,9 @@ namespace UnityEngine {
         public const float TwoPi = 2 * Mathf.PI;
 
         public static int RandomWeightedIndex(float[] indexWeights) {
+            if (indexWeights.Sum() != 1f)
+                throw new InvalidOperationException($"The sum of all {nameof(indexWeights)} must equal 1!");
+
             // Get a random float between 0 and 1 (inclusive)
             float val = Random.value;
 
