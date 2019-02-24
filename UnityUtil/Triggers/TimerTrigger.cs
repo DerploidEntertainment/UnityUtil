@@ -32,10 +32,7 @@ namespace UnityEngine.Triggers {
         public UnityEvent NumTicksReached = new UnityEvent();
 
         // EVENT HANDLERS
-        protected override void BetterAwake() {
-            BetterUpdate = updateTimer;
-            RegisterUpdatesAutomatically = true;
-        }
+        protected override void BetterAwake() => RegisterUpdatesAutomatically = false;
         protected override void BetterOnEnable() {
             if (StartOnEnable)
                 doStart();
@@ -47,20 +44,42 @@ namespace UnityEngine.Triggers {
 
         // API INTERFACE
         public void StartTimer() {
-            Assert.IsTrue(gameObject.activeInHierarchy, $"Cannot stop {this.GetHierarchyNameWithType()} because its GameObject is inactive!");
-            Assert.IsTrue(enabled, $"Cannot stop {this.GetHierarchyNameWithType()} because it is disabled!");
+            Assert.IsTrue(gameObject.activeInHierarchy, $"Cannot start {this.GetHierarchyNameWithType()} because its GameObject is inactive!");
+            Assert.IsTrue(enabled, $"Cannot start {this.GetHierarchyNameWithType()} because it is disabled!");
             if (_running)
                 return;
 
             doStart();
         }
         public void RestartTimer() {
-            Assert.IsTrue(gameObject.activeInHierarchy, $"Cannot stop {this.GetHierarchyNameWithType()} because its GameObject is inactive!");
-            Assert.IsTrue(enabled, $"Cannot stop {this.GetHierarchyNameWithType()} because it is disabled!");
+            Assert.IsTrue(gameObject.activeInHierarchy, $"Cannot restart {this.GetHierarchyNameWithType()} because its GameObject is inactive!");
+            Assert.IsTrue(enabled, $"Cannot restart {this.GetHierarchyNameWithType()} because it is disabled!");
 
             if (_running)
                 doStop();
             doStart();
+        }
+        public void PauseTimer() {
+            Assert.IsTrue(gameObject.activeInHierarchy, $"Cannot pause {this.GetHierarchyNameWithType()} because its GameObject is inactive!");
+            Assert.IsTrue(enabled, $"Cannot pause {this.GetHierarchyNameWithType()} because it is disabled!");
+
+            if (!_running)
+                return;
+
+            _running = false;
+            Updater.UnregisterUpdate(InstanceID);
+            this.Log($" paused.");
+        }
+        public void ResumeTimer() {
+            Assert.IsTrue(gameObject.activeInHierarchy, $"Cannot resume {this.GetHierarchyNameWithType()} because its GameObject is inactive!");
+            Assert.IsTrue(enabled, $"Cannot resume {this.GetHierarchyNameWithType()} because it is disabled!");
+
+            if (_running)
+                return;
+
+            _running = true;
+            Updater.RegisterUpdate(InstanceID, updateTimer);
+            this.Log(" resumed.");
         }
         public void StopTimer() {
             Assert.IsTrue(gameObject.activeInHierarchy, $"Cannot stop {this.GetHierarchyNameWithType()} because its GameObject is inactive!");
@@ -77,6 +96,8 @@ namespace UnityEngine.Triggers {
             this.Log(" starting.");
             Starting.Invoke();
 
+            Updater.RegisterUpdate(InstanceID, updateTimer);
+
             TimeSincePreviousTick = 0f;
             NumPassedTicks = 0u;
             _running = true;
@@ -84,6 +105,8 @@ namespace UnityEngine.Triggers {
         private void doStop() {
             _running = false;
             TimeSincePreviousTick = 0f;
+
+            Updater.UnregisterUpdate(InstanceID);
 
             this.Log($" stopped.");
             Stopped.Invoke();
