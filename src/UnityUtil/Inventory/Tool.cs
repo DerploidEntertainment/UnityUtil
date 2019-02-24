@@ -1,4 +1,3 @@
-﻿using System.Collections;
 using UnityEngine.Events;
 using UnityEngine.Inputs;
 using UnityEngine.Logging;
@@ -7,9 +6,14 @@ namespace UnityEngine.Inventory {
 
     public class Tool : Updatable {
         // HIDDEN FIELDS
-        private Coroutine _usingRoutine;
-        private Coroutine _refractoryRoutine;
+        private bool _using = false;
+        private bool _refactory = false;
         private uint _numUses = 0u;
+        private bool _useFailed = false;
+
+        private float _tSinceAutoUse = 0f;
+        private float _tRefactory = 0f;
+        private float _tCharged = 0f;
 
         // INSPECTOR FIELDS
         public ToolInfo Info;
@@ -33,39 +37,74 @@ namespace UnityEngine.Inventory {
             RegisterUpdatesAutomatically = true;
         }
         private void doUpdate(float deltaTime) {
-            // Start using when the use input starts
-            if (UseInput.Started() && _usingRoutine == null && _refractoryRoutine == null)
-                _usingRoutine = StartCoroutine(startUsing());
-
-            // Stop using when the use input stops
-            // If the Tool is automatic and the player got a use in before stopping the UseInput,
-            // then start the refractory period still
-            else if (UseInput.Stopped() && _usingRoutine != null) {
-                StopCoroutine(_usingRoutine);
-                _usingRoutine = null;
+            // Start using when the use input starts, unless we're in the refactory period
+            if (UseInput.Started() && !_refactory) {
+                _using = true;
+                _useFailed = false;
+                _tSinceAutoUse = 0f;
                 CurrentCharge = 0f;
+                _numUses = 0u;
+            }
+
+            // Once using, stop using when the use input stops
+            // Only start the refractory period if at least one use was made before the input stopped
+            else if (_using && UseInput.Stopped()) {
                 if (_numUses > 0)
-                    _refractoryRoutine = StartCoroutine(startRefractoryPeriod());
+                    _refactory = true;
+                _using = false;
             }
-        }
-        protected override void BetterOnDisable() {
-            if (_usingRoutine != null) {
-                StopCoroutine(_usingRoutine);
-                _usingRoutine = null;
-                CurrentCharge = 0f;
+
+            // If we're in the refactory period, then just keep waiting until that's over
+            else if (_refactory) {
+                _tRefactory += Time.deltaTime;
+                if (_tRefactory >= Info.RefactoryPeriod) {
+                    _tRefactory = 0f;
+                    _refactory = false;
+                }
             }
-        }
 
-        // HELPERS
-        private IEnumerator startUsing() {
-            _numUses = 0;
-            do {
+            // Othwerise, continue using the Tool...
+            else if (_using) {
 
-                // Raise the charging started event
-                // If any listeners canceled using, then raise the Use Failed event
-                Using.Invoke();
-                if (Using.Cancel)
-                    UseFailed.Invoke();
+                // If use just started, then raise the using event
+                // If any listeners cancel using, then raise the Use Failed event
+                if (_tSinceAutoUse == 0f && !_useFailed) {
+                    Using.Invoke();
+                    _useFailed = Using.Cancel;
+                    if (_useFailed)
+                        UseFailed.Invoke();
+                    else
+                        _tCharged = 0f;
+                }
+
+                // If use failed, then only continue if this Tool is fully automatic or has not yet performed all of its semi-automatic uses
+                bool tryAnotherUse =
+                    Info.AutomaticMode == AutomaticMode.FullyAutomatic ||
+                    (Info.AutomaticMode == AutomaticMode.SemiAutomatic && _numUses < Info.SemiAutomaticUses);
+                if (_useFailed && !tryAnotherUse)
+                    return;
+
+                // If use has not failed, then actually perform the use now,
+                // or continue waiting for the next automatic use, if applicable
+                if (_tSinceAutoUse == 0f && !_useFailed) {
+                    Used.Invoke();
+                    ++_numUses;
+                }
+                else if (tryAnotherUse) {
+                    _tSinceAutoUse += Time.deltaTime;
+                    if (_tSinceAutoUse >= 1f / Info.AutomaticUseRate) {
+                        _tSinceAutoUse = 0f;
+                        _useFailed = false;
+                    }
+                }
+
+
+                if (_tCharged < Info.TimeToCharge)
+                    _tCharged += Time.deltaTime;
+                else {
+                    _tCharged -= Info.TimeToCharge;
+                }
+
 
                 // Otherwise, recharge the Tool (if necessary) then use it
                 else {
@@ -77,30 +116,22 @@ namespace UnityEngine.Inventory {
                         }
                         CurrentCharge = 1f;     // Clamp fraction
                     }
-                    Used.Invoke();
-                    ++_numUses;
                 }
 
                 // Pause to account for the firing rate, if necessary
                 if (Info.AutomaticMode != AutomaticMode.SingleAction && !Info.RechargeEveryUse)
                     yield return new WaitForSeconds(1f / Info.AutomaticUseRate);
 
-            // Continue using if the Tool is fully automatic or has not performed all of its semi-automatic uses
-            } while (
-                (Info.AutomaticMode == AutomaticMode.SemiAutomatic && _numUses < Info.SemiAutomaticUses) ||
-                (Info.AutomaticMode == AutomaticMode.FullyAutomatic)
-            );
-
-            // Prevent using again for the duration of the refractory period
-            _refractoryRoutine = StartCoroutine(startRefractoryPeriod());
-            yield return _refractoryRoutine;
-
-            CurrentCharge = 0f;
-            _usingRoutine = null;
+                CurrentCharge = 0f;
+            }
         }
-        private IEnumerator startRefractoryPeriod() {
-            yield return new WaitForSeconds(Info.RefactoryPeriod);
-            _refractoryRoutine = null;
+        protected override void BetterOnDisable() {
+            CurrentCharge = 0f;
+            _numUses = 0u;
+            _using = false;
+            _refactory = false;
+            _tRefactory = 0f;
+            _tSinceAutoUse = 0f;
         }
 
     }
