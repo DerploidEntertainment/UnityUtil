@@ -30,6 +30,27 @@ namespace UnityEngine {
 
             return w;
         }
+        public static int[] RandomUniqueIndices(int count, int sourceCount) {
+            if (count < 0)
+                throw new ArgumentOutOfRangeException(nameof(count), count, $" must be greater than or equal to zero.");
+            if (sourceCount < 0)
+                throw new ArgumentOutOfRangeException(nameof(sourceCount), sourceCount, $" must be greater than or equal to zero.");
+            if (count > sourceCount)
+                throw new InvalidOperationException($"{nameof(count)} must be less than or equal to {nameof(sourceCount)}");
+
+            int[] resultIndices = new int[count];
+
+            int[] sourceIndices = Enumerable.Range(0, sourceCount).ToArray();
+            for (int r = 0; r < count; ++r) {
+                int s = U.Random.Range(0, sourceCount - r);
+                resultIndices[r] = sourceIndices[s];
+                int temp = sourceIndices[s];
+                sourceIndices[s] = sourceIndices[sourceCount - r - 1];
+                sourceIndices[sourceCount - r - 1] = temp;
+            }
+
+            return resultIndices;
+        }
 
         /// <summary>
         /// Returns a random unit vector within a cone of the provided half-angle around the provided <see cref="Transform"/>'s forward vector (uniformly distributed).
