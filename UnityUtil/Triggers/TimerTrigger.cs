@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEngine.Assertions;
 using UnityEngine.Events;
 
@@ -25,6 +25,7 @@ namespace UnityEngine.Triggers {
         public uint NumPassedTicks = 0u;
         [Tooltip("Should this " + nameof(Triggers.TimerTrigger) + " be restarted every time it is re-enabled?")]
         public bool StartOnEnable = false;
+        public bool Logging = true;
 
         public UnityEvent Starting = new UnityEvent();
         public CountEvent Tick = new CountEvent();
@@ -68,7 +69,8 @@ namespace UnityEngine.Triggers {
 
             _running = false;
             Updater.UnregisterUpdate(InstanceID);
-            this.Log($" paused.");
+            if (Logging)
+                this.Log($" paused.");
         }
         public void ResumeTimer() {
             Assert.IsTrue(gameObject.activeInHierarchy, $"Cannot resume {this.GetHierarchyNameWithType()} because its GameObject is inactive!");
@@ -79,7 +81,8 @@ namespace UnityEngine.Triggers {
 
             _running = true;
             Updater.RegisterUpdate(InstanceID, updateTimer);
-            this.Log(" resumed.");
+            if (Logging)
+                this.Log(" resumed.");
         }
         public void StopTimer() {
             Assert.IsTrue(gameObject.activeInHierarchy, $"Cannot stop {this.GetHierarchyNameWithType()} because its GameObject is inactive!");
@@ -93,7 +96,8 @@ namespace UnityEngine.Triggers {
 
         // HELPERS
         private void doStart() {
-            this.Log(" starting.");
+            if (Logging)
+                this.Log(" starting.");
             Starting.Invoke();
 
             Updater.RegisterUpdate(InstanceID, updateTimer);
@@ -108,7 +112,8 @@ namespace UnityEngine.Triggers {
 
             Updater.UnregisterUpdate(InstanceID);
 
-            this.Log($" stopped.");
+            if (Logging)
+                this.Log($" stopped.");
             Stopped.Invoke();
         }
         private void updateTimer() {
@@ -119,7 +124,8 @@ namespace UnityEngine.Triggers {
 
             // If another Tick period has passed, then raise the Tick event
             if (TimeSincePreviousTick >= TimeBeforeTick) {
-                this.Log(TickForever ? ": tick!" : $": tick {NumPassedTicks} / {NumTicks}");
+                if (Logging)
+                    this.Log(TickForever ? ": tick!" : $": tick {NumPassedTicks} / {NumTicks}");
                 Tick.Invoke(NumPassedTicks);
                 TimeSincePreviousTick = 0f;
                 ++NumPassedTicks;
@@ -128,7 +134,8 @@ namespace UnityEngine.Triggers {
                 return;
 
             // If the desired number of ticks was reached, then stop the Timer
-            this.Log($" reached {NumTicks} ticks.");
+            if (Logging)
+                this.Log($" reached {NumTicks} ticks.");
             NumTicksReached.Invoke();
             doStop();
         }
