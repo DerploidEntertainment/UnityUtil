@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using UnityEngine.Assertions;
 using UnityEngine.Events;
 
@@ -137,7 +137,8 @@ namespace UnityEngine.Triggers {
             if (Logging)
                 this.Log($" reached {NumTicks} ticks.");
             NumTicksReached.Invoke();
-            doStop();
+            if (_running)   // May now be false if any UnityEvents manually stopped this timer
+                doStop();
         }
 
 
