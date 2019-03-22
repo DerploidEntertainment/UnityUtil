@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+using UnityEngine;
+using Sirenix.OdinInspector;
 using UnityEngine.Events;
 
 namespace UnityEngine.Triggers {
@@ -10,6 +11,7 @@ namespace UnityEngine.Triggers {
         public float RefractoryPeriod = 1f;  // seconds
 
         // API INTERFACE
+        [Button]
         public void Use() {
             // Press the button if its refractory period has ended
             if (CanPress)

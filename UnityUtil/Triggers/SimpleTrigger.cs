@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Sirenix.OdinInspector;
+using UnityEngine;
 using UnityEngine.Events;
 
 namespace UnityEngine.Triggers {
@@ -11,6 +12,7 @@ namespace UnityEngine.Triggers {
         public bool OnlyOncePerFrame;
         public UnityEvent Triggered = new UnityEvent();
 
+        [Button]
         public void Trigger() {
             // Make sure we only get triggered once per frame
             int currFrame = Time.frameCount;
