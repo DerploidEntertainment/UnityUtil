@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Sirenix.OdinInspector;
+using UnityEngine;
 
 namespace UnityEngine.Triggers {
 
@@ -6,6 +7,7 @@ namespace UnityEngine.Triggers {
 
         public SimpleTrigger[] Triggers;
 
+        [Button]
         public void Trigger() {
             int t = Random.Range(0, Triggers.Length);
             Triggers[t].Trigger();
