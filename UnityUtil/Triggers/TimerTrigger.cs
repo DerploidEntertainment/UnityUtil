@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEngine.Assertions;
 using UnityEngine.Events;
 
@@ -8,9 +8,6 @@ namespace UnityEngine.Triggers {
     public class CountEvent : UnityEvent<uint> { }
 
     public class TimerTrigger : Updatable {
-
-        // HIDDEN FIELDS
-        private bool _running = false;
 
         // INSPECTOR FIELDS
         [Tooltip("The time, in seconds, before the next (or first) " + nameof(TimerTrigger.Tick) + " event.")]
@@ -25,7 +22,7 @@ namespace UnityEngine.Triggers {
         public uint NumPassedTicks = 0u;
         [Tooltip("Should this " + nameof(Triggers.TimerTrigger) + " be restarted every time it is re-enabled?")]
         public bool StartOnEnable = false;
-        public bool Logging = true;
+        public bool Logging = false;
 
         public UnityEvent Starting = new UnityEvent();
         public CountEvent Tick = new CountEvent();
@@ -39,15 +36,18 @@ namespace UnityEngine.Triggers {
                 doStart();
         }
         protected override void BetterOnDisable() {
-            if (_running)
+            if (Running)
                 doStop();
         }
 
         // API INTERFACE
+        public float PercentProgress => TimeSincePreviousTick / TimeBeforeTick;
+        public bool Running { get; private set; } = false;
+
         public void StartTimer() {
             Assert.IsTrue(gameObject.activeInHierarchy, $"Cannot start {this.GetHierarchyNameWithType()} because its GameObject is inactive!");
             Assert.IsTrue(enabled, $"Cannot start {this.GetHierarchyNameWithType()} because it is disabled!");
-            if (_running)
+            if (Running)
                 return;
 
             doStart();
@@ -56,7 +56,7 @@ namespace UnityEngine.Triggers {
             Assert.IsTrue(gameObject.activeInHierarchy, $"Cannot restart {this.GetHierarchyNameWithType()} because its GameObject is inactive!");
             Assert.IsTrue(enabled, $"Cannot restart {this.GetHierarchyNameWithType()} because it is disabled!");
 
-            if (_running)
+            if (Running)
                 doStop();
             doStart();
         }
@@ -64,10 +64,10 @@ namespace UnityEngine.Triggers {
             Assert.IsTrue(gameObject.activeInHierarchy, $"Cannot pause {this.GetHierarchyNameWithType()} because its GameObject is inactive!");
             Assert.IsTrue(enabled, $"Cannot pause {this.GetHierarchyNameWithType()} because it is disabled!");
 
-            if (!_running)
+            if (!Running)
                 return;
 
-            _running = false;
+            Running = false;
             Updater.UnregisterUpdate(InstanceID);
             if (Logging)
                 this.Log($" paused.");
@@ -76,10 +76,10 @@ namespace UnityEngine.Triggers {
             Assert.IsTrue(gameObject.activeInHierarchy, $"Cannot resume {this.GetHierarchyNameWithType()} because its GameObject is inactive!");
             Assert.IsTrue(enabled, $"Cannot resume {this.GetHierarchyNameWithType()} because it is disabled!");
 
-            if (_running)
+            if (Running)
                 return;
 
-            _running = true;
+            Running = true;
             Updater.RegisterUpdate(InstanceID, updateTimer);
             if (Logging)
                 this.Log(" resumed.");
@@ -88,7 +88,7 @@ namespace UnityEngine.Triggers {
             Assert.IsTrue(gameObject.activeInHierarchy, $"Cannot stop {this.GetHierarchyNameWithType()} because its GameObject is inactive!");
             Assert.IsTrue(enabled, $"Cannot stop {this.GetHierarchyNameWithType()} because it is disabled!");
 
-            if (!_running)
+            if (!Running)
                 return;
 
             doStop();
@@ -104,10 +104,10 @@ namespace UnityEngine.Triggers {
 
             TimeSincePreviousTick = 0f;
             NumPassedTicks = 0u;
-            _running = true;
+            Running = true;
         }
         private void doStop() {
-            _running = false;
+            Running = false;
             TimeSincePreviousTick = 0f;
 
             Updater.UnregisterUpdate(InstanceID);
@@ -118,7 +118,7 @@ namespace UnityEngine.Triggers {
         }
         private void updateTimer() {
             // Update the time elapsed, if the Timer is running
-            if (!_running)
+            if (!Running)
                 return;
             TimeSincePreviousTick += Time.deltaTime;
 
@@ -137,7 +137,7 @@ namespace UnityEngine.Triggers {
             if (Logging)
                 this.Log($" reached {NumTicks} ticks.");
             NumTicksReached.Invoke();
-            if (_running)   // May now be false if any UnityEvents manually stopped this timer
+            if (Running)   // May now be false if any UnityEvents manually stopped this timer
                 doStop();
         }
 
