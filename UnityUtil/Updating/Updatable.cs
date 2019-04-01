@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using UnityEngine.Assertions;
 
 namespace UnityEngine {
@@ -74,6 +75,19 @@ namespace UnityEngine {
         /// Actions to run during OnDisable().  Declaring OnDisable() on a subclass would hide the implementation in <see cref="UnityEngine.Updatable"/>, so this method was provided for subclasses to provide additional OnDisable() functionality.
         /// </summary>
         protected virtual void BetterOnDisable() { }
+
+        /// <summary>
+        /// Assert that this component is both active and enabled.
+        /// </summary>
+        /// <param name="verbMessage">
+        /// If this component is either inactive or disabled, then this verb will be used in the logged error message.
+        /// Should be present-tense phrase, like "stop", or "perform that action". Padding spaces are not reqiured.
+        /// </param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        protected void AssertAcitveAndEnabled(string verbMessage) {
+            Assert.IsTrue(gameObject.activeInHierarchy, $"Cannot {verbMessage} {this.GetHierarchyNameWithType()} because its GameObject is inactive!");
+            Assert.IsTrue(enabled, $"Cannot {verbMessage} {this.GetHierarchyNameWithType()} because it is disabled!");
+        }
 
     }
 
