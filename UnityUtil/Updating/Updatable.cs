@@ -10,8 +10,7 @@ namespace UnityEngine {
         [Inject]
         protected Updater Updater;
 
-        [HideInInspector, NonSerialized]
-        public int InstanceID;
+        public int InstanceID { get; private set; }
 
         /// <summary>
         /// If <see langword="true"/>, then this <see cref="UnityEngine.Updatable"/> will have its Update actions registered/unregistered automatically when it is enabled/disabled.

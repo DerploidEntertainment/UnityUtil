@@ -37,55 +37,8 @@ namespace UnityEngine {
         /// </summary>
         /// <param name="clients">A collection of clients with service dependencies that need to be resolved.</param>
         public static void Inject(IEnumerable<MonoBehaviour> clients) {
-            var injectedTypes = new HashSet<Type>();
-            BindingFlags fieldBindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
-
-            // For each client component, get the actual dependency fields/properties,
-            // then resolve and inject those dependencies!
-            foreach (MonoBehaviour client in clients) {
-                injectedTypes.Clear();
-                FieldInfo[] fields = client.GetType().GetFields(fieldBindingFlags);
-                foreach (FieldInfo field in fields) {
-                    // If this field doesn't have a service dependency then skip it
-                    object[] attrs = field.GetCustomAttributes(typeof(InjectAttribute), inherit: false);
-                    if (attrs.Length == 0)
-                        continue;
-
-                    // If this field's Type is not Serializable nor derived from UnityEngine.Object, then skip it with an error
-                    if (!field.FieldType.IsSubclassOf(typeof(UnityEngine.Object))) {
-                        if (field.FieldType.GetCustomAttributes(typeof(SerializableAttribute), inherit: true).Length == 0) {
-                            client.LogError($" tried to inject dependency into field '{field.Name}', whose Type is not Serializable, nor derived from UnityEngine.Object.", framePrefix: false);
-                            continue;
-                        }
-                    }
-
-                    // Warn if a dependency with this Type has already been injected
-                    bool firstInjection = injectedTypes.Add(field.FieldType);
-                    if (!firstInjection)
-                        client.LogWarning($" injecting multiple dependencies of Type '{field.FieldType.FullName}'.", framePrefix: false);
-
-                    // If this dependency can't be resolved, then skip it with an error and clear the field
-                    bool resolved = s_services.TryGetValue(field.FieldType, out IDictionary<string, Service> typedServices);
-                    if (!resolved) {
-                        field.SetValue(client, null);
-                        BetterLogger.LogError($"No services configured with Type '{field.FieldType.FullName}'.  Did you incorrectly tag a service or forget to put " + nameof(UnityEngine.DependencyInjector) + " first in the project's Script Execution Order?", framePrefix: false);
-                        continue;
-                    }
-                    var injAttr = attrs[0] as InjectAttribute;
-                    bool untagged = string.IsNullOrEmpty(injAttr.Tag);
-                    string tag = untagged ? "Untagged" : injAttr.Tag;
-                    resolved = typedServices.TryGetValue(tag, out Service service);
-                    if (!resolved) {
-                        field.SetValue(client, null);
-                        BetterLogger.LogError($"No services configured with Type '{field.FieldType.FullName}' and tag '{tag}'", framePrefix: false);
-                        continue;
-                    }
-
-                    // If this dependency has not already been correctly injected, then inject it now with a log message
-                    field.SetValue(client, service.Instance);
-                    client.Log($" injected dependency of Type '{field.FieldType.FullName}'{(untagged ? "" : " with tag '{tag}'")} into field '{field.Name}'.", framePrefix: false);
-                }
-            }
+            foreach (MonoBehaviour client in clients)
+                inject(client);
         }
 
         // EVENT HANDLERS
@@ -188,6 +141,51 @@ namespace UnityEngine {
                 this.Log(successMsg);
             else
                 this.LogError(successMsg);
+        }
+
+        private static void inject(MonoBehaviour client) {
+            var injectedTypes = new HashSet<Type>();
+            FieldInfo[] fields = client.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+            foreach (FieldInfo field in fields) {
+                // If this field doesn't have a service dependency then skip it
+                object[] attrs = field.GetCustomAttributes(typeof(InjectAttribute), inherit: false);
+                if (attrs.Length == 0)
+                    continue;
+
+                // If this field's Type is not Serializable nor derived from UnityEngine.Object, then skip it with an error
+                if (!field.FieldType.IsSubclassOf(typeof(UnityEngine.Object))) {
+                    if (field.FieldType.GetCustomAttributes(typeof(SerializableAttribute), inherit: true).Length == 0) {
+                        client.LogError($" tried to inject dependency into field '{field.Name}', whose Type is not Serializable, nor derived from UnityEngine.Object.", framePrefix: false);
+                        continue;
+                    }
+                }
+
+                // Warn if a dependency with this Type has already been injected
+                bool firstInjection = injectedTypes.Add(field.FieldType);
+                if (!firstInjection)
+                    client.LogWarning($" injecting multiple dependencies of Type '{field.FieldType.FullName}'.", framePrefix: false);
+
+                // If this dependency can't be resolved, then skip it with an error and clear the field
+                bool resolved = s_services.TryGetValue(field.FieldType, out IDictionary<string, Service> typedServices);
+                if (!resolved) {
+                    field.SetValue(client, null);
+                    client.LogError($" requested a service of Type '{field.FieldType.FullName}', but there was none.  Did you incorrectly tag a service or forget to put " + nameof(UnityEngine.DependencyInjector) + " first in the project's Script Execution Order?", framePrefix: false);
+                    continue;
+                }
+                var injAttr = attrs[0] as InjectAttribute;
+                bool untagged = string.IsNullOrEmpty(injAttr.Tag);
+                string tag = untagged ? "Untagged" : injAttr.Tag;
+                resolved = typedServices.TryGetValue(tag, out Service service);
+                if (!resolved) {
+                    field.SetValue(client, null);
+                    client.LogError($" requested a service of Type '{field.FieldType.FullName}' and tag '{tag}' but there was none", framePrefix: false);
+                    continue;
+                }
+
+                // If this dependency has not already been correctly injected, then inject it now with a log message
+                field.SetValue(client, service.Instance);
+                client.Log($" had dependency of Type '{field.FieldType.FullName}'{(untagged ? "" : " with tag '{tag}'")} injected into field '{field.Name}'.", framePrefix: false);
+            }
         }
 
     }

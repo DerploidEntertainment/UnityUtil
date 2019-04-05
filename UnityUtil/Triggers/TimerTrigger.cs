@@ -1,6 +1,4 @@
-﻿using System;
-using UnityEngine.Assertions;
-using UnityEngine.Events;
+﻿using UnityEngine.Events;
 using UnityEngine.Serialization;
 
 namespace UnityEngine.Triggers {
