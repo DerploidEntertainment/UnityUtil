@@ -7,7 +7,7 @@ namespace UnityEngine {
 
     public class Configurator : MonoBehaviour {
 
-        private IDictionary<string, string> _values = new Dictionary<string, string>();
+        private IDictionary<string, object> _values = new Dictionary<string, object>();
 
         public const string ConfigFieldMessage = "The value for this field must be provided in a configuration file.";
 
@@ -23,7 +23,7 @@ namespace UnityEngine {
 
             int numLoaded = 0;
             for (int s = 0; s < ConfigurationSources.Length; ++s) {
-                IDictionary<string, string> vals = ConfigurationSources[s].LoadConfigs();
+                IDictionary<string, object> vals = ConfigurationSources[s].LoadConfigs();
                 if (vals.Count > 0) {
                     ++numLoaded;
                     _values = _values
@@ -70,7 +70,7 @@ namespace UnityEngine {
             }
         }
         private object getValue(string fieldKey, Type fieldType) {
-            bool found = _values.TryGetValue(fieldKey, out string val);
+            bool found = _values.TryGetValue(fieldKey, out object val);
             if (found)
                 return Convert.ChangeType(val, fieldType);
             return null;

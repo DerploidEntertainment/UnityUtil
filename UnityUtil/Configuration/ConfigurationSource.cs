@@ -6,7 +6,7 @@ namespace UnityEngine {
 
         public bool Required = true;
 
-        public abstract IDictionary<string, string> LoadConfigs();
+        public abstract IDictionary<string, object> LoadConfigs();
 
     }
 
