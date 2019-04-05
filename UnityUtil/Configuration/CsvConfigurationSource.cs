@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
@@ -11,7 +11,7 @@ namespace UnityEngine {
         public string ResourceName = "appsettings";
 
         public override IDictionary<string, object> LoadConfigs() {
-            string resFileName = $"Assets/Resources/{ResourceName}";
+            string resFileName = $"Assets/Resources/{ResourceName}.csv";
             BetterLogger.Log($"Loading configs from CSV configuration file '{resFileName}'...");
 
             // Load the specified resource CSV file, if it exists
