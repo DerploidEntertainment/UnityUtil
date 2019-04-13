@@ -1,5 +1,4 @@
-﻿using UnityEngine.Events;
-using UnityEngine.Serialization;
+using UnityEngine.Events;
 
 namespace UnityEngine.Triggers {
 
@@ -7,14 +6,12 @@ namespace UnityEngine.Triggers {
 
         // INSPECTOR FIELDS
         [Tooltip("The duration, in seconds, before the " + nameof(TimerTrigger.Timeout) + " event.")]
-        [FormerlySerializedAs("TimeBeforeTick")]
         public float Duration = 1f;
         [Tooltip("The time, in seconds, that has passed since the timer started.")]
         public float TimePassed = 0f;
         public bool Logging = false;
 
         public UnityEvent Starting = new UnityEvent();
-        [FormerlySerializedAs("Tick")]
         public UnityEvent Timeout = new UnityEvent();
         public UnityEvent Stopped = new UnityEvent();
 

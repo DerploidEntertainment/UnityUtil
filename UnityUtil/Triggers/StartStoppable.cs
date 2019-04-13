@@ -1,6 +1,5 @@
-﻿using Sirenix.OdinInspector;
+using Sirenix.OdinInspector;
 using System;
-using UnityEngine.Serialization;
 
 namespace UnityEngine.Triggers {
 
@@ -19,7 +18,6 @@ namespace UnityEngine.Triggers {
         [Tooltip("What should happen when this component is enabled/disabled? " + nameof(EnableDisableBehavior.PauseResume) + " will pause/resume it, if it was running. " + nameof(EnableDisableBehavior.StopRestart) + " will stop/restart it, if it was running. " + nameof(EnableDisableBehavior.StopRestartAlways) + " will stop/restart it, restarting it even if it was not previously running. In all cases, the first OnEnable is still controlled by " + nameof(StartAutomatically) + ".")]
         public EnableDisableBehavior EnableDisableBehavior = EnableDisableBehavior.PauseResume;
         [Tooltip("Should the repeater start automatically when this GameObject starts?")]
-        [FormerlySerializedAs("StartOnEnable")]
         public bool StartAutomatically = false;
 
         // EVENT HANDLERS
