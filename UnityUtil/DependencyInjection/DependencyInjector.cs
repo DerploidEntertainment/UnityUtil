@@ -24,7 +24,7 @@ namespace UnityEngine {
         public Service[] ServiceCollection;
 
         // INTERFACE
-        public const string REQUIRED_TAG = "DependencyInjector";
+        public const string RequiredTag = "DependencyInjector";
         /// <summary>
         /// Inject all dependencies into the specified clients.
         /// Can be called at runtime to satisfy dependencies of procedurally generated components, e.g., by a spawner.
@@ -44,7 +44,7 @@ namespace UnityEngine {
         // EVENT HANDLERS
         private void Awake() {
             // Make sure we are correctly tagged
-            Assert.AreEqual(REQUIRED_TAG, tag, $"{this.GetHierarchyNameWithType()} must be tagged '{DependencyInjector.REQUIRED_TAG}', not '{tag}'!");
+            Assert.AreEqual(RequiredTag, tag, $"{this.GetHierarchyNameWithType()} must be tagged '{DependencyInjector.RequiredTag}', not '{tag}'!");
 
             // Add every service specified in the Inspector to the private service collection
             // Each service instance will be associated with the named Type (which could be, e.g., some base class or interface type)
