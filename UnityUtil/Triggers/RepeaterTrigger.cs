@@ -22,7 +22,6 @@ namespace UnityEngine.Triggers {
         public uint NumPassedTicks = 0u;
         public bool Logging = false;
 
-        public UnityEvent Starting = new UnityEvent();
         public CountEvent Tick = new CountEvent();
         public UnityEvent Stopped = new UnityEvent();
         public UnityEvent NumTicksReached = new UnityEvent();
@@ -36,15 +35,12 @@ namespace UnityEngine.Triggers {
 
             if (Logging)
                 this.Log(" starting.");
-            Starting.Invoke();
 
             TimeSincePreviousTick = 0f;
             NumPassedTicks = 0u;
         }
         protected override void DoStop() {
             base.DoStop();
-
-            TimeSincePreviousTick = 0f;
 
             if (Logging)
                 this.Log($" stopped.");

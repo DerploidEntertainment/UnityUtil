@@ -1,4 +1,4 @@
-using UnityEngine.Events;
+﻿using UnityEngine.Events;
 
 namespace UnityEngine.Triggers {
 
@@ -11,7 +11,6 @@ namespace UnityEngine.Triggers {
         public float TimePassed = 0f;
         public bool Logging = false;
 
-        public UnityEvent Starting = new UnityEvent();
         public UnityEvent Timeout = new UnityEvent();
         public UnityEvent Stopped = new UnityEvent();
 
@@ -24,14 +23,11 @@ namespace UnityEngine.Triggers {
 
             if (Logging)
                 this.Log(" starting.");
-            Starting.Invoke();
 
             TimePassed = 0f;
         }
         protected override void DoStop() {
             base.DoStop();
-
-            TimePassed = 0f;
 
             if (Logging)
                 this.Log($" stopped.");
