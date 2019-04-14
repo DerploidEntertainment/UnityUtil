@@ -1,8 +1,8 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <DebugType>full</DebugType>   <!-- So that Unity can generate its .mdb debug symbol files -->
+    <DebugType>portable</DebugType>   <!-- So that Unity doesn't have to generate .mdb files -->
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
