@@ -6,7 +6,7 @@ using UnityEngine.Inputs;
 
 namespace UnityEngine.Inventory {
 
-    public class Tool : MonoBehaviour {
+    public class Tool : Updatable {
         // HIDDEN FIELDS
         private Coroutine _usingRoutine;
         private Coroutine _refractoryRoutine;
@@ -26,11 +26,14 @@ namespace UnityEngine.Inventory {
         public UnityEvent UseFailed = new UnityEvent();
 
         // EVENT HANDLERS
-        private void Awake() {
+        protected override void BetterAwake() {
             Assert.IsNotNull(Info, this.GetAssociationAssertion(nameof(UnityEngine.Inventory.ToolInfo)));
             Assert.IsNotNull(UseInput, this.GetAssociationAssertion(nameof(this.UseInput)));
+
+            BetterUpdate = doUpdate;
+            RegisterUpdatesAutomatically = true;
         }
-        private void Update() {
+        private void doUpdate(float deltaTime) {
             // Start using when the use input starts
             if (UseInput.Started() && _usingRoutine == null && _refractoryRoutine == null)
                 _usingRoutine = StartCoroutine(startUsing());
@@ -46,7 +49,7 @@ namespace UnityEngine.Inventory {
                     _refractoryRoutine = StartCoroutine(startRefractoryPeriod());
             }
         }
-        private void OnDisable() {
+        protected override void BetterOnDisable() {
             if (_usingRoutine != null) {
                 StopCoroutine(_usingRoutine);
                 _usingRoutine = null;

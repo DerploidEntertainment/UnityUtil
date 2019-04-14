@@ -7,7 +7,7 @@ using UnityEngine.Events;
 namespace UnityEngine.Inventory {
 
     [RequireComponent(typeof(Tool))]
-    public class OverheatTool : MonoBehaviour {
+    public class OverheatTool : Updatable {
         // ABSTRACT DATA TYPES
         /// <summary>
         /// Type arguments are (bool isOverheated)
@@ -27,9 +27,12 @@ namespace UnityEngine.Inventory {
         public OverheatChangedEvent OverheatStateChanged = new OverheatChangedEvent();
 
         // EVENT HANDLERS
-        private void Awake() {
+        protected override void BetterAwake() {
             Assert.IsNotNull(Info, this.GetAssociationAssertion(nameof(UnityEngine.Inventory.OverheatToolInfo)));
             Assert.IsTrue(Info.StartingHeat <= Info.MaxHeat, $"{this.GetHierarchyNameWithType()} was started with {nameof(this.Info.StartingHeat)} heat but it can only store a max of {this.Info.MaxHeat}!");
+
+            BetterUpdate = doUpdate;
+            RegisterUpdatesAutomatically = true;
 
             // Initialize heat
             CurrentHeat = Info.StartingHeat;
@@ -47,11 +50,11 @@ namespace UnityEngine.Inventory {
                 }
             });
         }
-        private void Update() {
+        private void doUpdate(float deltaTime) {
             // Cool this Tool, unless it is overheated
             if (CurrentHeat > 0 && _overheatRoutine == null) {
                 float rate = Info.AbsoluteHeat ? Info.CoolRate : Info.CoolRate * Info.MaxHeat;
-                CurrentHeat = Mathf.Max(0, CurrentHeat - Time.deltaTime * rate);
+                CurrentHeat = Mathf.Max(0, CurrentHeat - deltaTime * rate);
             }
         }
 

@@ -4,7 +4,7 @@ using UnityEngine.Inputs;
 
 namespace UnityEngine.Movement {
 
-    public class CharacterFPSWalker : MonoBehaviour {
+    public class CharacterFPSWalker : Updatable {
 
         // INSPECTOR FIELDS
         public CharacterController ControllerToMove;
@@ -36,19 +36,22 @@ namespace UnityEngine.Movement {
         private float _oldHeight;
 
         // EVENT HANDLERS
-        private void Awake() {
+        protected override void BetterAwake() {
             Assert.IsNotNull(ControllerToMove, this.GetAssociationAssertion(nameof(this.ControllerToMove)));
 
             _oldHeight = ControllerToMove.height;
             CrouchHeight = Mathf.Min(CrouchHeight, _oldHeight);
+
+            BetterUpdate = doUpdate;
+            RegisterUpdatesAutomatically = true;
         }
-        private void Update() {
+        private void doUpdate(float deltaTime) {
             Vector3 targetV = Vector3.zero;
 
             // Adjust target velocity for jumping, if its allowed
             if (CanJump) {
                 bool jumped = JumpInput.Started();
-                targetV += jumpComponent(jumped);
+                targetV += jumpComponent(deltaTime, jumped);
             }
 
             // Adjust target velocity for movement, if its allowed
@@ -62,11 +65,11 @@ namespace UnityEngine.Movement {
             crouch(CanCrouch && crouching);
 
             // Move the rigidbody to the target velocity
-            ControllerToMove.Move(targetV * Time.deltaTime);
+            ControllerToMove.Move(targetV * deltaTime);
         }
 
         // HELPER FUNCTIONS
-        private Vector3 jumpComponent(bool jumping) {
+        private Vector3 jumpComponent(float deltaTime, bool jumping) {
             // Account for gravity
             Vector3 jumpV = Vector3.zero;
             float g = Physics.gravity.magnitude * Mass;
@@ -75,7 +78,7 @@ namespace UnityEngine.Movement {
             if (jumping && ControllerToMove.isGrounded)
                 jumpV.y += Mathf.Sqrt(2f * g * JumpHeight);
             else
-                jumpV.y -= g * Time.deltaTime;
+                jumpV.y -= g * deltaTime;
 
             return jumpV;
         }
