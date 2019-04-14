@@ -13,7 +13,7 @@ namespace UnityEngine.Inputs {
             BetterUpdate = raycastScreen;
         }
 
-        private void raycastScreen() {
+        private void raycastScreen(float deltaTime) {
             if (Input.Started()) {
                 Ray ray = Camera.main.ScreenPointToRay(U.Input.mousePosition);
                 if (Physics.Raycast(ray, out RaycastHit hitInfo, Mathf.Infinity, InteractLayerMask))

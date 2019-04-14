@@ -45,7 +45,7 @@ namespace UnityEngine {
             float range = WeaponInfo?.Range ?? Range;
             Gizmos.DrawLine(TransformToRotate.position, TransformToRotate.TransformPoint(range * Vector3.forward));
         }
-        private void doUpdate() {
+        private void doUpdate(float deltaTime) {
             if (RaycastingTransform == null || TransformToRotate == null)
                 return;
 

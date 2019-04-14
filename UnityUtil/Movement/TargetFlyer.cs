@@ -39,14 +39,14 @@
             RegisterUpdatesAutomatically = true;
             BetterFixedUpdate = flyOrIdle;
         }
-        private void flyOrIdle() {
+        private void flyOrIdle(float deltaTime) {
             if (FlyingRigidbody == null)
                 return;
 
             // If idling, then just apply an occasional, random force
             if (Idle) {
-                FlyingRigidbody.AddForce(getIdleForce(), ForceMode.VelocityChange);
-                FlyingRigidbody.AddTorque(getIdleTorque(), ForceMode.VelocityChange);
+                FlyingRigidbody.AddForce(getIdleForce(deltaTime), ForceMode.VelocityChange);
+                FlyingRigidbody.AddTorque(getIdleTorque(deltaTime), ForceMode.VelocityChange);
             }
 
             // Move/rotate towards the target vector
@@ -92,8 +92,8 @@
 
             return netTorque;
         }
-        private Vector3 getIdleForce() {
-            _tSinceIdleMove += Time.deltaTime;
+        private Vector3 getIdleForce(float deltaTime) {
+            _tSinceIdleMove += deltaTime;
             if (_tSinceIdleMove>= _idleMovePeriod) {
                 _tSinceIdleMove -= _idleMovePeriod;
                 _idleMovePeriod = Random.Range(MinMovePeriod, MaxMovePeriod);
@@ -103,8 +103,8 @@
 
             return Vector3.zero;
         }
-        private Vector3 getIdleTorque() {
-            _tSinceIdleTorque += Time.deltaTime;
+        private Vector3 getIdleTorque(float deltaTime) {
+            _tSinceIdleTorque += deltaTime;
             if (_tSinceIdleTorque >= _idleTorquePeriod) {
                 _tSinceIdleTorque -= _idleTorquePeriod;
                 _idleTorquePeriod = Random.Range(MinTorquePeriod, MaxTorquePeriod);

@@ -18,9 +18,9 @@ namespace UnityEngine {
         /// <summary>
         protected bool RegisterUpdatesAutomatically = false;
 
-        protected Action BetterUpdate;
-        protected Action BetterFixedUpdate;
-        protected Action BetterLateUpdate;
+        protected Action<float> BetterUpdate;
+        protected Action<float> BetterFixedUpdate;
+        protected Action<float> BetterLateUpdate;
 
         // EVENT HANDLERS
         protected override void OnAwake() {

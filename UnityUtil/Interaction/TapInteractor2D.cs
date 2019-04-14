@@ -11,7 +11,7 @@ namespace UnityEngine.Inputs {
             BetterUpdate = tap;
         }
 
-        private void tap() {
+        private void tap(float deltaTime) {
             if (Input.touchCount == 1) {
                 Ray ray = Camera.main.ScreenPointToRay(Input.touches[0].position);
                 RaycastHit2D hit = Physics2D.Raycast(ray.origin, ray.direction, Mathf.Infinity, InteractLayerMask);

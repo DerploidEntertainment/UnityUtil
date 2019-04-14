@@ -7,9 +7,9 @@ namespace UnityEngine {
 
         private float _tSinceTrim = 0f;
 
-        private readonly MultiCollection<int, Action> _updates = new MultiCollection<int, Action>();
-        private readonly MultiCollection<int, Action> _fixed = new MultiCollection<int, Action>();
-        private readonly MultiCollection<int, Action> _late = new MultiCollection<int, Action>();
+        private readonly MultiCollection<int, Action<float>> _updates = new MultiCollection<int, Action<float>>();
+        private readonly MultiCollection<int, Action<float>> _fixed   = new MultiCollection<int, Action<float>>();
+        private readonly MultiCollection<int, Action<float>> _late    = new MultiCollection<int, Action<float>>();
 
         // INSPECTOR FIELDS
         [Tooltip("Every time this many seconds passes (in real time, not game time), the update action lists will have their capacities trimmed, if possible, using the List<T>.TrimExcess() method.")]
@@ -17,7 +17,7 @@ namespace UnityEngine {
 
         // API INTERFACE
         /// <inheritdoc/>
-        public void RegisterUpdate(int instanceID, Action action) {
+        public void RegisterUpdate(int instanceID, Action<float> action) {
             if (action == null)
                 throw new ArgumentNullException(nameof(instanceID));
             if (_updates.ContainsKey(instanceID))
@@ -32,7 +32,7 @@ namespace UnityEngine {
         }
 
         /// <inheritdoc/>
-        public void RegisterFixedUpdate(int instanceID, Action action) {
+        public void RegisterFixedUpdate(int instanceID, Action<float> action) {
             if (action == null)
                 throw new ArgumentNullException(nameof(instanceID));
             if (_fixed.ContainsKey(instanceID))
@@ -47,7 +47,7 @@ namespace UnityEngine {
         }
 
         /// <inheritdoc/>
-        public void RegisterLateUpdate(int instanceID, Action action) {
+        public void RegisterLateUpdate(int instanceID, Action<float> action) {
             if (action == null)
                 throw new ArgumentNullException(nameof(instanceID));
             if (_late.ContainsKey(instanceID))
@@ -72,15 +72,15 @@ namespace UnityEngine {
             }
 
             for (int u = 0; u < _updates.Count; ++u)
-                _updates[u]();
+                _updates[u](Time.deltaTime);
         }
         private void FixedUpdate() {
             for (int fu = 0; fu < _fixed.Count; ++fu)
-                _fixed[fu]();
+                _fixed[fu](Time.fixedDeltaTime);
         }
         private void LateUpdate() {
             for (int lu = 0; lu < _late.Count; ++lu)
-                _late[lu]();
+                _late[lu](Time.deltaTime);
         }
 
     }

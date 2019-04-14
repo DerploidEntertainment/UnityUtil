@@ -39,9 +39,9 @@ namespace UnityEngine.Triggers {
         }
 
         // HIDDEN FUNCTIONS
-        private void updateRefactory() {
+        private void updateRefactory(float deltaTime) {
             if (_tRefactory <= RefactoryPeriod) {
-                _tRefactory += Time.deltaTime;
+                _tRefactory += deltaTime;
                 return;
             }
 

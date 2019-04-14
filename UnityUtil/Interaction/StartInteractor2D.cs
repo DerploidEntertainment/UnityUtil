@@ -21,7 +21,7 @@ namespace UnityEngine.Inputs {
             BetterUpdate = raycast;
         }
 
-        private void raycast() {
+        private void raycast(float deltaTime) {
             if (Input.Started()) {
                 RaycastHit2D hit = Physics2D.Raycast(transform.position, transform.forward, Range, InteractLayerMask);
                 if (hit.collider != null) {

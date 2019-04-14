@@ -9,7 +9,7 @@ namespace UnityEngine {
         /// </summary>
         /// <param name="instanceId">The instance ID of the component that will be updated every frame (returned by <see cref="Updatable.InstanceID"/> or <see cref="UnityEngine.Object.GetInstanceID"/>).</param>
         /// <param name="updateAction">The <see cref="Action"/> to be called every frame.</param>
-        void RegisterUpdate(int instanceId, Action updateAction);
+        void RegisterUpdate(int instanceId, Action<float> updateAction);
         /// <summary>
         /// Unregister an <see cref="Action"/> from being called every frame for the component with the specified instance ID.
         /// </summary>
@@ -21,7 +21,7 @@ namespace UnityEngine {
         /// </summary>
         /// <param name="instanceId">The instance ID of the component that will be updated every physics frame (returned by <see cref="Updatable.InstanceID"/> or <see cref="UnityEngine.Object.GetInstanceID"/>).</param>
         /// <param name="fixedUpdateAction">The <see cref="Action"/> to be called every physics frame.</param>
-        void RegisterFixedUpdate(int instanceId, Action fixedUpdateAction);
+        void RegisterFixedUpdate(int instanceId, Action<float> fixedUpdateAction);
         /// <summary>
         /// Unregister an <see cref="Action"/> from being called every physics frame for the component with the specified instance ID.
         /// </summary>
@@ -33,7 +33,7 @@ namespace UnityEngine {
         /// </summary>
         /// <param name="instanceId">The instance ID of the component that will be updated at the end of every frame (returned by <see cref="Updatable.InstanceID"/> or <see cref="UnityEngine.Object.GetInstanceID"/>).</param>
         /// <param name="lateUpdateAction">The <see cref="Action"/> to be called at the end of every frame.</param>
-        void RegisterLateUpdate(int instanceId, Action lateUpdateAction);
+        void RegisterLateUpdate(int instanceId, Action<float> lateUpdateAction);
         /// <summary>
         /// Unregister an <see cref="Action"/> from being called at the end of every frame for the component with the specified instance ID.
         /// </summary>

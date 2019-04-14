@@ -14,7 +14,7 @@
             RegisterUpdatesAutomatically = true;
             BetterUpdate = look;
         }
-        private void look() {
+        private void look(float deltaTime) {
             if (TransformToRotate == null || (TransformToLookAt == null && TagToLookAt == null))
                 return;
 

@@ -14,7 +14,7 @@ namespace UnityEngine.Inputs {
             BetterUpdate = look;
         }
 
-        private void look() {
+        private void look(float deltaTime) {
             RaycastHit2D hit = Physics2D.Raycast(transform.position, transform.forward, Range, InteractLayerMask);
             ToggleTrigger trigger = hit.collider?.GetComponent<ToggleTrigger>();
             if (trigger == null)

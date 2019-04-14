@@ -6,8 +6,8 @@ namespace UnityEngine.Inputs {
     public class LookAtInteractor : Updatable {
 
         // HIDDEN FIELDS
-        private IList<ToggleTrigger> _toggled = new List<ToggleTrigger>();
-        private HashSet<ToggleTrigger> _triggerBuffer = new HashSet<ToggleTrigger>();
+        private readonly IList<ToggleTrigger> _toggled = new List<ToggleTrigger>();
+        private readonly HashSet<ToggleTrigger> _triggerBuffer = new HashSet<ToggleTrigger>();
 
         // INSPECTOR FIELDS
         [Header("Raycasting")]
@@ -46,7 +46,7 @@ namespace UnityEngine.Inputs {
         }
 
         // HELPERS
-        private void look() {
+        private void look(float deltaTime) {
             // Raycast for Colliders to look at
             var hits = new RaycastHit[0];
             if (InteractWithAllInRange || MaxInteractions > 1) {

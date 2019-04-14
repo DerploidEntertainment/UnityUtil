@@ -45,9 +45,9 @@ namespace UnityEngine.Triggers {
             if (Logging)
                 this.Log(" resumed.");
         }
-        protected override void DoUpdate() {
+        protected override void DoUpdate(float deltaTime) {
             // Update the time elapsed, if the Timer is running
-            TimePassed += UnityEngine.Time.deltaTime;
+            TimePassed += deltaTime;
             if (TimePassed <= Duration)
                 return;
 

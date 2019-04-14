@@ -133,7 +133,7 @@ namespace UnityEngine.Triggers {
             Running = true;
             Updater.RegisterUpdate(InstanceID, DoUpdate);
         }
-        protected abstract void DoUpdate();
+        protected abstract void DoUpdate(float deltaTime);
 
     }
 

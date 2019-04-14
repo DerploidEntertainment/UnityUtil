@@ -58,9 +58,9 @@ namespace UnityEngine.Triggers {
             if (Logging)
                 this.Log(" resumed.");
         }
-        protected override void DoUpdate() {
+        protected override void DoUpdate(float deltaTime) {
             // Update the time elapsed, if the Timer is running
-            TimeSincePreviousTick += Time.deltaTime;
+            TimeSincePreviousTick += deltaTime;
 
             // If another Tick period has passed, then raise the Tick event
             if (TimeSincePreviousTick >= TimeBeforeTick) {

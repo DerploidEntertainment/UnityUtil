@@ -56,23 +56,23 @@ namespace UnityEngine.Movement {
             BetterUpdate = doUpdate;
             BetterFixedUpdate = doFixedUpdate;
         }
-        private void doUpdate() {
+        private void doUpdate(float deltaTime) {
             _deltaSinceLast += LookInput.Value();
 
             if (!UsePhysicsToLook && TransformToRotate != null) {
-                doLookRotation();
+                doLookRotation(deltaTime);
                 _deltaSinceLast = 0f;
             }
         }
-        private void doFixedUpdate() {
+        private void doFixedUpdate(float fixedDeltaTime) {
             if (UsePhysicsToLook && RigidbodyToRotate != null) {
-                doLookRotation();
+                doLookRotation(fixedDeltaTime);
                 _deltaSinceLast = 0f;
             }
         }
 
         // HELPERS
-        private void doLookRotation() {
+        private void doLookRotation(float deltaTime) {
             // Determine the upward direction
             Vector3 up = GetUpwardUnitVector();
 
