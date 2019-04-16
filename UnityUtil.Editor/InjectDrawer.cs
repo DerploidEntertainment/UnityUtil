@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace UnityUtil.Editor {
 
-    [CustomPropertyDrawer(typeof(InjectAttribute))]
+    [CustomPropertyDrawer(typeof(InjectTagAttribute))]
     public class InjectDrawer : PropertyDrawer {
 
         private const int FIELD_WIDTH = 150;
@@ -15,7 +15,7 @@ namespace UnityUtil.Editor {
             EditorGUI.indentLevel = 0;
             Color origColor = GUI.contentColor;
             GUI.contentColor = Color.yellow;
-            string tag = (attribute as InjectAttribute).Tag;
+            string tag = (attribute as InjectTagAttribute).Tag;
 
             // Draw Label
             GUI.enabled = false;

@@ -7,7 +7,6 @@ namespace UnityEngine {
     public abstract class Updatable : Configurable {
 
         // HIDDEN FIELDS
-        [Inject]
         protected Updater Updater;
 
         public int InstanceID { get; private set; }
@@ -21,6 +20,10 @@ namespace UnityEngine {
         protected Action<float> BetterUpdate;
         protected Action<float> BetterFixedUpdate;
         protected Action<float> BetterLateUpdate;
+
+        public void Inject(Updater updater) {
+            Updater = updater;
+        }
 
         // EVENT HANDLERS
         protected override void OnAwake() {
