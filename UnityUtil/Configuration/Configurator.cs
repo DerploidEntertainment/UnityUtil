@@ -12,8 +12,6 @@ namespace UnityEngine {
         public const string ConfigFieldMessage = "The value for this field must be provided in a configuration file.";
 
         // INSPECTOR FIELDS
-        [Tooltip("Subfolder under Assets/Resources/ containing the file with the environment name. Leading and trailing slashes must be omitted. Must use forward slashes, not backslashes (even on Windows).")]
-        public string ConfigResourcesFolder = "cfg";
         [Tooltip("Sources must be provided in reverse order of importance (i.e., configs in source 0 will override configs in source 1, which will override configs in source 2, etc.)")]
         public ConfigurationSource[] ConfigurationSources;
 

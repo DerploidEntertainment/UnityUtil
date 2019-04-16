@@ -7,11 +7,11 @@ namespace UnityEngine {
     [CreateAssetMenu(menuName = "UnityUtil/" + nameof(ScriptableObjectConfigurationSource), fileName = "appsettings.cfgsource.asset")]
     public class ScriptableObjectConfigurationSource : ConfigurationSource {
 
-        [Tooltip("Path to a " + nameof(ConfigObject) + " file under Assets/Resources/. Leading and trailing slashes, and .asset extension, must be omitted. Must use forward slashes, not backslashes (even on Windows).")]
+        [Tooltip("Path to a " + nameof(ConfigObject) + " file under a Resources/ folder. No matter what the full path of the file is, the directory name up to and including 'Resources/' must be omitted. Leading and trailing slashes, and .asset extension, must be omitted. Must use forward slashes, not backslashes (even on Windows).")]
         public string ResourceName = "appsettings";
 
         public override IDictionary<string, object> LoadConfigs() {
-            string resFileName = $"Assets/Resources/{ResourceName}.asset";
+            string resFileName = $"{ResourceName}.asset";
             BetterLogger.Log($"Loading configs from ScriptableObject configuration file '{resFileName}'...");
 
             // Load the specified resource file, if it exists

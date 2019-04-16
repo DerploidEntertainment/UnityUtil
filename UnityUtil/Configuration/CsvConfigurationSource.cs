@@ -7,11 +7,11 @@ namespace UnityEngine {
     [CreateAssetMenu(menuName = "UnityUtil/" + nameof(CsvConfigurationSource), fileName = "appsettings.csv.asset")]
     public class CsvConfigurationSource : ConfigurationSource {
 
-        [Tooltip("Path to a CSV file under Assets/Resources/. Leading and trailing slashes, and .csv extension, must be omitted. Must use forward slashes, not backslashes (even on Windows).")]
+        [Tooltip("Path to a CSV file under a Resources/ folder. No matter what the full path of the file is, the directory name up to and including 'Resources/' must be omitted. Leading and trailing slashes, and .csv extension, must be omitted. Must use forward slashes, not backslashes (even on Windows).")]
         public string ResourceName = "appsettings";
 
         public override IDictionary<string, object> LoadConfigs() {
-            string resFileName = $"Assets/Resources/{ResourceName}.csv";
+            string resFileName = $"{ResourceName}.csv";
             BetterLogger.Log($"Loading configs from CSV configuration file '{resFileName}'...");
 
             // Load the specified resource CSV file, if it exists
