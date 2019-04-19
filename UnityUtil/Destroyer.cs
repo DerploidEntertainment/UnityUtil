@@ -1,10 +1,8 @@
-﻿using UnityEngine;
-
-namespace UnityEngine {
+﻿namespace UnityEngine {
 
     public class Destroyer : MonoBehaviour {
 
-        public void Destroy(GameObject obj) => Object.Destroy(obj);
+        public void Destroy(Object obj) => Object.Destroy(obj);
 
     }
 
