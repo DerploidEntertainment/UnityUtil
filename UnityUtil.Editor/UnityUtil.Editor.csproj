@@ -17,12 +17,13 @@
     <Reference Include="Sirenix.OdinInspector.Editor">
       <HintPath>..\lib\Sirenix.OdinInspector.Editor.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEditor">
-      <HintPath>..\lib\UnityEditor.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine">
-      <HintPath>..\lib\UnityEngine.dll</HintPath>
-    </Reference>
   </ItemGroup>
+
+  <PropertyGroup Label="Unity DLL References">
+    <UnityVersion>2018.3.9f1</UnityVersion>
+    <ReferenceUnityEngineDll>true</ReferenceUnityEngineDll>
+    <ReferenceUnityEditorDll>true</ReferenceUnityEditorDll>
+  </PropertyGroup>
+  <Import Project="../UnityUtil/UnityDllReferences.props" />
 
 </Project>
