@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <DebugType>portable</DebugType>   <!-- So that Unity doesn't have to generate .mdb files -->
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NUnit" Version="3.11.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\UnityUtil\UnityUtil.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup Label="Unity DLL References">
+    <UnityVersion>2018.3.9f1</UnityVersion>
+    <ReferenceUnityEngineDll>true</ReferenceUnityEngineDll>
+    <ReferenceUnityEngineTestRunnerDll>true</ReferenceUnityEngineTestRunnerDll>
+  </PropertyGroup>
+  <Import Project="../UnityUtil/UnityDllReferences.props" />
+
+</Project>

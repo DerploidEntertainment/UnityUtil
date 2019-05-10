@@ -6,16 +6,20 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Reference Include="UnityEngine.dll" Condition="'$(ReferenceUnityEngineDll)' == 'True'">
+    <Reference Include="UnityEngine.dll" Condition="'$(ReferenceUnityEngineDll)' == 'true'">
       <HintPath>$(UnityHubInstallLocation)/$(UnityVersion)/Editor/Data/Managed/UnityEngine.dll</HintPath>
       <Private>false</Private>
     </Reference>
-    <Reference Include="UnityEditor.dll" Condition="'$(ReferenceUnityEditorDll)' == 'True'">
+    <Reference Include="UnityEditor.dll" Condition="'$(ReferenceUnityEditorDll)' == 'true'">
       <HintPath>$(UnityHubInstallLocation)/$(UnityVersion)/Editor/Data/Managed/UnityEditor.dll</HintPath>
       <Private>false</Private>
     </Reference>
-    <Reference Include="UnityEngine.UI.dll" Condition="'$(ReferenceUnityEngineUiDll)' == 'True'">
+    <Reference Include="UnityEngine.UI.dll" Condition="'$(ReferenceUnityEngineUiDll)' == 'true'">
       <HintPath>$(UnityHubInstallLocation)/$(UnityVersion)/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.TestRunner.dll" Condition="'$(ReferenceUnityEngineTestRunnerDll)' == 'true'">
+      <HintPath>$(UnityHubInstallLocation)/$(UnityVersion)/Editor/Data/UnityExtensions/Unity/TestRunner/UnityEngine.TestRunner.dll</HintPath>
       <Private>false</Private>
     </Reference>
   </ItemGroup>

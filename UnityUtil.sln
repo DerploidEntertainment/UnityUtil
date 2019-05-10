@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27130.2024
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29009.5
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnityUtil", "UnityUtil\UnityUtil.csproj", "{567FE3BC-52EE-4BF6-92BE-A356F8F08DBE}"
 EndProject
@@ -12,6 +12,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.gitattributes = .gitattributes
 		.gitignore = .gitignore
 	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnityUtil.Test", "UnityUtil.Test\UnityUtil.Test.csproj", "{83C80D25-2DF0-4C82-B822-8B3A64D9B99F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{A87CA533-A845-4EA8-AE61-A3C9C99B0C63}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A87CA533-A845-4EA8-AE61-A3C9C99B0C63}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A87CA533-A845-4EA8-AE61-A3C9C99B0C63}.Release|Any CPU.Build.0 = Release|Any CPU
+		{83C80D25-2DF0-4C82-B822-8B3A64D9B99F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{83C80D25-2DF0-4C82-B822-8B3A64D9B99F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{83C80D25-2DF0-4C82-B822-8B3A64D9B99F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{83C80D25-2DF0-4C82-B822-8B3A64D9B99F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
