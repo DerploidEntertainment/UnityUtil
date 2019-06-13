@@ -2,7 +2,6 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <DebugType>portable</DebugType>   <!-- So that Unity doesn't have to generate .mdb files -->
     <LangVersion>latest</LangVersion>
     <RootNamespace>UnityEngine</RootNamespace>
   </PropertyGroup>
@@ -16,11 +15,11 @@
     </Reference>
   </ItemGroup>
 
-  <PropertyGroup Label="Unity DLL References">
-    <UnityVersion>2018.3.9f1</UnityVersion>
-    <ReferenceUnityEngineDll>true</ReferenceUnityEngineDll>
-    <ReferenceUnityEngineUiDll>true</ReferenceUnityEngineUiDll>
+  <PropertyGroup Label="Unity Assembly References">
+    <UnityVersion>2019.1.6f1</UnityVersion>
+    <ReferenceUnityEngine>true</ReferenceUnityEngine>
+    <ReferenceUnityEngineUi>true</ReferenceUnityEngineUi>
   </PropertyGroup>
-  <Import Project="UnityDllReferences.props"/>
+  <Import Project="UnityAssemblyReferences.targets"/>
 
 </Project>
