@@ -1,23 +1,19 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <LangVersion>latest</LangVersion>
+    <UnityVersion>2019.1.6f1</UnityVersion>
+    <ReferenceUnityEngineTestRunner>true</ReferenceUnityEngineTestRunner>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="NUnit" Version="3.11.0" />
+    <PackageReference Include="Unity3D" Version="1.0.0-rc1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\UnityUtil\UnityUtil.csproj" />
   </ItemGroup>
-
-  <PropertyGroup Label="Unity Assembly References">
-    <UnityVersion>2019.1.6f1</UnityVersion>
-    <ReferenceUnityEngine>true</ReferenceUnityEngine>
-    <ReferenceUnityEngineTestRunner>true</ReferenceUnityEngineTestRunner>
-  </PropertyGroup>
-  <Import Project="../UnityUtil/UnityAssemblyReferences.targets" />
 
 </Project>

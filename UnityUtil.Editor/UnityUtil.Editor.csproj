@@ -3,7 +3,13 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <LangVersion>latest</LangVersion>
+    <UnityVersion>2019.1.6f1</UnityVersion>
+    <ReferenceUnityEditor>true</ReferenceUnityEditor>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Unity3D" Version="1.0.0-rc1" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\UnityUtil\UnityUtil.csproj" />
@@ -17,12 +23,5 @@
       <HintPath>..\lib\Sirenix.OdinInspector.Editor.dll</HintPath>
     </Reference>
   </ItemGroup>
-
-  <PropertyGroup Label="Unity Assembly References">
-    <UnityVersion>2019.1.6f1</UnityVersion>
-    <ReferenceUnityEngine>true</ReferenceUnityEngine>
-    <ReferenceUnityEditor>true</ReferenceUnityEditor>
-  </PropertyGroup>
-  <Import Project="../UnityUtil/UnityAssemblyReferences.targets" />
 
 </Project>

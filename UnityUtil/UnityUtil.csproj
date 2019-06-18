@@ -1,10 +1,16 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <LangVersion>latest</LangVersion>
     <RootNamespace>UnityEngine</RootNamespace>
+    <UnityVersion>2019.1.6f1</UnityVersion>
+    <ReferenceUnityEngineUi>true</ReferenceUnityEngineUi>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Unity3D" Version="1.0.0-rc1" />
+  </ItemGroup>
 
   <ItemGroup>
     <Reference Include="Sirenix.OdinInspector.Attributes">
@@ -14,12 +20,5 @@
       <HintPath>..\lib\Sirenix.OdinInspector.Editor.dll</HintPath>
     </Reference>
   </ItemGroup>
-
-  <PropertyGroup Label="Unity Assembly References">
-    <UnityVersion>2019.1.6f1</UnityVersion>
-    <ReferenceUnityEngine>true</ReferenceUnityEngine>
-    <ReferenceUnityEngineUi>true</ReferenceUnityEngineUi>
-  </PropertyGroup>
-  <Import Project="UnityAssemblyReferences.targets"/>
 
 </Project>
