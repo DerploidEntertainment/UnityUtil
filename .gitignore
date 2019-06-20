@@ -5,3 +5,6 @@ obj/
 Library/
 Temp/
 [Ll]ogs/
+
+nuget/*.nupkg
+nuget/*.snupkg
