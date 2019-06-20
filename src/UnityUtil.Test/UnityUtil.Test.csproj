@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <UnityVersion>2019.1.6f1</UnityVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NUnit" Version="3.12.0" />
+    <PackageReference Include="Unity3D" Version="1.1.0-rc1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\UnityUtil\UnityUtil.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="$(UnityInstallRoot)\$(UnityVersion)\$(UnityEngineTestRunnerPath)" Private="false" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\..\$(SolutionName)\Assets\$(SolutionName)\Editor\Tests\**\*.cs" />
+  </ItemGroup>
+
+</Project>

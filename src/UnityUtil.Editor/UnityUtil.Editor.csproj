@@ -1,0 +1,35 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <UnityVersion>2019.1.6f1</UnityVersion>
+    <OutputPath>../../$(SolutionName)/Assets/$(SolutionName)/Editor</OutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Unity3D" Version="1.1.0-rc1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\UnityUtil\UnityUtil.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="$(UnityInstallRoot)\$(UnityVersion)\$(UnityEditorPath)" Private="false" />
+    <Reference Include="..\..\$(SolutionName)\Assets\Plugins\Sirenix\Assemblies\Sirenix.OdinInspector.Attributes.dll" />
+    <Reference Include="..\..\$(SolutionName)\Assets\Plugins\Sirenix\Assemblies\Sirenix.OdinInspector.Editor.dll" />
+  </ItemGroup>
+
+  <Target Name="DeleteUnnecessaryBuildOutputs" AfterTargets="AfterBuild">
+    <ItemGroup Label="UnnecessaryBuildOutputs">
+      <Unnecessary Include="$(OutDir)/Sirenix.*" />
+      <Unnecessary Include="$(OutDir)/$(SolutionName).*" />
+      <Unnecessary Remove="$(OutDir)/$(ProjectName).*" />
+      <Unnecessary Include="$(OutDir)/$(ProjectName).deps.json" />
+    </ItemGroup>
+    <Message Importance="high" Text="Clearing unnecessary build outputs from the Unity Assets/Tests/ folder" />
+    <Delete Files="%(Unnecessary.Identity)" />
+  </Target>
+
+</Project>
