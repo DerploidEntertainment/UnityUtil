@@ -13,7 +13,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		..\.gitignore = ..\.gitignore
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnityUtil.Test", "UnityUtil.Test\UnityUtil.Test.csproj", "{C0C6358C-4AF3-404C-B8A7-7E7253CCC217}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnityUtil.Test.EditMode", "UnityUtil.Test.EditMode\UnityUtil.Test.EditMode.csproj", "{C0C6358C-4AF3-404C-B8A7-7E7253CCC217}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnityUtil.Test.PlayMode", "UnityUtil.Test.PlayMode\UnityUtil.Test.PlayMode.csproj", "{2F971391-07C9-43A2-91A9-ECB3AD895233}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,6 +33,8 @@ Global
 		{A87CA533-A845-4EA8-AE61-A3C9C99B0C63}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C0C6358C-4AF3-404C-B8A7-7E7253CCC217}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C0C6358C-4AF3-404C-B8A7-7E7253CCC217}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2F971391-07C9-43A2-91A9-ECB3AD895233}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2F971391-07C9-43A2-91A9-ECB3AD895233}.Release|Any CPU.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

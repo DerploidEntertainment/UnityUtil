@@ -1,12 +1,10 @@
 {
-    "name": "Tests",
+    "name": "UnityUtil.Test.PlayMode",
     "references": [],
     "optionalUnityReferences": [
         "TestAssemblies"
     ],
-    "includePlatforms": [
-        "Editor"
-    ],
+    "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": true,

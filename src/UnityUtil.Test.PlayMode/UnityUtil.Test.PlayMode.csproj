@@ -20,7 +20,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="..\..\$(SolutionName)\Assets\$(SolutionName)\Editor\Tests\**\*.cs" />
+    <Compile Include="..\..\$(SolutionName)\Assets\$(SolutionName)\Tests.PlayMode\**\*.cs">
+      <Link>%(Filename)%(Extension)</Link>
+    </Compile>
   </ItemGroup>
 
 </Project>
