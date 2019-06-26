@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Triggers;
 
-namespace UnityUtil.Test {
+namespace UnityUtil.Test.EditMode {
 
     public class SequenceTriggerTest {
 

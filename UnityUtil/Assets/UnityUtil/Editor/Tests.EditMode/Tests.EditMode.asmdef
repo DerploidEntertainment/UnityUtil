@@ -1,0 +1,20 @@
+{
+    "name": "UnityUtil.Tests.EditMode",
+    "references": [],
+    "optionalUnityReferences": [
+        "TestAssemblies"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "UnityUtil.dll",
+        "UnityUtil.Editor.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": []
+}
