@@ -1,35 +1,20 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <LangVersion>latest</LangVersion>
-    <UnityVersion>2019.1.6f1</UnityVersion>
-    <OutputPath>../../$(SolutionName)/Assets/$(SolutionName)/Editor</OutputPath>
-  </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Unity3D" Version="1.1.0" />
-  </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\UnityUtil\UnityUtil.csproj" />
   </ItemGroup>
 
   <ItemGroup>
+    <Reference Include="$(SirenixAssembliesDir)\Sirenix.OdinInspector.Editor.dll" Private="false" />
     <Reference Include="$(UnityInstallRoot)\$(UnityVersion)\$(UnityEditorPath)" Private="false" />
-    <Reference Include="..\..\$(SolutionName)\Assets\Plugins\Sirenix\Assemblies\Sirenix.OdinInspector.Attributes.dll" />
-    <Reference Include="..\..\$(SolutionName)\Assets\Plugins\Sirenix\Assemblies\Sirenix.OdinInspector.Editor.dll" />
   </ItemGroup>
 
-  <Target Name="DeleteUnnecessaryBuildOutputs" AfterTargets="AfterBuild">
-    <ItemGroup Label="UnnecessaryBuildOutputs">
-      <Unnecessary Include="$(OutDir)/Sirenix.*" />
-      <Unnecessary Include="$(OutDir)/$(SolutionName).*" />
-      <Unnecessary Remove="$(OutDir)/$(ProjectName).*" />
-      <Unnecessary Include="$(OutDir)/$(ProjectName).deps.json" />
+  <Target Name="CopyOutputs" AfterTargets="AfterBuild" Condition="'$(SolutionName)'=='UnityUtil'">
+    <ItemGroup>
+      <ProjectOutput Include="$(OutDir)/$(ProjectName)*.dll;$(OutDir)/$(ProjectName)*.pdb" />
     </ItemGroup>
-    <Message Importance="high" Text="Clearing unnecessary build outputs from the Unity Assets/Tests/ folder" />
-    <Delete Files="%(Unnecessary.Identity)" />
+    <Message Importance="high" Text="Moving $(ProjectName) outputs into appropriate subfolders of '$([System.IO.Path]::GetFullPath($(UnityAssetsDir)))'" />
+    <Copy SourceFiles="%(ProjectOutput.Identity)" DestinationFolder="$(UnityAssetsDir)\UnityUtil\Editor" />
   </Target>
 
 </Project>

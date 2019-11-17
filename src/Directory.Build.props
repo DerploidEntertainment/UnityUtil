@@ -1,0 +1,22 @@
+<Project>
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <UnityVersion>2019.1.6f1</UnityVersion>
+
+    <UnityUtilAssetsDir>..\..\UnityUtil\Assets</UnityUtilAssetsDir>
+    <UnityAssetsDir Condition="'$(SolutionName)'=='UnityUtil'">$(UnityUtilAssetsDir)</UnityAssetsDir>
+    <UnityAssetsDir Condition="'$(SolutionName)'!='UnityUtil'">..\..\..\$(SolutionName)\$(SolutionName)\Assets</UnityAssetsDir>
+    <SirenixAssembliesDir>$(UnityAssetsDir)\Plugins\Sirenix\Assemblies</SirenixAssembliesDir>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Unity3D" Version="1.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="$(SirenixAssembliesDir)\Sirenix.OdinInspector.Attributes.dll" Private="false"/>
+    <Reference Include="$(UnityInstallRoot)\$(UnityVersion)\$(UnityEngineUIPath)" Private="false" />
+  </ItemGroup>
+
+</Project>

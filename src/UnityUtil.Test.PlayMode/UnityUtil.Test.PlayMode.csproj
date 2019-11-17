@@ -1,14 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <LangVersion>latest</LangVersion>
-    <UnityVersion>2019.1.6f1</UnityVersion>
-  </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="NUnit" Version="3.12.0" />
-    <PackageReference Include="Unity3D" Version="1.1.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -20,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="..\..\$(SolutionName)\Assets\$(SolutionName)\Tests.PlayMode\**\*.cs">
+    <Compile Include="$(UnityUtilAssetsDir)\UnityUtil\Tests.PlayMode\**\*.cs">
       <Link>%(Filename)%(Extension)</Link>
     </Compile>
   </ItemGroup>
