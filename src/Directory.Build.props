@@ -4,9 +4,9 @@
     <LangVersion>latest</LangVersion>
     <UnityVersion>2019.1.6f1</UnityVersion>
 
-    <UnityUtilAssetsDir>..\..\UnityUtil\Assets</UnityUtilAssetsDir>
+    <UnityUtilAssetsDir>$(SolutionDir)\..\UnityUtil\Assets</UnityUtilAssetsDir>
     <UnityAssetsDir Condition="'$(SolutionName)'=='UnityUtil'">$(UnityUtilAssetsDir)</UnityAssetsDir>
-    <UnityAssetsDir Condition="'$(SolutionName)'!='UnityUtil'">..\..\..\$(SolutionName)\$(SolutionName)\Assets</UnityAssetsDir>
+    <UnityAssetsDir Condition="'$(SolutionName)'!='UnityUtil'">$(SolutionDir)\..\..\$(SolutionName)\$(SolutionName)\Assets</UnityAssetsDir>
     <SirenixAssembliesDir>$(UnityAssetsDir)\Plugins\Sirenix\Assemblies</SirenixAssembliesDir>
   </PropertyGroup>
 

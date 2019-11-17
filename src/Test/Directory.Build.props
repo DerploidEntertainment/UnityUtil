@@ -1,11 +1,13 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project>
+
+  <Import Project="../Directory.Build.props" />
 
   <ItemGroup>
     <PackageReference Include="NUnit" Version="3.12.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\UnityUtil\UnityUtil.csproj" />
+    <ProjectReference Include="..\..\UnityUtil\UnityUtil.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -13,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="$(UnityUtilAssetsDir)\UnityUtil\Tests.PlayMode\**\*.cs">
+    <Compile Include="$(UnityScriptsDir)\**\*.cs">
       <Link>%(Filename)%(Extension)</Link>
     </Compile>
   </ItemGroup>

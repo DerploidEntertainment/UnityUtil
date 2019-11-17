@@ -1,0 +1,8 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>$(TargetFramework)</TargetFramework>
+    <UnityScriptsDir>$(UnityUtilAssetsDir)\UnityUtil\Tests.PlayMode</UnityScriptsDir>
+  </PropertyGroup>
+
+</Project>
