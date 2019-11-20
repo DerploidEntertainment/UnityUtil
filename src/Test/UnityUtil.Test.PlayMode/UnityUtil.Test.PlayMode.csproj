@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>$(TargetFramework)</TargetFramework>
-    <UnityScriptsDir>$(UnityUtilAssetsDir)\UnityUtil\Tests.PlayMode</UnityScriptsDir>
+    <UnityScriptsDir>$(UnityUtilAssetsDir)\UnityUtil\Test.PlayMode</UnityScriptsDir>
   </PropertyGroup>
 
 </Project>
