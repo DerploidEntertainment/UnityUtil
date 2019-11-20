@@ -13,6 +13,15 @@
     <Reference Include="$(UnityInstallRoot)\$(UnityVersion)\$(UnityEditorPath)" Private="false" />
   </ItemGroup>
 
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>UnityUtil.Test.EditMode</_Parameter1>
+    </AssemblyAttribute>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>UnityUtil.Test.PlayMode</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+
   <Target Name="CopyOutputs" AfterTargets="AfterBuild" Condition="'$(SolutionName)'=='UnityUtil'">
     <ItemGroup>
       <ProjectOutput Include="$(OutDir)/$(ProjectName)*.dll;$(OutDir)/$(ProjectName)*.pdb" />
