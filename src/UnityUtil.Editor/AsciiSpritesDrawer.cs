@@ -129,11 +129,18 @@ namespace UnityUtil.Editor {
         private void loadSpriteAssets(char firstChar, char lastChar) {
             int numLoaded = 0;
 
+            if (string.IsNullOrEmpty(_pathProp.stringValue))
+                throw new InvalidOperationException($"Cannot auto-load sprites if {nameof(AsciiSprites.AutoLoadSpritePath)} is null or empty");
+            if (_pathProp.stringValue.Contains("\\"))
+                throw new InvalidOperationException($"{nameof(AsciiSprites.AutoLoadSpritePath)} must not contain backslashes ('\\'), even on Windows; use forward slash ('/') instead");
+
             // Attempt to load requested character Sprites
-            Sprite sprite;
             for (char ch = firstChar; ch <= lastChar; ++ch) {
-                sprite = loadSprite(ch);
-                if (sprite != null) {
+                string assetFileName = GetAssetName(ch, _pathProp.stringValue);
+                Sprite sprite = AssetDatabase.LoadAssetAtPath<Sprite>(assetFileName);
+                if (sprite == null)
+                    Debug.LogWarning($"Could not locate Sprite for character '{ch}' (expected at '{assetFileName}').");
+                else {
                     _charProps[ch].objectReferenceValue = sprite;
                     ++numLoaded;
                 }
@@ -150,8 +157,8 @@ namespace UnityUtil.Editor {
                 msg = $"Successfully loaded all {numAttempted} character Sprites!";
             Debug.Log(msg);
         }
-        private Sprite loadSprite(char character) {
-            string fileName = $"Assets/{_pathProp.stringValue}";
+        internal static string GetAssetName(char character, string templateFileName) {
+            string fileName = $"Assets/{templateFileName}";
 
             // Replace numeric placeholders
             string decStr = Convert.ToString(character, 10);
@@ -174,13 +181,9 @@ namespace UnityUtil.Editor {
             fileName = Regex.Replace(fileName, @"\{bin\}", binStr, RegexOptions.IgnoreCase);
             fileName = Regex.Replace(fileName, @"\{binary\}", binStr, RegexOptions.IgnoreCase);
 
-            // Warn if this Sprite asset could not be found
-            Sprite sprite = AssetDatabase.LoadAssetAtPath<Sprite>(fileName);
-            if (sprite == null)
-                Debug.LogWarning($"Could not locate Sprite for character '{character}' (expected at '{fileName}').");
-
-            return sprite;
+            return fileName;
         }
+
     }
 
 }
