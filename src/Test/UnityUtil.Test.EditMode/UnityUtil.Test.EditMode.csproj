@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>$(TargetFramework)</TargetFramework>
-    <UnityScriptsDir>$(UnityUtilAssetsDir)\UnityUtil\Editor\Tests.EditMode</UnityScriptsDir>
+    <UnityScriptsDir>$(UnityUtilAssetsDir)\UnityUtil\Editor\Test.EditMode</UnityScriptsDir>
   </PropertyGroup>
 
   <ItemGroup>
