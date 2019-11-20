@@ -22,12 +22,12 @@
     </AssemblyAttribute>
   </ItemGroup>
 
-  <Target Name="CopyOutputs" AfterTargets="AfterBuild" Condition="'$(SolutionName)'=='UnityUtil'">
+  <Target Name="CopyOutputs" AfterTargets="AfterBuild">
     <ItemGroup>
       <ProjectOutput Include="$(OutDir)/$(ProjectName)*.dll;$(OutDir)/$(ProjectName)*.pdb" />
     </ItemGroup>
-    <Message Importance="high" Text="Moving $(ProjectName) outputs into appropriate subfolders of '$([System.IO.Path]::GetFullPath($(UnityAssetsDir)))'" />
-    <Copy SourceFiles="%(ProjectOutput.Identity)" DestinationFolder="$(UnityAssetsDir)\UnityUtil\Editor" />
+    <Message Importance="high" Text="Moving $(ProjectName) outputs into appropriate subfolders of '$([System.IO.Path]::GetFullPath($(UnityUtilAssetsDir)))'" />
+    <Copy SourceFiles="%(ProjectOutput.Identity)" DestinationFolder="$(UnityUtilAssetsDir)\UnityUtil\Editor" />
   </Target>
 
 </Project>
