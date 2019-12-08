@@ -9,7 +9,7 @@ namespace UnityUtil.Test.EditMode
     public class ScrollRectVelocityClamperTest
     {
 
-        [Test(TestOf = typeof(ScrollRectVelocityClamper))]
+        [Test]
         public void ClampsPositiveVelocities()
         {
             Vector2 vClamped;
@@ -33,7 +33,7 @@ namespace UnityUtil.Test.EditMode
             Assert.That(vClamped.y, Is.Zero);
         }
 
-        [Test(TestOf = typeof(ScrollRectVelocityClamper))]
+        [Test]
         public void ClampsNegativeVelocities()
         {
             Vector2 vClamped;
@@ -57,7 +57,7 @@ namespace UnityUtil.Test.EditMode
             Assert.That(vClamped.y, Is.Zero);
         }
 
-        [Test(TestOf = typeof(ScrollRectVelocityClamper))]
+        [Test]
         public void DoesNotClampPositiveVelocities()
         {
             Vector2 vClamped;
@@ -77,7 +77,7 @@ namespace UnityUtil.Test.EditMode
             Assert.That(vClamped.y, Is.EqualTo(10f));
         }
 
-        [Test(TestOf = typeof(ScrollRectVelocityClamper))]
+        [Test]
         public void DoesNotClampNegativeVelocities()
         {
             Vector2 vClamped;
@@ -97,7 +97,7 @@ namespace UnityUtil.Test.EditMode
             Assert.That(vClamped.y, Is.EqualTo(-10f));
         }
 
-        [Test(TestOf = typeof(ScrollRectVelocityClamper))]
+        [Test]
         public void SupportsDifferentClampValues()
         {
             Vector2 vClamped;
@@ -120,7 +120,7 @@ namespace UnityUtil.Test.EditMode
             Assert.That(vClamped.y, Is.EqualTo(11f));
         }
 
-        [Test(TestOf = typeof(ScrollRectVelocityClamper))]
+        [Test]
         public void SupportsDifferentXAndYClampValues()
         {
             Vector2 vClamped;

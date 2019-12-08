@@ -8,7 +8,7 @@ namespace UnityUtil.Test.EditMode {
 
     public class SequenceTriggerTest {
 
-        [Test(TestOf = typeof(SequenceTrigger))]
+        [Test]
         public void CanStep() {
             SequenceTrigger trigger = getTriggerObject(2);
             int origStep = trigger.CurrentStep;
@@ -18,7 +18,7 @@ namespace UnityUtil.Test.EditMode {
             Assert.That(trigger.CurrentStep, Is.EqualTo(origStep + 1));
         }
 
-        [Test(TestOf = typeof(SequenceTrigger))]
+        [Test]
         public void CanStepForwardMultiple() {
             SequenceTrigger trigger = getTriggerObject(10);
             int origStep = trigger.CurrentStep;
@@ -31,7 +31,7 @@ namespace UnityUtil.Test.EditMode {
             Assert.That(trigger.CurrentStep, Is.EqualTo(origStep + 2));
         }
 
-        [Test(TestOf = typeof(SequenceTrigger))]
+        [Test]
         public void CanStepBackwardMultiple() {
             SequenceTrigger trigger = getTriggerObject(10);
             int origStep = 5;
@@ -45,7 +45,7 @@ namespace UnityUtil.Test.EditMode {
             Assert.That(trigger.CurrentStep, Is.EqualTo(origStep - 2));
         }
 
-        [Test(TestOf = typeof(SequenceTrigger))]
+        [Test]
         public void StepForwardCanClamp() {
             int numSteps = 2;
             SequenceTrigger trigger = getTriggerObject(numSteps);
@@ -60,7 +60,7 @@ namespace UnityUtil.Test.EditMode {
             Assert.That(trigger.CurrentStep, Is.EqualTo(numSteps - 1));
         }
 
-        [Test(TestOf = typeof(SequenceTrigger))]
+        [Test]
         public void StepBackwardCanClamp() {
             int numSteps = 2;
             SequenceTrigger trigger = getTriggerObject(numSteps);
@@ -75,7 +75,7 @@ namespace UnityUtil.Test.EditMode {
             Assert.That(trigger.CurrentStep, Is.EqualTo(0));
         }
 
-        [Test(TestOf = typeof(SequenceTrigger))]
+        [Test]
         public void StepForwardCanCycle() {
             int numSteps = 2;
             SequenceTrigger trigger = getTriggerObject(numSteps, cycle: true);
@@ -91,7 +91,7 @@ namespace UnityUtil.Test.EditMode {
             Assert.That(trigger.CurrentStep, Is.EqualTo(1));
         }
 
-        [Test(TestOf = typeof(SequenceTrigger))]
+        [Test]
         public void StepBackwardCanCycle() {
             int numSteps = 2;
             SequenceTrigger trigger = getTriggerObject(numSteps, cycle: true);
@@ -107,7 +107,7 @@ namespace UnityUtil.Test.EditMode {
             Assert.That(trigger.CurrentStep, Is.EqualTo(1));
         }
 
-        [Test(TestOf = typeof(SequenceTrigger))]
+        [Test]
         public void CanTrigger() {
             string affectedTxt = "";
             SequenceTrigger trigger = getTriggerObject(2);
@@ -121,7 +121,7 @@ namespace UnityUtil.Test.EditMode {
             Assert.That(affectedTxt, Is.EqualTo("Triggered"));
         }
 
-        [Test(TestOf = typeof(SequenceTrigger))]
+        [Test]
         public void CanTriggerMultipleTimes() {
             int affectedNum = 0;
             SequenceTrigger trigger = getTriggerObject(1);
@@ -137,7 +137,7 @@ namespace UnityUtil.Test.EditMode {
             Assert.That(affectedNum, Is.EqualTo(2));
         }
 
-        [Test(TestOf = typeof(SequenceTrigger))]
+        [Test]
         public void CanStepAndTrigger() {
             string affectedTxt = "";
             SequenceTrigger trigger = getTriggerObject(2);
@@ -158,7 +158,7 @@ namespace UnityUtil.Test.EditMode {
             Assert.That(affectedTxt, Is.EqualTo("Trigger 1"));
         }
 
-        [Test(TestOf = typeof(SequenceTrigger))]
+        [Test]
         public void TriggerHandlesNullEvents() {
             SequenceTrigger trigger = getTriggerObject(1);
 

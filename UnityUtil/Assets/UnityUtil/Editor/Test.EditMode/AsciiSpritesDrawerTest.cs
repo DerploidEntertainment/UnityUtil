@@ -8,7 +8,7 @@ namespace UnityUtil.Test.EditMode
     public class AsciiSpritesDrawerTest
     {
 
-        [Test(TestOf = typeof(AsciiSpritesDrawer))]
+        [Test]
         public void ExpandsDecimalTemplateString()
         {
             string assetName;
@@ -67,7 +67,7 @@ namespace UnityUtil.Test.EditMode
             Assert.That(assetName, Is.EqualTo("Assets/char-126-126-126.png"));
         }
 
-        [Test(TestOf = typeof(AsciiSpritesDrawer))]
+        [Test]
         public void ExpandsHexadecimalTemplateString()
         {
             string assetName;
@@ -126,7 +126,7 @@ namespace UnityUtil.Test.EditMode
             Assert.That(assetName, Is.EqualTo("Assets/char-7e-7e-7e.png"));
         }
 
-        [Test(TestOf = typeof(AsciiSpritesDrawer))]
+        [Test]
         public void ExpandsOctalTemplateString()
         {
             string assetName;
@@ -185,7 +185,7 @@ namespace UnityUtil.Test.EditMode
             Assert.That(assetName, Is.EqualTo("Assets/char-176-176-176.png"));
         }
 
-        [Test(TestOf = typeof(AsciiSpritesDrawer))]
+        [Test]
         public void ExpandsBinaryTemplateString()
         {
             string assetName;
@@ -244,7 +244,7 @@ namespace UnityUtil.Test.EditMode
             Assert.That(assetName, Is.EqualTo("Assets/char-1111110-1111110-1111110.png"));
         }
 
-        [Test(TestOf = typeof(AsciiSpritesDrawer))]
+        [Test]
         public void ExpandsMixedBaseTemplateString()
         {
             string assetName;
@@ -290,7 +290,7 @@ namespace UnityUtil.Test.EditMode
             Assert.That(assetName, Is.EqualTo("Assets/char-1111110-176-126-7e.png"));
         }
 
-        [Test(TestOf = typeof(AsciiSpritesDrawer))]
+        [Test]
         public void ExpandsMultipleOfSameTemplateString()
         {
             string assetName;
@@ -336,7 +336,7 @@ namespace UnityUtil.Test.EditMode
             Assert.That(assetName, Is.EqualTo("Assets/char-7e-7e.png"));
         }
 
-        [Test(TestOf = typeof(AsciiSpritesDrawer))]
+        [Test]
         public void ExpandsTemplateStringIgnoringCase()
         {
             string assetName;
@@ -365,7 +365,7 @@ namespace UnityUtil.Test.EditMode
             Assert.That(assetName, Is.EqualTo(expectedAssetName));
         }
 
-        [Test(TestOf = typeof(AsciiSpritesDrawer))]
+        [Test]
         public void DoesNotExpandMissingTemplateString()
         {
             string assetName = AsciiSpritesDrawer.GetAssetName(' ', "derp.png");
