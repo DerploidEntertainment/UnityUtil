@@ -1,81 +1,80 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using UnityEngine.Assertions;
-using U = UnityEngine;
 
 namespace UnityEngine {
 
     [Serializable]
     public struct Service {
-        [Tooltip("Optional.  All services are associated with a System.Type.  This Type can be any Type in the service's inheritance hierarchy, but must be a [Serializable] Type.  For example, a service component derived from Monobehaviour could be associated with its actual declared Type, with Monobehaviour, or with UnityEngine.Object.  The actual declared Type is assumed if you leave this field blank.")]
+        #pragma warning disable CA2235 // Mark all non-serializable fields
+
+        [Tooltip("Optional. All services are associated with a System.Type.  This Type can be any Type in the service's inheritance hierarchy.  For example, a service component derived from Monobehaviour could be associated with its actual declared Type, with Monobehaviour, or with UnityEngine.Object. The actual declared Type is assumed if you leave this field blank.")]
         public string TypeName;
         [HideInInspector, NonSerialized]
         public string Tag;
         public MonoBehaviour Instance;
+
+        #pragma warning restore CA2235 // Mark all non-serializable fields
     }
 
     public class DependencyInjector : MonoBehaviour {
 
-        // HIDDEN FIELDS
         private static readonly IDictionary<Type, IDictionary<string, Service>> s_services = new Dictionary<Type, IDictionary<string, Service>>();
+        private static DependencyInjector s_instance;
 
-        // INSPECTOR FIELDS
         [Tooltip("The service collection from which dependencies will be resolved")]
         public Service[] ServiceCollection;
 
-        // INTERFACE
-        public const string RequiredTag = "DependencyInjector";
         public const string InjectMethodName = "Inject";
+
+        /// <summary>
+        /// Inject all dependencies into the specified client.
+        /// Can be called at runtime to satisfy dependencies of procedurally generated components, e.g., by a spawner.
+        /// </summary>
+        /// <param name="client">A client with service dependencies that need to be resolved.</param>
+        public static void ResolveDependenciesOf(Object client) => ResolveDependenciesOf(new[] { client });
         /// <summary>
         /// Inject all dependencies into the specified clients.
         /// Can be called at runtime to satisfy dependencies of procedurally generated components, e.g., by a spawner.
         /// </summary>
         /// <param name="clients">A collection of clients with service dependencies that need to be resolved.</param>
-        public static void ResolveDependenciesOf(params MonoBehaviour[] clients) => ResolveDependenciesOf(clients as IEnumerable<MonoBehaviour>);
-        /// <summary>
-        /// Inject all dependencies into the specified clients.
-        /// Can be called at runtime to satisfy dependencies of procedurally generated components, e.g., by a spawner.
-        /// </summary>
-        /// <param name="clients">A collection of clients with service dependencies that need to be resolved.</param>
-        public static void ResolveDependenciesOf(IEnumerable<MonoBehaviour> clients) {
-            foreach (MonoBehaviour client in clients) {
+        public static void ResolveDependenciesOf(IEnumerable<Object> clients) {
+            if (s_instance == null) {
+                s_instance = FindObjectOfType<DependencyInjector>();
+                buildServiceCollection(s_instance.ServiceCollection);
+            }
+
+            foreach (Object client in clients) {
                 MethodInfo[] injectMethods = client.GetType().GetMethods().Where(m => m.Name == InjectMethodName).ToArray();
                 for (int m = 0; m < injectMethods.Length; ++m)
-                    invokeInject(injectMethods[m], client);
+                    s_instance.invokeInject(injectMethods[m], client);
             }
         }
 
         // EVENT HANDLERS
-        private void Awake() {
-            // Make sure we are correctly tagged
-            Assert.AreEqual(RequiredTag, tag, $"{this.GetHierarchyNameWithType()} must be tagged '{DependencyInjector.RequiredTag}', not '{tag}'!");
-
+        private static void buildServiceCollection(IList<Service> services) {
             // Add every service specified in the Inspector to the private service collection
             // Each service instance will be associated with the named Type (which could be, e.g., some base class or interface type)
             // If no Type name was provided, then use the actual name of the service's runtime instance type
             this.Log($" awaking, adding services...");
-            for (int s = 0; s < ServiceCollection.Length; ++s) {
-                Service service = ServiceCollection[s];
+            for (int s = 0; s < services.Count; ++s) {
+                Service service = services[s];
 
                 // Update the service's Type/Tag
                 if (string.IsNullOrEmpty(service.TypeName))
                     service.TypeName = service.Instance.GetType().AssemblyQualifiedName;
                 service.Tag = service.Instance.tag;
-                ServiceCollection[s] = service;
+                services[s] = service;
 
                 // Get the service's Type, if it is valid
                 Type type;
                 try {
                     type = Type.GetType(service.TypeName);
                     if (type == null)
-                        throw new InvalidOperationException($"Could not load Type '{service.TypeName}'.  Make sure that you provided its fully qualified name and that its assembly is laoded.");
+                        throw new InvalidOperationException($"Could not load Type '{service.TypeName}'.  Make sure that you provided its assembly-qualified name and that its assembly is loaded.");
                     if (!type.IsAssignableFrom(service.Instance.GetType()))
                         throw new InvalidOperationException($"The service instance configured for Type '{service.TypeName}' is not actually derived from that Type!");
-                    if (!type.IsSubclassOf(typeof(UnityEngine.Object)))
-                        if (type.GetCustomAttributes(typeof(SerializableAttribute), inherit: true).Length == 0)
-                            throw new InvalidOperationException($"Type '{service.TypeName}' is not Serializable nor derived from UnityEngine.Object.");
                 }
                 catch (Exception ex) {
                     this.LogError($" could not configure service of Type '{service.TypeName}': {ex.Message}");
@@ -149,22 +148,14 @@ namespace UnityEngine {
                 this.LogError(successMsg);
         }
 
-        private static void invokeInject(MethodInfo injectMethod, MonoBehaviour client) {
+        private void invokeInject(MethodInfo injectMethod, Object client) {
             var injectedTypes = new HashSet<Type>();
 
             ParameterInfo[] @params = injectMethod.GetParameters();
-            var services = new U.Object[@params.Length];
+            var services = new Object[@params.Length];
             for (int p = 0; p < @params.Length; ++p) {
                 ParameterInfo param = @params[p];
                 Type pType = param.ParameterType;
-
-                // If this parameter's Type is not Serializable nor derived from UnityEngine.Object, then skip it with an error
-                if (!pType.IsSubclassOf(typeof(U.Object))) {
-                    if (pType.GetCustomAttributes(typeof(SerializableAttribute), inherit: true).Length == 0) {
-                        client.LogError($" has a dependency of type '{pType.FullName}', which is neither Serializable, nor derived from UnityEngine.Object.", framePrefix: false);
-                        continue;
-                    }
-                }
 
                 // Warn if a dependency with this Type has already been injected
                 bool firstInjection = injectedTypes.Add(pType);
