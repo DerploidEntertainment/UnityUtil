@@ -3,7 +3,7 @@ using System;
 
 namespace UnityEngine {
 
-    [CreateAssetMenu(menuName = "UnityUtil/" + nameof(UnityEngine.AsciiSprites), fileName = "ascii-sprites")]
+    [CreateAssetMenu(menuName = nameof(UnityUtil) + "/" + nameof(UnityEngine.AsciiSprites), fileName = "ascii-sprites")]
     public class AsciiSprites : ScriptableObject {
 
         public static readonly int NumPrintables = 95;

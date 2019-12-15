@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
 namespace UnityEngine {
 
-    [CreateAssetMenu(menuName = "UnityUtil/" + nameof(CsvConfigurationSource), fileName = "appsettings.csv.asset")]
+    [CreateAssetMenu(menuName = nameof(UnityUtil) + "/" + nameof(CsvConfigurationSource), fileName = "appsettings.csv.asset")]
     public class CsvConfigurationSource : ConfigurationSource {
 
         [Tooltip("Path to a CSV file under a Resources/ folder. No matter what the full path of the file is, the directory name up to and including 'Resources/' must be omitted. Leading and trailing slashes, and .csv extension, must be omitted. Must use forward slashes, not backslashes (even on Windows).")]
