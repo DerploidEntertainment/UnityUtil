@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -9,14 +9,22 @@ namespace UnityEngine {
 
         private IDictionary<string, object> _values = new Dictionary<string, object>();
 
-        public const string ConfigFieldMessage = "The value for this field must be provided in a configuration file.";
-
-        // INSPECTOR FIELDS
         [Tooltip("Sources must be provided in reverse order of importance (i.e., configs in source 0 will override configs in source 1, which will override configs in source 2, etc.)")]
         public ConfigurationSource[] ConfigurationSources;
 
-        // EVENT HANDLERS
-        private void Awake() {
+
+        public void Configure(MonoBehaviour client) => Configure(new[] { client });
+        public void Configure(IEnumerable<MonoBehaviour> clients) {
+            if (_values == null) {
+                DependencyInjector.ResolveDependenciesOf(this);
+                loadConfigValues();
+            }
+
+            foreach (MonoBehaviour client in clients)
+                configure(client);
+        }
+
+        private void loadConfigValues() {
             this.Log($" loading {ConfigurationSources.Length} configuration sources...");
 
             int numLoaded = 0;
@@ -31,13 +39,6 @@ namespace UnityEngine {
                 }
             }
         }
-
-        public void Configure(params MonoBehaviour[] clients) => Configure(clients as IEnumerable<MonoBehaviour>);
-        public void Configure(IEnumerable<MonoBehaviour> clients) {
-            foreach (MonoBehaviour client in clients)
-                configure(client);
-        }
-
         private void configure(MonoBehaviour client) {
             FieldInfo[] fields = client.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 
