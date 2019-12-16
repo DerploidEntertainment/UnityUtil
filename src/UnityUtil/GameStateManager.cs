@@ -1,4 +1,4 @@
-﻿using UnityEngine.Events;
+using UnityEngine.Events;
 using UnityEngine.Inputs;
 using UnityEngine.SceneManagement;
 
@@ -18,7 +18,6 @@ namespace UnityEngine {
         public bool IsPaused { get; private set; }
         public void SetPaused(bool paused) {
             // Adjust the paused state
-            bool old = IsPaused;
             IsPaused = paused;
             Time.timeScale = IsPaused ? 0f : 1f;
 

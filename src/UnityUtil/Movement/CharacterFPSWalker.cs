@@ -1,4 +1,3 @@
-﻿using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Inputs;
 
@@ -90,11 +89,9 @@ namespace UnityEngine.Movement {
             float slopeAngle = (hitGround ? Vector3.Angle(Vector3.up, hitInfo.normal) : 0f);
 
             // Get the target movement vector (speed + direction)
-            Vector3 currentV = ControllerToMove.velocity;
-            Vector3 targetV = Vector3.zero;
             float targetSpeed = getTargetSpeed(horz, vert, sprinting, crouching, slopeAngle);
             Vector3 unitDir = (transform.forward * vert + transform.right * horz).normalized;
-            targetV = targetSpeed * unitDir;
+            Vector3 targetV = targetSpeed * unitDir;
 
             return targetV;
         }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEngine.Assertions;
 using UnityEngine.UI;
 
@@ -12,12 +12,8 @@ namespace UnityEngine {
             Assert.IsNotNull(Text, this.GetDependencyAssertion(nameof(Text)));
         }
 
-        public void ShowError(string message) {
-            Text.text = message;
-        }
-        public void ShowException(Exception ex) {
-            Text.text = ex.Message;
-        }
+        public void ShowError(string message) => Text.text = message;
+        public void ShowException(Exception ex) => Text.text = ex.Message;
 
     }
 

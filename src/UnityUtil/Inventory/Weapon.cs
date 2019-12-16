@@ -1,30 +1,26 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.Assertions;
 using UnityEngine.Events;
-using U = UnityEngine;
 
 namespace UnityEngine.Inventory {
 
+    [Serializable]
+    public class AttackEvent : UnityEvent<Ray, RaycastHit[]> { }
+
     [RequireComponent(typeof(Tool))]
     public class Weapon : MonoBehaviour {
-        // ABSTRACT DATA TYPES
-        [Serializable]
-        public class AttackEvent : UnityEvent<Ray, RaycastHit[]> { }
 
-        // HIDDEN FIELDS
         private Tool _tool;
         private float _accuracyLerpT = 0f;
 
-        // INSPECTOR FIELDS
         public WeaponInfo Info;
 
-        // API INTERFACE
         public AttackEvent Attacked = new AttackEvent();
+
         public float AccuracyConeHalfAngle => Mathf.LerpAngle(Info.InitialConeHalfAngle, Info.FinalConeHalfAngle, _accuracyLerpT);
 
-        // EVENT HANDLERS
         private void Awake() {
             Assert.IsNotNull(Info, this.GetAssociationAssertion(nameof(UnityEngine.Inventory.WeaponInfo)));
 
@@ -48,7 +44,7 @@ namespace UnityEngine.Inventory {
                     Gizmos.DrawWireSphere(transform.position + Info.Range * transform.forward, Info.Radius);
                     break;
 
-                default: this.LogWarning(" could not draw Gizmos.  " + BetterLogger.GetSwitchDefault(Info.PhysicsCastShape)); break;
+                default: this.LogWarning("Could not draw Gizmos. " + BetterLogger.GetSwitchDefault(Info.PhysicsCastShape)); break;
             }
         }
 
@@ -56,21 +52,20 @@ namespace UnityEngine.Inventory {
         private void attack() {
 
             // Get a random Ray within the accuracy cone
-            float z = U.Random.Range(Mathf.Cos(Mathf.Deg2Rad * AccuracyConeHalfAngle), 1f);
-            float theta = U.Random.Range(0f, MoreMath.TwoPi);
+            float z = Random.Range(Mathf.Cos(Mathf.Deg2Rad * AccuracyConeHalfAngle), 1f);
+            float theta = Random.Range(0f, MoreMath.TwoPi);
             float sqrtPart = Mathf.Sqrt(1 - z * z);
             var dir = new Vector3(sqrtPart * Mathf.Cos(theta), sqrtPart * Mathf.Sin(theta), z);
             var ray = new Ray(transform.position, transform.TransformDirection(dir));
 
             // Cast into the scene for hits along this ray, using the specified cast shape
-            var hits = new RaycastHit[0];
-            switch (Info.PhysicsCastShape) {
-                case PhysicsCastShape.Ray:     hits = rayAttackHits();     break;
-                case PhysicsCastShape.Box:     hits = boxAttackHits();     break;
-                case PhysicsCastShape.Sphere:  hits = sphereAttackHits();  break;
-                case PhysicsCastShape.Capsule: hits = capsuleAttackHits(); break;
-                default: throw new NotImplementedException(BetterLogger.GetSwitchDefault(Info.PhysicsCastShape));
-            }
+            RaycastHit[] hits = Info.PhysicsCastShape switch {
+                PhysicsCastShape.Ray => rayAttackHits(),
+                PhysicsCastShape.Box => boxAttackHits(),
+                PhysicsCastShape.Sphere => sphereAttackHits(),
+                PhysicsCastShape.Capsule => capsuleAttackHits(),
+                _ => throw new NotImplementedException(BetterLogger.GetSwitchDefault(Info.PhysicsCastShape)),
+            };
 
             // Sort hits by increasing distance, and raise the Attacked event so that other components can select which components to affect
             IEnumerable<RaycastHit> orderedHits = hits.OrderBy(h => h.distance);
@@ -82,7 +77,7 @@ namespace UnityEngine.Inventory {
             // Adjust accuracy for the next attack, assuming the base Tool is automatic
             _accuracyLerpT = (Info.AccuracyLerpTime == 0 ? 1f : _accuracyLerpT + (1f / _tool.Info.AutomaticUseRate) / Info.AccuracyLerpTime);
             RaycastHit[] rayAttackHits() {
-                var rayHits = new RaycastHit[0];
+                RaycastHit[] rayHits = Array.Empty<RaycastHit>();
 
                 // Raycast into the scene with the given LayerMask, collecting the desired number of hitInfos
                 if (Info.AttackAllInRange || Info.MaxAttacks > 1) {
@@ -98,7 +93,7 @@ namespace UnityEngine.Inventory {
                 return rayHits;
             }
             RaycastHit[] boxAttackHits() {
-                var boxHits = new RaycastHit[0];
+                RaycastHit[] boxHits = Array.Empty<RaycastHit>();
 
                 // Boxcast into the scene with the given LayerMask, collecting the desired number of hitInfos
                 if (Info.AttackAllInRange || Info.MaxAttacks > 1) {
@@ -114,7 +109,7 @@ namespace UnityEngine.Inventory {
                 return boxHits;
             }
             RaycastHit[] sphereAttackHits() {
-                var sphereHits = new RaycastHit[0];
+                RaycastHit[] sphereHits = Array.Empty<RaycastHit>();
 
                 // Spherecast into the scene with the given LayerMask, collecting the desired number of hitInfos
                 if (Info.AttackAllInRange || Info.MaxAttacks > 1) {
@@ -130,7 +125,7 @@ namespace UnityEngine.Inventory {
                 return sphereHits;
             }
             RaycastHit[] capsuleAttackHits() {
-                var capsuleHits = new RaycastHit[0];
+                RaycastHit[] capsuleHits = Array.Empty<RaycastHit>();
 
                 // Capsulecast into the scene with the given LayerMask, collecting the desired number of hitInfos
                 Vector3 p1 = ray.origin + Info.Point1;

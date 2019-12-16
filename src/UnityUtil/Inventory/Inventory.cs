@@ -1,8 +1,7 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Events;
 
@@ -14,7 +13,7 @@ namespace UnityEngine.Inventory {
     public class Inventory : MonoBehaviour {
 
         // HIDDEN FIELDS
-        private HashSet<InventoryCollectible> _collectibles = new HashSet<InventoryCollectible>();
+        private readonly HashSet<InventoryCollectible> _collectibles = new HashSet<InventoryCollectible>();
 
         // INSPECTOR FIELDS
         public int MaxItems = 10;
@@ -68,7 +67,6 @@ namespace UnityEngine.Inventory {
                 StartCoroutine(doDrop(collectibles[c]));
         }
 
-        // HELPERS
         private IEnumerator doDrop(InventoryCollectible collectible) {
             // Drop it as a new Collectible
             collectible.Root.SetActive(true);

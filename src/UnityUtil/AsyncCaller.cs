@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -6,7 +6,7 @@ namespace UnityEngine {
 
     public delegate Task AsyncAction(CancellationToken cancellationToken);
 
-    public class AsyncCaller : IDisposable {
+    public sealed class AsyncCaller : IDisposable {
 
         private readonly CancellationTokenSource _cts = new CancellationTokenSource();
         public async void CallAsync(AsyncAction action) => await action.Invoke(_cts.Token);

@@ -1,19 +1,18 @@
-﻿using System;
-using UnityEngine;
+using System;
 using UnityEngine.Assertions;
 using UnityEngine.Events;
 using UnityEngine.Inputs;
 
 namespace UnityEngine.Inventory {
 
+    /// <summary>
+    /// Type arguments are (int oldClipAmmo, int oldBackupAmmo, int newClipAmmo, int newBackupAmmo)
+    /// </summary>
+    [Serializable]
+    public class AmmoEvent : UnityEvent<int, int, int, int> { }
+
     [RequireComponent(typeof(Tool))]
     public class AmmoTool : MonoBehaviour {
-        // ABSTRACT DATA TYPES
-        /// <summary>
-        /// Type arguments are (int oldClipAmmo, int oldBackupAmmo, int newClipAmmo, int newBackupAmmo)
-        /// </summary>
-        [Serializable]
-        public class AmmoEvent : UnityEvent<int, int, int, int> { }
 
         private Tool _tool;
 
@@ -62,7 +61,7 @@ namespace UnityEngine.Inventory {
                 _tool.Using.Cancel = (CurrentClipAmmo == 0));
             _tool.Used.AddListener(() => {
                 int oldClip = CurrentClipAmmo;
-                CurrentClipAmmo = CurrentClipAmmo - 1;
+                CurrentClipAmmo -= 1;
                 AmmoReduced.Invoke(oldClip, CurrentBackupAmmo, CurrentClipAmmo, CurrentBackupAmmo);
             });
         }

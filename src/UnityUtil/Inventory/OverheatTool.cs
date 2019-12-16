@@ -1,19 +1,19 @@
-﻿using System;
+using System;
 using System.Collections;
-using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Events;
 
 namespace UnityEngine.Inventory {
 
+    // ABSTRACT DATA TYPES
+    /// <summary>
+    /// Type arguments are (bool isOverheated)
+    /// </summary>
+    [Serializable]
+    public class OverheatChangedEvent : UnityEvent<bool> { }
+
     [RequireComponent(typeof(Tool))]
     public class OverheatTool : Updatable {
-        // ABSTRACT DATA TYPES
-        /// <summary>
-        /// Type arguments are (bool isOverheated)
-        /// </summary>
-        [Serializable]
-        public class OverheatChangedEvent : UnityEvent<bool> { }
 
         // HIDDEN FIELDS
         private Tool _tool;

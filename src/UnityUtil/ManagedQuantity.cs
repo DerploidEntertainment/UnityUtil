@@ -1,21 +1,21 @@
-﻿using System;
+using System;
 using UnityEngine.Events;
 
 namespace UnityEngine {
 
+    /// <summary>
+    /// Type arguments are (float oldValue, float newValue)
+    /// </summary>
+    [Serializable]
+    public class QuantityEvent : UnityEvent<float, float> { }
+
     public class ManagedQuantity : MonoBehaviour {
 
-        // ABSTRACT DATA TYPES
         public enum ChangeMode {
             Absolute,
             PercentCurrent,
             PercentMax,
         }
-        /// <summary>
-        /// Type arguments are (float oldValue, float newValue)
-        /// </summary>
-        [Serializable]
-        public class QuantityEvent : UnityEvent<float, float> { }
 
         // INSPECTOR FIELDS
         public float Value = 100f;
@@ -29,24 +29,20 @@ namespace UnityEngine {
         // API
         public static float ConvertAmount(float amount, ChangeMode fromChangeMode, ChangeMode toChangeMode, float currentAmount, float maxAmount) {
             // Get the "from" change amount as an Absolute amount
-            float absChange;
-            switch (fromChangeMode) {
-                case ChangeMode.Absolute:       absChange = amount;            break;
-                case ChangeMode.PercentCurrent: absChange = amount * currentAmount;    break;
-                case ChangeMode.PercentMax:     absChange = amount * maxAmount; break;
-                default: throw new NotImplementedException(BetterLogger.GetSwitchDefault(fromChangeMode));
-            }
+            float absChange = fromChangeMode switch {
+                ChangeMode.Absolute => amount,
+                ChangeMode.PercentCurrent => amount * currentAmount,
+                ChangeMode.PercentMax => amount * maxAmount,
+                _ => throw new NotImplementedException(BetterLogger.GetSwitchDefault(fromChangeMode)),
+            };
 
             // Convert that amount to the "to" change amount
-            float newChange;
-            switch (toChangeMode) {
-                case ChangeMode.Absolute:       newChange = amount; break;
-                case ChangeMode.PercentCurrent: newChange = absChange / currentAmount; break;
-                case ChangeMode.PercentMax:     newChange = absChange / maxAmount; break;
-                default: throw new NotImplementedException(BetterLogger.GetSwitchDefault(toChangeMode));
-            }
-
-            return newChange;
+            return toChangeMode switch {
+                ChangeMode.Absolute => amount,
+                ChangeMode.PercentCurrent => absChange / currentAmount,
+                ChangeMode.PercentMax => absChange / maxAmount,
+                _ => throw new NotImplementedException(BetterLogger.GetSwitchDefault(toChangeMode)),
+            };
         }
 
         public float Increase(float amount, ChangeMode changeMode = ChangeMode.Absolute) {

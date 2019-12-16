@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEngine.Assertions;
 using UnityEngine.Inputs;
 
@@ -32,15 +32,14 @@ namespace UnityEngine.Movement {
         /// Returns the unit vector in which this <see cref="HoverForce"/> will attempt to hover.
         /// </summary>
         /// <returns>The unit vector in which this <see cref="HoverForce"/> will attempt to hover.</returns>
-        public Vector3 GetUpwardUnitVector() {
-            switch (AxisDirectionType) {
-                case AxisDirection.WithGravity: return Physics.gravity.normalized;
-                case AxisDirection.OppositeGravity: return -Physics.gravity.normalized;
-                case AxisDirection.CustomWorldSpace: return CustomAxisDirection.normalized;
-                case AxisDirection.CustomLocalSpace: return (UsePhysicsToLook ? RigidbodyToRotate.transform : TransformToRotate).TransformDirection(CustomAxisDirection.normalized);
-                default: throw new NotImplementedException(BetterLogger.GetSwitchDefault(AxisDirectionType));
-            }
-        }
+        public Vector3 GetUpwardUnitVector() =>
+            AxisDirectionType switch {
+                AxisDirection.WithGravity => Physics.gravity.normalized,
+                AxisDirection.OppositeGravity => -Physics.gravity.normalized,
+                AxisDirection.CustomWorldSpace => CustomAxisDirection.normalized,
+                AxisDirection.CustomLocalSpace => (UsePhysicsToLook ? RigidbodyToRotate.transform : TransformToRotate).TransformDirection(CustomAxisDirection.normalized),
+                _ => throw new NotImplementedException(BetterLogger.GetSwitchDefault(AxisDirectionType)),
+            };
 
         // EVENT HANDLERS
         private void Reset() {

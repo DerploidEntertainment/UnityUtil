@@ -1,5 +1,4 @@
 ﻿using UnityEditor.SceneManagement;
-using UnityEngine.SceneManagement;
 
 namespace UnityUtil.Editor {
 

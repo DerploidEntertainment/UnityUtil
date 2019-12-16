@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace UnityEngine {
 
@@ -16,7 +16,6 @@ namespace UnityEngine {
         public float TrimPeriod = 30f;
 
         // API INTERFACE
-        /// <inheritdoc/>
         public void RegisterUpdate(int instanceID, Action<float> action) {
             if (action == null)
                 throw new ArgumentNullException(nameof(instanceID));
@@ -25,13 +24,11 @@ namespace UnityEngine {
 
             _updates.Add(instanceID, action);
         }
-        /// <inheritdoc/>
         public void UnregisterUpdate(int instanceID) {
             if (!_updates.Remove(instanceID))
                 throw new ArgumentException($"{this.GetHierarchyNameWithType()} could not unregister the update Action for the object with {nameof(instanceID)} {instanceID} because no such Action was ever registered!", nameof(instanceID));
         }
 
-        /// <inheritdoc/>
         public void RegisterFixedUpdate(int instanceID, Action<float> action) {
             if (action == null)
                 throw new ArgumentNullException(nameof(instanceID));
@@ -40,13 +37,11 @@ namespace UnityEngine {
 
             _fixed.Add(instanceID, action);
         }
-        /// <inheritdoc/>
         public void UnregisterFixedUpdate(int instanceID) {
             if (!_fixed.Remove(instanceID))
                 throw new ArgumentException($"{this.GetHierarchyNameWithType()} could not unregister the FixedUpdate action for the object with {nameof(instanceID)} {instanceID} because no such action was ever registered!", nameof(instanceID));
         }
 
-        /// <inheritdoc/>
         public void RegisterLateUpdate(int instanceID, Action<float> action) {
             if (action == null)
                 throw new ArgumentNullException(nameof(instanceID));
@@ -55,7 +50,6 @@ namespace UnityEngine {
 
             _late.Add(instanceID, action);
         }
-        /// <inheritdoc/>
         public void UnregisterLateUpdate(int instanceID) {
             if (!_late.Remove(instanceID))
                 throw new ArgumentException($"{this.GetHierarchyNameWithType()} could not unregister the LateUpdate action for the object with {nameof(instanceID)} {instanceID} because no such action was ever registered!", nameof(instanceID));

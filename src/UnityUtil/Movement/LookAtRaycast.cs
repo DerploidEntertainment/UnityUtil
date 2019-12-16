@@ -1,6 +1,4 @@
-﻿using System;
-using UnityEngine;
-using UnityEngine.Assertions;
+using System;
 using UnityEngine.Inventory;
 
 namespace UnityEngine {
@@ -26,15 +24,14 @@ namespace UnityEngine {
         /// Returns the unit vector that this <see cref="FollowVisionModule"/> will use to rotate towards what its associated <see cref="FollowVisionModule.VisionModule"/> is looking at.
         /// </summary>
         /// <returns>The unit vector that this <see cref="FollowVisionModule"/> will use to rotate towards what its associated <see cref="FollowVisionModule.VisionModule"/> is looking at.</returns>
-        public Vector3 GetUpwardUnitVector() {
-            switch (UpwardDirectionType) {
-                case AxisDirection.WithGravity: return Physics.gravity.normalized;
-                case AxisDirection.OppositeGravity: return -Physics.gravity.normalized;
-                case AxisDirection.CustomWorldSpace: return CustomUpwardDirection.normalized;
-                case AxisDirection.CustomLocalSpace: return TransformToRotate.TransformDirection(CustomUpwardDirection.normalized);
-                default: throw new NotImplementedException(BetterLogger.GetSwitchDefault(UpwardDirectionType));
-            }
-        }
+        public Vector3 GetUpwardUnitVector() =>
+            UpwardDirectionType switch {
+                AxisDirection.WithGravity => Physics.gravity.normalized,
+                AxisDirection.OppositeGravity => -Physics.gravity.normalized,
+                AxisDirection.CustomWorldSpace => CustomUpwardDirection.normalized,
+                AxisDirection.CustomLocalSpace => TransformToRotate.TransformDirection(CustomUpwardDirection.normalized),
+                _ => throw new NotImplementedException(BetterLogger.GetSwitchDefault(UpwardDirectionType)),
+            };
 
         // EVENT HANDLERS
         protected override void BetterAwake() {
