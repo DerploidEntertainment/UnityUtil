@@ -2,9 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Events;
+using UnityEngine.Logging;
 
 namespace UnityEngine.Inventory {
 
@@ -13,8 +13,8 @@ namespace UnityEngine.Inventory {
 
     public class Inventory : MonoBehaviour {
 
-        // HIDDEN FIELDS
-        private HashSet<InventoryCollectible> _collectibles = new HashSet<InventoryCollectible>();
+        private ILogger _logger;
+        private readonly HashSet<InventoryCollectible> _collectibles = new HashSet<InventoryCollectible>();
 
         // INSPECTOR FIELDS
         public int MaxItems = 10;
@@ -25,6 +25,10 @@ namespace UnityEngine.Inventory {
         public Vector3 LocalDropOffset = Vector3.one;
         public InventoryItemEvent ItemCollected = new InventoryItemEvent();
         public InventoryItemEvent ItemDropped = new InventoryItemEvent();
+
+        public void Inject(ILoggerProvider loggerProvider) => _logger = loggerProvider.GetLogger(this);
+
+        private void Awake() => DependencyInjector.ResolveDependenciesOf(this);
 
         // INTERFACE FUNCTIONS
         public InventoryCollectible[] GetCollectibles() => _collectibles.ToArray();
@@ -50,7 +54,7 @@ namespace UnityEngine.Inventory {
             _collectibles.Add(collectible);
 
             // Raise the item collected event
-            this.Log($" collected {collectible.ItemRoot?.GetHierarchyName()}");
+            _logger.Log($"Collected {collectible.ItemRoot?.GetHierarchyName()}");
             ItemCollected.Invoke(collectible);
 
             return true;
@@ -68,7 +72,6 @@ namespace UnityEngine.Inventory {
                 StartCoroutine(doDrop(collectibles[c]));
         }
 
-        // HELPERS
         private IEnumerator doDrop(InventoryCollectible collectible) {
             // Drop it as a new Collectible
             collectible.Root.SetActive(true);
@@ -80,7 +83,7 @@ namespace UnityEngine.Inventory {
             _collectibles.Remove(collectible);
 
             // Raise the item dropped event
-            this.Log($" dropped {collectible.ItemRoot.GetHierarchyName()}");
+            _logger.Log($"Dropped {collectible.ItemRoot.GetHierarchyName()}");
             ItemDropped.Invoke(collectible);
 
             // Prevent its re-collection for the requested duration

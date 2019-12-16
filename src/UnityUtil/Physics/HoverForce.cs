@@ -1,5 +1,5 @@
 ﻿using System;
-using UnityEngine.Assertions;
+using UnityEngine.Logging;
 
 namespace UnityEngine {
 
@@ -31,15 +31,14 @@ namespace UnityEngine {
         /// Returns the unit vector in which this <see cref="HoverForce"/> will attempt to hover.
         /// </summary>
         /// <returns>The unit vector in which this <see cref="HoverForce"/> will attempt to hover.</returns>
-        public Vector3 GetUpwardUnitVector() {
-            switch (UpwardDirectionType) {
-                case AxisDirection.WithGravity: return Physics.gravity.normalized;
-                case AxisDirection.OppositeGravity: return -Physics.gravity.normalized;
-                case AxisDirection.CustomWorldSpace: return CustomUpwardDirection.normalized;
-                case AxisDirection.CustomLocalSpace: return transform.TransformDirection(CustomUpwardDirection.normalized);
-                default: throw new NotImplementedException(BetterLogger.GetSwitchDefault(UpwardDirectionType));
-            }
-        }
+        public Vector3 GetUpwardUnitVector() =>
+            UpwardDirectionType switch {
+                AxisDirection.WithGravity => Physics.gravity.normalized,
+                AxisDirection.OppositeGravity => -Physics.gravity.normalized,
+                AxisDirection.CustomWorldSpace => CustomUpwardDirection.normalized,
+                AxisDirection.CustomLocalSpace => transform.TransformDirection(CustomUpwardDirection.normalized),
+                _ => throw new NotImplementedException(UnityObjectExtensions.GetSwitchDefault(UpwardDirectionType)),
+            };
         public float AppliedFractionOfMaxForce { get; private set; }
 
         private void Reset() {

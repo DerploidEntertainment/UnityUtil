@@ -1,6 +1,5 @@
 ﻿using System;
-using UnityEngine;
-using UnityEngine.Assertions;
+using UnityEngine.Logging;
 using U = UnityEngine;
 
 namespace UnityEngine {
@@ -32,7 +31,7 @@ namespace UnityEngine {
 
     public class Spawner : MonoBehaviour {
 
-        // HIDDEN FIELDS
+        private ILogger _logger;
         private GameObject _previous;
         private long _count = 0;
 
@@ -55,8 +54,13 @@ namespace UnityEngine {
         [Range(0f, 90f)]
         public float ConeHalfAngle = 30f;
 
-        private void Awake() =>
-            Assert.IsNotNull(Prefab, this.GetAssociationAssertion(nameof(this.Prefab)));
+        public void Inject(ILoggerProvider loggerProvider) => _logger = loggerProvider.GetLogger(this);
+
+        private void Awake() {
+            DependencyInjector.ResolveDependenciesOf(this);
+
+            this.AssertAssociation(Prefab, nameof(this.Prefab));
+        }
 
         // API INTERFACE
         public void Spawn() {
@@ -65,7 +69,7 @@ namespace UnityEngine {
                 Destroy(_previous);
 
             string newName = $"{BaseName}{(DestroyPrevious ? "" : "_" + _count)}";
-            this.Log($" spawning {newName}");
+            _logger.Log($"Spawning {newName}");
 
             // Instantiating a Prefab can sometimes give a GameObject or a Transform...we want the GameObject
             GameObject obj = (SpawnParent == null) ?
@@ -116,7 +120,7 @@ namespace UnityEngine {
 #else
                 case SpawnDirection.AnyDirection: return U.Random.onUnitSphere;
 #endif
-                default: throw new NotImplementedException(BetterLogger.GetSwitchDefault(SpawnDirection));
+                default: throw new NotImplementedException(UnityObjectExtensions.GetSwitchDefault(SpawnDirection));
             }
         }
     }

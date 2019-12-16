@@ -1,5 +1,5 @@
 ﻿using System.Linq;
-using UnityEngine.Assertions;
+using UnityEngine.Logging;
 
 namespace UnityEngine.Inventory {
 
@@ -12,7 +12,7 @@ namespace UnityEngine.Inventory {
 
         // EVENT HANDLERS
         private void Awake() {
-            Assert.IsNotNull(Inventory, this.GetAssociationAssertion(nameof(this.Inventory)));
+            this.AssertAssociation(Inventory, nameof(this.Inventory));
 
             GetComponent<Collector>().Collected.AddListener(collect);
         }

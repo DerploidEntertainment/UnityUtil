@@ -1,16 +1,14 @@
-﻿using UnityEngine.Assertions;
+﻿using UnityEngine.Logging;
 
 namespace UnityEngine.Inventory {
 
     [RequireComponent(typeof(Collector))]
     public class QuantityCollector : MonoBehaviour {
 
-        // INSPECTOR FIELDS
         public ManagedQuantity Quantity;
 
-        // EVENT HANDLERS
         private void Awake() {
-            Assert.IsNotNull(Quantity, this.GetAssociationAssertion(nameof(this.Quantity)));
+            this.AssertAssociation(Quantity, nameof(this.Quantity));
 
             GetComponent<Collector>().Collected.AddListener(collect);
         }

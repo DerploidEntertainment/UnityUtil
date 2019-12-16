@@ -2,22 +2,33 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using UnityEngine.Logging;
 
 namespace UnityEngine {
 
     public class Configurator : MonoBehaviour {
 
+        private ILogger _logger;
         private IDictionary<string, object> _values = new Dictionary<string, object>();
 
-        public const string ConfigFieldMessage = "The value for this field must be provided in a configuration file.";
-
-        // INSPECTOR FIELDS
         [Tooltip("Sources must be provided in reverse order of importance (i.e., configs in source 0 will override configs in source 1, which will override configs in source 2, etc.)")]
         public ConfigurationSource[] ConfigurationSources;
 
-        // EVENT HANDLERS
-        private void Awake() {
-            this.Log($" loading {ConfigurationSources.Length} configuration sources...");
+        public void Inject(ILoggerProvider loggerProvider) => _logger = loggerProvider.GetLogger(this);
+
+        public void Configure(MonoBehaviour client) => Configure(new[] { client });
+        public void Configure(IEnumerable<MonoBehaviour> clients) {
+            if (_values == null) {
+                DependencyInjector.ResolveDependenciesOf(this);
+                loadConfigValues();
+            }
+
+            foreach (MonoBehaviour client in clients)
+                configure(client);
+        }
+
+        private void loadConfigValues() {
+            _logger.Log($"Loading {ConfigurationSources.Length} configuration sources...");
 
             int numLoaded = 0;
             for (int s = 0; s < ConfigurationSources.Length; ++s) {
@@ -31,13 +42,6 @@ namespace UnityEngine {
                 }
             }
         }
-
-        public void Configure(params MonoBehaviour[] clients) => Configure(clients as IEnumerable<MonoBehaviour>);
-        public void Configure(IEnumerable<MonoBehaviour> clients) {
-            foreach (MonoBehaviour client in clients)
-                configure(client);
-        }
-
         private void configure(MonoBehaviour client) {
             FieldInfo[] fields = client.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 
@@ -63,7 +67,7 @@ namespace UnityEngine {
                 object val = getValue(fieldKey, field.FieldType);
                 if (val != null) {
                     field.SetValue(client, val);
-                    this.Log($" configured field '{field.Name}' of {client.GetHierarchyNameWithType()}.");
+                    _logger.Log($"Configured field '{field.Name}' of {client.GetHierarchyNameWithType()}.");
                 }
             }
         }

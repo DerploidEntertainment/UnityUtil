@@ -1,5 +1,4 @@
-﻿using UnityEngine;
-using UnityEngine.Assertions;
+﻿using UnityEngine.Logging;
 
 namespace UnityEngine.Movement {
 
@@ -14,8 +13,8 @@ namespace UnityEngine.Movement {
         public Vector3 Offset = new Vector3(0f, 0f, -10f);
 
         private void Awake() {
-            Assert.IsNotNull(TransformToMove, this.GetAssociationAssertion(nameof(this.TransformToMove)));
-            Assert.IsNotNull(Target, this.GetAssociationAssertion(nameof(this.Target)));
+            this.AssertAssociation(TransformToMove, nameof(this.TransformToMove));
+            this.AssertAssociation(Target, nameof(this.Target));
         }
         private void Update() => TransformToMove.position = Target.position + Offset;
 

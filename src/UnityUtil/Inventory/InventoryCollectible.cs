@@ -1,5 +1,4 @@
-﻿using UnityEngine;
-using UnityEngine.Assertions;
+﻿using UnityEngine.Logging;
 
 namespace UnityEngine.Inventory {
 
@@ -12,8 +11,8 @@ namespace UnityEngine.Inventory {
         public Collider[] CollidersToToggle;
 
         private void Awake() {
-            Assert.IsNotNull(Root, this.GetAssociationAssertion(nameof(this.Root)));
-            Assert.IsNotNull(ItemRoot, this.GetAssociationAssertion(nameof(this.ItemRoot)));
+            this.AssertAssociation(Root, nameof(this.Root));
+            this.AssertAssociation(ItemRoot, nameof(this.ItemRoot));
         }
 
     }

@@ -1,8 +1,7 @@
 ﻿using System.Collections;
-using UnityEngine;
-using UnityEngine.Assertions;
 using UnityEngine.Events;
 using UnityEngine.Inputs;
+using UnityEngine.Logging;
 
 namespace UnityEngine.Inventory {
 
@@ -27,8 +26,8 @@ namespace UnityEngine.Inventory {
 
         // EVENT HANDLERS
         protected override void BetterAwake() {
-            Assert.IsNotNull(Info, this.GetAssociationAssertion(nameof(UnityEngine.Inventory.ToolInfo)));
-            Assert.IsNotNull(UseInput, this.GetAssociationAssertion(nameof(this.UseInput)));
+            this.AssertAssociation(Info, nameof(ToolInfo));
+            this.AssertAssociation(UseInput, nameof(this.UseInput));
 
             BetterUpdate = doUpdate;
             RegisterUpdatesAutomatically = true;

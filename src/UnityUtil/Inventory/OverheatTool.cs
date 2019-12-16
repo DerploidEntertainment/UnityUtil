@@ -1,19 +1,20 @@
 ﻿using System;
 using System.Collections;
-using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Events;
+using UnityEngine.Logging;
 
 namespace UnityEngine.Inventory {
 
+    // ABSTRACT DATA TYPES
+    /// <summary>
+    /// Type arguments are (bool isOverheated)
+    /// </summary>
+    [Serializable]
+    public class OverheatChangedEvent : UnityEvent<bool> { }
+
     [RequireComponent(typeof(Tool))]
     public class OverheatTool : Updatable {
-        // ABSTRACT DATA TYPES
-        /// <summary>
-        /// Type arguments are (bool isOverheated)
-        /// </summary>
-        [Serializable]
-        public class OverheatChangedEvent : UnityEvent<bool> { }
 
         // HIDDEN FIELDS
         private Tool _tool;
@@ -28,7 +29,7 @@ namespace UnityEngine.Inventory {
 
         // EVENT HANDLERS
         protected override void BetterAwake() {
-            Assert.IsNotNull(Info, this.GetAssociationAssertion(nameof(UnityEngine.Inventory.OverheatToolInfo)));
+            this.AssertAssociation(Info, nameof(OverheatToolInfo));
             Assert.IsTrue(Info.StartingHeat <= Info.MaxHeat, $"{this.GetHierarchyNameWithType()} was started with {nameof(this.Info.StartingHeat)} heat but it can only store a max of {this.Info.MaxHeat}!");
 
             BetterUpdate = doUpdate;

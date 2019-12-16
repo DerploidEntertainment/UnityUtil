@@ -1,8 +1,8 @@
 ﻿using System;
-using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Events;
 using UnityEngine.Inputs;
+using UnityEngine.Logging;
 using UnityEngine.Triggers;
 
 namespace UnityEngine {
@@ -25,12 +25,13 @@ namespace UnityEngine {
         Thrown,
     }
 
+    [Serializable]
+    public class LiftablePickupEvent : UnityEvent<Liftable, Lifter> { }
+    [Serializable]
+    public class LiftableReleaseEvent : UnityEvent<Liftable, Lifter, LiftableReleaseType> { }
+
     [DisallowMultipleComponent]
     public class Lifter : MonoBehaviour {
-        // ABSTRACT DATA TYPES
-        [Serializable]
-        public class LiftablePickupEvent : UnityEvent<Liftable, Lifter> { }
-        public class LiftableReleaseEvent : UnityEvent<Liftable, Lifter, LiftableReleaseType> { }
 
         // HIDDEN FIELDS
         private Liftable _liftable;

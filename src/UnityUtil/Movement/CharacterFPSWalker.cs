@@ -1,6 +1,5 @@
-﻿using UnityEngine;
-using UnityEngine.Assertions;
-using UnityEngine.Inputs;
+﻿using UnityEngine.Inputs;
+using UnityEngine.Logging;
 
 namespace UnityEngine.Movement {
 
@@ -37,7 +36,7 @@ namespace UnityEngine.Movement {
 
         // EVENT HANDLERS
         protected override void BetterAwake() {
-            Assert.IsNotNull(ControllerToMove, this.GetAssociationAssertion(nameof(this.ControllerToMove)));
+            this.AssertAssociation(ControllerToMove, nameof(this.ControllerToMove));
 
             _oldHeight = ControllerToMove.height;
             CrouchHeight = Mathf.Min(CrouchHeight, _oldHeight);
@@ -90,11 +89,9 @@ namespace UnityEngine.Movement {
             float slopeAngle = (hitGround ? Vector3.Angle(Vector3.up, hitInfo.normal) : 0f);
 
             // Get the target movement vector (speed + direction)
-            Vector3 currentV = ControllerToMove.velocity;
-            Vector3 targetV = Vector3.zero;
             float targetSpeed = getTargetSpeed(horz, vert, sprinting, crouching, slopeAngle);
             Vector3 unitDir = (transform.forward * vert + transform.right * horz).normalized;
-            targetV = targetSpeed * unitDir;
+            Vector3 targetV = targetSpeed * unitDir;
 
             return targetV;
         }

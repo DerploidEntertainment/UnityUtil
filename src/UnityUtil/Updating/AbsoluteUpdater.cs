@@ -1,12 +1,12 @@
 ﻿using System.Collections;
-using UnityEngine;
-using UnityEngine.Assertions;
+using UnityEngine.Logging;
 
 namespace UnityEngine {
 
     public abstract class AbsoluteUpdater : MonoBehaviour {
 
         // HIDDEN FIELDS
+        private ILogger _logger;
         private float _lastRealtime;
         protected float _delta;
 
@@ -14,8 +14,12 @@ namespace UnityEngine {
         public GameStateManager GameStateManager;
         public bool PauseWhenGameIsPaused = true;
 
+        public void Inject(ILoggerProvider loggerProvider) => _logger = loggerProvider.GetLogger(this);
+
         private void Awake() {
-            Assert.IsNotNull(GameStateManager, this.GetAssociationAssertion(nameof(this.GameStateManager)));
+            DependencyInjector.ResolveDependenciesOf(this);
+
+            this.AssertAssociation(GameStateManager, nameof(GameStateManager));
 
             _lastRealtime = Time.realtimeSinceStartup;
         }
@@ -28,7 +32,7 @@ namespace UnityEngine {
             // especially if this script is attached to an object that is created when the scene is loaded
             // In that case, discard this update.
             if (_delta < 0) {
-                BetterLogger.LogWarning($"Delta time was negative ({_delta})...discarding.");
+                _logger.LogWarning($"Delta time was negative ({_delta})...discarding.");
                 _delta = 0;
             }
 

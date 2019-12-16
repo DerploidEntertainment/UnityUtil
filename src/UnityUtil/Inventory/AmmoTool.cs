@@ -1,19 +1,19 @@
 ﻿using System;
-using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Events;
 using UnityEngine.Inputs;
+using UnityEngine.Logging;
 
 namespace UnityEngine.Inventory {
 
+    /// <summary>
+    /// Type arguments are (int oldClipAmmo, int oldBackupAmmo, int newClipAmmo, int newBackupAmmo)
+    /// </summary>
+    [Serializable]
+    public class AmmoEvent : UnityEvent<int, int, int, int> { }
+
     [RequireComponent(typeof(Tool))]
     public class AmmoTool : MonoBehaviour {
-        // ABSTRACT DATA TYPES
-        /// <summary>
-        /// Type arguments are (int oldClipAmmo, int oldBackupAmmo, int newClipAmmo, int newBackupAmmo)
-        /// </summary>
-        [Serializable]
-        public class AmmoEvent : UnityEvent<int, int, int, int> { }
 
         private Tool _tool;
 
@@ -49,8 +49,8 @@ namespace UnityEngine.Inventory {
 
         // EVENT HANDLERS
         private void Awake() {
-            Assert.IsNotNull(Info, this.GetAssociationAssertion(nameof(UnityEngine.Inventory.AmmoToolInfo)));
-            Assert.IsNotNull(ReloadInput, this.GetAssociationAssertion(nameof(this.ReloadInput)));
+            this.AssertAssociation(Info, nameof(AmmoToolInfo));
+            this.AssertAssociation(ReloadInput, nameof(this.ReloadInput));
             Assert.IsTrue(Info.StartingAmmo <= Info.MaxClipAmmo * (Info.MaxBackupClips + 1), $"{this.GetHierarchyNameWithType()} was started with {nameof(this.Info.StartingAmmo)} ammo but it can only store a max of {this.Info.MaxClipAmmo} * ({this.Info.MaxClipAmmo * (this.Info.MaxBackupClips + 1)}!");
 
             // Initialize ammo
@@ -62,7 +62,7 @@ namespace UnityEngine.Inventory {
                 _tool.Using.Cancel = (CurrentClipAmmo == 0));
             _tool.Used.AddListener(() => {
                 int oldClip = CurrentClipAmmo;
-                CurrentClipAmmo = CurrentClipAmmo - 1;
+                CurrentClipAmmo -= 1;
                 AmmoReduced.Invoke(oldClip, CurrentBackupAmmo, CurrentClipAmmo, CurrentBackupAmmo);
             });
         }

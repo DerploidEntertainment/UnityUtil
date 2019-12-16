@@ -1,5 +1,6 @@
 using Sirenix.OdinInspector;
 using System;
+using UnityEngine.Logging;
 
 namespace UnityEngine {
 
@@ -27,6 +28,9 @@ namespace UnityEngine {
 
     [Serializable]
     public class Config {
+
+        #pragma warning disable CA2235 // Mark all non-serializable fields
+
         public string Key;
         public ConfigValueType Type;
 
@@ -87,30 +91,31 @@ namespace UnityEngine {
         [ShowIf(nameof(Config.Type), ConfigValueType.BoundsInt)]
         public BoundsInt BoundsIntValue;
 
-        public object GetValue() {
-            switch (Type) {
-                case ConfigValueType.Integer: return IntValue;
-                case ConfigValueType.Boolean: return BoolValue; 
-                case ConfigValueType.Float: return FloatValue;
-                case ConfigValueType.String: return StringValue;
-                case ConfigValueType.Color: return ColorValue;
-                case ConfigValueType.ObjectReference: return ObjectValue;
-                case ConfigValueType.LayerMask: return LayerMaskValue;
-                case ConfigValueType.Vector2: return Vector2Value;
-                case ConfigValueType.Vector3: return Vector3Value;
-                case ConfigValueType.Vector4: return Vector4Value;
-                case ConfigValueType.Rect: return RectValue;
-                case ConfigValueType.AnimationCurve: return AnimationCurveValue;
-                case ConfigValueType.Bounds: return BoundsValue;
-                case ConfigValueType.Gradient: return GradientValue;
-                case ConfigValueType.Quaternion: return QuaternionValue;
-                case ConfigValueType.Vector2Int: return Vector2IntValue;
-                case ConfigValueType.Vector3Int: return Vector3IntValue;
-                case ConfigValueType.RectInt: return RectIntValue;
-                case ConfigValueType.BoundsInt: return BoundsIntValue;
-                default: throw new NotImplementedException(BetterLogger.GetSwitchDefault(Type));
-            }
-        }
+        #pragma warning restore CA2235 // Mark all non-serializable fields
+
+        public object GetValue() =>
+            Type switch {
+                ConfigValueType.Integer => IntValue,
+                ConfigValueType.Boolean => BoolValue,
+                ConfigValueType.Float => FloatValue,
+                ConfigValueType.String => StringValue,
+                ConfigValueType.Color => ColorValue,
+                ConfigValueType.ObjectReference => ObjectValue,
+                ConfigValueType.LayerMask => LayerMaskValue,
+                ConfigValueType.Vector2 => Vector2Value,
+                ConfigValueType.Vector3 => Vector3Value,
+                ConfigValueType.Vector4 => Vector4Value,
+                ConfigValueType.Rect => RectValue,
+                ConfigValueType.AnimationCurve => AnimationCurveValue,
+                ConfigValueType.Bounds => BoundsValue,
+                ConfigValueType.Gradient => GradientValue,
+                ConfigValueType.Quaternion => QuaternionValue,
+                ConfigValueType.Vector2Int => Vector2IntValue,
+                ConfigValueType.Vector3Int => Vector3IntValue,
+                ConfigValueType.RectInt => RectIntValue,
+                ConfigValueType.BoundsInt => BoundsIntValue,
+                _ => throw new NotImplementedException(UnityObjectExtensions.GetSwitchDefault(Type)),
+            };
     }
 
     [CreateAssetMenu(menuName = nameof(UnityUtil) + "/" + nameof(ConfigObject), fileName = "appsettings.asset")]
