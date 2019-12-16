@@ -1,4 +1,4 @@
-﻿using Sirenix.OdinInspector;
+using Sirenix.OdinInspector;
 using System;
 using UnityEngine.Logging;
 
@@ -118,7 +118,7 @@ namespace UnityEngine {
             };
     }
 
-    [CreateAssetMenu(menuName = "UnityUtil/" + nameof(ConfigObject), fileName = "appsettings.asset")]
+    [CreateAssetMenu(menuName = nameof(UnityUtil) + "/" + nameof(ConfigObject), fileName = "appsettings.asset")]
     public class ConfigObject : ScriptableObject {
         public Config[] Configs;
     }

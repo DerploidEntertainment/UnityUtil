@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine.Logging;
 
 namespace UnityEngine {
 
-    [CreateAssetMenu(menuName = "UnityUtil/" + nameof(ScriptableObjectConfigurationSource), fileName = "appsettings.cfgsource.asset")]
+    [CreateAssetMenu(menuName = nameof(UnityUtil) + "/" + nameof(ScriptableObjectConfigurationSource), fileName = "appsettings.cfgsource.asset")]
     public class ScriptableObjectConfigurationSource : ConfigurationSource {
 
         [Tooltip("Path to a " + nameof(ConfigObject) + " file under a Resources/ folder. No matter what the full path of the file is, the directory name up to and including 'Resources/' must be omitted. Leading and trailing slashes, and .asset extension, must be omitted. Must use forward slashes, not backslashes (even on Windows).")]
