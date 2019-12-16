@@ -1,5 +1,6 @@
 ﻿using Sirenix.OdinInspector;
 using System;
+using UnityEngine.Logging;
 
 namespace UnityEngine {
 
@@ -113,7 +114,7 @@ namespace UnityEngine {
                 ConfigValueType.Vector3Int => Vector3IntValue,
                 ConfigValueType.RectInt => RectIntValue,
                 ConfigValueType.BoundsInt => BoundsIntValue,
-                _ => throw new NotImplementedException(BetterLogger.GetSwitchDefault(Type)),
+                _ => throw new NotImplementedException(UnityObjectExtensions.GetSwitchDefault(Type)),
             };
     }
 

@@ -22,7 +22,7 @@ namespace UnityEngine.Triggers {
             base.DoRestart();
 
             if (Logging)
-                this.Log(" starting.");
+                Logger.Log("Starting");
 
             TimePassed = 0f;
         }
@@ -30,20 +30,20 @@ namespace UnityEngine.Triggers {
             base.DoStop();
 
             if (Logging)
-                this.Log($" stopped.");
+                Logger.Log($"Stopped");
             Stopped.Invoke();
         }
         protected override void DoPause() {
             base.DoStop();
 
             if (Logging)
-                this.Log($" paused.");
+                Logger.Log($"Paused");
         }
         protected override void DoResume() {
             base.DoResume();
 
             if (Logging)
-                this.Log(" resumed.");
+                Logger.Log("Resumed");
         }
         protected override void DoUpdate(float deltaTime) {
             // Update the time elapsed, if the Timer is running
@@ -53,7 +53,7 @@ namespace UnityEngine.Triggers {
 
             // Once the timer is up, raise the Timeout event
             if (Logging)
-                this.Log(" timed out!");
+                Logger.Log("Timed out!");
             Timeout.Invoke();
             if (Running)   // May now be false if any UnityEvents manually stopped this timer
                 DoStop();

@@ -1,6 +1,6 @@
 ﻿using System;
-using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Logging;
 
 namespace UnityEngine.Triggers {
 
@@ -68,7 +68,7 @@ namespace UnityEngine.Triggers {
                     break;
 
                 default:
-                    throw new NotImplementedException(BetterLogger.GetSwitchDefault(Mode));
+                    throw new NotImplementedException(UnityObjectExtensions.GetSwitchDefault(Mode));
             }
 
             // If no desired values were reached above, then raise the ValueNotReached event

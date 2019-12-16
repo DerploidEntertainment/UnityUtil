@@ -1,8 +1,8 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine.Assertions;
 using UnityEngine.Events;
+using UnityEngine.Logging;
 
 namespace UnityEngine.Inventory {
 
@@ -12,6 +12,7 @@ namespace UnityEngine.Inventory {
     [RequireComponent(typeof(Tool))]
     public class Weapon : MonoBehaviour {
 
+        private ILogger _logger;
         private Tool _tool;
         private float _accuracyLerpT = 0f;
 
@@ -21,8 +22,12 @@ namespace UnityEngine.Inventory {
 
         public float AccuracyConeHalfAngle => Mathf.LerpAngle(Info.InitialConeHalfAngle, Info.FinalConeHalfAngle, _accuracyLerpT);
 
+        public void Inject(ILoggerProvider loggerProvider) => _logger = loggerProvider.GetLogger(this);
+
         private void Awake() {
-            Assert.IsNotNull(Info, this.GetAssociationAssertion(nameof(UnityEngine.Inventory.WeaponInfo)));
+            this.AssertAssociation(Info, nameof(WeaponInfo));
+
+            DependencyInjector.ResolveDependenciesOf(this);
 
             // Register Tool events
             _tool = GetComponent<Tool>();
@@ -44,7 +49,7 @@ namespace UnityEngine.Inventory {
                     Gizmos.DrawWireSphere(transform.position + Info.Range * transform.forward, Info.Radius);
                     break;
 
-                default: this.LogWarning("Could not draw Gizmos. " + BetterLogger.GetSwitchDefault(Info.PhysicsCastShape)); break;
+                default: _logger.LogWarning("Could not draw Gizmos. " + UnityObjectExtensions.GetSwitchDefault(Info.PhysicsCastShape)); break;
             }
         }
 
@@ -64,7 +69,7 @@ namespace UnityEngine.Inventory {
                 PhysicsCastShape.Box => boxAttackHits(),
                 PhysicsCastShape.Sphere => sphereAttackHits(),
                 PhysicsCastShape.Capsule => capsuleAttackHits(),
-                _ => throw new NotImplementedException(BetterLogger.GetSwitchDefault(Info.PhysicsCastShape)),
+                _ => throw new NotImplementedException(UnityObjectExtensions.GetSwitchDefault(Info.PhysicsCastShape)),
             };
 
             // Sort hits by increasing distance, and raise the Attacked event so that other components can select which components to affect

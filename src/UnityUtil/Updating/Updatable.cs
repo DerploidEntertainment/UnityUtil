@@ -1,5 +1,6 @@
 using System;
 using UnityEngine.Assertions;
+using UnityEngine.Logging;
 
 namespace UnityEngine {
 

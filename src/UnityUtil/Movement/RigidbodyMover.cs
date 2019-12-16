@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.Assertions;
+using UnityEngine.Logging;
 
 namespace UnityEngine.Movement {
 
@@ -8,7 +9,7 @@ namespace UnityEngine.Movement {
         public Rigidbody RigidbodyToMove;
         public RigidbodyMovement MovementData;
 
-        private void Awake() => Assert.IsNotNull(MovementData, this.GetAssociationAssertion(nameof(this.MovementData)));
+        private void Awake() => this.AssertAssociation(MovementData, nameof(this.MovementData));
 
         private void FixedUpdate() => MovementData.Move(RigidbodyToMove);
 

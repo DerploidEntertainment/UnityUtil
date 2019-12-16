@@ -1,7 +1,8 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using UnityEngine.Logging;
 
 namespace UnityEngine {
 
@@ -23,6 +24,8 @@ namespace UnityEngine {
         private static readonly IDictionary<Type, IDictionary<string, Service>> s_services = new Dictionary<Type, IDictionary<string, Service>>();
         private static DependencyInjector s_instance;
 
+        [Tooltip("If true, then this component will log its own progress using Debug.Log. If false, this component will not log anything.")]
+        public bool Logging = true;
         [Tooltip("The service collection from which dependencies will be resolved")]
         public Service[] ServiceCollection;
 
@@ -57,7 +60,7 @@ namespace UnityEngine {
             // Add every service specified in the Inspector to the private service collection
             // Each service instance will be associated with the named Type (which could be, e.g., some base class or interface type)
             // If no Type name was provided, then use the actual name of the service's runtime instance type
-            this.Log($" awaking, adding services...");
+            log(LogType.Log, $"Awaking, adding services...");
             for (int s = 0; s < services.Count; ++s) {
                 Service service = services[s];
 
@@ -77,7 +80,7 @@ namespace UnityEngine {
                         throw new InvalidOperationException($"The service instance configured for Type '{service.TypeName}' is not actually derived from that Type!");
                 }
                 catch (Exception ex) {
-                    this.LogError($" could not configure service of Type '{service.TypeName}': {ex.Message}");
+                    log(LogType.Error, $"Could not configure service of Type '{service.TypeName}': {ex.Message}");
                     continue;
                 }
 
@@ -86,12 +89,12 @@ namespace UnityEngine {
                 if (typeAdded) {
                     bool tagAdded = typedServices.TryGetValue(service.Tag, out _);
                     if (tagAdded) {
-                        this.LogError($" configured multiple services with Type '{service.TypeName}' and tag '{service.Tag}'");
+                        log(LogType.Error, $"Configured multiple services with Type '{service.TypeName}' and tag '{service.Tag}'");
                         continue;
                     }
                     else {
                         typedServices.Add(service.Tag, service);
-                        this.Log($" successfully configured service of type '{service.TypeName}' and tag '{service.Tag}'.", framePrefix: false);
+                        log(LogType.Error, $"Successfully configured service of type '{service.TypeName}' and tag '{service.Tag}'.");
                     }
                 }
                 else
@@ -100,7 +103,7 @@ namespace UnityEngine {
         }
         private void OnDestroy() {
             // Remove every service specified in the Inspector from the private service collection
-            this.Log($" being destroyed, removing services...");
+            log(LogType.Log, $"Being destroyed, removing services...");
             int successes = 0;
             for (int s = 0; s < ServiceCollection.Length; ++s) {
                 Service service = ServiceCollection[s];
@@ -114,7 +117,7 @@ namespace UnityEngine {
                         type = Type.GetType(service.TypeName);
                     }
                     catch (Exception ex) {
-                        this.LogError($" could not remove service of Type '{service.TypeName}': {ex.Message}");
+                        log(LogType.Error, $"Could not remove service of Type '{service.TypeName}': {ex.Message}");
                         continue;
                     }
                 }
@@ -130,24 +133,27 @@ namespace UnityEngine {
                         ++successes;
                     }
                     else {
-                        this.LogError($" couldn't remove service with Type '{type}' and tag '{service.Tag}' because somehow it wasn't present in the service collection!");
+                        log(LogType.Error, $"Couldn't remove service with Type '{type}' and tag '{service.Tag}' because somehow it wasn't present in the service collection!");
                         continue;
                     }
                 }
                 else {
-                    this.LogError($" couldn't remove service of Type '{type}' because somehow it wasn't present in the service collection!");
+                    log(LogType.Error, $"Couldn't remove service of Type '{type}' because somehow it wasn't present in the service collection!");
                     continue;
                 }
             }
 
             // Log whether or not all services were removed successfully
-            string successMsg = $" successfully removed {successes} out of {ServiceCollection.Length} services.";
             if (successes == ServiceCollection.Length)
-                this.Log(successMsg);
+                log(LogType.Log, $"Successfully removed all {ServiceCollection.Length} services.");
             else
-                this.LogError(successMsg);
+                log(LogType.Error, $"Removed {successes} out of {ServiceCollection.Length} services.");
         }
 
+        private static void log(LogType logType, object message) {
+            if (s_instance.Logging)
+                Debug.unityLogger.Log(logType, message);
+        }
         private void invokeInject(MethodInfo injectMethod, Object client) {
             var injectedTypes = new HashSet<Type>();
 
@@ -156,16 +162,17 @@ namespace UnityEngine {
             for (int p = 0; p < @params.Length; ++p) {
                 ParameterInfo param = @params[p];
                 Type pType = param.ParameterType;
+                string clientName = (client as MonoBehaviour)?.GetHierarchyNameWithType() ?? client.name;
 
                 // Warn if a dependency with this Type has already been injected
                 bool firstInjection = injectedTypes.Add(pType);
                 if (!firstInjection)
-                    client.LogWarning($" has multiple dependencies of Type '{pType.FullName}'.", framePrefix: false);
+                    log(LogType.Warning, $"{clientName} has multiple dependencies of Type '{pType.FullName}'.");
 
                 // If this dependency can't be resolved, then skip it with an error and clear the field
                 bool resolved = s_services.TryGetValue(pType, out IDictionary<string, Service> typedServices);
                 if (!resolved) {
-                    client.LogError($" has a dependency of Type '{pType.FullName}', but no service was registered with that Type.  Did you forget to add a service to the service collection, or put " + nameof(UnityEngine.DependencyInjector) + " first in the project's Script Execution Order?", framePrefix: false);
+                    log(LogType.Error, $"{clientName} has a dependency of Type '{pType.FullName}', but no service was registered with that Type. Did you forget to add a service to the service collection, or put " + nameof(UnityEngine.DependencyInjector) + " first in the project's Script Execution Order?");
                     continue;
                 }
                 InjectTagAttribute injAttr = param.GetCustomAttribute<InjectTagAttribute>();
@@ -173,13 +180,13 @@ namespace UnityEngine {
                 string tag = untagged ? "Untagged" : injAttr.Tag;
                 resolved = typedServices.TryGetValue(tag, out Service service);
                 if (!resolved) {
-                    client.LogError($" has a dependency of Type '{pType.FullName}' with tag '{tag}', but no matching service was registered. Did you incorrectly tag a service, or forget to put " + nameof(UnityEngine.DependencyInjector) + " first in the project's Script Execution Order?", framePrefix: false);
+                    log(LogType.Error, $"{clientName} has a dependency of Type '{pType.FullName}' with tag '{tag}', but no matching service was registered. Did you incorrectly tag a service, or forget to put " + nameof(UnityEngine.DependencyInjector) + " first in the project's Script Execution Order?");
                     continue;
                 }
 
                 // Log that this dependency has been resolved
                 services[p] = service.Instance;
-                client.Log($" had dependency of Type '{pType.FullName}'{(untagged ? "" : " with tag '{tag}'")} injected into field '{param.Name}'.", framePrefix: false);
+                log(LogType.Log, $"{clientName} had dependency of Type '{pType.FullName}'{(untagged ? "" : $" with tag '{tag}'")} injected into field '{param.Name}'.");
             }
 
             injectMethod.Invoke(client, services);

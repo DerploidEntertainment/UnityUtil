@@ -1,7 +1,8 @@
-using System;
+﻿using System;
 using System.Collections;
 using UnityEngine.Assertions;
 using UnityEngine.Events;
+using UnityEngine.Logging;
 
 namespace UnityEngine.Inventory {
 
@@ -28,7 +29,7 @@ namespace UnityEngine.Inventory {
 
         // EVENT HANDLERS
         protected override void BetterAwake() {
-            Assert.IsNotNull(Info, this.GetAssociationAssertion(nameof(UnityEngine.Inventory.OverheatToolInfo)));
+            this.AssertAssociation(Info, nameof(OverheatToolInfo));
             Assert.IsTrue(Info.StartingHeat <= Info.MaxHeat, $"{this.GetHierarchyNameWithType()} was started with {nameof(this.Info.StartingHeat)} heat but it can only store a max of {this.Info.MaxHeat}!");
 
             BetterUpdate = doUpdate;

@@ -1,7 +1,8 @@
-using System;
+﻿using System;
 using UnityEngine.Assertions;
 using UnityEngine.Events;
 using UnityEngine.Inputs;
+using UnityEngine.Logging;
 
 namespace UnityEngine.Inventory {
 
@@ -48,8 +49,8 @@ namespace UnityEngine.Inventory {
 
         // EVENT HANDLERS
         private void Awake() {
-            Assert.IsNotNull(Info, this.GetAssociationAssertion(nameof(UnityEngine.Inventory.AmmoToolInfo)));
-            Assert.IsNotNull(ReloadInput, this.GetAssociationAssertion(nameof(this.ReloadInput)));
+            this.AssertAssociation(Info, nameof(AmmoToolInfo));
+            this.AssertAssociation(ReloadInput, nameof(this.ReloadInput));
             Assert.IsTrue(Info.StartingAmmo <= Info.MaxClipAmmo * (Info.MaxBackupClips + 1), $"{this.GetHierarchyNameWithType()} was started with {nameof(this.Info.StartingAmmo)} ammo but it can only store a max of {this.Info.MaxClipAmmo} * ({this.Info.MaxClipAmmo * (this.Info.MaxBackupClips + 1)}!");
 
             // Initialize ammo

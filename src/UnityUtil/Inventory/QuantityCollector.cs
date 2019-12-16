@@ -1,4 +1,4 @@
-using UnityEngine.Assertions;
+﻿using UnityEngine.Logging;
 
 namespace UnityEngine.Inventory {
 
@@ -8,7 +8,7 @@ namespace UnityEngine.Inventory {
         public ManagedQuantity Quantity;
 
         private void Awake() {
-            Assert.IsNotNull(Quantity, this.GetAssociationAssertion(nameof(this.Quantity)));
+            this.AssertAssociation(Quantity, nameof(this.Quantity));
 
             GetComponent<Collector>().Collected.AddListener(collect);
         }

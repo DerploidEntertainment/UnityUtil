@@ -1,5 +1,5 @@
-using UnityEngine.Assertions;
-using UnityEngine.Inputs;
+﻿using UnityEngine.Inputs;
+using UnityEngine.Logging;
 
 namespace UnityEngine.Movement {
 
@@ -36,7 +36,7 @@ namespace UnityEngine.Movement {
 
         // EVENT HANDLERS
         protected override void BetterAwake() {
-            Assert.IsNotNull(ControllerToMove, this.GetAssociationAssertion(nameof(this.ControllerToMove)));
+            this.AssertAssociation(ControllerToMove, nameof(this.ControllerToMove));
 
             _oldHeight = ControllerToMove.height;
             CrouchHeight = Mathf.Min(CrouchHeight, _oldHeight);

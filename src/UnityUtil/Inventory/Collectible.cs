@@ -1,4 +1,5 @@
 ﻿using UnityEngine.Assertions;
+using UnityEngine.Logging;
 
 namespace UnityEngine.Inventory {
 
@@ -13,7 +14,7 @@ namespace UnityEngine.Inventory {
         public CollectEvent Emptied = new CollectEvent();
 
         private void Awake() {
-            Assert.IsNotNull(Root, this.GetAssociationAssertion(nameof(this.Root)));
+            this.AssertAssociation(Root, nameof(this.Root));
             Assert.IsTrue(Amount >= 0, $"{this.GetHierarchyNameWithType()} must have a positive {nameof(this.Amount)}!");
         }
 

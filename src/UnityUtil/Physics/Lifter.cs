@@ -1,7 +1,8 @@
-using System;
+﻿using System;
 using UnityEngine.Assertions;
 using UnityEngine.Events;
 using UnityEngine.Inputs;
+using UnityEngine.Logging;
 using UnityEngine.Triggers;
 
 namespace UnityEngine {

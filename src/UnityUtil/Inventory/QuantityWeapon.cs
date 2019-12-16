@@ -1,5 +1,5 @@
 ﻿using System.Linq;
-using UnityEngine.Assertions;
+using UnityEngine.Logging;
 
 namespace UnityEngine.Inventory {
 
@@ -13,7 +13,7 @@ namespace UnityEngine.Inventory {
 
         // EVENT HANDLERS
         private void Awake() {
-            Assert.IsNotNull(Info, this.GetAssociationAssertion(nameof(UnityEngine.Inventory.QuantityWeaponInfo)));
+            this.AssertAssociation(Info, nameof(QuantityWeaponInfo));
 
             _weapon = GetComponent<Weapon>();
             _weapon.Attacked.AddListener(decreaseQuantity);

@@ -1,6 +1,6 @@
-using System;
-using UnityEngine.Assertions;
+﻿using System;
 using UnityEngine.Inputs;
+using UnityEngine.Logging;
 
 namespace UnityEngine.Movement {
 
@@ -38,7 +38,7 @@ namespace UnityEngine.Movement {
                 AxisDirection.OppositeGravity => -Physics.gravity.normalized,
                 AxisDirection.CustomWorldSpace => CustomAxisDirection.normalized,
                 AxisDirection.CustomLocalSpace => (UsePhysicsToLook ? RigidbodyToRotate.transform : TransformToRotate).TransformDirection(CustomAxisDirection.normalized),
-                _ => throw new NotImplementedException(BetterLogger.GetSwitchDefault(AxisDirectionType)),
+                _ => throw new NotImplementedException(UnityObjectExtensions.GetSwitchDefault(AxisDirectionType)),
             };
 
         // EVENT HANDLERS
@@ -49,7 +49,7 @@ namespace UnityEngine.Movement {
             CustomAxisDirection = Vector3.up;
         }
         protected override void BetterAwake() {
-            Assert.IsNotNull(LookInput, this.GetAssociationAssertion(nameof(this.LookInput)));
+            this.AssertAssociation(LookInput, nameof(this.LookInput));
 
             RegisterUpdatesAutomatically = true;
             BetterUpdate = doUpdate;

@@ -1,10 +1,13 @@
 ﻿using Sirenix.OdinInspector;
 using System.Runtime.CompilerServices;
 using UnityEngine.Events;
+using UnityEngine.Logging;
 
 namespace UnityEngine.Triggers {
 
     public class SequenceTrigger : MonoBehaviour {
+
+        private ILogger _logger;
 
         [Tooltip("The current step; i.e., the index (0-based) of " + nameof(StepTriggers) + " that will be invoked the next time " + nameof(Trigger) + " is called..")]
         public int CurrentStep = 0;
@@ -12,6 +15,10 @@ namespace UnityEngine.Triggers {
         public bool Cycle;
         [Tooltip("The sequence of triggers to iterate through. Every time " + nameof(Step) + " is called, the " + nameof(CurrentStep) + " index will be incremented. Call " + nameof(Trigger) + " to invoke the trigger at " + nameof(CurrentStep) + " (multiple times, if desired).")]
         public UnityEvent[] StepTriggers;
+
+        public void Inject(ILoggerProvider loggerProvider) => _logger = loggerProvider.GetLogger(this);
+
+        private void Awake() => DependencyInjector.ResolveDependenciesOf(this);
 
         [Button]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -29,7 +36,7 @@ namespace UnityEngine.Triggers {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Trigger() {
             if (StepTriggers[CurrentStep] == null)
-                this.LogWarning($" triggered at step {CurrentStep}, but the trigger was null!");
+                _logger.LogWarning($"Triggered at step {CurrentStep}, but the trigger was null!");
             else
                 StepTriggers[CurrentStep]?.Invoke();
         }

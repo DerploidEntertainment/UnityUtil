@@ -1,5 +1,6 @@
-using UnityEngine.Events;
+﻿using UnityEngine.Events;
 using UnityEngine.Inputs;
+using UnityEngine.Logging;
 using UnityEngine.SceneManagement;
 
 namespace UnityEngine {
@@ -7,12 +8,17 @@ namespace UnityEngine {
     [DisallowMultipleComponent]
     public class GameStateManager : MonoBehaviour {
 
+        private ILogger _logger;
+
         // INSPECTOR INTERFACE
         [Tooltip("The input to use to toggle the paused state of the game.  If not set, then the game can only be paused programmatically.")]
         public StartStopInput TogglePauseInput;
         public LoadSceneMode LoadSceneMode = LoadSceneMode.Single;
         public UnityEvent Paused = new UnityEvent();
         public UnityEvent Unpaused = new UnityEvent();
+
+        private void Inject(ILoggerProvider loggerProvider) => _logger = loggerProvider.GetLogger(this);
+        private void Awake() => DependencyInjector.ResolveDependenciesOf(this);
 
         // API INTERFACE
         public bool IsPaused { get; private set; }
@@ -22,7 +28,7 @@ namespace UnityEngine {
             Time.timeScale = IsPaused ? 0f : 1f;
 
             // Raise the corresponding event
-            this.Log($" {(IsPaused ? "paused" : "resumed")} the game.");
+            _logger.Log($" {(IsPaused ? "paused" : "resumed")} the game.");
             (IsPaused ? Paused : Unpaused).Invoke();
         }
         public void LoadScene(string sceneName) => SceneManager.LoadScene(sceneName, LoadSceneMode);

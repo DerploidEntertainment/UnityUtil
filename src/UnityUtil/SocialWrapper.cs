@@ -1,7 +1,6 @@
 ﻿using System;
-using UnityEngine;
-using UnityEngine.Assertions;
 using UnityEngine.Events;
+using UnityEngine.Logging;
 using UnityEngine.SocialPlatforms;
 
 namespace UnityEngine {
@@ -15,20 +14,24 @@ namespace UnityEngine {
 
     public class SocialWrapper : MonoBehaviour {
 
-        // INSPECTOR FIELDS
+        private ILogger _logger;
+
         public UserEvent AuthenticationFailed = new UserEvent();
         public UserEvent AuthenticationSucceeded = new UserEvent();
 
-        // EVENT HANDLERS
+        public void Inject(ILoggerProvider loggerProvider) => _logger = loggerProvider.GetLogger(this);
+
         private void Start() {
+            DependencyInjector.ResolveDependenciesOf(this);
+
             ILocalUser user = Social.localUser;
             user.Authenticate((success, errors) => {
                 if (!success) {
-                    this.Log(" failed to authenticate!");
+                    _logger.Log("Failed to authenticate!");
                     AuthenticationFailed.Invoke(null, errors);
                 }
                 else {
-                    this.Log(" successfully authenticated!");
+                    _logger.Log("Successfully authenticated!");
                     AuthenticationSucceeded.Invoke(user.id, null);
                 }
             });

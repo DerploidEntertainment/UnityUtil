@@ -1,5 +1,6 @@
-using System;
+﻿using System;
 using UnityEngine.Inventory;
+using UnityEngine.Logging;
 
 namespace UnityEngine {
 
@@ -30,7 +31,7 @@ namespace UnityEngine {
                 AxisDirection.OppositeGravity => -Physics.gravity.normalized,
                 AxisDirection.CustomWorldSpace => CustomUpwardDirection.normalized,
                 AxisDirection.CustomLocalSpace => TransformToRotate.TransformDirection(CustomUpwardDirection.normalized),
-                _ => throw new NotImplementedException(BetterLogger.GetSwitchDefault(UpwardDirectionType)),
+                _ => throw new NotImplementedException(UnityObjectExtensions.GetSwitchDefault(UpwardDirectionType)),
             };
 
         // EVENT HANDLERS

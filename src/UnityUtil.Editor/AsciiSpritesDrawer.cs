@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Logging;
 using E = UnityEditor;
 
 namespace UnityUtil.Editor {
@@ -10,9 +11,14 @@ namespace UnityUtil.Editor {
     [CustomEditor(typeof(AsciiSprites))]
     public class AsciiSpritesDrawer : E.Editor {
 
+        private ILogger _logger;
         private SerializedProperty _pathProp;
         private readonly IDictionary<char, SerializedProperty> _charProps = new Dictionary<char, SerializedProperty>();
 
+        public void Inject(ILoggerProvider loggerProvider) => _logger = loggerProvider.GetLogger(this);
+        private void Awake() {
+            DependencyInjector.ResolveDependenciesOf(this);
+        }
         private void OnEnable() {
             _pathProp = serializedObject.FindProperty(nameof(AsciiSprites.AutoLoadSpritePath));
 
@@ -111,19 +117,19 @@ namespace UnityUtil.Editor {
         }
 
         private void loadAllSpriteAssets() {
-            Debug.Log($"Loading character Sprites using path template '{_pathProp.stringValue}'...");
+            _logger.Log($"Loading character Sprites using path template '{_pathProp.stringValue}'...");
             loadSpriteAssets(' ', '~');
         }
         private void loadNumberSpriteAssets() {
-            Debug.Log($"Loading number Sprites using path template '{_pathProp.stringValue}'...");
+            _logger.Log($"Loading number Sprites using path template '{_pathProp.stringValue}'...");
             loadSpriteAssets('0', '9');
         }
         private void loadUppercaseSpriteAssets() {
-            Debug.Log($"Loading uppercase letter Sprites using path template '{_pathProp.stringValue}'...");
+            _logger.Log($"Loading uppercase letter Sprites using path template '{_pathProp.stringValue}'...");
             loadSpriteAssets('A', 'Z');
         }
         private void loadLowercaseSpriteAssets() {
-            Debug.Log($"Loading lowercase letter Sprites using path template '{_pathProp.stringValue}'...");
+            _logger.Log($"Loading lowercase letter Sprites using path template '{_pathProp.stringValue}'...");
             loadSpriteAssets('a', 'z');
         }
         private void loadSpriteAssets(char firstChar, char lastChar) {
@@ -139,7 +145,7 @@ namespace UnityUtil.Editor {
                 string assetFileName = GetAssetName(ch, _pathProp.stringValue);
                 Sprite sprite = AssetDatabase.LoadAssetAtPath<Sprite>(assetFileName);
                 if (sprite == null)
-                    Debug.LogWarning($"Could not locate Sprite for character '{ch}' (expected at '{assetFileName}').");
+                    _logger.LogWarning($"Could not locate Sprite for character '{ch}' (expected at '{assetFileName}').");
                 else {
                     _charProps[ch].objectReferenceValue = sprite;
                     ++numLoaded;
@@ -155,7 +161,7 @@ namespace UnityUtil.Editor {
                 msg = $"Loaded {numLoaded} / {numAttempted} character Sprites.  See warnings above.";
             else
                 msg = $"Successfully loaded all {numAttempted} character Sprites!";
-            Debug.Log(msg);
+            _logger.Log(msg);
         }
         internal static string GetAssetName(char character, string templateFileName) {
             string fileName = $"Assets/{templateFileName}";

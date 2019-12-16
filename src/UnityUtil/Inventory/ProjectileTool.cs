@@ -1,5 +1,4 @@
-﻿using UnityEngine;
-using UnityEngine.Assertions;
+﻿using UnityEngine.Logging;
 
 namespace UnityEngine.Inventory {
 
@@ -15,7 +14,7 @@ namespace UnityEngine.Inventory {
 
         // EVENT HANDLERS
         private void Awake() {
-            Assert.IsNotNull(Info, this.GetAssociationAssertion(nameof(UnityEngine.Inventory.ProjectileToolInfo)));
+            this.AssertAssociation(Info, nameof(ProjectileToolInfo));
 
             _tool = GetComponent<Tool>();
             _tool.Used.AddListener(spawnProjectile);

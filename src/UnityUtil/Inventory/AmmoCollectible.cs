@@ -1,5 +1,5 @@
-﻿using UnityEngine;
-using UnityEngine.Assertions;
+﻿using UnityEngine.Assertions;
+using UnityEngine.Logging;
 
 namespace UnityEngine.Inventory {
 
@@ -10,7 +10,7 @@ namespace UnityEngine.Inventory {
         public string AmmoTypeName;
 
         private void Awake() =>
-            Assert.IsTrue(AmmoTypeName != "", $"{this.GetHierarchyNameWithType()} must specify a value for {nameof(this.AmmoTypeName)}!");
+            Assert.IsFalse(string.IsNullOrEmpty(AmmoTypeName), $"{this.GetHierarchyNameWithType()} must specify a value for {nameof(this.AmmoTypeName)}!");
 
     }
 

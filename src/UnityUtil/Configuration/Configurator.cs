@@ -1,17 +1,20 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using UnityEngine.Logging;
 
 namespace UnityEngine {
 
     public class Configurator : MonoBehaviour {
 
+        private ILogger _logger;
         private IDictionary<string, object> _values = new Dictionary<string, object>();
 
         [Tooltip("Sources must be provided in reverse order of importance (i.e., configs in source 0 will override configs in source 1, which will override configs in source 2, etc.)")]
         public ConfigurationSource[] ConfigurationSources;
 
+        public void Inject(ILoggerProvider loggerProvider) => _logger = loggerProvider.GetLogger(this);
 
         public void Configure(MonoBehaviour client) => Configure(new[] { client });
         public void Configure(IEnumerable<MonoBehaviour> clients) {
@@ -25,7 +28,7 @@ namespace UnityEngine {
         }
 
         private void loadConfigValues() {
-            this.Log($" loading {ConfigurationSources.Length} configuration sources...");
+            _logger.Log($"Loading {ConfigurationSources.Length} configuration sources...");
 
             int numLoaded = 0;
             for (int s = 0; s < ConfigurationSources.Length; ++s) {
@@ -64,7 +67,7 @@ namespace UnityEngine {
                 object val = getValue(fieldKey, field.FieldType);
                 if (val != null) {
                     field.SetValue(client, val);
-                    this.Log($" configured field '{field.Name}' of {client.GetHierarchyNameWithType()}.");
+                    _logger.Log($"Configured field '{field.Name}' of {client.GetHierarchyNameWithType()}.");
                 }
             }
         }

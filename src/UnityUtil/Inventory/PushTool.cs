@@ -1,6 +1,6 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using UnityEngine.Assertions;
+using UnityEngine.Logging;
 
 namespace UnityEngine.Inventory {
 
@@ -17,7 +17,7 @@ namespace UnityEngine.Inventory {
 
         // EVENT HANDLERS
         private void Awake() {
-            Assert.IsNotNull(Info, this.GetAssociationAssertion(nameof(UnityEngine.Inventory.PushToolInfo)));
+            this.AssertAssociation(Info, nameof(PushToolInfo));
 
             _weapon = GetComponent<Weapon>();
             _weapon.Attacked.AddListener(push);

@@ -1,5 +1,6 @@
 using Sirenix.OdinInspector;
 using System;
+using UnityEngine.Logging;
 
 namespace UnityEngine.Triggers {
 
@@ -75,7 +76,7 @@ namespace UnityEngine.Triggers {
 
         [Button("Start")]
         public void StartBehavior() {
-            AssertAcitveAndEnabled("start");
+            this.AssertAcitveAndEnabled("start");
             if (Running)
                 return;
 
@@ -83,24 +84,24 @@ namespace UnityEngine.Triggers {
         }
         [Button("Restart")]
         public void RestartBehavior() {
-            AssertAcitveAndEnabled("restart");
+            this.AssertAcitveAndEnabled("restart");
             if (Running)
                 DoStop();
             DoRestart();
         }
         [Button("Pause")]
         public void PauseBehavior() {
-            AssertAcitveAndEnabled("pause");
+            this.AssertAcitveAndEnabled("pause");
             DoPause();
         }
         [Button("Resume")]
         public void ResumeBehavior() {
-            AssertAcitveAndEnabled("resume");
+            this.AssertAcitveAndEnabled("resume");
             DoResume();
         }
         [Button("Stop")]
         public void StopBehavior() {
-            AssertAcitveAndEnabled("stop");
+            this.AssertAcitveAndEnabled("stop");
             if (!Running)
                 return;
 

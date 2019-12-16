@@ -1,5 +1,6 @@
-using System;
+﻿using System;
 using UnityEngine.Events;
+using UnityEngine.Logging;
 
 namespace UnityEngine {
 
@@ -33,7 +34,7 @@ namespace UnityEngine {
                 ChangeMode.Absolute => amount,
                 ChangeMode.PercentCurrent => amount * currentAmount,
                 ChangeMode.PercentMax => amount * maxAmount,
-                _ => throw new NotImplementedException(BetterLogger.GetSwitchDefault(fromChangeMode)),
+                _ => throw new NotImplementedException(UnityObjectExtensions.GetSwitchDefault(fromChangeMode)),
             };
 
             // Convert that amount to the "to" change amount
@@ -41,7 +42,7 @@ namespace UnityEngine {
                 ChangeMode.Absolute => amount,
                 ChangeMode.PercentCurrent => absChange / currentAmount,
                 ChangeMode.PercentMax => absChange / maxAmount,
-                _ => throw new NotImplementedException(BetterLogger.GetSwitchDefault(toChangeMode)),
+                _ => throw new NotImplementedException(UnityObjectExtensions.GetSwitchDefault(toChangeMode)),
             };
         }
 

@@ -1,4 +1,5 @@
-using System;
+﻿using System;
+using UnityEngine.Logging;
 
 namespace UnityEngine {
 
@@ -27,7 +28,7 @@ namespace UnityEngine {
                 AxisDirection.OppositeGravity => -Physics.gravity.normalized,
                 AxisDirection.CustomWorldSpace => CustomUpwardDirection.normalized,
                 AxisDirection.CustomLocalSpace => RigidbodyToStabilize.transform.TransformDirection(CustomUpwardDirection.normalized),
-                _ => throw new NotImplementedException(BetterLogger.GetSwitchDefault(UpwardDirectionType)),
+                _ => throw new NotImplementedException(UnityObjectExtensions.GetSwitchDefault(UpwardDirectionType)),
             };
 
         // EVENT HANDLERS
