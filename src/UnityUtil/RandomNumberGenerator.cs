@@ -9,22 +9,37 @@ namespace UnityEngine {
         public string Seed;
 
         protected override void OnAwake() {
-            int seed;
-            if (string.IsNullOrEmpty(Seed)) {
-                seed = DateTime.Now.GetHashCode();
+            (int seed, bool generated) = GetOrGenerateSeed(Seed);
+            if (generated) {
                 Seed = seed.ToString();
+                Logger.Log($"Generated time-dependent seed {seed}");
             }
-            else {
-                bool isInt = int.TryParse(Seed, out seed);
-                if (!isInt)
-                    seed = Seed.GetHashCode();
-            }
+            else
+                Logger.Log($"Using configured seed {seed}");
 
             Random.InitState(seed);
             SystemRand = new S.Random(seed);
         }
 
         public S.Random SystemRand { get; private set; }
+
+        internal (int seed, bool generated) GetOrGenerateSeed(string configSeed) {
+            int seed;
+            bool generated;
+
+            if (string.IsNullOrEmpty(configSeed)) {
+                seed = DateTime.Now.GetHashCode();
+                generated = true;
+            }
+            else {
+                bool isInt = int.TryParse(Seed, out seed);
+                if (!isInt)
+                    seed = Seed.GetHashCode();
+                generated = false;
+            }
+
+            return (seed, generated);
+        }
 
     }
 
