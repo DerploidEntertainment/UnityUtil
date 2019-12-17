@@ -15,9 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="$(UnityScriptsDir)\**\*.cs">
-      <Link>%(Filename)%(Extension)</Link>
-    </Compile>
+    <Compile Include="$(UnityScriptsDir)\**\*.cs" />
   </ItemGroup>
 
 </Project>
