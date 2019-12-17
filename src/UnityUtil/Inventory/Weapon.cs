@@ -49,7 +49,7 @@ namespace UnityEngine.Inventory {
                     Gizmos.DrawWireSphere(transform.position + Info.Range * transform.forward, Info.Radius);
                     break;
 
-                default: _logger.LogWarning("Could not draw Gizmos. " + UnityObjectExtensions.GetSwitchDefault(Info.PhysicsCastShape)); break;
+                default: _logger.LogWarning("Could not draw Gizmos. " + UnityObjectExtensions.GetSwitchDefault(Info.PhysicsCastShape), context: this); break;
             }
         }
 

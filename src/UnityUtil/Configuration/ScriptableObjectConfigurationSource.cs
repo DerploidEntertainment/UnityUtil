@@ -13,7 +13,7 @@ namespace UnityEngine {
 
         public override IDictionary<string, object> LoadConfigs() {
             string resFileName = $"{ResourceName}.asset";
-            Logger.Log($"Loading configs from ScriptableObject configuration file '{resFileName}'...");
+            Logger.Log($"Loading configs from ScriptableObject configuration file '{resFileName}'...", context: this);
 
             // Load the specified resource file, if it exists
             ConfigObject config = Resources.Load<ConfigObject>(ResourceName);
@@ -21,7 +21,7 @@ namespace UnityEngine {
                 string notFoundMsg = $"Expected ScriptableObject file ('{resFileName}') for configuration source could not be found. Make sure the file exists and is not locked by any other applications.";
                 if (Required)
                     throw new FileNotFoundException(notFoundMsg, ResourceName);
-                Logger.LogWarning(notFoundMsg);
+                Logger.LogWarning(notFoundMsg, context: this);
                 return new Dictionary<string, object>();
             }
 
@@ -32,11 +32,11 @@ namespace UnityEngine {
                 .ToDictionary(g => g.Key, g => {
                     var keyVals = g.ToArray();
                     if (keyVals.Length > 1)
-                        Logger.LogWarning($"Duplicate config key ('{g.Key}') detected in ScriptableObject configuration file '{resFileName}'. Keeping the last value...");
+                        Logger.LogWarning($"Duplicate config key ('{g.Key}') detected in ScriptableObject configuration file '{resFileName}'. Keeping the last value...", context: this);
                     return keyVals[keyVals.Length - 1].Value;
                 });
 
-            Logger.Log($"Successfully loaded {values.Count} configs from ScriptableObject configuration file '{resFileName}'.");
+            Logger.Log($"Successfully loaded {values.Count} configs from ScriptableObject configuration file '{resFileName}'.", context: this);
 
             return values;
         }

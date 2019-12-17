@@ -69,7 +69,7 @@ namespace UnityEngine {
                 Destroy(_previous);
 
             string newName = $"{BaseName}{(DestroyPrevious ? "" : "_" + _count)}";
-            _logger.Log($"Spawning {newName}");
+            _logger.Log($"Spawning {newName}", context: this);
 
             // Instantiating a Prefab can sometimes give a GameObject or a Transform...we want the GameObject
             GameObject obj = (SpawnParent == null) ?
