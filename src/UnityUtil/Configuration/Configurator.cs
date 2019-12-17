@@ -28,7 +28,7 @@ namespace UnityEngine {
         }
 
         private void loadConfigValues() {
-            _logger.Log($"Loading {ConfigurationSources.Length} configuration sources...");
+            _logger.Log($"Loading {ConfigurationSources.Length} configuration sources...", context: this);
 
             int numLoaded = 0;
             for (int s = 0; s < ConfigurationSources.Length; ++s) {
@@ -67,7 +67,7 @@ namespace UnityEngine {
                 object val = getValue(fieldKey, field.FieldType);
                 if (val != null) {
                     field.SetValue(client, val);
-                    _logger.Log($"Configured field '{field.Name}' of {client.GetHierarchyNameWithType()}.");
+                    _logger.Log($"Configured field '{field.Name}' of {client.GetHierarchyNameWithType()}.", context: this);
                 }
             }
         }

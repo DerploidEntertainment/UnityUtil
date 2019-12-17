@@ -32,7 +32,7 @@ namespace UnityEngine {
             // especially if this script is attached to an object that is created when the scene is loaded
             // In that case, discard this update.
             if (_delta < 0) {
-                _logger.LogWarning($"Delta time was negative ({_delta})...discarding.");
+                _logger.LogWarning($"Delta time was negative ({_delta})...discarding.", context: this);
                 _delta = 0;
             }
 

@@ -117,19 +117,19 @@ namespace UnityUtil.Editor {
         }
 
         private void loadAllSpriteAssets() {
-            _logger.Log($"Loading character Sprites using path template '{_pathProp.stringValue}'...");
+            _logger.Log($"Loading character Sprites using path template '{_pathProp.stringValue}'...", context: this);
             loadSpriteAssets(' ', '~');
         }
         private void loadNumberSpriteAssets() {
-            _logger.Log($"Loading number Sprites using path template '{_pathProp.stringValue}'...");
+            _logger.Log($"Loading number Sprites using path template '{_pathProp.stringValue}'...", context: this);
             loadSpriteAssets('0', '9');
         }
         private void loadUppercaseSpriteAssets() {
-            _logger.Log($"Loading uppercase letter Sprites using path template '{_pathProp.stringValue}'...");
+            _logger.Log($"Loading uppercase letter Sprites using path template '{_pathProp.stringValue}'...", context: this);
             loadSpriteAssets('A', 'Z');
         }
         private void loadLowercaseSpriteAssets() {
-            _logger.Log($"Loading lowercase letter Sprites using path template '{_pathProp.stringValue}'...");
+            _logger.Log($"Loading lowercase letter Sprites using path template '{_pathProp.stringValue}'...", context: this);
             loadSpriteAssets('a', 'z');
         }
         private void loadSpriteAssets(char firstChar, char lastChar) {
@@ -145,7 +145,7 @@ namespace UnityUtil.Editor {
                 string assetFileName = GetAssetName(ch, _pathProp.stringValue);
                 Sprite sprite = AssetDatabase.LoadAssetAtPath<Sprite>(assetFileName);
                 if (sprite == null)
-                    _logger.LogWarning($"Could not locate Sprite for character '{ch}' (expected at '{assetFileName}').");
+                    _logger.LogWarning($"Could not locate Sprite for character '{ch}' (expected at '{assetFileName}').", context: this);
                 else {
                     _charProps[ch].objectReferenceValue = sprite;
                     ++numLoaded;
@@ -161,7 +161,7 @@ namespace UnityUtil.Editor {
                 msg = $"Loaded {numLoaded} / {numAttempted} character Sprites.  See warnings above.";
             else
                 msg = $"Successfully loaded all {numAttempted} character Sprites!";
-            _logger.Log(msg);
+            _logger.Log(msg, context: this);
         }
         internal static string GetAssetName(char character, string templateFileName) {
             string fileName = $"Assets/{templateFileName}";

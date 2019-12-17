@@ -28,7 +28,7 @@ namespace UnityEngine {
             Time.timeScale = IsPaused ? 0f : 1f;
 
             // Raise the corresponding event
-            _logger.Log($" {(IsPaused ? "paused" : "resumed")} the game.");
+            _logger.Log($" {(IsPaused ? "paused" : "resumed")} the game.", context: this);
             (IsPaused ? Paused : Unpaused).Invoke();
         }
         public void LoadScene(string sceneName) => SceneManager.LoadScene(sceneName, LoadSceneMode);

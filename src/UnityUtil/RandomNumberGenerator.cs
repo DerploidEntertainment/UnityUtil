@@ -12,10 +12,10 @@ namespace UnityEngine {
             (int seed, bool generated) = GetOrGenerateSeed(Seed);
             if (generated) {
                 Seed = seed.ToString();
-                Logger.Log($"Generated time-dependent seed {seed}");
+                Logger.Log($"Generated time-dependent seed {seed}", context: this);
             }
             else
-                Logger.Log($"Using configured seed {seed}");
+                Logger.Log($"Using configured seed {seed}", context: this);
 
             Random.InitState(seed);
             SystemRand = new S.Random(seed);

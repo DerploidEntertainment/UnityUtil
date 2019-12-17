@@ -2,15 +2,16 @@
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Logging;
 using UnityEngine.Triggers;
 
-namespace UnityUtil.Test.EditMode {
+namespace UnityUtil.Test.EditMode.Triggers {
 
     public class SequenceTriggerTest {
 
         [Test]
         public void CanStep() {
-            SequenceTrigger trigger = getTriggerObject(2);
+            SequenceTrigger trigger = getSequenceTrigger(2);
             int origStep = trigger.CurrentStep;
 
             trigger.Step();
@@ -20,7 +21,7 @@ namespace UnityUtil.Test.EditMode {
 
         [Test]
         public void CanStepForwardMultiple() {
-            SequenceTrigger trigger = getTriggerObject(10);
+            SequenceTrigger trigger = getSequenceTrigger(10);
             int origStep = trigger.CurrentStep;
 
             trigger.Step(1);
@@ -33,7 +34,7 @@ namespace UnityUtil.Test.EditMode {
 
         [Test]
         public void CanStepBackwardMultiple() {
-            SequenceTrigger trigger = getTriggerObject(10);
+            SequenceTrigger trigger = getSequenceTrigger(10);
             int origStep = 5;
             trigger.CurrentStep = origStep;
 
@@ -48,7 +49,7 @@ namespace UnityUtil.Test.EditMode {
         [Test]
         public void StepForwardCanClamp() {
             int numSteps = 2;
-            SequenceTrigger trigger = getTriggerObject(numSteps);
+            SequenceTrigger trigger = getSequenceTrigger(numSteps);
             int origStep = 0;
             trigger.CurrentStep = origStep;
 
@@ -63,7 +64,7 @@ namespace UnityUtil.Test.EditMode {
         [Test]
         public void StepBackwardCanClamp() {
             int numSteps = 2;
-            SequenceTrigger trigger = getTriggerObject(numSteps);
+            SequenceTrigger trigger = getSequenceTrigger(numSteps);
             int origStep = numSteps - 1;
             trigger.CurrentStep = origStep;
 
@@ -78,7 +79,7 @@ namespace UnityUtil.Test.EditMode {
         [Test]
         public void StepForwardCanCycle() {
             int numSteps = 2;
-            SequenceTrigger trigger = getTriggerObject(numSteps, cycle: true);
+            SequenceTrigger trigger = getSequenceTrigger(numSteps, cycle: true);
             trigger.CurrentStep = trigger.StepTriggers.Length - 1;
 
             trigger.Step(1);
@@ -94,7 +95,7 @@ namespace UnityUtil.Test.EditMode {
         [Test]
         public void StepBackwardCanCycle() {
             int numSteps = 2;
-            SequenceTrigger trigger = getTriggerObject(numSteps, cycle: true);
+            SequenceTrigger trigger = getSequenceTrigger(numSteps, cycle: true);
             trigger.CurrentStep = 1;
 
             trigger.Step(-1);
@@ -110,7 +111,7 @@ namespace UnityUtil.Test.EditMode {
         [Test]
         public void CanTrigger() {
             string affectedTxt = "";
-            SequenceTrigger trigger = getTriggerObject(2);
+            SequenceTrigger trigger = getSequenceTrigger(2);
             trigger.CurrentStep = 0;
             var unityEvent = new UnityEvent();
             unityEvent.AddListener(() => affectedTxt = $"Triggered");
@@ -124,7 +125,7 @@ namespace UnityUtil.Test.EditMode {
         [Test]
         public void CanTriggerMultipleTimes() {
             int affectedNum = 0;
-            SequenceTrigger trigger = getTriggerObject(1);
+            SequenceTrigger trigger = getSequenceTrigger(1);
             trigger.CurrentStep = 0;
             var unityEvent = new UnityEvent();
             unityEvent.AddListener(() => ++affectedNum);
@@ -140,7 +141,7 @@ namespace UnityUtil.Test.EditMode {
         [Test]
         public void CanStepAndTrigger() {
             string affectedTxt = "";
-            SequenceTrigger trigger = getTriggerObject(2);
+            SequenceTrigger trigger = getSequenceTrigger(2);
             trigger.CurrentStep = 0;
             trigger.StepTriggers = Enumerable.Range(0, 2).Select(e => {
                 var unityEvent = new UnityEvent();
@@ -160,14 +161,15 @@ namespace UnityUtil.Test.EditMode {
 
         [Test]
         public void TriggerHandlesNullEvents() {
-            SequenceTrigger trigger = getTriggerObject(1);
+            SequenceTrigger trigger = getSequenceTrigger(1);
 
             Assert.DoesNotThrow(trigger.Trigger);
         }
 
-        private SequenceTrigger getTriggerObject(int numSteps, bool cycle = false) {
+        private SequenceTrigger getSequenceTrigger(int numSteps, bool cycle = false, ILoggerProvider loggerProvider = null) {
             var obj = new GameObject("TestTrigger");
             SequenceTrigger trigger = obj.AddComponent<SequenceTrigger>();
+            trigger.Inject(loggerProvider ?? new TestLoggerProvider());
             trigger.StepTriggers = new UnityEvent[numSteps];
             trigger.Cycle = cycle;
 

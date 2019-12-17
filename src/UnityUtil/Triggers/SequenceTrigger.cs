@@ -36,7 +36,7 @@ namespace UnityEngine.Triggers {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Trigger() {
             if (StepTriggers[CurrentStep] == null)
-                _logger.LogWarning($"Triggered at step {CurrentStep}, but the trigger was null!");
+                _logger.LogWarning($"Triggered at step {CurrentStep}, but the trigger was null!", context: this);
             else
                 StepTriggers[CurrentStep]?.Invoke();
         }

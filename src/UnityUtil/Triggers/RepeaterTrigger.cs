@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine.Assertions;
 using UnityEngine.Events;
+using UnityEngine.Logging;
 
 namespace UnityEngine.Triggers {
 
@@ -34,7 +35,7 @@ namespace UnityEngine.Triggers {
             base.DoRestart();
 
             if (Logging)
-                Logger.Log("Starting.");
+                Logger.Log("Starting.", context: this);
 
             TimeSincePreviousTick = 0f;
             NumPassedTicks = 0u;
@@ -43,20 +44,20 @@ namespace UnityEngine.Triggers {
             base.DoStop();
 
             if (Logging)
-                Logger.Log($"Stopped.");
+                Logger.Log($"Stopped.", context: this);
             Stopped.Invoke();
         }
         protected override void DoPause() {
             base.DoStop();
 
             if (Logging)
-                Logger.Log($"Paused.");
+                Logger.Log($"Paused.", context: this);
         }
         protected override void DoResume() {
             base.DoResume();
 
             if (Logging)
-                Logger.Log("Resumed.");
+                Logger.Log("Resumed.", context: this);
         }
         protected override void DoUpdate(float deltaTime) {
             // Update the time elapsed, if the Timer is running
@@ -65,7 +66,7 @@ namespace UnityEngine.Triggers {
             // If another Tick period has passed, then raise the Tick event
             if (TimeSincePreviousTick >= TimeBeforeTick) {
                 if (Logging)
-                    Logger.Log(TickForever ? "Tick!" : $"Tick {NumPassedTicks} / {NumTicks}");
+                    Logger.Log(TickForever ? "Tick!" : $"Tick {NumPassedTicks} / {NumTicks}", context: this);
                 Tick.Invoke(NumPassedTicks);
                 TimeSincePreviousTick = 0f;
                 ++NumPassedTicks;
@@ -75,7 +76,7 @@ namespace UnityEngine.Triggers {
 
             // If the desired number of ticks was reached, then stop the Timer
             if (Logging)
-                Logger.Log($"Reached {NumTicks} ticks.");
+                Logger.Log($"Reached {NumTicks} ticks.", context: this);
             NumTicksReached.Invoke();
             if (Running)   // May now be false if any UnityEvents manually stopped this repeater
                 DoStop();

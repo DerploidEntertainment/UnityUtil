@@ -54,7 +54,7 @@ namespace UnityEngine.Inventory {
             _collectibles.Add(collectible);
 
             // Raise the item collected event
-            _logger.Log($"Collected {collectible.ItemRoot?.GetHierarchyName()}");
+            _logger.Log($"Collected {collectible.ItemRoot?.GetHierarchyName()}", context: this);
             ItemCollected.Invoke(collectible);
 
             return true;
@@ -83,7 +83,7 @@ namespace UnityEngine.Inventory {
             _collectibles.Remove(collectible);
 
             // Raise the item dropped event
-            _logger.Log($"Dropped {collectible.ItemRoot.GetHierarchyName()}");
+            _logger.Log($"Dropped {collectible.ItemRoot.GetHierarchyName()}", context: this);
             ItemDropped.Invoke(collectible);
 
             // Prevent its re-collection for the requested duration

@@ -152,7 +152,7 @@ namespace UnityEngine {
 
         private static void log(LogType logType, object message) {
             if (s_instance.Logging)
-                Debug.unityLogger.Log(logType, message);
+                Debug.unityLogger.Log(logType, message, context: s_instance);
         }
         private void invokeInject(MethodInfo injectMethod, Object client) {
             var injectedTypes = new HashSet<Type>();

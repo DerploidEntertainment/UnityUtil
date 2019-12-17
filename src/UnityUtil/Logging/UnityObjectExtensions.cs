@@ -7,13 +7,29 @@ namespace UnityEngine.Logging {
 
     public static class UnityObjectExtensions {
 
-        public const int DefaultNumParents = 1;
+        public const uint DefaultNumParents = 1u;
         public const string DefaultAncestorSeparator = ">";
+        public const string DefaultHierarchyNameFormatString = "'{0}'";
+        public const string DefaultHierarchyNameWithTypeFormatString = "{0} '{1}'";
 
-        public static string GetHierarchyName(this GameObject gameObject, int numParents = DefaultNumParents, string separator = DefaultAncestorSeparator) => GetName(gameObject.transform, numParents, separator);
-        public static string GetHierarchyName(this Component component, int numParents = DefaultNumParents, string separator = DefaultAncestorSeparator) => GetName(component.transform, numParents, separator);
-        public static string GetHierarchyNameWithType(this Component component, int numParents = DefaultNumParents, string separator = DefaultAncestorSeparator) =>
-            $"{component.GetType().Name} {GetName(component.transform, numParents, separator)}";
+        public static string GetHierarchyName(
+            this GameObject gameObject,
+            uint numParents = DefaultNumParents,
+            string separator = DefaultAncestorSeparator,
+            string formatString = DefaultHierarchyNameFormatString
+        ) => GetName(gameObject.transform, numParents, separator, formatString);
+        public static string GetHierarchyName(
+            this Component component,
+            uint numParents = DefaultNumParents,
+            string separator = DefaultAncestorSeparator,
+            string formatString = DefaultHierarchyNameFormatString
+        ) => GetName(component.transform, numParents, separator, formatString);
+        public static string GetHierarchyNameWithType(
+            this Component component,
+            uint numParents = DefaultNumParents,
+            string separator = DefaultAncestorSeparator,
+            string formatString = DefaultHierarchyNameWithTypeFormatString
+        ) => string.Format(formatString, component.GetType().Name, GetName(component.transform, numParents, separator, formatString: "{0}"));
 
         [Conditional("UNITY_ASSERTIONS")]
         public static void AssertDependency(this Component component, object member, string memberName) =>
@@ -37,7 +53,7 @@ namespace UnityEngine.Logging {
         public static string GetSwitchDefault<T>(T value) where T : Enum => $"Gah! We haven't accounted for {value.GetType().Name} {value} yet!";
 
         // HELPERS
-        private static string GetName(Transform transform, int numParents, string separator) {
+        private static string GetName(Transform transform, uint numParents, string separator, string formatString) {
             Transform trans = transform;
             var nameBuilder = new StringBuilder(trans.name);
             for (int p = 0; p < numParents; ++p) {
@@ -47,7 +63,7 @@ namespace UnityEngine.Logging {
                 nameBuilder.Insert(0, trans.name + separator);
             }
 
-            return $"'{nameBuilder}'";
+            return string.Format(formatString, nameBuilder);
         }
     }
 }

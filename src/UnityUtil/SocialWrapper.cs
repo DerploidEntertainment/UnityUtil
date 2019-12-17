@@ -27,11 +27,11 @@ namespace UnityEngine {
             ILocalUser user = Social.localUser;
             user.Authenticate((success, errors) => {
                 if (!success) {
-                    _logger.Log("Failed to authenticate!");
+                    _logger.Log("Failed to authenticate!", context: this);
                     AuthenticationFailed.Invoke(null, errors);
                 }
                 else {
-                    _logger.Log("Successfully authenticated!");
+                    _logger.Log("Successfully authenticated!", context: this);
                     AuthenticationSucceeded.Invoke(user.id, null);
                 }
             });
