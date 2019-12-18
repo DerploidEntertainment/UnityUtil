@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using UnityEngine.Logging;
+using UnityEngine.SceneManagement;
 
 namespace UnityEngine {
 
@@ -23,9 +24,8 @@ namespace UnityEngine {
 
         private static readonly IDictionary<Type, IDictionary<string, Service>> s_services = new Dictionary<Type, IDictionary<string, Service>>();
         private static DependencyInjector s_instance;
+        private static ILogger s_logger;
 
-        [Tooltip("If true, then this component will log its own progress using Debug.Log. If false, this component will not log anything.")]
-        public bool Logging = true;
         [Tooltip("The service collection from which dependencies will be resolved")]
         public Service[] ServiceCollection;
 
@@ -45,7 +45,11 @@ namespace UnityEngine {
         public static void ResolveDependenciesOf(IEnumerable<Object> clients) {
             if (s_instance == null) {
                 s_instance = FindObjectOfType<DependencyInjector>();
-                buildServiceCollection(s_instance.ServiceCollection);
+                if (s_instance == null) {
+                    Debug.LogError($"Cannot resolve dependencies. No {nameof(DependencyInjector)} present in scene '{SceneManager.GetActiveScene().name}'.");
+                    return;
+                }
+                buildServiceCollection(s_instance);
             }
 
             foreach (Object client in clients) {
@@ -56,12 +60,28 @@ namespace UnityEngine {
         }
 
         // EVENT HANDLERS
-        private static void buildServiceCollection(IList<Service> services) {
+        private static void buildServiceCollection(DependencyInjector dependencyInjector) {
+            // Get or set the logger that we will use for our own logging
+            Service[] services = dependencyInjector.ServiceCollection;
+            Service[] loggerProviderServices = services
+                .Where(s => typeof(ILoggerProvider).AssemblyQualifiedName.Contains(s.TypeName))
+                .ToArray();
+            if (loggerProviderServices.Length == 0) {
+                s_logger = Debug.unityLogger;
+                Debug.LogWarning($"No {nameof(ILoggerProvider)} configured in service collection. {nameof(DependencyInjector)} will use {nameof(Debug)}.{nameof(Debug.unityLogger)} for its own logging instead.");
+            }
+            else {
+                Service service = loggerProviderServices[0];
+                s_logger = (service.Instance as ILoggerProvider).GetLogger(dependencyInjector);
+                if (loggerProviderServices.Length > 1)
+                    Debug.LogWarning($"Configured multiple services with Type '{typeof(ILoggerProvider).FullName}'. {nameof(DependencyInjector)} will use the first one (tag '{service.Tag}') for its own logging.");
+            }
+
             // Add every service specified in the Inspector to the private service collection
             // Each service instance will be associated with the named Type (which could be, e.g., some base class or interface type)
             // If no Type name was provided, then use the actual name of the service's runtime instance type
             log(LogType.Log, $"Awaking, adding services...");
-            for (int s = 0; s < services.Count; ++s) {
+            for (int s = 0; s < services.Length; ++s) {
                 Service service = services[s];
 
                 // Update the service's Type/Tag
@@ -150,10 +170,7 @@ namespace UnityEngine {
                 log(LogType.Error, $"Removed {successes} out of {ServiceCollection.Length} services.");
         }
 
-        private static void log(LogType logType, object message) {
-            if (s_instance.Logging)
-                Debug.unityLogger.Log(logType, message, context: s_instance);
-        }
+        private static void log(LogType logType, object message) => s_logger.Log(logType, message, context: s_instance);
         private void invokeInject(MethodInfo injectMethod, Object client) {
             var injectedTypes = new HashSet<Type>();
 
