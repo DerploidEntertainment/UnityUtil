@@ -13,10 +13,11 @@ namespace UnityEngine {
             Logger = loggerProvider.GetLogger(this);
         }
 
-        public abstract IDictionary<string, object> LoadConfigs();
+        public virtual IDictionary<string, object> LoadConfigs() {
+            if (Logger == null)
+                DependencyInjector.ResolveDependenciesOf(this);
 
-        protected virtual void Awake() {
-            DependencyInjector.ResolveDependenciesOf(this);
+            return new Dictionary<string, object>();
         }
 
     }
