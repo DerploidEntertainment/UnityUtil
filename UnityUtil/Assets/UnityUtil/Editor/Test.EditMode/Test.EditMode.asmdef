@@ -12,6 +12,7 @@
     "overrideReferences": true,
     "precompiledReferences": [
         "UnityUtil.dll",
+        "Moq.dll",
         "UnityUtil.Editor.dll"
     ],
     "autoReferenced": false,

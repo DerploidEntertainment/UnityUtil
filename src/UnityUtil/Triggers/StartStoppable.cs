@@ -49,7 +49,7 @@ namespace UnityEngine.Triggers {
                         break;
 
                     default:
-                        throw new NotImplementedException(BetterLogger.GetSwitchDefault(EnableDisableBehavior));
+                        throw new NotImplementedException(UnityObjectExtensions.GetSwitchDefault(EnableDisableBehavior));
                 }
             }
         }
@@ -67,7 +67,7 @@ namespace UnityEngine.Triggers {
                     break;
 
                 default:
-                    throw new NotImplementedException(BetterLogger.GetSwitchDefault(EnableDisableBehavior));
+                    throw new NotImplementedException(UnityObjectExtensions.GetSwitchDefault(EnableDisableBehavior));
             }
         }
 
