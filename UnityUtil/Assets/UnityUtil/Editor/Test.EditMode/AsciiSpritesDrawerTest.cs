@@ -9,8 +9,9 @@ namespace UnityUtil.Test.EditMode
     {
 
         [Test]
-        public void ExpandsDecimalTemplateString()
-        {
+        public void ExpandsDecimalTemplateString() {
+            EditModeTestHelpers.ResetScene();
+
             string assetName;
             string templateFileName;
 
@@ -68,8 +69,9 @@ namespace UnityUtil.Test.EditMode
         }
 
         [Test]
-        public void ExpandsHexadecimalTemplateString()
-        {
+        public void ExpandsHexadecimalTemplateString() {
+            EditModeTestHelpers.ResetScene();
+
             string assetName;
             string templateFileName;
 
@@ -127,8 +129,9 @@ namespace UnityUtil.Test.EditMode
         }
 
         [Test]
-        public void ExpandsOctalTemplateString()
-        {
+        public void ExpandsOctalTemplateString() {
+            EditModeTestHelpers.ResetScene();
+
             string assetName;
             string templateFileName;
 
@@ -186,8 +189,9 @@ namespace UnityUtil.Test.EditMode
         }
 
         [Test]
-        public void ExpandsBinaryTemplateString()
-        {
+        public void ExpandsBinaryTemplateString() {
+            EditModeTestHelpers.ResetScene();
+
             string assetName;
             string templateFileName;
 
@@ -245,8 +249,9 @@ namespace UnityUtil.Test.EditMode
         }
 
         [Test]
-        public void ExpandsMixedBaseTemplateString()
-        {
+        public void ExpandsMixedBaseTemplateString() {
+            EditModeTestHelpers.ResetScene();
+
             string assetName;
             string templateFileName;
 
@@ -291,8 +296,9 @@ namespace UnityUtil.Test.EditMode
         }
 
         [Test]
-        public void ExpandsMultipleOfSameTemplateString()
-        {
+        public void ExpandsMultipleOfSameTemplateString() {
+            EditModeTestHelpers.ResetScene();
+
             string assetName;
             string templateFileName;
 
@@ -337,8 +343,9 @@ namespace UnityUtil.Test.EditMode
         }
 
         [Test]
-        public void ExpandsTemplateStringIgnoringCase()
-        {
+        public void ExpandsTemplateStringIgnoringCase() {
+            EditModeTestHelpers.ResetScene();
+
             string assetName;
             string expectedAssetName;
 
@@ -366,8 +373,9 @@ namespace UnityUtil.Test.EditMode
         }
 
         [Test]
-        public void DoesNotExpandMissingTemplateString()
-        {
+        public void DoesNotExpandMissingTemplateString() {
+            EditModeTestHelpers.ResetScene();
+
             string assetName = AsciiSpritesDrawer.GetAssetName(' ', "derp.png");
             Assert.That(assetName, Is.EqualTo("Assets/derp.png"));
         }

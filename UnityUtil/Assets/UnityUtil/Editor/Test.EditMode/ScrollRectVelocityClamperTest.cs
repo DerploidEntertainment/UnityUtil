@@ -1,7 +1,8 @@
-﻿using NUnit.Framework;
+using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.Logging;
 using UnityEngine.UI;
+using UnityUtil.Editor;
 
 namespace UnityUtil.Test.EditMode {
 
@@ -9,8 +10,9 @@ namespace UnityUtil.Test.EditMode {
     {
 
         [Test]
-        public void ClampsPositiveVelocities()
-        {
+        public void ClampsPositiveVelocities() {
+            EditModeTestHelpers.ResetScene();
+
             Vector2 vClamped;
             ScrollRectVelocityClamper clamper = getScrollRectVelocityClamper();
             clamper.MinVelocityMagnitude = new Vector2Int(5, 5);
@@ -33,8 +35,9 @@ namespace UnityUtil.Test.EditMode {
         }
 
         [Test]
-        public void ClampsNegativeVelocities()
-        {
+        public void ClampsNegativeVelocities() {
+            EditModeTestHelpers.ResetScene();
+
             Vector2 vClamped;
             ScrollRectVelocityClamper clamper = getScrollRectVelocityClamper();
             clamper.MinVelocityMagnitude = new Vector2Int(5, 5);
@@ -57,8 +60,9 @@ namespace UnityUtil.Test.EditMode {
         }
 
         [Test]
-        public void DoesNotClampPositiveVelocities()
-        {
+        public void DoesNotClampPositiveVelocities() {
+            EditModeTestHelpers.ResetScene();
+
             Vector2 vClamped;
             ScrollRectVelocityClamper clamper = getScrollRectVelocityClamper();
             clamper.MinVelocityMagnitude = new Vector2Int(5, 5);
@@ -77,8 +81,9 @@ namespace UnityUtil.Test.EditMode {
         }
 
         [Test]
-        public void DoesNotClampNegativeVelocities()
-        {
+        public void DoesNotClampNegativeVelocities() {
+            EditModeTestHelpers.ResetScene();
+
             Vector2 vClamped;
             ScrollRectVelocityClamper clamper = getScrollRectVelocityClamper();
             clamper.MinVelocityMagnitude = new Vector2Int(5, 5);
@@ -97,8 +102,9 @@ namespace UnityUtil.Test.EditMode {
         }
 
         [Test]
-        public void SupportsDifferentClampValues()
-        {
+        public void SupportsDifferentClampValues() {
+            EditModeTestHelpers.ResetScene();
+
             Vector2 vClamped;
             ScrollRectVelocityClamper clamper = getScrollRectVelocityClamper();
 
@@ -120,8 +126,9 @@ namespace UnityUtil.Test.EditMode {
         }
 
         [Test]
-        public void SupportsDifferentXAndYClampValues()
-        {
+        public void SupportsDifferentXAndYClampValues() {
+            EditModeTestHelpers.ResetScene();
+
             Vector2 vClamped;
             ScrollRectVelocityClamper clamper = getScrollRectVelocityClamper();
             clamper.MinVelocityMagnitude = new Vector2Int(5, 10);
