@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using Moq;
+using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.Logging;
 using UnityUtil.Editor;
@@ -132,10 +133,8 @@ namespace UnityUtil.Test.EditMode.Logging {
 
         private DebugLoggerProvider getDebugLoggerProvider(string separator = " | ", params LogEnricher[] logEnrichers) {
             var obj = new GameObject();
-            Configurator configurator = obj.AddComponent<Configurator>();
-
             DebugLoggerProvider loggerProvider = obj.AddComponent<DebugLoggerProvider>();
-            loggerProvider.Inject(configurator, loggerProvider);
+            loggerProvider.Inject(Mock.Of<IConfigurator>(), loggerProvider);
             loggerProvider.EnrichedLogSeparator = separator;
             loggerProvider.LogEnrichers = logEnrichers;
 

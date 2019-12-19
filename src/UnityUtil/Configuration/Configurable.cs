@@ -4,7 +4,7 @@ namespace UnityEngine {
 
     public class Configurable : MonoBehaviour {
 
-        protected Configurator Configurator;
+        protected IConfigurator Configurator;
         protected ILogger Logger;
 
         [ConfigKey]
@@ -18,7 +18,7 @@ namespace UnityEngine {
 
             OnAwake();
         }
-        public void Inject(Configurator configurator, ILoggerProvider loggerProvider) {
+        public void Inject(IConfigurator configurator, ILoggerProvider loggerProvider) {
             Configurator = configurator;
             Logger = loggerProvider.GetLogger(this);
         }

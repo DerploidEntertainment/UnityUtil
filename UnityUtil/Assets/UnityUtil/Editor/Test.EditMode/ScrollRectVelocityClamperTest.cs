@@ -1,3 +1,4 @@
+﻿using Moq;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.Logging;
@@ -142,14 +143,11 @@ namespace UnityUtil.Test.EditMode {
             Assert.That(vClamped.y, Is.Zero);
         }
 
-        private ScrollRectVelocityClamper getScrollRectVelocityClamper(ILoggerProvider loggerProvider = null) {
+        private ScrollRectVelocityClamper getScrollRectVelocityClamper() {
             var clamperObj = new GameObject("test");
-            Updater updater = clamperObj.AddComponent<Updater>();
-            Configurator configurator = clamperObj.AddComponent<Configurator>();
-
             ScrollRectVelocityClamper clamper = clamperObj.AddComponent<ScrollRectVelocityClamper>();
-            clamper.Inject(updater);
-            clamper.Inject(configurator, loggerProvider ?? new TestLoggerProvider());
+            clamper.Inject(Mock.Of<IUpdater>());
+            clamper.Inject(Mock.Of<IConfigurator>(), new TestLoggerProvider());
 
             return clamper;
         }

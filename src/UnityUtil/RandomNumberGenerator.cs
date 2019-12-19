@@ -1,12 +1,15 @@
-﻿using System;
+﻿using Sirenix.OdinInspector;
+using System;
+using UnityEngine.Logging;
 using S = System;
 
 namespace UnityEngine {
 
-    public sealed class RandomNumberGenerator : Configurable {
+    public sealed class RandomNumberGenerator : Configurable, IRandomNumberGenerator {
 
-        [Tooltip("Type any string to seed the random number generator, or leave this field blank to use a time-dependent default seed value.")]
-        public string Seed;
+        [field: Tooltip("Type any string to seed the random number generator, or leave this field blank to use a time-dependent default seed value.")]
+        [field: SerializeField, LabelText(nameof(Seed))]
+        public string Seed { get; private set; }
 
         protected override void OnAwake() {
             (int seed, bool generated) = GetOrGenerateSeed(Seed);

@@ -122,6 +122,9 @@ namespace UnityEngine {
             }
         }
         private void OnDestroy() {
+            if (s_instance == null)
+                return;
+
             // Remove every service specified in the Inspector from the private service collection
             log(LogType.Log, $"Being destroyed, removing services...");
             int successes = 0;
@@ -170,7 +173,7 @@ namespace UnityEngine {
                 log(LogType.Error, $"Removed {successes} out of {ServiceCollection.Length} services.");
         }
 
-        private static void log(LogType logType, object message) => s_logger.Log(logType, message, context: s_instance);
+        private static void log(LogType logType, object message) => s_logger?.Log(logType, message, context: s_instance);
         private void invokeInject(MethodInfo injectMethod, Object client) {
             var injectedTypes = new HashSet<Type>();
 

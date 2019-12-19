@@ -1,8 +1,7 @@
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.Logging;
 using UnityEngine.Triggers;
 using UnityUtil.Editor;
 
@@ -189,10 +188,10 @@ namespace UnityUtil.Test.EditMode.Triggers {
             Assert.DoesNotThrow(trigger.Trigger);
         }
 
-        private SequenceTrigger getSequenceTrigger(int numSteps, bool cycle = false, ILoggerProvider loggerProvider = null) {
+        private SequenceTrigger getSequenceTrigger(int numSteps, bool cycle = false) {
             var obj = new GameObject("TestTrigger");
             SequenceTrigger trigger = obj.AddComponent<SequenceTrigger>();
-            trigger.Inject(loggerProvider ?? new TestLoggerProvider());
+            trigger.Inject(new TestLoggerProvider());
             trigger.StepTriggers = new UnityEvent[numSteps];
             trigger.Cycle = cycle;
 

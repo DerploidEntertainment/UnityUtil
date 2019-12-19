@@ -6,7 +6,7 @@ using UnityEngine.Logging;
 
 namespace UnityEngine {
 
-    public class Configurator : MonoBehaviour {
+    public class Configurator : MonoBehaviour, IConfigurator {
 
         private ILogger _logger;
         private IDictionary<string, object> _values = new Dictionary<string, object>();
