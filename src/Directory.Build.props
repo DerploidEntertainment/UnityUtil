@@ -2,7 +2,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <LangVersion>latest</LangVersion>
-    <UnityVersion>2019.1.6f1</UnityVersion>
+    <UnityVersion>2019.1.14f1</UnityVersion>
 
     <UnityUtilAssetsDir Condition="'$(SolutionName)'=='UnityUtil'">$(SolutionDir)\..\UnityUtil\Assets</UnityUtilAssetsDir>
     <UnityUtilAssetsDir Condition="'$(SolutionName)'!='UnityUtil'">$(SolutionDir)\..\..\UnityUtil\UnityUtil\Assets</UnityUtilAssetsDir>
