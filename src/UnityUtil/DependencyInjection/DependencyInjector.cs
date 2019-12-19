@@ -36,13 +36,13 @@ namespace UnityEngine {
         /// Can be called at runtime to satisfy dependencies of procedurally generated components, e.g., by a spawner.
         /// </summary>
         /// <param name="client">A client with service dependencies that need to be resolved.</param>
-        public static void ResolveDependenciesOf(Object client) => ResolveDependenciesOf(new[] { client });
+        public static void ResolveDependenciesOf(object client) => ResolveDependenciesOf(new[] { client });
         /// <summary>
         /// Inject all dependencies into the specified clients.
         /// Can be called at runtime to satisfy dependencies of procedurally generated components, e.g., by a spawner.
         /// </summary>
         /// <param name="clients">A collection of clients with service dependencies that need to be resolved.</param>
-        public static void ResolveDependenciesOf(IEnumerable<Object> clients) {
+        public static void ResolveDependenciesOf(IEnumerable<object> clients) {
             if (s_instance == null) {
                 s_instance = FindObjectOfType<DependencyInjector>();
                 if (s_instance == null) {
@@ -52,7 +52,7 @@ namespace UnityEngine {
                 buildServiceCollection(s_instance);
             }
 
-            foreach (Object client in clients) {
+            foreach (object client in clients) {
                 MethodInfo[] injectMethods = client.GetType().GetMethods().Where(m => m.Name == InjectMethodName).ToArray();
                 for (int m = 0; m < injectMethods.Length; ++m)
                     s_instance.invokeInject(injectMethods[m], client);
@@ -174,7 +174,7 @@ namespace UnityEngine {
         }
 
         private static void log(LogType logType, object message) => s_logger?.Log(logType, message, context: s_instance);
-        private void invokeInject(MethodInfo injectMethod, Object client) {
+        private void invokeInject(MethodInfo injectMethod, object client) {
             var injectedTypes = new HashSet<Type>();
 
             ParameterInfo[] @params = injectMethod.GetParameters();
@@ -182,7 +182,7 @@ namespace UnityEngine {
             for (int p = 0; p < @params.Length; ++p) {
                 ParameterInfo param = @params[p];
                 Type pType = param.ParameterType;
-                string clientName = (client as MonoBehaviour)?.GetHierarchyNameWithType() ?? client.name;
+                string clientName = (client as MonoBehaviour)?.GetHierarchyNameWithType() ?? (client as Object)?.name ?? $"{client.GetType().FullName} instance";
 
                 // Warn if a dependency with this Type has already been injected
                 bool firstInjection = injectedTypes.Add(pType);
