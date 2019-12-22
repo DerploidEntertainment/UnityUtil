@@ -4,8 +4,8 @@ namespace UnityEngine {
 
     public interface IConfigurator {
 
-        void Configure(MonoBehaviour client);
-        void Configure(IEnumerable<MonoBehaviour> clients);
+        void Configure(object client);
+        void Configure(IEnumerable<object> clients);
 
     }
 

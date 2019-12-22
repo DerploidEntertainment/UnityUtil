@@ -16,14 +16,14 @@ namespace UnityEngine {
 
         public void Inject(ILoggerProvider loggerProvider) => _logger = loggerProvider.GetLogger(this);
 
-        public void Configure(MonoBehaviour client) => Configure(new[] { client });
-        public void Configure(IEnumerable<MonoBehaviour> clients) {
+        public void Configure(object client) => Configure(new[] { client });
+        public void Configure(IEnumerable<object> clients) {
             if (_values == null) {
                 DependencyInjector.ResolveDependenciesOf(this);
                 _values = loadConfigValues();
             }
 
-            foreach (MonoBehaviour client in clients)
+            foreach (object client in clients)
                 configure(client);
         }
 
@@ -45,19 +45,20 @@ namespace UnityEngine {
 
             return allVals;
         }
-        private void configure(MonoBehaviour client) {
+        private void configure(object client) {
             FieldInfo[] fields = client.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+            string clientName = (client as MonoBehaviour)?.GetHierarchyNameWithType() ?? (client as Object)?.name ?? $"{client.GetType().FullName} instance";
 
             // Get the config key associated with this client
             // The key is either the value of the string field tagged as the config key, or the name of the client's Type
             FieldInfo[] keyFields = fields.Where(f => f.GetCustomAttribute<ConfigKeyAttribute>(inherit: true) != null).ToArray();
             if (keyFields.Length > 1)
-                throw new InvalidOperationException($"{client.name} could not be configured because it had multiple fields tagged with a {nameof(ConfigKeyAttribute)}.");
+                throw new InvalidOperationException($"{clientName} could not be configured because it had multiple fields tagged with a {nameof(ConfigKeyAttribute)}.");
             string key;
             if (keyFields.Length == 0)
                 key = client.GetType().Name;
             else if (keyFields[0].FieldType != typeof(string))
-                throw new InvalidOperationException($"{client.name} could not be configured because the field tagged with a {nameof(ConfigKeyAttribute)} was not of String type.");
+                throw new InvalidOperationException($"{clientName} could not be configured because the field tagged with a {nameof(ConfigKeyAttribute)} was not of String type.");
             else {
                 key = (string)keyFields[0].GetValue(client);
                 key = string.IsNullOrWhiteSpace(key) ? client.GetType().FullName : key.Trim();
@@ -70,7 +71,7 @@ namespace UnityEngine {
                 object val = getValue(fieldKey, field.FieldType);
                 if (val != null) {
                     field.SetValue(client, val);
-                    _logger.Log($"Configured field '{field.Name}' of {client.GetHierarchyNameWithType()}.", context: this);
+                    _logger.Log($"Configured field '{field.Name}' of {clientName}.", context: this);
                 }
             }
         }
