@@ -9,7 +9,7 @@ namespace UnityEngine {
     public class Configurator : MonoBehaviour, IConfigurator {
 
         private ILogger _logger;
-        private IDictionary<string, object> _values = new Dictionary<string, object>();
+        private IDictionary<string, object> _values;
 
         [Tooltip("Sources must be provided in reverse order of importance (i.e., configs in source 0 will override configs in source 1, which will override configs in source 2, etc.)")]
         public ConfigurationSource[] ConfigurationSources;
@@ -20,27 +20,30 @@ namespace UnityEngine {
         public void Configure(IEnumerable<MonoBehaviour> clients) {
             if (_values == null) {
                 DependencyInjector.ResolveDependenciesOf(this);
-                loadConfigValues();
+                _values = loadConfigValues();
             }
 
             foreach (MonoBehaviour client in clients)
                 configure(client);
         }
 
-        private void loadConfigValues() {
+        private IDictionary<string, object> loadConfigValues() {
             _logger.Log($"Loading {ConfigurationSources.Length} configuration sources...", context: this);
 
             int numLoaded = 0;
+            IDictionary<string, object> allVals = new Dictionary<string, object>();
             for (int s = 0; s < ConfigurationSources.Length; ++s) {
                 IDictionary<string, object> vals = ConfigurationSources[s].LoadConfigs();
                 if (vals.Count > 0) {
                     ++numLoaded;
-                    _values = _values
+                    allVals = allVals
                         .Union(vals)
                         .GroupBy(pair => pair.Key, pair => pair.Value)
                         .ToDictionary(grp => grp.Key, grp => grp.First());
                 }
             }
+
+            return allVals;
         }
         private void configure(MonoBehaviour client) {
             FieldInfo[] fields = client.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
