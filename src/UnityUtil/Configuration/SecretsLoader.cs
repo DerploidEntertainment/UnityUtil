@@ -9,12 +9,8 @@ namespace UnityEngine {
     public abstract class SecretsLoader {
 
         protected readonly ILoggerProvider LoggerProvider;
-        private readonly ILogger _logger;
 
-        protected SecretsLoader(ILoggerProvider loggerProvider) {
-            LoggerProvider = loggerProvider;
-            _logger = LoggerProvider.GetLogger(this);
-        }
+        protected SecretsLoader() { }
 
         public void LoadSecrets(IEnumerable<ISecretSource> secretSources) {
             using var async = new AsyncCaller(LoggerProvider);
