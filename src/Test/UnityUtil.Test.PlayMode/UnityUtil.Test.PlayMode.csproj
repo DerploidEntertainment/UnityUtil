@@ -1,7 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <UnityScriptsDir>$(UnityUtilAssetsDir)\UnityUtil\Test.PlayMode</UnityScriptsDir>
+    <UnityScriptsDir>$(UnityProjectPath)\Assets\UnityUtil\Test.PlayMode</UnityScriptsDir>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="$(UnityInstallRoot)\$(UnityVersion)\$(UnityModulesPath)\UnityEngine.CoreModule.dll" Private="false" />
+    <Reference Include="$(UnityInstallRoot)\$(UnityVersion)\$(UnityModulesPath)\UnityEngine.PhysicsModule.dll" Private="false" />
+    <Reference Include="$(UnityInstallRoot)\$(UnityVersion)\$(UnityModulesPath)\UnityEngine.Physics2DModule.dll" Private="false" />
+  </ItemGroup>
 
 </Project>

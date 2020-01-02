@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
     <ProjectReference Include="..\UnityUtil\UnityUtil.csproj" />
@@ -7,7 +7,11 @@
   <ItemGroup>
     <Reference Include="$(SirenixAssembliesDir)\Sirenix.OdinInspector.Editor.dll" Private="false" />
     <Reference Include="$(UnityInstallRoot)\$(UnityVersion)\$(UnityEditorPath)" Private="false" />
-    <Reference Include="$(UnityInstallRoot)\$(UnityVersion)\$(UnityEngineTestRunnerPath)" Private="false" />
+    <Reference Include="$(UnityProjectPath)\$(UnityScriptAssembliesPath)\UnityEngine.TestRunner.dll" Private="false" />
+
+    <Reference Include="$(UnityInstallRoot)\$(UnityVersion)\$(UnityModulesPath)\UnityEngine.dll" Private="false" />
+    <Reference Include="$(UnityInstallRoot)\$(UnityVersion)\$(UnityModulesPath)\UnityEngine.CoreModule.dll" Private="false" />
+    <Reference Include="$(UnityInstallRoot)\$(UnityVersion)\$(UnityModulesPath)\UnityEngine.IMGUIModule.dll" Private="false" />
   </ItemGroup>
 
   <ItemGroup>
@@ -23,8 +27,8 @@
     <ItemGroup>
       <ProjectOutput Include="$(OutDir)/$(ProjectName)*.dll;$(OutDir)/$(ProjectName)*.pdb" />
     </ItemGroup>
-    <Message Importance="high" Text="Moving $(ProjectName) outputs into appropriate subfolders of '$([System.IO.Path]::GetFullPath($(UnityUtilAssetsDir)))'" />
-    <Copy SourceFiles="%(ProjectOutput.Identity)" DestinationFolder="$(UnityUtilAssetsDir)\UnityUtil\Editor" />
+    <Message Importance="high" Text="Moving $(ProjectName) outputs into appropriate subfolders of '$([System.IO.Path]::GetFullPath($(UnityProjectPath)))\Assets'" />
+    <Copy SourceFiles="%(ProjectOutput.Identity)" DestinationFolder="$(UnityProjectPath)\Assets\UnityUtil\Editor" />
   </Target>
 
 </Project>

@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using System.Text.RegularExpressions;
 using UnityEngine;
+using UA = UnityEngine.Assertions;
 using UnityEngine.Logging;
 using UnityEngine.TestTools;
 using UnityUtil.Editor;
@@ -155,28 +156,22 @@ namespace UnityUtil.Test.EditMode.Logging {
             obj.name = EditModeTestHelpers.GetUniqueLog("none");
             obj.SetActive(true);
             behaviour.enabled = true;
-            behaviour.AssertAcitveAndEnabled();
-            LogAssert.NoUnexpectedReceived();
-
-            obj.name = EditModeTestHelpers.GetUniqueLog("Behaviour");
-            obj.SetActive(true);
-            behaviour.enabled = false;
-            behaviour.AssertAcitveAndEnabled();
-            EditModeTestHelpers.ExpectLog(LogType.Assert, new Regex($".*{Regex.Escape(obj.name)}.*disabled"));
-
-            obj.name = EditModeTestHelpers.GetUniqueLog("GameObject");
-            obj.SetActive(false);
-            behaviour.enabled = true;
-            behaviour.AssertAcitveAndEnabled();
-            EditModeTestHelpers.ExpectLog(LogType.Assert, new Regex($".*{Regex.Escape(obj.name)}.*inactive"));
+            Assert.DoesNotThrow(() => behaviour.AssertAcitveAndEnabled());
 
             obj.name = EditModeTestHelpers.GetUniqueLog("GameObject-Behaviour");
             obj.SetActive(false);
             behaviour.enabled = false;
-            behaviour.AssertAcitveAndEnabled();
-            LogAssert.Expect(LogType.Assert, new Regex($".*{Regex.Escape(obj.name)}.*inactive"));
-            LogAssert.Expect(LogType.Assert, new Regex($".*{Regex.Escape(obj.name)}.*disabled"));
-            LogAssert.NoUnexpectedReceived();
+            Assert.Throws<UA.AssertionException>(() => behaviour.AssertAcitveAndEnabled());
+
+            obj.name = EditModeTestHelpers.GetUniqueLog("Behaviour");
+            obj.SetActive(true);
+            behaviour.enabled = false;
+            Assert.Throws<UA.AssertionException>(() => behaviour.AssertAcitveAndEnabled());
+
+            obj.name = EditModeTestHelpers.GetUniqueLog("GameObject");
+            obj.SetActive(false);
+            behaviour.enabled = true;
+            Assert.Throws<UA.AssertionException>(() => behaviour.AssertAcitveAndEnabled());
         }
 
         private GameObject getGameObject(string name, int numParents = 1, string parentNameFormatString = "parent{0}") {

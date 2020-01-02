@@ -1,7 +1,6 @@
 ﻿using Moq;
 using NUnit.Framework;
 using UnityEngine;
-using UnityEngine.Logging;
 using UnityEngine.UI;
 using UnityUtil.Editor;
 
