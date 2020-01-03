@@ -3,8 +3,8 @@
   <Import Project="../Directory.Build.props" />
 
   <ItemGroup>
-    <PackageReference Include="NUnit" Version="3.12.0" />
-    <PackageReference Include="Moq" Version="4.13.1" />
+    <Reference Include="$(UnityProjectPath)\$(UnityPackageCache)\$(NunitPath)" />
+    <Reference Include="$(UnityProjectPath)\Assets\Editor\Moq\Moq.dll" />
   </ItemGroup>
 
   <ItemGroup>
@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="$(UnityInstallRoot)\$(UnityVersion)\$(UnityEngineTestRunnerPath)" Private="false" />
+    <Reference Include="$(UnityProjectPath)\$(UnityScriptAssembliesPath)\UnityEngine.TestRunner.dll" Private="false" />
   </ItemGroup>
 
   <ItemGroup>

@@ -2,22 +2,22 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <LangVersion>latest</LangVersion>
-    <UnityVersion>2019.1.14f1</UnityVersion>
+    <UnityVersion>2019.2.17f1</UnityVersion>
 
-    <UnityUtilAssetsDir Condition="'$(SolutionName)'=='UnityUtil'">$(SolutionDir)\..\UnityUtil\Assets</UnityUtilAssetsDir>
-    <UnityUtilAssetsDir Condition="'$(SolutionName)'!='UnityUtil'">$(SolutionDir)\..\..\UnityUtil\UnityUtil\Assets</UnityUtilAssetsDir>
-    <UnityAssetsDir Condition="'$(SolutionName)'=='UnityUtil'">$(UnityUtilAssetsDir)</UnityAssetsDir>
-    <UnityAssetsDir Condition="'$(SolutionName)'!='UnityUtil'">$(SolutionDir)\..\$(SolutionName)\Assets</UnityAssetsDir>
-    <SirenixAssembliesDir>$(UnityAssetsDir)\Plugins\Sirenix\Assemblies</SirenixAssembliesDir>
+    <UnityProjectPath Condition="'$(SolutionName)'=='UnityUtil'">$(SolutionDir)\..\UnityUtil</UnityProjectPath>
+    <UnityProjectPath Condition="'$(SolutionName)'!='UnityUtil'">$(SolutionDir)\..\..\UnityUtil\UnityUtil</UnityProjectPath>
+    <SirenixAssembliesDir>$(UnityProjectPath)\Assets\Plugins\Sirenix\Assemblies</SirenixAssembliesDir>
+
+    <DefineConstants>UNITY_ASSERTIONS</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Unity3D" Version="1.2.0" />
+    <PackageReference Include="Unity3D" Version="1.3.0" />
   </ItemGroup>
 
   <ItemGroup>
     <Reference Include="$(SirenixAssembliesDir)\Sirenix.OdinInspector.Attributes.dll" Private="false"/>
-    <Reference Include="$(UnityInstallRoot)\$(UnityVersion)\$(UnityEngineUIPath)" Private="false" />
+    <Reference Include="$(UnityProjectPath)\$(UnityScriptAssembliesPath)\UnityEngine.UI.dll" Private="false" />
   </ItemGroup>
-
+  
 </Project>
