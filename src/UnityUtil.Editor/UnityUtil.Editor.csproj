@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
     <ProjectReference Include="..\UnityUtil\UnityUtil.csproj" />
@@ -25,7 +25,8 @@
 
   <Target Name="CopyOutputs" AfterTargets="AfterBuild">
     <ItemGroup>
-      <ProjectOutput Include="$(OutDir)/$(ProjectName)*.dll;$(OutDir)/$(ProjectName)*.pdb" />
+      <ProjectOutput Include="$(OutDir)/$(ProjectName)*.dll" />
+      <ProjectOutput Include="$(OutDir)/$(ProjectName)*.pdb" />
     </ItemGroup>
     <Message Importance="high" Text="Moving $(ProjectName) outputs into appropriate subfolders of '$([System.IO.Path]::GetFullPath($(UnityProjectPath)))\Assets'" />
     <Copy SourceFiles="%(ProjectOutput.Identity)" DestinationFolder="$(UnityProjectPath)\Assets\UnityUtil\Editor" />
