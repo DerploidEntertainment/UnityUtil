@@ -20,20 +20,19 @@ namespace UnityEngine {
         public void Configure(IEnumerable<object> clients) {
             if (_values == null) {
                 DependencyInjector.ResolveDependenciesOf(this);
-                _values = loadConfigValues();
+                _logger.Log($"Loading {ConfigurationSources.Length} configuration sources...", context: this);
+                _values = LoadConfigValues(ConfigurationSources);
             }
 
             foreach (object client in clients)
                 configure(client);
         }
 
-        private IDictionary<string, object> loadConfigValues() {
-            _logger.Log($"Loading {ConfigurationSources.Length} configuration sources...", context: this);
-
+        public static IDictionary<string, object> LoadConfigValues(IEnumerable<ConfigurationSource> configurationSources) {
             int numLoaded = 0;
             IDictionary<string, object> allVals = new Dictionary<string, object>();
-            for (int s = 0; s < ConfigurationSources.Length; ++s) {
-                IDictionary<string, object> vals = ConfigurationSources[s].LoadConfigs();
+            foreach (ConfigurationSource src in configurationSources) {
+                IDictionary<string, object> vals = src.LoadConfigs();
                 if (vals.Count > 0) {
                     ++numLoaded;
                     allVals = allVals
@@ -45,23 +44,28 @@ namespace UnityEngine {
 
             return allVals;
         }
+        public static string DefaultConfigKey(object client) => client.GetType().FullName;
+
         private void configure(object client) {
-            FieldInfo[] fields = client.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-            string clientName = (client as MonoBehaviour)?.GetHierarchyNameWithType() ?? (client as Object)?.name ?? $"{client.GetType().FullName} instance";
+            Type clientType = client.GetType();
+            BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
+            FieldInfo[] fields = clientType.GetFields(bindingFlags);
+            string clientName = (client as MonoBehaviour)?.GetHierarchyNameWithType() ?? (client as Object)?.name ?? $"{clientType.FullName} instance";
 
             // Get the config key associated with this client
-            // The key is either the value of the string field tagged as the config key, or the name of the client's Type
+            // The key is either the value of the string field tagged as the config key, or the full name of the client's Type
             FieldInfo[] keyFields = fields.Where(f => f.GetCustomAttribute<ConfigKeyAttribute>(inherit: true) != null).ToArray();
             if (keyFields.Length > 1)
                 throw new InvalidOperationException($"{clientName} could not be configured because it had multiple fields tagged with a {nameof(ConfigKeyAttribute)}.");
             string key;
+            string defaultKey = DefaultConfigKey(client);
             if (keyFields.Length == 0)
-                key = client.GetType().Name;
+                key = defaultKey;
             else if (keyFields[0].FieldType != typeof(string))
                 throw new InvalidOperationException($"{clientName} could not be configured because the field tagged with a {nameof(ConfigKeyAttribute)} was not of String type.");
             else {
                 key = (string)keyFields[0].GetValue(client);
-                key = string.IsNullOrWhiteSpace(key) ? client.GetType().FullName : key.Trim();
+                key = string.IsNullOrWhiteSpace(key) ? defaultKey : key.Trim();
             }
 
             // Set all fields on this client for which there is a config value
@@ -74,11 +78,23 @@ namespace UnityEngine {
                     _logger.Log($"Configured field '{field.Name}' of {clientName}.", context: this);
                 }
             }
+
+            // Set all properties on this client for which there is a config value
+            PropertyInfo[] props = clientType.GetProperties(bindingFlags);
+            for (int p = 0; p < props.Length; ++p) {
+                PropertyInfo prop = props[p];
+                string propKey = $"{key}.{prop.Name}";
+                object val = getValue(propKey, prop.PropertyType);
+                if (val != null) {
+                    prop.SetValue(client, val);
+                    _logger.Log($"Configured property '{prop.Name}' of {clientName}.", context: this);
+                }
+            }
         }
-        private object getValue(string fieldKey, Type fieldType) {
-            bool found = _values.TryGetValue(fieldKey, out object val);
+        private object getValue(string memberKey, Type memberType) {
+            bool found = _values.TryGetValue(memberKey, out object val);
             if (found)
-                return Convert.ChangeType(val, fieldType);
+                return Convert.ChangeType(val, memberType);
             return null;
         }
 
