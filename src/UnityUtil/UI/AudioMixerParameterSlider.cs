@@ -81,7 +81,7 @@ namespace UnityEngine.UI {
                 if (StoreParameterInPlayerPrefs) {
                     float newVal = transformValue(Slider.value);
                     PlayerPrefs.SetFloat(FinalPlayerPrefKey, newVal);
-                    _logger.Log($"Saved new value ({newVal}) of exposed parameter '{ExposedParameterName}' of {nameof(UnityEngine.Audio.AudioMixer)} '{AudioMixer.name}' to {nameof(PlayerPrefs)}", context: this);
+                    _logger.Log($"Saved new value ({newVal}) of exposed parameter '{ExposedParameterName}' of {nameof(Audio.AudioMixer)} '{AudioMixer.name}' to {nameof(PlayerPrefs)}", context: this);
                 }
                 if (TestAudio != null)
                     TestAudio.Play();   // Don't know why the F*CK a null-coalescing operator isn't working here...
@@ -91,12 +91,21 @@ namespace UnityEngine.UI {
         private void Start() {
             // Initialize audio parameters from PlayerPrefs, if requested
             // This must occur in Start, as apparently setting AudioMixer parameters in Awake is undefined behavior... https://fogbugz.unity3d.com/default.asp?1197165_nik4gg1io942ae13#bugevent_1071843210
+            float val;
+            string logMsg;
+
             string playerPrefKey = FinalPlayerPrefKey;
             if (StoreParameterInPlayerPrefs && PlayerPrefs.HasKey(playerPrefKey)) {
-                float val = PlayerPrefs.GetFloat(playerPrefKey);
-                _logger.Log($"Loaded value ({val}) of exposed parameter '{ExposedParameterName}' of {nameof(UnityEngine.Audio.AudioMixer)} '{AudioMixer.name}' from {nameof(PlayerPrefs)}", context: this);
-                Slider.value = untransformValue(val);   // This will trigger onValueChanged and thus initialize the AudioMixer as well
+                val = PlayerPrefs.GetFloat(playerPrefKey);
+                logMsg = $"Loaded value ({val}) of exposed parameter '{ExposedParameterName}' of {nameof(Audio.AudioMixer)} '{AudioMixer.name}' from {nameof(PlayerPrefs)}";
             }
+            else {
+                AudioMixer.GetFloat(ExposedParameterName, out val);
+                logMsg = $"Not using {nameof(PlayerPrefs)} or key '{playerPrefKey}' could not be found. Loaded value of exposed parameter '{ExposedParameterName}' from {nameof(Audio.AudioMixer)} '{AudioMixer.name}' instead";
+            }
+
+            Slider.value = untransformValue(val);   // This will trigger onValueChanged and thus initialize the AudioMixer as well
+            _logger.Log(logMsg, context: this);
         }
 
         private float untransformValue(float transformedValue) =>
