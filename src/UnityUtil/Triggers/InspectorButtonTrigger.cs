@@ -1,15 +1,15 @@
-﻿using UnityEngine;
-using Sirenix.OdinInspector;
+﻿using Sirenix.OdinInspector;
 using UnityEngine.Events;
 
 namespace UnityEngine.Triggers {
 
-    public class ButtonTrigger : Updatable {
+    public class InspectorButtonTrigger : Updatable {
 
         private float _tRefactory = -1f;
 
         // INSPECTOR FIELDS
         public UnityEvent Triggered = new UnityEvent();
+        [Tooltip("This flag will be set to false while in the refactory period, so that you don't accidentally press the button again. You can manually tick it back to true if you won't to press the button during a refactory period.")]
         public bool CanPress = true;
         [Tooltip("Time, in seconds, before the button may be pressed again.")]
         public float RefactoryPeriod = 1f;
@@ -25,7 +25,7 @@ namespace UnityEngine.Triggers {
         }
 
         // API INTERFACE
-        [Button]
+        [Button, EnableIf(nameof(CanPress))]
         public void Press() {
             // Don't press the button if its still in the refractory period
             if (!CanPress)
