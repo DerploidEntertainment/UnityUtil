@@ -1,6 +1,6 @@
 ﻿namespace UnityEngine.Inventory {
 
-    [CreateAssetMenu(fileName = "push-tool", menuName = nameof(UnityEngine.Inventory) + "/" + nameof(UnityEngine.Inventory.PushToolInfo))]
+    [CreateAssetMenu(fileName = "push-tool", menuName = "UnityUtil" + "/" + nameof(UnityEngine.Inventory) + "/" + nameof(UnityEngine.Inventory.PushToolInfo))]
     public class PushToolInfo : ScriptableObject {
 
         // INSPECTOR FIELDS

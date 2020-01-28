@@ -6,7 +6,7 @@
         FullyAutomatic,
     }
 
-    [CreateAssetMenu(fileName = "tool", menuName = nameof(UnityEngine.Inventory) + "/" + nameof(UnityEngine.Inventory.ToolInfo))]
+    [CreateAssetMenu(fileName = "tool", menuName = "UnityUtil" + "/" + nameof(UnityEngine.Inventory) + "/" + nameof(UnityEngine.Inventory.ToolInfo))]
     public class ToolInfo : ScriptableObject {
 
         public AutomaticMode AutomaticMode;

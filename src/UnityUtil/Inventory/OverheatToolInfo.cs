@@ -1,6 +1,6 @@
 ﻿namespace UnityEngine.Inventory {
 
-    [CreateAssetMenu(fileName = "overheat-tool", menuName = nameof(UnityEngine.Inventory) + "/" + nameof(UnityEngine.Inventory.OverheatToolInfo))]
+    [CreateAssetMenu(fileName = "overheat-tool", menuName = "UnityUtil" + "/" + nameof(UnityEngine.Inventory) + "/" + nameof(UnityEngine.Inventory.OverheatToolInfo))]
     public class OverheatToolInfo : ScriptableObject {
 
         [Tooltip("The maximum amount of heat that can be generated before the " + nameof(UnityEngine.Inventory.Tool) + " becomes unusable (overheats).")]

@@ -2,7 +2,7 @@
 
 namespace UnityEngine.Inputs {
 
-    [CreateAssetMenu(fileName = "start-stop-input-array", menuName = nameof(UnityEngine.Inputs) + "/" + nameof(UnityEngine.Inputs.StartStopInputArray))]
+    [CreateAssetMenu(fileName = "start-stop-input-array", menuName = "UnityUtil" + "/" + nameof(UnityEngine.Inputs) + "/" + nameof(UnityEngine.Inputs.StartStopInputArray))]
     public class StartStopInputArray : ScriptableObject {
         // API INTERFACE
         public StartStopInput[] Inputs;

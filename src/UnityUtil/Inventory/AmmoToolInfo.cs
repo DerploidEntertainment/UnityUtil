@@ -1,6 +1,6 @@
 ﻿namespace UnityEngine.Inventory {
 
-    [CreateAssetMenu(fileName = "ammo-tool", menuName = nameof(UnityEngine.Inventory) + "/" + nameof(UnityEngine.Inventory.AmmoToolInfo))]
+    [CreateAssetMenu(fileName = "ammo-tool", menuName = "UnityUtil" + "/" + nameof(UnityEngine.Inventory) + "/" + nameof(UnityEngine.Inventory.AmmoToolInfo))]
     public class AmmoToolInfo : ScriptableObject {
 
         [Tooltip("A case-insensitive string to identify different types of ammo for collecting (e.g., 'Pistol').")]

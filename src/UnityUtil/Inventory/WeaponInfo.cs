@@ -7,7 +7,7 @@
         Capsule
     }
 
-    [CreateAssetMenu(fileName = "weapon", menuName = nameof(UnityEngine.Inventory) + "/" + nameof(UnityEngine.Inventory.WeaponInfo))]
+    [CreateAssetMenu(fileName = "weapon", menuName = "UnityUtil" + "/" + nameof(UnityEngine.Inventory) + "/" + nameof(UnityEngine.Inventory.WeaponInfo))]
     public class WeaponInfo : ScriptableObject {
 
         [Tooltip("Only colliders matching this layer mask will be attacked.")]

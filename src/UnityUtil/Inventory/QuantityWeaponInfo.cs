@@ -1,6 +1,6 @@
 ﻿namespace UnityEngine.Inventory {
 
-    [CreateAssetMenu(fileName = "quantity-weapon", menuName = nameof(UnityEngine.Inventory) + "/" + nameof(UnityEngine.Inventory.QuantityWeaponInfo))]
+    [CreateAssetMenu(fileName = "quantity-weapon", menuName = "UnityUtil" + "/" + nameof(UnityEngine.Inventory) + "/" + nameof(UnityEngine.Inventory.QuantityWeaponInfo))]
     public class QuantityWeaponInfo : ScriptableObject {
 
         [Tooltip("Attacked " + nameof(UnityEngine.ManagedQuantity) + "s will be changed by this amount.  How this amount is applied depends on the value of " + nameof(ChangeMode) + ".")]

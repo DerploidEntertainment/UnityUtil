@@ -2,7 +2,7 @@
 
 namespace UnityEngine.Inputs {
 
-    [CreateAssetMenu(fileName = "value-input-array", menuName = nameof(UnityEngine.Inputs) + "/" + nameof(UnityEngine.Inputs.ValueInputArray))]
+    [CreateAssetMenu(fileName = "value-input-array", menuName = "UnityUtil" + "/" + nameof(UnityEngine.Inputs) + "/" + nameof(UnityEngine.Inputs.ValueInputArray))]
     public class ValueInputArray : ScriptableObject {
         // API INTERFACE
         public ValueInput[] Inputs;
