@@ -1,5 +1,5 @@
 ﻿namespace UnityEngine {
-    [CreateAssetMenu(fileName = "uri", menuName = "UnityUtil" + "/" + nameof(UnityEngine.OpenableUri))]
+    [CreateAssetMenu(fileName = "uri", menuName = "UnityUtil" + "/" + nameof(OpenableUri))]
     public class OpenableUri : ScriptableObject {
         [Tooltip("The URI to be opened, using any of the protocols supported by Unit's Application.OpenURL API.")]
         [TextArea]
