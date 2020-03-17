@@ -232,7 +232,7 @@ namespace UnityEngine {
                 // If this dependency can't be resolved, then skip it with an error and clear the field
                 bool resolved = s_services.TryGetValue(pType, out IDictionary<string, Service> typedServices);
                 if (!resolved) {
-                    log(LogType.Error, $"{clientName} has a dependency of Type '{pType.FullName}', but no service was registered with that Type. Did you forget to add a service to the service collection, or put " + nameof(UnityEngine.DependencyInjector) + " first in the project's Script Execution Order?");
+                    log(LogType.Error, $"{clientName} has a dependency of Type '{pType.FullName}', but no service was registered with that Type. Did you forget to add a service to the service collection?");
                     continue;
                 }
                 InjectTagAttribute injAttr = param.GetCustomAttribute<InjectTagAttribute>();
@@ -240,7 +240,7 @@ namespace UnityEngine {
                 string tag = untagged ? "Untagged" : injAttr.Tag;
                 resolved = typedServices.TryGetValue(tag, out Service service);
                 if (!resolved) {
-                    log(LogType.Error, $"{clientName} has a dependency of Type '{pType.FullName}' with tag '{tag}', but no matching service was registered. Did you incorrectly tag a service, or forget to put " + nameof(UnityEngine.DependencyInjector) + " first in the project's Script Execution Order?");
+                    log(LogType.Error, $"{clientName} has a dependency of Type '{pType.FullName}' with tag '{tag}', but no matching service was registered. Did you forget to tag a service?");
                     continue;
                 }
 
