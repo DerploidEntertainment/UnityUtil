@@ -1,4 +1,4 @@
-using Sirenix.OdinInspector;
+﻿using Sirenix.OdinInspector;
 using System;
 using System.Diagnostics;
 using UnityEngine.Events;
@@ -115,8 +115,16 @@ namespace UnityEngine {
 
         [Button, Conditional("DEBUG")]
         public void ClearAcceptance() {
-            for (int d = 0; d < Documents.Length; ++d)
-                _localCache.DeleteKey(Documents[d].CacheKey);
+            if (_localCache == null) {
+                for (int d = 0; d < Documents.Length; ++d)
+                    PlayerPrefs.DeleteKey(Documents[d].CacheKey);
+            }
+
+            // Use PlayerPrefs in case this is being run from the Inspector outside Play mode
+            else {
+                for (int d = 0; d < Documents.Length; ++d)
+                    _localCache.DeleteKey(Documents[d].CacheKey);
+            }
 
             ILogger logger = (_logger ?? Debug.unityLogger);    // Use debug logger in case this is being run from the Inspector outside Play mode
             logger.Log($"Accepted tags for all legal documents have been cleared.", context: this);
