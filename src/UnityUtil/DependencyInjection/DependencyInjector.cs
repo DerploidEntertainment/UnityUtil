@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using UnityEngine.Logging;
@@ -157,6 +158,7 @@ namespace UnityEngine {
                     s_services.Add(type, new Dictionary<string, Service> { { service.Tag, service } });
             }
         }
+        [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
         private void OnDestroy() {
             // Assume that we are only being destroyed if the parent scene is being unloaded. Thus, that scene can be forgotten
             // If there are multiple DependencyInjector instances in same scene, all services in that scene will be removed after the first one is destroyed

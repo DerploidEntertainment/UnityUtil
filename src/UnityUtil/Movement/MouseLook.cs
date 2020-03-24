@@ -1,4 +1,5 @@
-using System;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using UnityEngine.Inputs;
 using UnityEngine.Logging;
 
@@ -42,6 +43,8 @@ namespace UnityEngine.Movement {
             };
 
         // EVENT HANDLERS
+        [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
+        [SuppressMessage("Code Quality", "IDE0051:Remove unused private members", Justification = "Unity message")]
         private void Reset() {
             MaxPositiveAngle = 360f;
             MaxNegativeAngle = -360f;
@@ -61,19 +64,20 @@ namespace UnityEngine.Movement {
             _deltaSinceLast += LookInput.Value();
 
             if (!UsePhysicsToLook && TransformToRotate != null) {
-                doLookRotation(deltaTime);
+                doLookRotation();
                 _deltaSinceLast = 0f;
             }
         }
         private void doFixedUpdate(float fixedDeltaTime) {
             if (UsePhysicsToLook && RigidbodyToRotate != null) {
-                doLookRotation(fixedDeltaTime);
+                doLookRotation();
                 _deltaSinceLast = 0f;
             }
         }
 
         // HELPERS
-        private void doLookRotation(float deltaTime) {
+        private void doLookRotation()
+        {
             // Determine the upward direction
             Vector3 up = GetUpwardUnitVector();
 

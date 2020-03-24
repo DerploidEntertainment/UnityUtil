@@ -1,4 +1,5 @@
-using System;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using UnityEngine.Inventory;
 using UnityEngine.Logging;
 
@@ -41,6 +42,7 @@ namespace UnityEngine {
             RegisterUpdatesAutomatically = true;
             BetterUpdate = doUpdate;
         }
+        [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
         private void OnDrawGizmos() {
             float range = WeaponInfo?.Range ?? Range;
             Gizmos.DrawLine(TransformToRotate.position, TransformToRotate.TransformPoint(range * Vector3.forward));

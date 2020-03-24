@@ -1,4 +1,6 @@
+﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using UnityEngine.Triggers;
 
 namespace UnityEngine.Inputs {
@@ -40,6 +42,8 @@ namespace UnityEngine.Inputs {
                 _toggled.RemoveAt(t);
             }
         }
+
+        [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
         private void OnDrawGizmos() {
             if (DrawRay) {
                 Gizmos.color = RayColor;
@@ -51,7 +55,7 @@ namespace UnityEngine.Inputs {
         // HELPERS
         private void look(float deltaTime) {
             // Raycast for Colliders to look at
-            var hits = new RaycastHit[0];
+            RaycastHit[] hits = Array.Empty<RaycastHit>();
             if (InteractWithAllInRange || MaxInteractions > 1) {
                 RaycastHit[] allHits = Physics.RaycastAll(transform.position, transform.forward, Range, InteractLayerMask);
                 hits = allHits;

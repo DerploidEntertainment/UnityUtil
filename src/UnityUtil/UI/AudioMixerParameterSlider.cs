@@ -1,5 +1,6 @@
-using Sirenix.OdinInspector;
+﻿using Sirenix.OdinInspector;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using UnityEngine.Assertions;
 using UnityEngine.Audio;
 using UnityEngine.EventSystems;
@@ -45,6 +46,7 @@ namespace UnityEngine.UI
 
         public string FinalCacheKey => string.IsNullOrEmpty(CacheKey) ? ExposedParameterName : CacheKey;
 
+        [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
         private void Reset() {
             ExposedParameterName = "Volume";
 
@@ -89,6 +91,7 @@ namespace UnityEngine.UI
             });
             eventTrigger.triggers.Add(entry);
         }
+        [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
         private void Start() {
             // Initialize audio parameters from cache, if requested
             // This must occur in Start, as apparently setting AudioMixer parameters in Awake is undefined behavior... https://fogbugz.unity3d.com/default.asp?1197165_nik4gg1io942ae13#bugevent_1071843210

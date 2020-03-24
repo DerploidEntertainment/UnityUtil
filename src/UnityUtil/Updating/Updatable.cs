@@ -21,9 +21,7 @@ namespace UnityEngine {
         protected Action<float> BetterFixedUpdate;
         protected Action<float> BetterLateUpdate;
 
-        public void Inject(IUpdater updater) {
-            Updater = updater;
-        }
+        public void Inject(IUpdater updater) => Updater = updater;
 
         // EVENT HANDLERS
         protected override void Awake() {
