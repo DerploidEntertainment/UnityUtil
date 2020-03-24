@@ -10,7 +10,9 @@
         public string TagToLookAt;
         public bool FlipOnLocalY = false;
 
-        protected override void BetterAwake() {
+        protected override void Awake() {
+            base.Awake();
+
             RegisterUpdatesAutomatically = true;
             BetterUpdate = look;
         }

@@ -26,14 +26,12 @@ namespace UnityEngine {
         }
 
         // EVENT HANDLERS
-        protected override void OnAwake() {
-            base.OnAwake();
+        protected override void Awake() {
+            base.Awake();
 
             InstanceID = GetInstanceID();   // A cached int is faster than repeated GetInstanceID() calls, due to method call overhead and some unsafe code in that method
-
-            BetterAwake();
         }
-        protected void OnEnable() {
+        protected virtual void OnEnable() {
             if (RegisterUpdatesAutomatically) {
                 // Validate that Components with auto-update-registration have provided at least one Update Action for registration
                 Assert.IsFalse(
@@ -47,10 +45,8 @@ namespace UnityEngine {
                 if (BetterLateUpdate != null)
                     Updater.RegisterLateUpdate(InstanceID, BetterLateUpdate);
             }
-
-            BetterOnEnable();
         }
-        protected void OnDisable() {
+        protected virtual void OnDisable() {
             if (RegisterUpdatesAutomatically) {
                 if (BetterUpdate != null)
                     Updater.UnregisterUpdate(InstanceID);
@@ -59,22 +55,7 @@ namespace UnityEngine {
                 if (BetterLateUpdate != null)
                     Updater.UnregisterLateUpdate(InstanceID);
             }
-
-            BetterOnDisable();
         }
-
-        /// <summary>
-        /// Actions to run during Awake().  Declaring Awake() on a subclass would hide the implementation in <see cref="UnityEngine.Updatable"/>, so this method is provided for subclasses to provide additional Awake() functionality.
-        /// </summary>
-        protected virtual void BetterAwake() { }
-        /// <summary>
-        /// Actions to run during OnEnable().  Declaring OnEnable() on a subclass would hide the implementation in <see cref="UnityEngine.Updatable"/>, so this method is provided for subclasses to provide additional OnEnable() functionality.
-        /// </summary>
-        protected virtual void BetterOnEnable() { }
-        /// <summary>
-        /// Actions to run during OnDisable().  Declaring OnDisable() on a subclass would hide the implementation in <see cref="UnityEngine.Updatable"/>, so this method is provided for subclasses to provide additional OnDisable() functionality.
-        /// </summary>
-        protected virtual void BetterOnDisable() { }
 
     }
 

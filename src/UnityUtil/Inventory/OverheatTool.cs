@@ -28,7 +28,9 @@ namespace UnityEngine.Inventory {
         public OverheatChangedEvent OverheatStateChanged = new OverheatChangedEvent();
 
         // EVENT HANDLERS
-        protected override void BetterAwake() {
+        protected override void Awake() {
+            base.Awake();
+
             this.AssertAssociation(Info, nameof(OverheatToolInfo));
             Assert.IsTrue(Info.StartingHeat <= Info.MaxHeat, $"{this.GetHierarchyNameWithType()} was started with {nameof(this.Info.StartingHeat)} heat but it can only store a max of {this.Info.MaxHeat}!");
 

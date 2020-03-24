@@ -1,4 +1,4 @@
-﻿using Sirenix.OdinInspector;
+using Sirenix.OdinInspector;
 using System;
 using System.Diagnostics;
 using UnityEngine.Events;
@@ -36,8 +36,8 @@ namespace UnityEngine {
             _localCache = localCache;
         }
 
-        protected override void OnAwake() {
-            base.OnAwake();
+        protected override void Awake() {
+            base.Awake();
 
             this.AssertAssociation(AcceptInitialUi, nameof(AcceptInitialUi));
             this.AssertAssociation(AcceptUpdateUi, nameof(AcceptUpdateUi));

@@ -11,7 +11,9 @@ namespace UnityEngine {
         [field: SerializeField, LabelText(nameof(Seed))]
         public string Seed { get; private set; }
 
-        protected override void OnAwake() {
+        protected override void Awake() {
+            base.Awake();
+
             (int seed, bool generated) = GetOrGenerateSeed(Seed);
             if (generated) {
                 Seed = seed.ToString();

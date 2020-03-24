@@ -31,7 +31,9 @@
         public float MaxTorqueSpeed = 2f;
 
         // EVENT HANDLERS
-        protected override void BetterAwake() {
+        protected override void Awake() {
+            base.Awake();
+
             // Set initial idle move/torque periods for if/when we idle
             _idleMovePeriod = Random.Range(MinMovePeriod, MaxMovePeriod);
             _idleTorquePeriod = Random.Range(MinTorquePeriod, MaxTorquePeriod);

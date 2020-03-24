@@ -1,4 +1,4 @@
-﻿using UnityEngine.EventSystems;
+using UnityEngine.EventSystems;
 using UnityEngine.Logging;
 
 namespace UnityEngine.UI {
@@ -21,8 +21,8 @@ namespace UnityEngine.UI {
 
         private void Reset() => DragThresholdFactor = 5;
 
-        protected override void OnAwake() {
-            base.OnAwake();
+        protected override void Awake() {
+            base.Awake();
 
             this.AssertAssociation(EventSystem, nameof(EventSystem));
             this.AssertAssociation(CanvasScaler, nameof(CanvasScaler));

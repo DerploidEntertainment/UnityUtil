@@ -14,12 +14,20 @@ namespace UnityEngine.Triggers {
         [Tooltip("Time, in seconds, before the button may be pressed again.")]
         public float RefactoryPeriod = 1f;
 
-        protected override void BetterAwake() => RegisterUpdatesAutomatically = false;
-        protected override void BetterOnEnable() {
+        protected override void Awake() {
+            base.Awake();
+
+            RegisterUpdatesAutomatically = false;
+        }
+        protected override void OnEnable() {
+            base.OnEnable();
+
             if (_tRefactory > -1f)
                 Updater.RegisterUpdate(InstanceID, updateRefactory);
         }
-        protected override void BetterOnDisable() {
+        protected override void OnDisable() {
+            base.OnDisable();
+
             if (_tRefactory > -1f)
                 Updater.UnregisterUpdate(InstanceID);
         }

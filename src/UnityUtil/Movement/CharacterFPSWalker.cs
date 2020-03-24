@@ -35,7 +35,9 @@ namespace UnityEngine.Movement {
         private float _oldHeight;
 
         // EVENT HANDLERS
-        protected override void BetterAwake() {
+        protected override void Awake() {
+            base.Awake();
+
             this.AssertAssociation(ControllerToMove, nameof(this.ControllerToMove));
 
             _oldHeight = ControllerToMove.height;

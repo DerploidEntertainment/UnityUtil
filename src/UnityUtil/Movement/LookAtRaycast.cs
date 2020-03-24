@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEngine.Inventory;
 using UnityEngine.Logging;
 
@@ -35,7 +35,9 @@ namespace UnityEngine {
             };
 
         // EVENT HANDLERS
-        protected override void BetterAwake() {
+        protected override void Awake() {
+            base.Awake();
+
             RegisterUpdatesAutomatically = true;
             BetterUpdate = doUpdate;
         }

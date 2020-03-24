@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEngine.Inputs;
 using UnityEngine.Logging;
 
@@ -48,7 +48,9 @@ namespace UnityEngine.Movement {
             UsePhysicsToLook = true;
             CustomAxisDirection = Vector3.up;
         }
-        protected override void BetterAwake() {
+        protected override void Awake() {
+            base.Awake();
+
             this.AssertAssociation(LookInput, nameof(this.LookInput));
 
             RegisterUpdatesAutomatically = true;

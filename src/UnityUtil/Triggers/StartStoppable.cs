@@ -22,8 +22,14 @@ namespace UnityEngine.Triggers {
         public bool StartAutomatically = false;
 
         // EVENT HANDLERS
-        protected override void BetterAwake() => RegisterUpdatesAutomatically = false;
-        protected override void BetterOnEnable() {
+        protected override void Awake() {
+            base.Awake();
+
+            RegisterUpdatesAutomatically = false;
+        }
+        protected override void OnEnable() {
+            base.OnEnable();
+
             // If the GameObject is starting (i.e., this is the first-ever call to OnEnable)...
             if (_starting) {
                 _starting = false;
@@ -53,7 +59,9 @@ namespace UnityEngine.Triggers {
                 }
             }
         }
-        protected override void BetterOnDisable() {
+        protected override void OnDisable() {
+            base.OnDisable();
+
             _wasRunningB4Disable = Running;
 
             switch (EnableDisableBehavior) {

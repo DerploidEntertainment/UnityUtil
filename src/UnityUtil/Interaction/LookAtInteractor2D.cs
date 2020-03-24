@@ -9,7 +9,9 @@ namespace UnityEngine.Inputs {
         public float Range;
         public LayerMask InteractLayerMask;
 
-        protected override void BetterAwake() {
+        protected override void Awake() {
+            base.Awake();
+
             RegisterUpdatesAutomatically = true;
             BetterUpdate = look;
         }

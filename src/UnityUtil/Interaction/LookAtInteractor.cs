@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine.Triggers;
 
 namespace UnityEngine.Inputs {
@@ -25,12 +25,15 @@ namespace UnityEngine.Inputs {
         public Color RayColor = Color.black;
 
         // EVENT HANDLERS
-        protected override void BetterAwake() {
+        protected override void Awake() {
+            base.Awake();
+
             RegisterUpdatesAutomatically = true;
             BetterUpdate = look;
         }
-        protected override void BetterOnEnable() { }
-        protected override void BetterOnDisable() {
+        protected override void OnDisable() {
+            base.OnDisable();
+
             // Turn off all triggers being looked at
             for (int t = _toggled.Count - 1; t >= 0; --t) {
                 _toggled[t].TurnOff();

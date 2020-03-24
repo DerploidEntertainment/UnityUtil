@@ -1,4 +1,4 @@
-﻿namespace UnityEngine.UI
+namespace UnityEngine.UI
 {
     public class ScrollRectVelocityClamper : Updatable
     {
@@ -16,9 +16,9 @@
             int y = Mathf.Max(0, MinVelocityMagnitude.y);
             MinVelocityMagnitude = new Vector2Int(x, y);
         }
-        protected override void BetterAwake()
+        protected override void Awake()
         {
-            base.BetterAwake();
+            base.Awake();
 
             RegisterUpdatesAutomatically = true;
             BetterUpdate = deltaTime =>

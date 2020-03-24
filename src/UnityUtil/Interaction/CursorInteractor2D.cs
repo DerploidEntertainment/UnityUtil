@@ -8,7 +8,9 @@ namespace UnityEngine.Inputs {
         public LayerMask InteractLayerMask;
         public StartStopInput Input;
 
-        protected override void BetterAwake() {
+        protected override void Awake() {
+            base.Awake();
+
             RegisterUpdatesAutomatically = true;
             BetterUpdate = raycastScreen;
         }

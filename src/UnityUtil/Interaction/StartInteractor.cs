@@ -20,7 +20,9 @@ namespace UnityEngine.Inputs {
         public event EventHandler<InteractionEventArgs> Interacted;
 
         // EVENT HANDLERS
-        protected override void BetterAwake() {
+        protected override void Awake() {
+            base.Awake();
+
             RegisterUpdatesAutomatically = true;
             BetterUpdate = raycast;
         }

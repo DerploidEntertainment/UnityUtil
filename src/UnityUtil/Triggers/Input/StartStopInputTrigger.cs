@@ -9,7 +9,9 @@ namespace UnityEngine.Triggers.Input {
         public UnityEvent InputStarted = new UnityEvent();
         public UnityEvent InputStopped = new UnityEvent();
 
-        protected override void BetterAwake() {
+        protected override void Awake() {
+            base.Awake();
+
             RegisterUpdatesAutomatically = true;
             BetterUpdate = checkInputs;
         }

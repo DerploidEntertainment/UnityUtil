@@ -25,7 +25,9 @@ namespace UnityEngine.Inventory {
         public UnityEvent UseFailed = new UnityEvent();
 
         // EVENT HANDLERS
-        protected override void BetterAwake() {
+        protected override void Awake() {
+            base.Awake();
+
             this.AssertAssociation(Info, nameof(ToolInfo));
             this.AssertAssociation(UseInput, nameof(this.UseInput));
 
@@ -48,7 +50,9 @@ namespace UnityEngine.Inventory {
                     _refractoryRoutine = StartCoroutine(startRefractoryPeriod());
             }
         }
-        protected override void BetterOnDisable() {
+        protected override void OnDisable() {
+            base.OnDisable();
+
             if (_usingRoutine != null) {
                 StopCoroutine(_usingRoutine);
                 _usingRoutine = null;

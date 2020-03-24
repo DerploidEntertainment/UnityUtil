@@ -1,4 +1,4 @@
-﻿using Sirenix.OdinInspector;
+using Sirenix.OdinInspector;
 using System;
 using UnityEngine.Assertions;
 using UnityEngine.Audio;
@@ -59,8 +59,8 @@ namespace UnityEngine.UI
             _logger = loggerProvider.GetLogger(this);
             _localCache = localCache;
         }
-        protected override void OnAwake() {
-            base.OnAwake();
+        protected override void Awake() {
+            base.Awake();
 
             this.AssertAssociation(AudioMixer, nameof(AudioMixer));
             this.AssertAssociation(Slider, nameof(Slider));
