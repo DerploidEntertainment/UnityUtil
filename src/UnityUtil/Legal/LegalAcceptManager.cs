@@ -7,7 +7,7 @@ using UnityEngine.Networking;
 using UnityEngine.Storage;
 using UnityEngine.UI;
 
-namespace UnityEngine {
+namespace UnityEngine.Legal {
 
     public class LegalAcceptManager : Configurable {
 
