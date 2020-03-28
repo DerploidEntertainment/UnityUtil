@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using UnityEngine.Events;
 using UnityEngine.Logging;
 
@@ -24,6 +25,8 @@ namespace UnityEngine.Triggers {
         private int _number;
         private int _lastTriggerVal = 0;
 
+        [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
+        [SuppressMessage("Code Quality", "IDE0051:Remove unused private members", Justification = "Unity message")]
         private void Awake() {
             _number = StartingValue;
             _lastTriggerVal = _number;
@@ -68,7 +71,7 @@ namespace UnityEngine.Triggers {
                     break;
 
                 default:
-                    throw new NotImplementedException(UnityObjectExtensions.GetSwitchDefault(Mode));
+                    throw UnityObjectExtensions.SwitchDefaultException(Mode);
             }
 
             // If no desired values were reached above, then raise the ValueNotReached event

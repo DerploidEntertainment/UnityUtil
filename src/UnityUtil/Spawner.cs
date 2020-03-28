@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using UnityEngine.Logging;
 using U = UnityEngine;
 
@@ -56,6 +57,7 @@ namespace UnityEngine {
 
         public void Inject(ILoggerProvider loggerProvider) => _logger = loggerProvider.GetLogger(this);
 
+        [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
         private void Awake() {
             DependencyInjector.ResolveDependenciesOf(this);
 
@@ -120,7 +122,7 @@ namespace UnityEngine {
 #else
                 case SpawnDirection.AnyDirection: return U.Random.onUnitSphere;
 #endif
-                default: throw new NotImplementedException(UnityObjectExtensions.GetSwitchDefault(SpawnDirection));
+                default: throw UnityObjectExtensions.SwitchDefaultException(SpawnDirection);
             }
         }
     }

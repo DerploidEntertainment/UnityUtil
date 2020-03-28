@@ -116,13 +116,13 @@ namespace UnityEngine.UI
             SliderTransformation switch {
                 AudioSliderTransformation.Linear => transformedValue / Coefficient,
                 AudioSliderTransformation.Logarithmic => Mathf.Pow(LogBase, transformedValue / Coefficient),
-                _ => throw new NotImplementedException(UnityObjectExtensions.GetSwitchDefault(SliderTransformation))
+                _ => throw UnityObjectExtensions.SwitchDefaultException(SliderTransformation)
             };
         private float transformValue(float sliderValue) =>
             SliderTransformation switch {
                 AudioSliderTransformation.Linear => sliderValue * Coefficient,
                 AudioSliderTransformation.Logarithmic => Mathf.Log(sliderValue, LogBase) * Coefficient,
-                _ => throw new NotImplementedException(UnityObjectExtensions.GetSwitchDefault(SliderTransformation))
+                _ => throw UnityObjectExtensions.SwitchDefaultException(SliderTransformation)
             };
 
     }

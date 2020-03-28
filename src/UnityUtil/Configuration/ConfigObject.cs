@@ -114,7 +114,7 @@ namespace UnityEngine {
                 ConfigValueType.Vector3Int => Vector3IntValue,
                 ConfigValueType.RectInt => RectIntValue,
                 ConfigValueType.BoundsInt => BoundsIntValue,
-                _ => throw new NotImplementedException(UnityObjectExtensions.GetSwitchDefault(Type)),
+                _ => throw UnityObjectExtensions.SwitchDefaultException(Type),
             };
     }
 

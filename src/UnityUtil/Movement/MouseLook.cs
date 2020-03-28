@@ -39,7 +39,7 @@ namespace UnityEngine.Movement {
                 AxisDirection.OppositeGravity => -Physics.gravity.normalized,
                 AxisDirection.CustomWorldSpace => CustomAxisDirection.normalized,
                 AxisDirection.CustomLocalSpace => (UsePhysicsToLook ? RigidbodyToRotate.transform : TransformToRotate).TransformDirection(CustomAxisDirection.normalized),
-                _ => throw new NotImplementedException(UnityObjectExtensions.GetSwitchDefault(AxisDirectionType)),
+                _ => throw UnityObjectExtensions.SwitchDefaultException(AxisDirectionType),
             };
 
         // EVENT HANDLERS

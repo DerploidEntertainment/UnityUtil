@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using UnityEngine.Logging;
 
 namespace UnityEngine {
@@ -16,7 +17,7 @@ namespace UnityEngine {
         public float MaxAngleToSurface;
         [Tooltip("If true, then the hover force will only be applied while the " + nameof(HoverForce.HoveringRigidbody) + " is grounded (i.e., <= " + nameof(HoverForce.HoverHeight) + " units above a surface), causing it to fall at the normal rate.  If false, then the hover force will be applied even when the " + nameof(HoverForce.HoveringRigidbody) + " is not grounded, allowing it to 'float' down more gently.")]
         public bool OnlyApplyForceWhileGrounded = true;
-        [Tooltip("The maximum mass of " + nameof(HoverForce.HoveringRigidbody) + " that this " + nameof(UnityEngine.HoverForce) + " can keep aloft at the " + nameof(HoverForce.HoverHeight) + ".  If set to Infinity, then Rigidbodies of any mass can be kept aloft at the same " + nameof(HoverHeight) + "; otherwise, Rigidbodies more massive than this value will sink to the ground.  Note that the hover force will automatically scale down for lower " + nameof(HoverForce.HoveringRigidbody) + " masses.")]
+        [Tooltip("The maximum mass of " + nameof(HoverForce.HoveringRigidbody) + " that this " + nameof(UnityEngine.HoverForce) + " can keep aloft at the " + nameof(HoverForce.HoverHeight) + ".  If set to Infinity, then a Rigidbody of any mass can be kept aloft at the same " + nameof(HoverHeight) + "; otherwise, Rigidbodies more massive than this value will sink to the ground.  Note that the hover force will automatically scale down for lower " + nameof(HoverForce.HoveringRigidbody) + " masses.")]
         public float MaxHoverableMass;
         [Tooltip("Only Colliders matching this layer mask will be repelled against by the hover force.  That is, the " + nameof(HoverForce.HoveringRigidbody) + " will 'fall through' colliders that are not in this layer mask.")]
         public LayerMask GroundLayerMask;
@@ -37,10 +38,11 @@ namespace UnityEngine {
                 AxisDirection.OppositeGravity => -Physics.gravity.normalized,
                 AxisDirection.CustomWorldSpace => CustomUpwardDirection.normalized,
                 AxisDirection.CustomLocalSpace => transform.TransformDirection(CustomUpwardDirection.normalized),
-                _ => throw new NotImplementedException(UnityObjectExtensions.GetSwitchDefault(UpwardDirectionType)),
+                _ => throw UnityObjectExtensions.SwitchDefaultException(UpwardDirectionType),
             };
         public float AppliedFractionOfMaxForce { get; private set; }
 
+        [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
         private void Reset() {
             HoverHeight = 2f;
             MaxAngleToSurface = 60f;
@@ -48,6 +50,7 @@ namespace UnityEngine {
             UpwardDirectionType = AxisDirection.OppositeGravity;
             CustomUpwardDirection = Vector3.up;
         }
+        [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
         private void FixedUpdate() {
             if (HoveringRigidbody == null)
                 return;

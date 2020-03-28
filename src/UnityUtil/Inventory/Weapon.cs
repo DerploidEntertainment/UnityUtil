@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using UnityEngine.Events;
 using UnityEngine.Logging;
@@ -24,6 +25,7 @@ namespace UnityEngine.Inventory {
 
         public void Inject(ILoggerProvider loggerProvider) => _logger = loggerProvider.GetLogger(this);
 
+        [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
         private void Awake() {
             this.AssertAssociation(Info, nameof(WeaponInfo));
 
@@ -34,6 +36,7 @@ namespace UnityEngine.Inventory {
             _tool.Using.AddListener(() => _accuracyLerpT = 0f);
             _tool.Used.AddListener(attack);
         }
+        [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
         private void OnDrawGizmos() {
             switch (Info.PhysicsCastShape) {
                 case PhysicsCastShape.Ray:
@@ -49,7 +52,7 @@ namespace UnityEngine.Inventory {
                     Gizmos.DrawWireSphere(transform.position + Info.Range * transform.forward, Info.Radius);
                     break;
 
-                default: _logger.LogWarning("Could not draw Gizmos. " + UnityObjectExtensions.GetSwitchDefault(Info.PhysicsCastShape), context: this); break;
+                default: _logger.LogWarning("Could not draw Gizmos. " + UnityObjectExtensions.SwitchDefaultException(Info.PhysicsCastShape).Message, context: this); break;
             }
         }
 
@@ -69,7 +72,7 @@ namespace UnityEngine.Inventory {
                 PhysicsCastShape.Box => boxAttackHits(),
                 PhysicsCastShape.Sphere => sphereAttackHits(),
                 PhysicsCastShape.Capsule => capsuleAttackHits(),
-                _ => throw new NotImplementedException(UnityObjectExtensions.GetSwitchDefault(Info.PhysicsCastShape)),
+                _ => throw UnityObjectExtensions.SwitchDefaultException(Info.PhysicsCastShape),
             };
 
             // Sort hits by increasing distance, and raise the Attacked event so that other components can select which components to affect

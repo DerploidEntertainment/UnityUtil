@@ -32,7 +32,7 @@ namespace UnityEngine {
                 AxisDirection.OppositeGravity => -Physics.gravity.normalized,
                 AxisDirection.CustomWorldSpace => CustomUpwardDirection.normalized,
                 AxisDirection.CustomLocalSpace => TransformToRotate.TransformDirection(CustomUpwardDirection.normalized),
-                _ => throw new NotImplementedException(UnityObjectExtensions.GetSwitchDefault(UpwardDirectionType)),
+                _ => throw UnityObjectExtensions.SwitchDefaultException(UpwardDirectionType),
             };
 
         // EVENT HANDLERS

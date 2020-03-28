@@ -17,19 +17,19 @@ namespace UnityEngine.Logging {
             uint numParents = DefaultNumParents,
             string separator = DefaultAncestorSeparator,
             string formatString = DefaultHierarchyNameFormatString
-        ) => GetName(gameObject.transform, numParents, separator, formatString);
+        ) => getName(gameObject.transform, numParents, separator, formatString);
         public static string GetHierarchyName(
             this Component component,
             uint numParents = DefaultNumParents,
             string separator = DefaultAncestorSeparator,
             string formatString = DefaultHierarchyNameFormatString
-        ) => GetName(component.transform, numParents, separator, formatString);
+        ) => getName(component.transform, numParents, separator, formatString);
         public static string GetHierarchyNameWithType(
             this Component component,
             uint numParents = DefaultNumParents,
             string separator = DefaultAncestorSeparator,
             string formatString = DefaultHierarchyNameWithTypeFormatString
-        ) => string.Format(formatString, component.GetType().Name, GetName(component.transform, numParents, separator, formatString: "{0}"));
+        ) => string.Format(formatString, component.GetType().Name, getName(component.transform, numParents, separator, formatString: "{0}"));
 
         [Conditional("UNITY_ASSERTIONS")]
         public static void AssertDependency(this Component component, object member, string memberName) =>
@@ -50,10 +50,11 @@ namespace UnityEngine.Logging {
             Assert.IsTrue(behaviour.enabled, $"Cannot {verbMessage} {behaviour.GetHierarchyNameWithType()} because it is disabled!");
         }
 
-        public static string GetSwitchDefault<T>(T value) where T : Enum => $"Gah! We haven't accounted for {value.GetType().Name} {value} yet!";
+        public static NotImplementedException SwitchDefaultException<T>(T value) where T : Enum =>
+            new NotImplementedException($"Gah! We haven't accounted for {typeof(T).Name} {value} yet!");
 
         // HELPERS
-        private static string GetName(Transform transform, uint numParents, string separator, string formatString) {
+        private static string getName(Transform transform, uint numParents, string separator, string formatString) {
             Transform trans = transform;
             var nameBuilder = new StringBuilder(trans.name);
             for (int p = 0; p < numParents; ++p) {

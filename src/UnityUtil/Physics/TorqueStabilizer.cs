@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using UnityEngine.Logging;
 
 namespace UnityEngine {
@@ -28,20 +29,23 @@ namespace UnityEngine {
                 AxisDirection.OppositeGravity => -Physics.gravity.normalized,
                 AxisDirection.CustomWorldSpace => CustomUpwardDirection.normalized,
                 AxisDirection.CustomLocalSpace => RigidbodyToStabilize.transform.TransformDirection(CustomUpwardDirection.normalized),
-                _ => throw new NotImplementedException(UnityObjectExtensions.GetSwitchDefault(UpwardDirectionType)),
+                _ => throw UnityObjectExtensions.SwitchDefaultException(UpwardDirectionType),
             };
 
         // EVENT HANDLERS
+        [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
         private void Reset() {
             MaxStabilizingTorque = 10f;
             MaxStabilizingAngle = 180f;
             UpwardDirectionType = AxisDirection.OppositeGravity;
             CustomUpwardDirection = Vector3.up;
         }
+        [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
         private void OnDrawGizmos() {
             if (RigidbodyToStabilize != null)
                 Gizmos.DrawLine(RigidbodyToStabilize.position, RigidbodyToStabilize.position + CustomUpwardDirection);
         }
+        [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
         private void FixedUpdate() {
             if (RigidbodyToStabilize == null)
                 return;
