@@ -5,7 +5,7 @@ namespace UnityEngine.Logging {
     public class DebugLoggerProvider : Configurable, ILoggerProvider {
 
         public string EnrichedLogSeparator = " | ";
-        public LogEnricher[] LogEnrichers;
+        public LogEnricher[] LogEnrichers = Array.Empty<LogEnricher>();
 
         public ILogger GetLogger(object source) {
             if (source == null)
