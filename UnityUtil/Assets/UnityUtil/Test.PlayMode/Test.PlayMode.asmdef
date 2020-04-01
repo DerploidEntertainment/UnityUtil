@@ -1,8 +1,8 @@
 {
     "name": "UnityUtil.Test.PlayMode",
-    "references": [],
-    "optionalUnityReferences": [
-        "TestAssemblies"
+    "references": [
+        "UnityEngine.TestRunner",
+        "UnityEditor.TestRunner"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
@@ -10,9 +10,14 @@
     "overrideReferences": true,
     "precompiledReferences": [
         "UnityUtil.dll",
-        "Moq.dll"
+        "Moq.dll",
+        "nunit.framework.dll"
     ],
     "autoReferenced": false,
-    "defineConstraints": [],
-    "versionDefines": []
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS",
+        "UNITY_ASSERTIONS"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
 }
