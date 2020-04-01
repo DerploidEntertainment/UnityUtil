@@ -27,8 +27,7 @@ namespace UnityEngine.UI {
         [Tooltip("If true, then breakpoint matches will be checked again every time the game's window is resized. This allows UI to adjust dynamically to changing window sizes in standalone players, or at design time in the Editor Game window. If false, then breakpoints will not be matched until entering play mode. Note that, if this value is true, then handlers for the breakpoint match events will run in the Editor if they are set to run in 'Editor and Runtime', and then they will run even if this component is disabled.")]
         public bool RecheckMatchesOnResize;
 
-        private const string MSG_UNSORTED_BREAKPOINTS = "Breakpoint values must be provided in ascending order with no duplicates";
-        [TableList(AlwaysExpanded = true), ValidateInput(nameof(AreBreakpointsValid), MSG_UNSORTED_BREAKPOINTS)]
+        [TableList(AlwaysExpanded = true), ValidateInput(nameof(AreBreakpointsValid), "Breakpoint values must be provided in ascending order with no duplicates")]
         public UiBreakpoint[] Breakpoints = Array.Empty<UiBreakpoint>();
 
         [Tooltip("If no breakpoints are matched, then this UnityEvent will be raised instead, e.g., to set any UI defaults that are not already set in the Inspector. For example, when breakpoints are being matched in " + nameof(Mode) + " '" + nameof(BreakpointMode.ScreenWidth) + "' and " + nameof(MatchMode) + " '" + nameof(BreakpointMatchMode.AnyEqualOrLess) + "' against a 700px-wide device, but the only breakpoint provided is for a value of 1200, then no breakpoint " + nameof(UiBreakpoint.Matched) + " events will be raised, so this event will be raised instead.")]
@@ -84,7 +83,10 @@ namespace UnityEngine.UI {
 
             // Make sure breakpoint values are sorted strictly ascending (no duplicates)
             for (int b = 1; b < breakpoints.Length; ++b) {
-                if (breakpoints[b].Value <= breakpoints[b - 1].Value)
+                if (
+                    breakpoints[b].Enabled && breakpoints[b - 1].Enabled &&
+                    breakpoints[b].Value <= breakpoints[b - 1].Value
+                )
                     return false;
             }
 
@@ -121,7 +123,7 @@ namespace UnityEngine.UI {
             bool invoked = false;
             if (MatchMode == BreakpointMatchMode.MaxEqualOrLess)
             {
-                UiBreakpoint breakpoint = Breakpoints.LastOrDefault(b => b.Value <= modeValue);
+                UiBreakpoint breakpoint = Breakpoints.LastOrDefault(b => b.Enabled && b.Value <= modeValue);
                 if (breakpoint != null)
                     invokeBreakpoint(breakpoint);
             }
@@ -130,6 +132,9 @@ namespace UnityEngine.UI {
                 for (int b = 0; b < Breakpoints.Length; ++b)
                 {
                     UiBreakpoint breakpoint = Breakpoints[b];
+                    if (!breakpoint.Enabled)
+                        continue;
+
                     bool invoke =
                         (breakpoint.Value < modeValue && MatchMode == BreakpointMatchMode.AnyEqualOrLess)
                         || breakpoint.Value == modeValue
