@@ -586,14 +586,8 @@ namespace UnityUtil.Test.EditMode.UI {
             UnityAction noMatchAction = null,
             params UiBreakpoint[] breakpoints
         ) {
-            var obj = new GameObject();
-
-            // Set up dependencies
-            ILoggerProvider loggerProvider = Mock.Of<ILoggerProvider>(x => x.GetLogger(It.IsAny<object>()) == Debug.unityLogger);
-
             // Create the instance
-            UiBreakpoints uiBreakpoints = obj.AddComponent<UiBreakpoints>();
-            uiBreakpoints.Inject(loggerProvider);
+            UiBreakpoints uiBreakpoints = new GameObject().AddComponent<UiBreakpoints>();
             uiBreakpoints.Mode = mode;
             uiBreakpoints.MatchMode = matchMode;
             uiBreakpoints.Breakpoints = breakpoints;
