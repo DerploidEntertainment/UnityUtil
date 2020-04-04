@@ -1,5 +1,6 @@
 ﻿using Sirenix.OdinInspector;
 using System;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using UnityEngine.Assertions;
@@ -37,10 +38,10 @@ namespace UnityEngine.UI {
         [Tooltip("If no breakpoints are matched, then this UnityEvent will be raised instead, e.g., to set any UI defaults that are not already set in the Inspector. For example, when breakpoints are being matched in " + nameof(Mode) + " '" + nameof(BreakpointMode.ScreenWidth) + "' and " + nameof(MatchMode) + " '" + nameof(BreakpointMatchMode.AnyEqualOrLess) + "' against a 700px-wide device, but the only breakpoint provided is for a value of 1200, then no breakpoint " + nameof(UiBreakpoint.Matched) + " events will be raised, so this event will be raised instead.")]
         public UnityEvent NoBreakpointMatched = new UnityEvent();
 
+        [Conditional("UNITY_EDITOR")]
+        [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
         [SuppressMessage("Code Quality", "IDE0051:Remove unused private members", Justification = "Unity message")]
-        protected override void Reset() {
-            base.Reset();
-
+        private new void Reset() {
             Mode = BreakpointMode.SafeAreaAspectRatio;
             MatchMode = BreakpointMatchMode.MinEqualOrGreater;
 
