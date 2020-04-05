@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using UnityEngine.EventSystems;
 using UnityEngine.Logging;
 
@@ -20,6 +21,7 @@ namespace UnityEngine.UI {
         [Min(0f), Tooltip(TOOLTIP)]
         public int DragThresholdFactor;
 
+        [Conditional("UNITY_EDITOR")]
         [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
         [SuppressMessage("Code Quality", "IDE0051:Remove unused private members", Justification = "Unity message")]
         private void Reset() => DragThresholdFactor = 5;

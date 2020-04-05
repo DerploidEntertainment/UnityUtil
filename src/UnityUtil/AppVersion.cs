@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 
 namespace UnityEngine {
     [CreateAssetMenu(menuName = "UnityUtil" + "/" + nameof(AppVersion), fileName = "version")]
@@ -8,6 +9,7 @@ namespace UnityEngine {
         [Tooltip("This number represents the build number from the continuous deployment system, such as Unity Cloud Build.")]
         public int BuildNumber;
 
+        [Conditional("UNITY_EDITOR")]
         [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
         private void Reset() {
             Description = "Initial Release";

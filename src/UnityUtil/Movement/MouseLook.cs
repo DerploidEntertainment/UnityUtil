@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using UnityEngine.Inputs;
 using UnityEngine.Logging;
@@ -43,6 +44,7 @@ namespace UnityEngine.Movement {
             };
 
         // EVENT HANDLERS
+        [Conditional("UNITY_EDITOR")]
         [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
         [SuppressMessage("Code Quality", "IDE0051:Remove unused private members", Justification = "Unity message")]
         private void Reset() {

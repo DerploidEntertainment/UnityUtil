@@ -1,5 +1,6 @@
 ﻿using Sirenix.OdinInspector;
 using System;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using UnityEngine.Assertions;
 using UnityEngine.Audio;
@@ -46,6 +47,7 @@ namespace UnityEngine.UI
 
         public string FinalCacheKey => string.IsNullOrEmpty(CacheKey) ? ExposedParameterName : CacheKey;
 
+        [Conditional("UNITY_EDITOR")]
         [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
         private void Reset() {
             ExposedParameterName = "Volume";
