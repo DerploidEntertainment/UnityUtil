@@ -1,11 +1,8 @@
-﻿using Moq;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using NUnit.Framework.Constraints;
-using System;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.Logging;
 using UnityEngine.UI;
 using UnityUtil.Editor;
 using UA = UnityEngine.Assertions;
@@ -201,9 +198,6 @@ namespace UnityUtil.Test.EditMode.UI {
             // Unsorted, with one of the out-of-order ones re-enabled
             breakpoints[1].Enabled = true;
             Assert.IsFalse(UiBreakpoints.AreBreakpointsValid(breakpoints));
-
-
-            UiBreakpoint[] getBreakpoints(params float[] values) => values.Select(val => new UiBreakpoint(val)).ToArray();
         }
 
         [Test]
