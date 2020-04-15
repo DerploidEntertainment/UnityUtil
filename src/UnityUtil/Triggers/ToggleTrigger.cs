@@ -1,36 +1,45 @@
 ﻿using Sirenix.OdinInspector;
+using System.Diagnostics.CodeAnalysis;
 
 namespace UnityEngine.Triggers {
 
-    public class ToggleTrigger : TriggerCondition {
+    public class ToggleTrigger : ConditionalTrigger {
 
-        private bool _on;
+        [PropertyOrder(-5), ReadOnly, ShowInInspector, Tooltip("Note that this property may not refresh unless you select a different component in the Inspector then select this component again.")]
+        private bool _currentState;
 
+        [PropertyOrder(-4)]
         public bool AwakeState = false;
 
-        private void Awake() => _on = AwakeState;
+        [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
+        [SuppressMessage("Code Quality", "IDE0051:Remove unused private members", Justification = "Unity message")]
+        private void Awake() => _currentState = AwakeState;
 
-        [Button]
+        [Button, PropertyOrder(-3), HorizontalGroup(BUTTON_GROUP)]
         public void TurnOn() {
-            if (!_on) {
-                _on = true;
+            if (!_currentState) {
+                _currentState = true;
                 BecameTrue.Invoke();
             }
+            else
+                StillTrue.Invoke();
         }
-        [Button]
+        [Button, PropertyOrder(-2), HorizontalGroup(BUTTON_GROUP)]
         public void Toggle() {
-            _on = !_on;
-            (_on ? BecameTrue : BecameFalse).Invoke();
+            _currentState = !_currentState;
+            (_currentState ? BecameTrue : BecameFalse).Invoke();
         }
-        [Button]
+        [Button, PropertyOrder(-1), HorizontalGroup(BUTTON_GROUP)]
         public void TurnOff() {
-            if (_on) {
-                _on = false;
+            if (_currentState) {
+                _currentState = false;
                 BecameFalse.Invoke();
             }
+            else
+                StillFalse.Invoke();
         }
 
-        public override bool IsConditionMet() => _on;
+        public override bool IsConditionMet() => _currentState;
 
     }
 
