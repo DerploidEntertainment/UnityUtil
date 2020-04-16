@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityUtil.Editor;
 
-namespace UnityUtil.Test.EditMode {
+namespace UnityUtil.Test.EditMode.UI {
 
     public class ScrollRectVelocityClamperTest
     {

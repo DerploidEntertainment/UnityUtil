@@ -1,31 +1,40 @@
-﻿using System.Linq;
-using UnityEngine;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 
 namespace UnityEngine.Triggers {
 
-    public class OrTrigger : TriggerCondition {
+    public class OrTrigger : MultiConditionalTrigger {
 
         private int _numTrue = 0;
 
-        [Tooltip("Should this trigger's BecameTrue event be raised every time one of the Conditions becomes true, even if another Condition was already true?")]
-        public bool TriggerEveryTime = false;
-        public TriggerCondition[] Conditions;
+        [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
+        [SuppressMessage("Code Quality", "IDE0051:Remove unused private members", Justification = "Unity message")]
+        protected override void Awake() {
+            base.Awake();
 
-        private void Awake() {
-            _numTrue = Conditions.Count(c => c.IsConditionMet());
-            foreach (TriggerCondition c in Conditions) {
-                c.BecameTrue.AddListener(() => {
-                    if (++_numTrue == 1 || TriggerEveryTime)
-                        BecameTrue.Invoke();
-                });
-                c.BecameFalse.AddListener(() => {
-                    if (--_numTrue > 0)
-                        BecameFalse.Invoke();
-                });
-            }
+            _numTrue = Conditions?.Count(c => c.IsConditionMet()) ?? 0;
         }
 
-        public override bool IsConditionMet() => Conditions.Any(c => c.IsConditionMet());
+        public override bool IsConditionMet() => Conditions?.Any(c => c.IsConditionMet()) ?? false;
+
+        protected override void ConditionBecameTrueListener(ConditionalTrigger condition) =>
+            (++_numTrue == 1
+                ? (RaiseBecameEvents ? BecameTrue : null)
+                : (RaiseStillEvents ? StillTrue : null)
+            )?.Invoke();
+        protected override void ConditionBecameFalseListener(ConditionalTrigger condition) =>
+            (--_numTrue == 0
+                ? (RaiseBecameEvents ? BecameFalse : null)
+                : (RaiseStillEvents ? StillTrue : null)
+            )?.Invoke();
+        protected override void ConditionStillTrueListener(ConditionalTrigger condition) {
+            if (RaiseStillEvents)
+                StillTrue.Invoke();
+        }
+        protected override void ConditionStillFalseListener(ConditionalTrigger condition) {
+            if (RaiseStillEvents)
+                ((_numTrue == 0) ? StillFalse : StillTrue).Invoke();
+        }
 
     }
 
