@@ -82,7 +82,9 @@ namespace UnityEngine.Triggers {
         // API INTERFACE
         public bool Running { get; private set; } = false;
 
-        [Button("Start")]
+        private const string GRP_BUTTONS = "Buttons";
+
+        [Button("Start"), HorizontalGroup(GRP_BUTTONS)]
         public void StartBehavior() {
             this.AssertAcitveAndEnabled("start");
             if (Running)
@@ -90,24 +92,24 @@ namespace UnityEngine.Triggers {
 
             DoRestart();
         }
-        [Button("Restart")]
+        [Button("Restart"), HorizontalGroup(GRP_BUTTONS)]
         public void RestartBehavior() {
             this.AssertAcitveAndEnabled("restart");
             if (Running)
                 DoStop();
             DoRestart();
         }
-        [Button("Pause")]
+        [Button("Pause"), HorizontalGroup(GRP_BUTTONS)]
         public void PauseBehavior() {
             this.AssertAcitveAndEnabled("pause");
             DoPause();
         }
-        [Button("Resume")]
+        [Button("Resume"), HorizontalGroup(GRP_BUTTONS)]
         public void ResumeBehavior() {
             this.AssertAcitveAndEnabled("resume");
             DoResume();
         }
-        [Button("Stop")]
+        [Button("Stop"), HorizontalGroup(GRP_BUTTONS)]
         public void StopBehavior() {
             this.AssertAcitveAndEnabled("stop");
             if (!Running)
