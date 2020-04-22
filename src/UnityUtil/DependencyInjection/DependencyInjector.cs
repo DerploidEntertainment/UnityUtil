@@ -16,12 +16,14 @@ namespace UnityEngine {
         public string TypeName;
         [HideInInspector, NonSerialized]
         public string Tag;
-        public MonoBehaviour Instance;
+        public Object Instance;
 
         #pragma warning restore CA2235 // Mark all non-serializable fields
     }
 
     public class DependencyInjector : MonoBehaviour {
+
+        private const string DEFAULT_TAG = "Untagged";
 
         private static readonly ICollection<int> s_registeredScenes = new HashSet<int>();
         private static readonly IDictionary<Type, IDictionary<string, Service>> s_services = new Dictionary<Type, IDictionary<string, Service>>();
@@ -98,7 +100,7 @@ namespace UnityEngine {
 
                 if (string.IsNullOrEmpty(service.TypeName))
                     service.TypeName = service.Instance.GetType().AssemblyQualifiedName;
-                service.Tag = service.Instance.tag;
+                service.Tag = (service.Instance as Component)?.tag ?? DEFAULT_TAG;
                 services[s] = service;
             }
 
@@ -239,7 +241,7 @@ namespace UnityEngine {
                 }
                 InjectTagAttribute injAttr = param.GetCustomAttribute<InjectTagAttribute>();
                 bool untagged = string.IsNullOrEmpty(injAttr?.Tag);
-                string tag = untagged ? "Untagged" : injAttr.Tag;
+                string tag = untagged ? DEFAULT_TAG : injAttr.Tag;
                 resolved = typedServices.TryGetValue(tag, out Service service);
                 if (!resolved) {
                     log(LogType.Error, $"{clientName} has a dependency of Type '{pType.FullName}' with tag '{tag}', but no matching service was registered. Did you forget to tag a service?");
