@@ -57,7 +57,7 @@ namespace UnityEngine {
         }
 
         // EVENT HANDLERS
-        private void Update() {
+        public void Update() {
             _tSinceTrim += Time.unscaledDeltaTime;
             if (_tSinceTrim >= TrimPeriod) {
                 _tSinceTrim -= TrimPeriod;
@@ -69,11 +69,11 @@ namespace UnityEngine {
             for (int u = 0; u < _updates.Count; ++u)
                 _updates[u](Time.deltaTime);
         }
-        private void FixedUpdate() {
+        public void FixedUpdate() {
             for (int fu = 0; fu < _fixed.Count; ++fu)
                 _fixed[fu](Time.fixedDeltaTime);
         }
-        private void LateUpdate() {
+        public void LateUpdate() {
             for (int lu = 0; lu < _late.Count; ++lu)
                 _late[lu](Time.deltaTime);
         }

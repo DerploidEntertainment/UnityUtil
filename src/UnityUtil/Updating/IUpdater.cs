@@ -40,6 +40,10 @@ namespace UnityEngine {
         /// <param name="instanceId">The instance ID of the component that no longer needs to be updated at the end of every frame (returned by <see cref="Updatable.InstanceID"/> or <see cref="UnityEngine.Object.GetInstanceID"/>).</param>
         void UnregisterLateUpdate(int instanceId);
 
+        public void Update();
+        public void FixedUpdate();
+        public void LateUpdate();
+
     }
 
 }
