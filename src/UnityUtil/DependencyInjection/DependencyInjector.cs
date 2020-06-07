@@ -5,23 +5,30 @@ using System.Linq;
 using System.Reflection;
 using UnityEngine.Logging;
 using UnityEngine.SceneManagement;
+using U = UnityEngine;
 
 namespace UnityEngine {
 
     [Serializable]
-    public struct Service {
+    public class InspectorService {
         #pragma warning disable CA2235 // Mark all non-serializable fields
 
         [Tooltip("Optional. All services are associated with a System.Type. This Type can be any Type in the service's inheritance hierarchy. For example, a service component derived from Monobehaviour could be associated with its actual declared Type, with Monobehaviour, or with UnityEngine.Object. The actual declared Type is assumed if you leave this field blank.")]
         public string TypeName;
         [HideInInspector, NonSerialized]
         public string Tag;
-        public Object Instance;
+        public U.Object Instance;
 
         #pragma warning restore CA2235 // Mark all non-serializable fields
     }
 
     public class DependencyInjector : MonoBehaviour {
+
+        private class Service {
+            public Type ServiceType;
+            public string Tag;
+            public object Instance;
+        }
 
         private const string DEFAULT_TAG = "Untagged";
 
@@ -31,9 +38,40 @@ namespace UnityEngine {
         private static ILogger s_logger;
 
         [Tooltip("The service collection from which dependencies will be resolved. Order does not matter. If there are multiple " + nameof(DependencyInjector) + " instances present in the scene, or multiple scenes with a " + nameof(DependencyInjector) + " are loaded at the same time, then their " + nameof(ServiceCollection) + "s will be combined. This allows a game to dynamically register and unregister a scene's services at runtime. Note, however, that an error will result if multiple " + nameof(DependencyInjector) + " instances try to register a service with the same parameters. In this case, it may be better to create a 'base' scene with all common services, so that they are each registered once, or register the services with different tags.")]
-        public Service[] ServiceCollection;
+        public InspectorService[] ServiceCollection;
 
         public const string InjectMethodName = "Inject";
+
+        public void AddService<TInstance>(TInstance instance) where TInstance : class => AddService<TInstance, TInstance>(instance);
+        public void AddService<TService, TInstance>(TInstance instance) where TInstance : class, TService {
+            Type serviceType = typeof(TService);
+            var service = new Service {
+                Instance = instance,
+                Tag = (instance as Component)?.tag ?? DEFAULT_TAG,
+                ServiceType = serviceType,
+            };
+
+            addService(service);
+        }
+        /// <summary>
+        /// Add the service to the service collection, throwing an error if it's Type/Tag have already been configured
+        /// </summary>
+        private static void addService(Service service) {
+            bool typeAdded = s_services.TryGetValue(service.ServiceType, out IDictionary<string, Service> typedServices);
+            if (typeAdded) {
+                bool tagAdded = typedServices.TryGetValue(service.Tag, out _);
+                if (tagAdded) {
+                    log(LogType.Error, $"Configured multiple services with Type '{service.ServiceType}' and tag '{service.Tag}'");
+                    return;
+                }
+                else {
+                    typedServices.Add(service.Tag, service);
+                    log(LogType.Error, $"Successfully configured service of type '{service.ServiceType}' and tag '{service.Tag}'.");
+                }
+            }
+            else
+                s_services.Add(service.ServiceType, new Dictionary<string, Service> { { service.Tag, service } });
+        }
 
         /// <summary>
         /// Inject all dependencies into the specified client.
@@ -90,13 +128,13 @@ namespace UnityEngine {
             }
         }
         private static void registerServicesOf(DependencyInjector dependencyInjector) {
-            Service[] services = dependencyInjector.ServiceCollection;
+            InspectorService[] services = dependencyInjector.ServiceCollection;
 
             // Update every service's Type/Tag
             // Each service instance will be associated with the named Type (which could be, e.g., some base class or interface type)
             // If no Type name was provided, then use the actual name of the service's runtime instance type
             for (int s = 0; s < services.Length; ++s) {
-                Service service = services[s];
+                InspectorService service = services[s];
 
                 if (string.IsNullOrEmpty(service.TypeName))
                     service.TypeName = service.Instance.GetType().AssemblyQualifiedName;
@@ -105,19 +143,16 @@ namespace UnityEngine {
             }
 
             // Get or set the logger that we will use for our own logging
-            if (s_logger == null)
-            {
-                Service[] loggerProviderServices = services
+            if (s_logger == null) {
+                InspectorService[] loggerProviderServices = services
                     .Where(s => typeof(ILoggerProvider).AssemblyQualifiedName.Contains(s.TypeName))
                     .ToArray();
-                if (loggerProviderServices.Length == 0)
-                {
+                if (loggerProviderServices.Length == 0) {
                     s_logger = Debug.unityLogger;
                     Debug.LogWarning($"No {nameof(ILoggerProvider)} configured in service collection. {dependencyInjector.GetHierarchyNameWithType()} will use {nameof(Debug)}.{nameof(Debug.unityLogger)} for its own logging instead.");
                 }
-                else
-                {
-                    Service service = loggerProviderServices[0];
+                else {
+                    InspectorService service = loggerProviderServices[0];
                     s_logger = (service.Instance as ILoggerProvider).GetLogger(dependencyInjector);
                     if (loggerProviderServices.Length > 1)
                         log(LogType.Warning, $"Configured multiple services with Type '{typeof(ILoggerProvider).FullName}'. {dependencyInjector.GetHierarchyNameWithType()} will use the first one (tag '{service.Tag}') for its own logging.");
@@ -127,15 +162,15 @@ namespace UnityEngine {
             // Add every service specified in the Inspector to the private service collection
             log(LogType.Log, $"Awaking in scene '{SceneManager.GetActiveScene().path}', adding services...");
             for (int s = 0; s < services.Length; ++s) {
-                Service service = services[s];
+                InspectorService service = services[s];
 
                 // Get the service's Type, if it is valid
-                Type type;
+                Type serviceType;
                 try {
-                    type = Type.GetType(service.TypeName);
-                    if (type == null)
+                    serviceType = Type.GetType(service.TypeName);
+                    if (serviceType == null)
                         throw new InvalidOperationException($"Could not load Type '{service.TypeName}'.  Make sure that you provided its assembly-qualified name and that its assembly is loaded.");
-                    if (!type.IsAssignableFrom(service.Instance.GetType()))
+                    if (!serviceType.IsAssignableFrom(service.Instance.GetType()))
                         throw new InvalidOperationException($"The service instance configured for Type '{service.TypeName}' is not actually derived from that Type!");
                 }
                 catch (Exception ex) {
@@ -143,21 +178,11 @@ namespace UnityEngine {
                     continue;
                 }
 
-                // Add the service to the service collection, throwing an error if it's Type/Tag have already been configured
-                bool typeAdded = s_services.TryGetValue(type, out IDictionary<string, Service> typedServices);
-                if (typeAdded) {
-                    bool tagAdded = typedServices.TryGetValue(service.Tag, out _);
-                    if (tagAdded) {
-                        log(LogType.Error, $"Configured multiple services with Type '{service.TypeName}' and tag '{service.Tag}'");
-                        continue;
-                    }
-                    else {
-                        typedServices.Add(service.Tag, service);
-                        log(LogType.Error, $"Successfully configured service of type '{service.TypeName}' and tag '{service.Tag}'.");
-                    }
-                }
-                else
-                    s_services.Add(type, new Dictionary<string, Service> { { service.Tag, service } });
+                addService(new Service {
+                    Instance = service.Instance,
+                    Tag = service.Tag,
+                    ServiceType = serviceType,
+                });
             }
         }
         [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
@@ -171,7 +196,7 @@ namespace UnityEngine {
             log(LogType.Log, $"Being destroyed, removing services...");
             int numSuccesses = 0;
             for (int s = 0; s < ServiceCollection.Length; ++s) {
-                Service service = ServiceCollection[s];
+                InspectorService service = ServiceCollection[s];
 
                 // Get the service's Type, if it is valid
                 Type type;
@@ -222,7 +247,7 @@ namespace UnityEngine {
             var injectedTypes = new HashSet<Type>();
 
             ParameterInfo[] parameters = injectMethod.GetParameters();
-            var services = new Object[parameters.Length];
+            object[] services = new object[parameters.Length];
             for (int p = 0; p < parameters.Length; ++p) {
                 ParameterInfo param = parameters[p];
                 Type pType = param.ParameterType;
