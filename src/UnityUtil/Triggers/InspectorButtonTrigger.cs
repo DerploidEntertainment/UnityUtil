@@ -1,4 +1,5 @@
 ﻿using Sirenix.OdinInspector;
+using System.Diagnostics;
 using UnityEngine.Events;
 
 namespace UnityEngine.Triggers {
@@ -33,7 +34,7 @@ namespace UnityEngine.Triggers {
         }
 
         // API INTERFACE
-        [Button, EnableIf(nameof(CanPress))]
+        [Button, Conditional("UNITY_EDITOR"), EnableIf(nameof(CanPress))]
         public void Press() {
             // Don't press the button if its still in the refractory period
             if (!CanPress)
