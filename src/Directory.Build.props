@@ -8,7 +8,7 @@
     <UnityProjectPath Condition="'$(SolutionName)'!='UnityUtil'">$(SolutionDir)\..\..\UnityUtil\UnityUtil</UnityProjectPath>
     <SirenixAssembliesDir>$(UnityProjectPath)\Assets\Plugins\Sirenix\Assemblies</SirenixAssembliesDir>
 
-    <DefineConstants Condition="'$(Configuration)'=='Debug'">UNITY_ASSERTIONS</DefineConstants>
+    <DefineConstants Condition="'$(Configuration)'=='Debug'">UNITY_ASSERTIONS;UNITY_EDITOR</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
