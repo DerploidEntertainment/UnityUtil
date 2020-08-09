@@ -1,5 +1,4 @@
 ﻿using Sirenix.OdinInspector;
-using System;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using UnityEngine.Assertions;
@@ -8,8 +7,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.Logging;
 using UnityEngine.Storage;
 
-namespace UnityEngine.UI
-{
+namespace UnityEngine.UI {
 
     public enum AudioSliderTransformation {
         Linear,
@@ -37,6 +35,8 @@ namespace UnityEngine.UI
         [ShowIf(nameof(StoreParameterInCache))]
         [Tooltip("If empty, the value of " + nameof(ExposedParameterName) + " will be used as key.")]
         public string CacheKey;
+
+        [Header("Slider to Volume Conversion")]
         [Tooltip("How " + nameof(Slider) + "'s value is transformed to the new value of the exposed parameter of " + nameof(AudioMixer) + ".\nIf " + nameof(AudioSliderTransformation.Linear) + ", then the parameter's new value will equal " + nameof(Coefficient) + " * (" + nameof(Slider) + " value).\nIf " + nameof(AudioSliderTransformation.Logarithmic) + ", then the parameter's new value will equal " + nameof(Coefficient) + " * Log (base " + nameof(LogBase) + ") of (" + nameof(Slider) + " value). Usually, for " + nameof(AudioSliderTransformation.Linear) + " transformations, you will want a " + nameof(Coefficient) + " of 1. When transforming volumes, you will want to use " + nameof(AudioSliderTransformation.Logarithmic) + " with a " + nameof(LogBase) + " of 10 and a " + nameof(Coefficient) + " of 20 (and your slider should have a " + nameof(UI.Slider.minValue) + " and " + nameof(UI.Slider.maxValue) + " of 0.0001 and 1, respectively).")]
         public AudioSliderTransformation SliderTransformation;
         [ShowIf(nameof(SliderTransformation), AudioSliderTransformation.Logarithmic)]
@@ -81,8 +81,8 @@ namespace UnityEngine.UI
             // If a test audio was set, then listen for PointerUp events on the slider
             // Using the Slider's onValueChanged event leads to crazy rapid restarting of the test audio as user scrolls the Slider :P
             EventTrigger eventTrigger = Slider.GetComponent<EventTrigger>() ?? Slider.gameObject.AddComponent<EventTrigger>();
-            var entry = new EventTrigger.Entry { eventID = EventTriggerType.PointerUp };
-            entry.callback.AddListener(e => {
+            var pointerUpEvent = new EventTrigger.Entry { eventID = EventTriggerType.PointerUp };
+            pointerUpEvent.callback.AddListener(e => {
                 if (StoreParameterInCache) {
                     float newVal = transformValue(Slider.value);
                     _localCache.SetFloat(FinalCacheKey, newVal);
@@ -91,7 +91,7 @@ namespace UnityEngine.UI
                 if (TestAudio != null)
                     TestAudio.Play();   // Don't know why the F*CK a null-coalescing operator isn't working here...
             });
-            eventTrigger.triggers.Add(entry);
+            eventTrigger.triggers.Add(pointerUpEvent);
         }
         [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
         private void Start() {
@@ -126,6 +126,21 @@ namespace UnityEngine.UI
                 AudioSliderTransformation.Logarithmic => Mathf.Log(sliderValue, LogBase) * Coefficient,
                 _ => throw UnityObjectExtensions.SwitchDefaultException(SliderTransformation)
             };
+
+#if UNITY_EDITOR
+        [Button]
+        public void ClearCachedState() {
+            string cacheKey = FinalCacheKey;
+            if (_localCache == null)
+                PlayerPrefs.DeleteKey(cacheKey);
+            else
+                _localCache.DeleteKey(cacheKey);
+
+            // Use debug logger in case this is being run from the Inspector outside Play mode
+            _logger ??= Debug.unityLogger;
+            Debug.Log($"Deleted cache key '{cacheKey}'.", context: this);
+        }
+#endif
 
     }
 
