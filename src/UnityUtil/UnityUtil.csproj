@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <RootNamespace>UnityEngine</RootNamespace>
+    <DebugSymbols>true</DebugSymbols> <!-- Always emit debug symbols, even in Release. We can decide in Unity whether they're then included in a game build. -->
   </PropertyGroup>
 
   <ItemGroup>
