@@ -1,4 +1,6 @@
-﻿namespace UnityEngine.CloudBuild {
+﻿using System.Collections.Generic;
+
+namespace UnityEngine.CloudBuild {
     /// <summary>
     /// Contains strings for retrieving key-values from the Unity Cloud Build manifest.
     /// See the Unity Manual for more info: https://docs.unity3d.com/Manual/UnityCloudBuildManifest.html
@@ -30,5 +32,26 @@
 
         /// <summary>The name of the build target that was built.</summary>
         public const string CloudBuildTargetName = "cloudBuildTargetName";
+
+        public static IReadOnlyCollection<string> AllKeysForPlatform(RuntimePlatform platform) {
+            var keys = new List<string> {
+                ScmCommitId,
+                ScmBranch,
+                BuildNumber,
+                BuildStartTime,
+                ProjectId,
+                UnityVersion,
+                CloudBuildTargetName,
+            };
+
+            if (platform == RuntimePlatform.IPhonePlayer)
+                keys.Add(XcodeVersion);
+
+            if (platform == RuntimePlatform.IPhonePlayer || platform == RuntimePlatform.Android)
+                keys.Add(BundleId);
+
+            return keys;
+        }
+
     }
 }
