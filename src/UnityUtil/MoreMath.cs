@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using U = UnityEngine;
 
@@ -9,23 +10,31 @@ namespace UnityEngine {
         public const float Sqrt2 = 1.41421f;
         public const float TwoPi = 2 * Mathf.PI;
 
-        public static int RandomWeightedIndex(float[] indexWeights) {
+        /// <summary>
+        /// Gets a random index where each index has a provided weight. For example, if [0.3, 0.4, 0.3] is provided, then
+        /// there is a 30% chance of returning 0, 40% chance of returning 1, and 30% chance of returning 2.
+        /// </summary>
+        /// <param name="indexWeights">The weights for each index. These must sum up to 1.</param>
+        /// <returns>An index between 0 (inclusive) and the length of <paramref name="indexWeights"/> (exclusive)</returns>
+        /// <exception cref="InvalidOperationException">The sum of <paramref name="indexWeights"/> is not 1</exception>
+        /// <remarks>
+        /// Picture a set of ranges between 0 and 1, with sizes determined by <paramref name="indexWeights"/>
+        /// |-------|----------------------|---|--------|
+        /// |------------------^------------------------|
+        /// The carrot represents a random value, R, between 0 and 1 (inclusive).
+        /// The probability of choosing index i (0-based), according to the specified weights,
+        /// equals the probability of R falling within the (i+1)th range (where each range includes its left bound).
+        /// E.g., the probability of choosing index 1 equals the probability of R falling within the 2nd range.
+        /// Therefore, the index at which the cumulative probability of <paramref name="indexWeights"/> is greater than R is our "chosen" index.
+        /// </remarks>
+        public static int RandomWeightedIndex(IReadOnlyList<float> indexWeights) {
             if (indexWeights.Sum() != 1f)
                 throw new InvalidOperationException($"The sum of all {nameof(indexWeights)} must equal 1!");
 
-            // Get a random float between 0 and 1 (inclusive)
-            float val = Random.value;
-
-            // Picture a set of ranges between 0 and 1, with sizes determined by the index weights
-            // |-------|----------------------|---|--------|
-            // |------------------^------------------------|
-            // The carrot represents the random value
-            // The probability of choosing index i according to the specified weights
-            // is the same as that of the random value falling within the (i+1)th range (left-bound inclusive).
-            // Therefore, the index at which the cumulative probability is greater than the random value is our "chosen" index
-            float sum = indexWeights[0];
             int w;
-            for (w = 0; w < indexWeights.Length - 1 && sum <= val; ++w)
+            float val = Random.value;   // Between 0 and 1 (inclusive)
+            float sum = indexWeights[0];
+            for (w = 0; w < indexWeights.Count - 1 && sum <= val; ++w)
                 sum += indexWeights[w + 1];
 
             return w;
