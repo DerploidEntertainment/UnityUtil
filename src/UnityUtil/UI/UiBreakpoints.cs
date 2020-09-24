@@ -109,7 +109,8 @@ namespace UnityEngine.UI {
                 _ => throw UnityObjectExtensions.SwitchDefaultException(Mode),
             };
         internal void InvokeMatchingBreakpoints(float modeValue) {
-            Assert.IsTrue(modeValue >= 0f, "UI breakpoints can only be matched against non-negative values");
+            if (modeValue < 0f)
+                Debug.LogWarning("UI breakpoints can only be matched against non-negative values. You can ignore this warning if you just restarted the Editor.");
 
             // Early exit if no breakpoints were provided
             if (Breakpoints.Length == 0)
