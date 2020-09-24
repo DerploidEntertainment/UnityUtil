@@ -33,11 +33,11 @@ namespace UnityEngine {
             IDictionary<string, object> allVals = new Dictionary<string, object>();
             foreach (ConfigurationSource src in configurationSources) {
                 // If this configuration source is not supposed to be loaded in this context, then skip it
-                if (
-                    !((src.LoadContext & ConfigurationLoadContext.Editor) > 0 && Application.isEditor)
-                    && !((src.LoadContext & ConfigurationLoadContext.DebugBuild) > 0 && Debug.isDebugBuild)
-                    && !((src.LoadContext & ConfigurationLoadContext.ReleaseBuild) > 0 && !Debug.isDebugBuild)
-                )
+                if (!(
+                    ((src.LoadContext & ConfigurationLoadContext.Editor) > 0 && Application.isEditor) ||
+                    ((src.LoadContext & ConfigurationLoadContext.DebugBuild) > 0 && Debug.isDebugBuild) ||
+                    ((src.LoadContext & ConfigurationLoadContext.ReleaseBuild) > 0 && !Debug.isDebugBuild)
+                ))
                     continue;
 
                 IDictionary<string, object> vals = src.LoadConfigs();
