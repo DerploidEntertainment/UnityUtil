@@ -1,11 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using UnityEngine.Logging;
 using UnityEngine.SceneManagement;
-using U = UnityEngine;
 
 namespace UnityEngine {
 
@@ -13,11 +12,15 @@ namespace UnityEngine {
     public class InspectorService {
         #pragma warning disable CA2235 // Mark all non-serializable fields
 
-        [Tooltip("Optional. All services are associated with a System.Type. This Type can be any Type in the service's inheritance hierarchy. For example, a service component derived from Monobehaviour could be associated with its actual declared Type, with Monobehaviour, or with UnityEngine.Object. The actual declared Type is assumed if you leave this field blank.")]
+        [Tooltip(
+            "Optional. All services are associated with a System.Type. This Type can be any Type in the service's inheritance hierarchy. " +
+            "For example, a service component derived from Monobehaviour could be associated with its actual declared Type, " +
+            "with Monobehaviour, or with UnityEngine.Object. The actual declared Type is assumed if you leave this field blank."
+        )]
         public string TypeName;
         [HideInInspector, NonSerialized]
         public string Tag;
-        public U.Object Instance;
+        public Object Instance;
 
         #pragma warning restore CA2235 // Mark all non-serializable fields
     }
@@ -30,14 +33,23 @@ namespace UnityEngine {
             public object Instance;
         }
 
-        private const string DEFAULT_TAG = "Untagged";
+        public const string DefaultTag = "Untagged";
 
         private static readonly ICollection<int> s_registeredScenes = new HashSet<int>();
         private static readonly IDictionary<Type, IDictionary<string, Service>> s_services = new Dictionary<Type, IDictionary<string, Service>>();
 
         private static ILogger s_logger;
 
-        [Tooltip("The service collection from which dependencies will be resolved. Order does not matter. If there are multiple " + nameof(DependencyInjector) + " instances present in the scene, or multiple scenes with a " + nameof(DependencyInjector) + " are loaded at the same time, then their " + nameof(ServiceCollection) + "s will be combined. This allows a game to dynamically register and unregister a scene's services at runtime. Note, however, that an error will result if multiple " + nameof(DependencyInjector) + " instances try to register a service with the same parameters. In this case, it may be better to create a 'base' scene with all common services, so that they are each registered once, or register the services with different tags.")]
+        [Tooltip(
+            "The service collection from which dependencies will be resolved. Order does not matter.\n\n" +
+            "If there are multiple " + nameof(DependencyInjector) + " instances present in the scene, " +
+            "or multiple scenes with a " + nameof(DependencyInjector) + " are loaded at the same time, " +
+            "then their " + nameof(ServiceCollection) + "s will be combined. " +
+            "This allows a game to dynamically register and unregister a scene's services at runtime. " +
+            "Note, however, that an error will result if multiple " + nameof(DependencyInjector) + " instances " +
+            "try to register a service with the same parameters. In this case, it may be better to create a 'base' scene " +
+            "with all common services, so that they are each registered once, or register the services with different tags."
+        )]
         public InspectorService[] ServiceCollection;
 
         public const string InjectMethodName = "Inject";
@@ -47,7 +59,7 @@ namespace UnityEngine {
             Type serviceType = typeof(TService);
             var service = new Service {
                 Instance = instance,
-                Tag = (instance as Component)?.tag ?? DEFAULT_TAG,
+                Tag = (instance as Component)?.tag ?? DefaultTag,
                 ServiceType = serviceType,
             };
 
@@ -66,7 +78,7 @@ namespace UnityEngine {
                 }
                 else {
                     typedServices.Add(service.Tag, service);
-                    log(LogType.Error, $"Successfully configured service of type '{service.ServiceType}' and tag '{service.Tag}'.");
+                    log(LogType.Log, $"Successfully configured service of type '{service.ServiceType}' and tag '{service.Tag}'.");
                 }
             }
             else
@@ -78,32 +90,31 @@ namespace UnityEngine {
         /// Can be called at runtime to satisfy dependencies of procedurally generated components, e.g., by a spawner.
         /// </summary>
         /// <param name="client">A client with service dependencies that need to be resolved.</param>
-        public static void ResolveDependenciesOf(object client) => ResolveDependenciesOf(new[] { client });
+        public static void ResolveDependenciesOf(object client)
+        {
+            // Ensure that the necessary services have been registered to resolve this dependency
+            // For GameObject clients, these are all services added to all DependencyInjector components in the same scene
+            // For non-GameObject clients, these are all services added to all DependencyInjector components in all loaded scenes
+            if (client is GameObject clientObj)
+                ensureServicesRegistered(clientObj.scene);
+            else {
+                for (int s = 0; s < SceneManager.sceneCount; ++s)
+                    ensureServicesRegistered(SceneManager.GetSceneAt(s));
+            }
+
+            // Resolve dependencies by calling every Inject method in the client's inheritance hierarchy
+            MethodInfo[] injectMethods = client.GetType().GetMethods().Where(m => m.Name == InjectMethodName).ToArray();
+            for (int m = 0; m < injectMethods.Length; ++m)
+                inject(injectMethods[m], client);
+        }
         /// <summary>
         /// Inject all dependencies into the specified clients.
         /// Can be called at runtime to satisfy dependencies of procedurally generated components, e.g., by a spawner.
         /// </summary>
         /// <param name="clients">A collection of clients with service dependencies that need to be resolved.</param>
         public static void ResolveDependenciesOf(IEnumerable<object> clients) {
-            foreach (object client in clients) {
-
-                // Ensure that the necessary services have been registered to resolve this dependency
-                // For GameObject clients, these are all services added to all DependencyInjector components in the same scene
-                // For non-GameObject clients, these are all services added to all DependencyInjector components in all loaded scenes
-                if (client is GameObject clientObj)
-                    ensureServicesRegistered(clientObj.scene);
-                else
-                {
-                    for (int s = 0; s < SceneManager.sceneCount; ++s)
-                        ensureServicesRegistered(SceneManager.GetSceneAt(s));
-                }
-
-                // Resolve dependencies by calling every Inject method in the client's inheritance hierarchy
-                MethodInfo[] injectMethods = client.GetType().GetMethods().Where(m => m.Name == InjectMethodName).ToArray();
-                for (int m = 0; m < injectMethods.Length; ++m)
-                    inject(injectMethods[m], client);
-
-            }
+            foreach (object client in clients)
+                ResolveDependenciesOf(client);
         }
 
         // EVENT HANDLERS
@@ -113,13 +124,11 @@ namespace UnityEngine {
                 return;
 
             DependencyInjector[] dependencyInjectors = scene.GetRootGameObjects().SelectMany(g => g.GetComponentsInChildren<DependencyInjector>()).ToArray();
-            if (dependencyInjectors.Length == 0)
-            {
+            if (dependencyInjectors.Length == 0) {
                 Debug.LogWarning($"No {nameof(DependencyInjector)} present in scene '{scene.path}'. No services will be loaded.");
                 return;
             }
-            else
-            {
+            else {
                 if (dependencyInjectors.Length > 1)
                     Debug.LogWarning($"More than one {nameof(DependencyInjector)} present in scene '{scene.path}'. For simplicity, consider maintaining one {nameof(DependencyInjector)} per scene, and pull services shared by multiple scenes into a separate scene."); ;
                 for (int i = 0; i < dependencyInjectors.Length; ++i)
@@ -138,7 +147,7 @@ namespace UnityEngine {
 
                 if (string.IsNullOrEmpty(service.TypeName))
                     service.TypeName = service.Instance.GetType().AssemblyQualifiedName;
-                service.Tag = (service.Instance as Component)?.tag ?? DEFAULT_TAG;
+                service.Tag = (service.Instance as Component)?.tag ?? DefaultTag;
                 services[s] = service;
             }
 
@@ -148,8 +157,14 @@ namespace UnityEngine {
                     .Where(s => typeof(ILoggerProvider).AssemblyQualifiedName.Contains(s.TypeName))
                     .ToArray();
                 if (loggerProviderServices.Length == 0) {
-                    s_logger = Debug.unityLogger;
-                    Debug.LogWarning($"No {nameof(ILoggerProvider)} configured in service collection. {dependencyInjector.GetHierarchyNameWithType()} will use {nameof(Debug)}.{nameof(Debug.unityLogger)} for its own logging instead.");
+                    var loggerProvider = new DebugLoggerProvider();
+                    s_logger = loggerProvider.GetLogger(dependencyInjector);
+                    s_logger.LogWarning($"No {nameof(ILoggerProvider)} registered in service collection. {dependencyInjector.GetHierarchyNameWithType()} will register a default one instead to do its own logging.");
+                    addService(new Service {
+                        ServiceType = typeof(ILoggerProvider),
+                        Instance = new DebugLoggerProvider(),
+                        Tag = DefaultTag,
+                    });
                 }
                 else {
                     InspectorService service = loggerProviderServices[0];
@@ -266,7 +281,7 @@ namespace UnityEngine {
                 }
                 InjectTagAttribute injAttr = param.GetCustomAttribute<InjectTagAttribute>();
                 bool untagged = string.IsNullOrEmpty(injAttr?.Tag);
-                string tag = untagged ? DEFAULT_TAG : injAttr.Tag;
+                string tag = untagged ? DefaultTag : injAttr.Tag;
                 resolved = typedServices.TryGetValue(tag, out Service service);
                 if (!resolved) {
                     log(LogType.Error, $"{clientName} has a dependency of Type '{pType.FullName}' with tag '{tag}', but no matching service was registered. Did you forget to tag a service?");
