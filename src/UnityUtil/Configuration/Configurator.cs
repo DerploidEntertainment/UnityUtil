@@ -16,19 +16,8 @@ namespace UnityEngine {
 
         public void Inject(ILoggerProvider loggerProvider) => _logger = loggerProvider.GetLogger(this);
 
-        public void Configure(object client) => Configure(new[] { client });
-        public void Configure(IEnumerable<object> clients) {
-            if (_values == null) {
-                DependencyInjector.ResolveDependenciesOf(this);
-                _logger.Log($"Loading {ConfigurationSources.Length} configuration sources...", context: this);
-                _values = LoadConfigValues(ConfigurationSources);
-            }
-
-            foreach (object client in clients)
-                configure(client);
-        }
-
-        public static IDictionary<string, object> LoadConfigValues(IEnumerable<ConfigurationSource> configurationSources) {
+        public static IDictionary<string, object> LoadConfigValues(IEnumerable<ConfigurationSource> configurationSources)
+        {
             int numLoaded = 0;
             IDictionary<string, object> allVals = new Dictionary<string, object>();
             foreach (ConfigurationSource src in configurationSources) {
@@ -39,6 +28,8 @@ namespace UnityEngine {
                     ((src.LoadContext & ConfigurationLoadContext.ReleaseBuild) > 0 && !Debug.isDebugBuild)
                 ))
                     continue;
+
+                DependencyInjector.ResolveDependenciesOf(src);
 
                 IDictionary<string, object> vals = src.LoadConfigs();
                 if (vals.Count > 0) {
@@ -52,9 +43,19 @@ namespace UnityEngine {
 
             return allVals;
         }
-        public static string DefaultConfigKey(object client) => client.GetType().FullName;
+        public void Configure(IEnumerable<object> clients)
+        {
+            if (_values == null) {
+                DependencyInjector.ResolveDependenciesOf(this);
+                _logger.Log($"Loading {ConfigurationSources.Length} configuration sources...", context: this);
+                _values = LoadConfigValues(ConfigurationSources);
+            }
 
-        private void configure(object client) {
+            foreach (object client in clients)
+                Configure(client);
+        }
+        public void Configure(object client)
+        {
             Type clientType = client.GetType();
             BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
             FieldInfo[] fields = clientType.GetFields(bindingFlags);
@@ -99,12 +100,13 @@ namespace UnityEngine {
                 }
             }
         }
-        private object getValue(string memberKey, Type memberType) {
-            bool found = _values.TryGetValue(memberKey, out object val);
-            if (found)
-                return Convert.ChangeType(val, memberType);
-            return null;
-        }
+
+        public static string DefaultConfigKey(object client) => client.GetType().FullName;
+
+        private object getValue(string memberKey, Type memberType) =>
+            _values.TryGetValue(memberKey, out object val)
+                ? Convert.ChangeType(val, memberType)
+                : null;
 
     }
 

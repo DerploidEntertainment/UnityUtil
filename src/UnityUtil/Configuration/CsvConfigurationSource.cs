@@ -12,8 +12,6 @@ namespace UnityEngine {
         public string ResourceName = "appsettings";
 
         public override IDictionary<string, object> LoadConfigs() {
-            IDictionary<string, object> baseValues = base.LoadConfigs();
-
             string resFileName = $"{ResourceName}.csv";
             Logger.Log($"Loading configs from CSV configuration file '{resFileName}'...", context: this);
 
@@ -48,7 +46,7 @@ namespace UnityEngine {
 
             Logger.Log($"Successfully loaded {values.Count} configs from CSV configuration file '{resFileName}'.", context: this);
 
-            return values.Concat(baseValues).ToDictionary(x => x.Key, x => x.Value);
+            return values;
         }
     }
 
