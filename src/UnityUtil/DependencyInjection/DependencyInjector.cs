@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -157,8 +157,14 @@ namespace UnityEngine {
                     .Where(s => typeof(ILoggerProvider).AssemblyQualifiedName.Contains(s.TypeName))
                     .ToArray();
                 if (loggerProviderServices.Length == 0) {
-                    s_logger = Debug.unityLogger;
-                    Debug.LogWarning($"No {nameof(ILoggerProvider)} configured in service collection. {dependencyInjector.GetHierarchyNameWithType()} will use {nameof(Debug)}.{nameof(Debug.unityLogger)} for its own logging instead.");
+                    var loggerProvider = new DebugLoggerProvider();
+                    s_logger = loggerProvider.GetLogger(dependencyInjector);
+                    s_logger.LogWarning($"No {nameof(ILoggerProvider)} registered in service collection. {dependencyInjector.GetHierarchyNameWithType()} will register a default one instead to do its own logging.");
+                    addService(new Service {
+                        ServiceType = typeof(ILoggerProvider),
+                        Instance = new DebugLoggerProvider(),
+                        Tag = DefaultTag,
+                    });
                 }
                 else {
                     InspectorService service = loggerProviderServices[0];
