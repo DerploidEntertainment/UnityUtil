@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -45,17 +45,17 @@ namespace UnityEngine {
         }
         public void Configure(IEnumerable<object> clients)
         {
+            foreach (object client in clients)
+                Configure(client);
+        }
+        public void Configure(object client)
+        {
             if (_values == null) {
                 DependencyInjector.ResolveDependenciesOf(this);
                 _logger.Log($"Loading {ConfigurationSources.Length} configuration sources...", context: this);
                 _values = LoadConfigValues(ConfigurationSources);
             }
 
-            foreach (object client in clients)
-                Configure(client);
-        }
-        public void Configure(object client)
-        {
             Type clientType = client.GetType();
             BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
             FieldInfo[] fields = clientType.GetFields(bindingFlags);
