@@ -125,7 +125,9 @@ namespace UnityEngine {
 
             DependencyInjector[] dependencyInjectors = scene.GetRootGameObjects().SelectMany(g => g.GetComponentsInChildren<DependencyInjector>()).ToArray();
             if (dependencyInjectors.Length == 0) {
-                Debug.LogWarning($"No {nameof(DependencyInjector)} present in scene '{scene.path}'. No services will be loaded.");
+                Debug.LogWarning($"No {nameof(DependencyInjector)} present in scene '{scene.path}'. Only default services will be loaded.");
+                if (s_logger == null)
+                    registerDefaultLoggerProvider();
                 return;
             }
             else {
@@ -156,16 +158,8 @@ namespace UnityEngine {
                 InspectorService[] loggerProviderServices = services
                     .Where(s => typeof(ILoggerProvider).AssemblyQualifiedName.Contains(s.TypeName))
                     .ToArray();
-                if (loggerProviderServices.Length == 0) {
-                    var loggerProvider = new DebugLoggerProvider();
-                    s_logger = loggerProvider.GetLogger(dependencyInjector);
-                    s_logger.LogWarning($"No {nameof(ILoggerProvider)} registered in service collection. {dependencyInjector.GetHierarchyNameWithType()} will register a default one instead to do its own logging.");
-                    addService(new Service {
-                        ServiceType = typeof(ILoggerProvider),
-                        Instance = new DebugLoggerProvider(),
-                        Tag = DefaultTag,
-                    });
-                }
+                if (loggerProviderServices.Length == 0)
+                    registerDefaultLoggerProvider(dependencyInjector);
                 else {
                     InspectorService service = loggerProviderServices[0];
                     s_logger = (service.Instance as ILoggerProvider).GetLogger(dependencyInjector);
@@ -200,6 +194,25 @@ namespace UnityEngine {
                 });
             }
         }
+
+        private static void registerDefaultLoggerProvider(DependencyInjector dependencyInjector = null)
+        {
+            DebugLoggerProvider loggerProvider = new GameObject().AddComponent<DebugLoggerProvider>();
+            if (dependencyInjector == null) {
+                s_logger = Debug.unityLogger;
+                s_logger.LogWarning($"No {nameof(ILoggerProvider)} registered in service collection. A default one has been registered instead for our own logging.");
+            }
+            else {
+                s_logger = loggerProvider.GetLogger(dependencyInjector);
+                s_logger.LogWarning($"No {nameof(ILoggerProvider)} registered in service collection. {dependencyInjector.GetHierarchyNameWithType()} will register a default one instead to do its own logging.", context: dependencyInjector);
+            }
+            addService(new Service {
+                ServiceType = typeof(ILoggerProvider),
+                Instance = loggerProvider,
+                Tag = DefaultTag,
+            });
+        }
+
         [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
         private void OnDestroy() {
             // Assume that we are only being destroyed if the parent scene is being unloaded. Thus, that scene can be forgotten
