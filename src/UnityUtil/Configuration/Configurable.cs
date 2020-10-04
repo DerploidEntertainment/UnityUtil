@@ -1,4 +1,5 @@
-﻿using UnityEngine.Logging;
+﻿using UnityEngine.DependencyInjection;
+using UnityEngine.Logging;
 
 namespace UnityEngine {
 
@@ -19,10 +20,11 @@ namespace UnityEngine {
         public string ConfigKey;
 
         protected virtual void Awake() {
-            DependencyInjector.ResolveDependenciesOf(this);
+            DependencyInjector.Instance.ResolveDependenciesOf(this);
 
             Configurator.Configure(this);
         }
+
         public void Inject(IConfigurator configurator, ILoggerProvider loggerProvider) {
             Configurator = configurator;
             Logger = loggerProvider.GetLogger(this);

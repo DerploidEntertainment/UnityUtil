@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using UnityEngine.DependencyInjection;
 using UnityEngine.Logging;
 
 namespace UnityEngine {
@@ -68,7 +69,7 @@ namespace UnityEngine {
                 ))
                     continue;
 
-                DependencyInjector.ResolveDependenciesOf(src);
+                DependencyInjector.Instance.ResolveDependenciesOf(src);
 
                 IDictionary<string, object> vals = src.LoadConfigs();
                 if (vals.Count > 0) {
@@ -90,7 +91,7 @@ namespace UnityEngine {
         public void Configure(object client)
         {
             if (_values == null) {
-                DependencyInjector.ResolveDependenciesOf(this);
+                DependencyInjector.Instance.ResolveDependenciesOf(this);
                 _logger.Log($"Loading {ConfigurationSources.Length} configuration sources...", context: this);
                 _values = LoadConfigValues(ConfigurationSources);
             }

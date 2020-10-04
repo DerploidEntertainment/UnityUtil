@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.DependencyInjection;
 using UnityEngine.Logging;
 using E = UnityEditor;
 
@@ -16,9 +18,15 @@ namespace UnityUtil.Editor {
         private readonly IDictionary<char, SerializedProperty> _charProps = new Dictionary<char, SerializedProperty>();
 
         public void Inject(ILoggerProvider loggerProvider) => _logger = loggerProvider.GetLogger(this);
+
+        [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
+        [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
         private void Awake() {
-            DependencyInjector.ResolveDependenciesOf(this);
+            DependencyInjector.Instance.ResolveDependenciesOf(this);
         }
+
+        [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
+        [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
         private void OnEnable() {
             _pathProp = serializedObject.FindProperty(nameof(AsciiSprites.AutoLoadSpritePath));
 

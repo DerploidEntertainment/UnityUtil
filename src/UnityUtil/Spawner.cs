@@ -1,9 +1,10 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
+using UnityEngine.DependencyInjection;
 using UnityEngine.Logging;
 using U = UnityEngine;
 
-namespace UnityEngine {
+namespace UnityEngine
+{
 
     /// <summary>
     /// Determines the direction in which <see cref="Spawner.Prefab"/> instances spawned by a <see cref="UnityEngine.Spawner"/> are launched.
@@ -59,7 +60,7 @@ namespace UnityEngine {
 
         [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
         private void Awake() {
-            DependencyInjector.ResolveDependenciesOf(this);
+            DependencyInjector.Instance.ResolveDependenciesOf(this);
 
             this.AssertAssociation(Prefab, nameof(this.Prefab));
         }
