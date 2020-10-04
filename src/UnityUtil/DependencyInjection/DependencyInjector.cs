@@ -121,6 +121,31 @@ namespace UnityEngine.DependencyInjection
             }
         }
 
+        public bool RecordingResolutions { get; private set; } = Application.isEditor;
+
+        [Conditional("UNITY_EDITOR")]
+        public void ToggleDependencyResolutionRecording()
+        {
+            RecordingResolutions = !RecordingResolutions;
+            if (RecordingResolutions)
+                return;
+
+            var sb = new StringBuilder();
+            sb.AppendLine("Uncached dependency resolution counts:");
+            sb.AppendLine($"(If any of these counts are greater than 1, consider caching resolutions for that Type on the {nameof(DependencyInjector)} to improve performance)");
+            foreach (var kv in _uncachedResolutionCounts.OrderByDescending(x => x.Value))
+                sb.AppendLine($"    {kv.Key.Name}: {_uncachedResolutionCounts[kv.Key]}");
+            sb.AppendLine();
+            sb.AppendLine("Cached dependency resolution counts:");
+            sb.AppendLine($"(If any of these counts equal 1, consider not caching resolutions for that Type on the {nameof(DependencyInjector)}, to speed up its resolutions and save memory)");
+            foreach (var kv in _cachedResolutionCounts.OrderByDescending(x => x.Value))
+                sb.AppendLine($"    {kv.Key.Name}: {_cachedResolutionCounts[kv.Key]}");
+            _logger.Log(sb.ToString());
+
+            _cachedResolutionCounts.Clear();
+            _uncachedResolutionCounts.Clear();
+        }
+
         /// <summary>
         /// Inject all dependencies into the specified client.
         /// Can be called at runtime to satisfy dependencies of procedurally generated components, e.g., by a spawner.
