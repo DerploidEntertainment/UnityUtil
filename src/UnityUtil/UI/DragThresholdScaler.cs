@@ -16,8 +16,10 @@ namespace UnityEngine.UI {
 
         [Tooltip(TOOLTIP)]
         public EventSystem EventSystem;
+
         [Tooltip(TOOLTIP)]
         public CanvasScaler CanvasScaler;
+
         [Min(0f), Tooltip(TOOLTIP)]
         public int DragThresholdFactor;
 

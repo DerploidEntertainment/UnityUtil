@@ -4,7 +4,7 @@ using UnityEngine.Triggers;
 
 namespace UnityEngine.UI {
 
-    public class UiStack : Configurable {
+    public class UiStack : MonoBehaviour {
 
         private ILogger _logger;
         private readonly Stack<SimpleTrigger> _popTriggers = new Stack<SimpleTrigger>();
