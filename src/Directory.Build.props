@@ -2,7 +2,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <LangVersion>latest</LangVersion>
-    <UnityVersion>2019.4.3f1</UnityVersion>
+    <UnityVersion>2020.1.8f1</UnityVersion>
 
     <UnityProjectPath Condition="'$(SolutionName)'=='UnityUtil'">$(SolutionDir)\..\UnityUtil</UnityProjectPath>
     <UnityProjectPath Condition="'$(SolutionName)'!='UnityUtil'">$(SolutionDir)\..\..\UnityUtil\UnityUtil</UnityProjectPath>
