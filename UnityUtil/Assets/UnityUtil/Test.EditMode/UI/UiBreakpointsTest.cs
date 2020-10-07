@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using NUnit.Framework.Constraints;
 using System.Linq;
+using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -206,8 +207,8 @@ namespace UnityUtil.Test.EditMode.UI {
 
             UiBreakpoints uiBreakpoints = getUiBreakpoints();
 
-            Assert.Throws<UA.AssertionException>(() => uiBreakpoints.InvokeMatchingBreakpoints(-1f));
-            Assert.Throws<UA.AssertionException>(() => uiBreakpoints.InvokeMatchingBreakpoints(-2f));
+            Assert.DoesNotThrow(() => uiBreakpoints.InvokeMatchingBreakpoints(-1f));
+            Assert.DoesNotThrow(() => uiBreakpoints.InvokeMatchingBreakpoints(-2f));
         }
 
         [Test]
