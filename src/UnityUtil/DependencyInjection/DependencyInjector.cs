@@ -33,6 +33,17 @@ namespace UnityEngine.DependencyInjection
         private readonly Dictionary<int, Dictionary<Type, Dictionary<string, Service>>> _services =
             new Dictionary<int, Dictionary<Type, Dictionary<string, Service>>>();
 
+        public class ResolutionCounts
+        {
+            public ResolutionCounts(IReadOnlyDictionary<Type, int> cachedResolutionCounts, IReadOnlyDictionary<Type, int> uncachedResolutionCounts)
+            {
+                Cached = cachedResolutionCounts;
+                Uncached = uncachedResolutionCounts;
+            }
+            public IReadOnlyDictionary<Type, int> Cached { get; } = new Dictionary<Type, int>();
+            public IReadOnlyDictionary<Type, int> Uncached { get; } = new Dictionary<Type, int>();
+        }
+
         private readonly Dictionary<Type, int> _uncachedResolutionCounts = new Dictionary<Type, int>();
         private readonly Dictionary<Type, int> _cachedResolutionCounts = new Dictionary<Type, int>();
 
@@ -128,24 +139,22 @@ namespace UnityEngine.DependencyInjection
 
         public bool RecordingResolutions { get; private set; } = Application.isEditor;
 
+        /// <summary>
+        /// Records how many times service <see cref="Type"/>s are resolved at runtime, for optimization purposes.
+        /// There's no reason for this code to be in release builds though, hence the <see cref="ConditionalAttribute"/>
+        /// (which also requires that it return <see langword="void"/> and not have <see langword="out"/> parameters).
+        /// </summary>
+        /// <param name="counts">Upon return, will contain the number of times services were resolved.</param>
         [Conditional("UNITY_EDITOR")]
-        public void ToggleDependencyResolutionRecording()
+        public void ToggleDependencyResolutionRecording(ref ResolutionCounts counts)
         {
             RecordingResolutions = !RecordingResolutions;
-            if (RecordingResolutions)
+            if (RecordingResolutions) {
+                counts = null;
                 return;
+            }
 
-            var sb = new StringBuilder();
-            sb.AppendLine("Uncached dependency resolution counts:");
-            sb.AppendLine($"(If any of these counts are greater than 1, consider caching resolutions for that Type on the {nameof(DependencyInjector)} to improve performance)");
-            foreach (var kv in _uncachedResolutionCounts.OrderByDescending(x => x.Value))
-                sb.AppendLine($"    {kv.Key.Name}: {_uncachedResolutionCounts[kv.Key]}");
-            sb.AppendLine();
-            sb.AppendLine("Cached dependency resolution counts:");
-            sb.AppendLine($"(If any of these counts equal 1, consider not caching resolutions for that Type on the {nameof(DependencyInjector)}, to speed up its resolutions and save memory)");
-            foreach (var kv in _cachedResolutionCounts.OrderByDescending(x => x.Value))
-                sb.AppendLine($"    {kv.Key.Name}: {_cachedResolutionCounts[kv.Key]}");
-            _logger.Log(sb.ToString());
+            counts = new ResolutionCounts(_cachedResolutionCounts, _uncachedResolutionCounts);
 
             _cachedResolutionCounts.Clear();
             _uncachedResolutionCounts.Clear();
