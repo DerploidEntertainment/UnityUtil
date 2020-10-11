@@ -15,7 +15,7 @@ namespace UnityUtil.Editor
         public static void ToggleRecording()
         {
             DependencyInjector.ResolutionCounts counts = null;
-            DependencyInjector.Instance.ToggleDependencyResolutionRecording(ref counts);
+            DependencyInjector.Instance.ToggleServiceResolutionRecording(!DependencyInjector.Instance.RecordingResolutions);
             if (counts == null)
                 return;
 

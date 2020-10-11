@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Triggers;
 using UnityUtil.Editor;
+using UnityUtil.Test.EditMode.Logging;
 
 namespace UnityUtil.Test.EditMode.Triggers {
 
