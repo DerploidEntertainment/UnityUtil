@@ -12,7 +12,11 @@ namespace UnityEngine.UI {
 
     [RequireComponent(typeof(RectTransform))]   // So the OnRectTransformDimensionsChange message gets called
     [ExecuteAlways]                             // So the OnRectTransformDimensionsChange message gets called in the Editor too...kind of a necessity for UI tweaking
-    [TypeInfoBox("Note that changes to some fields may not take effect until the next time the UI value is updated (e.g., by changing the size of the Game window or the frustum of the Camera).\nAlso, updates may take a few seconds if the attached RectTransform is deeply nested in the hierarchy.")]
+    [TypeInfoBox(
+        "Note that changes to some fields may not take effect until the next time the UI value is updated " +
+        "(e.g., by changing the size of the Game window or the frustum of the Camera).\n\n" +
+        "Also, updates may take a few seconds if the attached RectTransform is deeply nested in the hierarchy."
+    )]
     public class UiBreakpoints : UIBehaviour {
 
         private bool _noMatch;
