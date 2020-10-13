@@ -1,4 +1,5 @@
-﻿using UnityEngine.DependencyInjection;
+using System.Diagnostics;
+using UnityEngine.DependencyInjection;
 using UnityEngine.Logging;
 
 namespace UnityEngine {
@@ -8,7 +9,6 @@ namespace UnityEngine {
         protected IConfigurator Configurator;
         protected ILogger Logger;
 
-        [ConfigKey]
         [Tooltip(
             "The key by which to look up configuration for this Component. " +
             "A blank string (default) is equivalent to the fully qualified type name. " +
@@ -18,6 +18,11 @@ namespace UnityEngine {
             "then its field config keys would have the form '<configkey>.<fieldname>'."
         )]
         public string ConfigKey;
+
+        protected virtual void Reset()
+        {
+            ConfigKey = DefaultConfigKey;
+        }
 
         protected virtual void Awake() {
             DependencyInjector.Instance.ResolveDependenciesOf(this);
@@ -29,6 +34,8 @@ namespace UnityEngine {
             Configurator = configurator;
             Logger = loggerProvider.GetLogger(this);
         }
+
+        public string DefaultConfigKey => GetType().FullName;
 
     }
 

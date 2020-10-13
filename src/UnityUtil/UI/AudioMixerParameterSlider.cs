@@ -1,5 +1,4 @@
 ﻿using Sirenix.OdinInspector;
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using UnityEngine.Assertions;
 using UnityEngine.Audio;
@@ -7,7 +6,8 @@ using UnityEngine.EventSystems;
 using UnityEngine.Logging;
 using UnityEngine.Storage;
 
-namespace UnityEngine.UI {
+namespace UnityEngine.UI
+{
 
     public enum AudioSliderTransformation {
         Linear,
@@ -47,9 +47,11 @@ namespace UnityEngine.UI {
 
         public string FinalCacheKey => string.IsNullOrEmpty(CacheKey) ? ExposedParameterName : CacheKey;
 
-        [Conditional("UNITY_EDITOR")]
         [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
-        private void Reset() {
+        protected override void Reset()
+        {
+            base.Reset();
+
             ExposedParameterName = "Volume";
 
             StoreParameterInCache = true;
