@@ -11,32 +11,6 @@ using UnityEngine.Logging;
 
 namespace UnityEngine {
 
-#pragma warning disable CA2235 // Mark all non-serializable fields
-
-    [Serializable]
-    public class CachedConfiguration
-    {
-        private const string MSG_TOOLTIP_SHARED = "Configuration will be cached for this " + nameof(TypeName) + "/" + nameof(ConfigKey) + " pair. " +
-            "That is, after a class instance with this type, and using this " +nameof(ConfigKey)+", " +
-            "has had its fields configured via reflection, the reflected metadata and matching configs will be cached, so that " +
-            "subsequent instances with the same " + nameof(TypeName) + "/" + nameof(ConfigKey) + " will be configured faster. " +
-            "This is useful if you know you will have many configurable components in a scene with the same " +
-            nameof(TypeName) + "/" + nameof(ConfigKey) + ".";
-
-        [Tooltip(nameof(TypeName) + " should be of the form '<namespace1>.<namespace2>.<typename>'.\n\n" + MSG_TOOLTIP_SHARED)]
-        public string TypeName;
-
-        [Tooltip(
-            "A blank string (default) is equivalent to the fully qualified type name. Leading/trailing whitespace is ignored. " +
-            "That is, if " + nameof(ConfigKey) + " is blank, then class instances of " + nameof(TypeName) + " whose config keys " +
-            "are blank or equal to " + nameof(TypeName) + " will have their configuration cached.\n\n" +
-            MSG_TOOLTIP_SHARED
-        )]
-        public string ConfigKey;
-    }
-
-#pragma warning restore CA2235 // Mark all non-serializable fields
-
     public class Configurator : MonoBehaviour, IConfigurator
     {
 
@@ -76,23 +50,31 @@ namespace UnityEngine {
         )]
         public ConfigurationSource[] ConfigurationSources;
 
-        [Tooltip(
-            "Use these rules to cache commonly resolved configurations, speeding up Scene load times. " +
-            "We use this whitelist approach because caching ALL configurations could use up significant memory, and could actually " +
-            "worsen performance if many of the configurations were only resolved once."
-        )]
-        [TableList(AlwaysExpanded = true, ShowIndexLabels = false)]
-        public CachedConfiguration[] CachedConfigurations;
-
         [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
         private void Reset()
         {
             RecordingConfigurations = DefaultRecordConfigurationsOnAwake;
             ConfigurationSources = Array.Empty<ConfigurationSource>();
-            CachedConfigurations = Array.Empty<CachedConfiguration>();
         }
 
         public void Inject(ILoggerProvider loggerProvider) => _logger = loggerProvider.GetLogger(this);
+
+        /// <summary>
+        /// Use these rules to cache commonly resolved configurations, speeding up Scene load times.
+        /// We use this whitelist approach because caching ALL configurations could use up significant memory, and could actually
+        /// worsen performance if many of the configurations were only resolved once.
+        /// </summary>
+        /// <remarks>
+        /// Configuration will be cached for each type/configKey pair.
+        /// That is, after a class instance with one of these types, and using the matching configKey,
+        /// has had its fields configured via reflection, the reflected metadata and matching configs will be cached, so that
+        /// subsequent instances with the same type/configKey will be configured faster.
+        /// This is useful if you know you will have many configurable components in a scene with the same type/configKey.
+        /// A blank configKey (default) is equivalent to the fully qualified type name. Leading/trailing whitespace is ignored.
+        /// That is, if configKey is blank, then class instances of the matching type whose config keys
+        /// are blank or equal to that type will have their configuration cached.
+        /// </remarks>
+        public List<(Type, string ConfigKey)> CachedConfigurations { get; } = new List<(Type, string ConfigKey)>();
 
         public static Dictionary<string, object> LoadConfigValues(IEnumerable<ConfigurationSource> configurationSources)
         {
@@ -153,8 +135,8 @@ namespace UnityEngine {
             // Determine if this configuration should now be cached, by checking it against the provided whitelist
             // If so, we will build up the cached configuration while it is resolved via reflection
             bool cache = CachedConfigurations.Any(x =>
-                clientType.FullName.Contains(x.TypeName) &&
-                (x.ConfigKey == key || (x.ConfigKey.Length == 0 && key.Contains(x.TypeName))));
+                clientType == x.Item1 &&
+                (x.ConfigKey == key || (x.ConfigKey.Length == 0 && key.Contains(x.Item1.FullName))));
             IList<Expression> memberAssigns = new List<Expression>();
             ParameterExpression clientObjParam = cache ? Expression.Parameter(typeof(object), nameof(client)) : null;
             Expression clientParam = cache ? Expression.Convert(clientObjParam, clientType) : null;
