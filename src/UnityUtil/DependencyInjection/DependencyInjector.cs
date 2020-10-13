@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Reflection;
 using UnityEngine.Logging;
 using UnityEngine.SceneManagement;
@@ -23,7 +22,7 @@ namespace UnityEngine.DependencyInjection
 
         private const int DEFAULT_SCENE_HANDLE = -1;
 
-        public static readonly DependencyInjector Instance = new DependencyInjector(Array.Empty<Type>());
+        public static readonly DependencyInjector Instance = new DependencyInjector(Array.Empty<Type>()) { RecordingResolutions = Application.isEditor };
 
         private ILogger _logger = Debug.unityLogger;
         private ITypeMetadataProvider _typeMetadataProvider;
@@ -143,23 +142,24 @@ namespace UnityEngine.DependencyInjection
             }
         }
 
-        public bool RecordingResolutions { get; private set; } = Application.isEditor;
+        private bool _recording = false;
 
         /// <summary>
-        /// Start recording how many times service <see cref="Type"/>s are resolved at runtime, for optimization purposes.
-        /// There's no reason for this code to be in release builds though, hence the <see cref="ConditionalAttribute"/>
-        /// (which also requires that it return <see langword="void"/> and not have <see langword="out"/> parameters).
+        /// Toggles recording how many times service <see cref="Type"/>s are resolved at runtime, for optimization purposes.
         /// </summary>
-        [Conditional("UNITY_EDITOR")]
-        public void ToggleServiceResolutionRecording(bool recording)
-        {
-            if (RecordingResolutions == recording)
-                return;
+        public bool RecordingResolutions {
+            get => _recording;
+            set {
+                if (_recording == value)
+                    return;
 
-            RecordingResolutions = recording;
-            if (!RecordingResolutions) {
-                _cachedResolutionCounts.Clear();
-                _uncachedResolutionCounts.Clear();
+                _recording = value;
+                if (!_recording) {
+                    _cachedResolutionCounts.Clear();
+                    _uncachedResolutionCounts.Clear();
+                }
+
+                _logger?.Log($"{(_recording ? "Started" : "Stopped")} recording dependency resolutions");
             }
         }
 
@@ -192,7 +192,7 @@ namespace UnityEngine.DependencyInjection
                 if (_compiledInject.TryGetValue(serviceType, out Action<object>[] compiledInjectMethods)) {
                     for (int m = 0; m < compiledInjectMethods.Length; ++m)
                         compiledInjectMethods[m](client);
-                    if (RecordingResolutions)
+                    if (_recording)
                         ++_cachedResolutionCounts[serviceType];
                     return;
                 }
@@ -214,7 +214,7 @@ namespace UnityEngine.DependencyInjection
                     else {
                         compile = false;
                         injectMethod.Invoke(client, dependencies);
-                        if (RecordingResolutions)
+                        if (_recording)
                             _uncachedResolutionCounts[serviceType] = _uncachedResolutionCounts.TryGetValue(serviceType, out int count) ? count + 1 : 1;
                     }
                 }
@@ -223,7 +223,7 @@ namespace UnityEngine.DependencyInjection
                     Action<object> compiledInject = _typeMetadataProvider.CompileMethodCall(compiledMethodName, nameof(client), injectMethod, dependencies);
                     compiledInjectList.Add(compiledInject);
                     compiledInject(client);
-                    if (RecordingResolutions)
+                    if (_recording)
                         _cachedResolutionCounts[serviceType] = 1;
                 }
 

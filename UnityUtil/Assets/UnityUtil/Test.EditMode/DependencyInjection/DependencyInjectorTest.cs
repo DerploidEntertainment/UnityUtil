@@ -1,4 +1,4 @@
-using Moq;
+﻿using Moq;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -367,7 +367,7 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
             dependencyInjector.RegisterService(getComponentService<TestComponent>());
             dependencyInjector.RegisterService(new object());
             dependencyInjector.RegisterService(getComponentService<Animator>());
-            dependencyInjector.ToggleServiceResolutionRecording(true);
+            dependencyInjector.RecordingResolutions = true;
 
             // Initial, uncached resolution
             var uncacheClient = new TestClient();
@@ -388,7 +388,7 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
             Assert.That(counts.Cached[baseType], Is.EqualTo(2));
 
             // Clears cached resolutions
-            dependencyInjector.ToggleServiceResolutionRecording(false);
+            dependencyInjector.RecordingResolutions = false;
             Assert.That(counts.Uncached.Count, Is.Zero);
             Assert.That(counts.Cached.Count, Is.Zero);
         }

@@ -15,7 +15,8 @@ namespace UnityUtil.Editor
         public static void ToggleRecording()
         {
             DependencyInjector.ResolutionCounts counts = null;
-            DependencyInjector.Instance.ToggleServiceResolutionRecording(!DependencyInjector.Instance.RecordingResolutions);
+            DependencyInjector.Instance.GetServiceResolutionCounts(ref counts);
+            DependencyInjector.Instance.RecordingResolutions = !DependencyInjector.Instance.RecordingResolutions;
             if (counts == null)
                 return;
 
@@ -29,8 +30,10 @@ namespace UnityUtil.Editor
                 {getCountLines(counts.Cached)}
             ");
 
-            static IEnumerable<string> getCountLines(IEnumerable<KeyValuePair<Type, int>> counts) =>
-                counts.OrderByDescending(x => x.Value).Select(x => $"    {x.Key.Name}: {x.Value}{Environment.NewLine}");
+            static string getCountLines(IEnumerable<KeyValuePair<Type, int>> counts) => string.Join(
+                Environment.NewLine,
+                counts.OrderByDescending(x => x.Value).Select(x => $"    {x.Key.Name}: {x.Value}")
+            );
         }
 
         [MenuItem(ItemName, isValidateFunction: true)]
