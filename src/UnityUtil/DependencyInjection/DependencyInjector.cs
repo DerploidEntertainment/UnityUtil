@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using UnityEngine.Logging;
@@ -165,11 +164,8 @@ namespace UnityEngine.DependencyInjection
 
         /// <summary>
         /// Get the number of times that each service <see cref="Type"/> has been resolved at runtime.
-        /// There's no reason for this code to be in release builds though, hence the <see cref="ConditionalAttribute"/>
-        /// (which also requires that it return <see langword="void"/> and not have <see langword="out"/> parameters).
         /// </summary>
         /// <param name="counts">Upon return, will contain the number of times that services were resolved.</param>
-        [Conditional("UNITY_EDITOR")]
         public void GetServiceResolutionCounts(ref ResolutionCounts counts) => counts = new ResolutionCounts(_cachedResolutionCounts, _uncachedResolutionCounts);
 
         /// <summary>

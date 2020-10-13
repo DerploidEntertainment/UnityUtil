@@ -1,14 +1,13 @@
 ﻿using Sirenix.OdinInspector;
 using System;
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using UnityEngine.Assertions;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.Logging;
 
-namespace UnityEngine.UI {
+namespace UnityEngine.UI
+{
 
     [RequireComponent(typeof(RectTransform))]   // So the OnRectTransformDimensionsChange message gets called
     [ExecuteAlways]                             // So the OnRectTransformDimensionsChange message gets called in the Editor too...kind of a necessity for UI tweaking
@@ -68,7 +67,6 @@ namespace UnityEngine.UI {
         )]
         public UnityEvent NoBreakpointMatched = new UnityEvent();
 
-        [Conditional("UNITY_EDITOR")]
         [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
         [SuppressMessage("Code Quality", "IDE0051:Remove unused private members", Justification = "Unity message")]
         private new void Reset() {

@@ -1,8 +1,8 @@
 ﻿using Sirenix.OdinInspector;
-using System.Diagnostics;
 using UnityEngine.Events;
 
-namespace UnityEngine.Triggers {
+namespace UnityEngine.Triggers
+{
 
     public class InspectorButtonTrigger : Updatable {
 
@@ -34,7 +34,7 @@ namespace UnityEngine.Triggers {
         }
 
         // API INTERFACE
-        [Button, Conditional("UNITY_EDITOR"), EnableIf(nameof(CanPress))]
+        [Button, EnableIf(nameof(CanPress))]
         public void Press() {
             // Don't press the button if its still in the refractory period
             if (!CanPress)

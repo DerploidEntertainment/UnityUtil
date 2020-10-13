@@ -1,9 +1,8 @@
-﻿using System;
-using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using UnityEngine.Logging;
 
-namespace UnityEngine {
+namespace UnityEngine
+{
 
     public class TorqueStabilizer : MonoBehaviour {
 
@@ -34,7 +33,6 @@ namespace UnityEngine {
             };
 
         // EVENT HANDLERS
-        [Conditional("UNITY_EDITOR")]
         [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
         private void Reset() {
             MaxStabilizingTorque = 10f;

@@ -1,9 +1,8 @@
-﻿using System;
-using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using UnityEngine.Logging;
 
-namespace UnityEngine {
+namespace UnityEngine
+{
 
     public class HoverForce : MonoBehaviour {
 
@@ -43,7 +42,6 @@ namespace UnityEngine {
             };
         public float AppliedFractionOfMaxForce { get; private set; }
 
-        [Conditional("UNITY_EDITOR")]
         [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
         private void Reset() {
             HoverHeight = 2f;
@@ -52,6 +50,7 @@ namespace UnityEngine {
             UpwardDirectionType = AxisDirection.OppositeGravity;
             CustomUpwardDirection = Vector3.up;
         }
+
         [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
         private void FixedUpdate() {
             if (HoveringRigidbody == null)

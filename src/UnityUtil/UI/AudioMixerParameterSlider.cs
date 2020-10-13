@@ -129,7 +129,6 @@ namespace UnityEngine.UI
                 _ => throw UnityObjectExtensions.SwitchDefaultException(SliderTransformation)
             };
 
-#if UNITY_EDITOR
         [Button]
         public void ClearCachedState() {
             string cacheKey = FinalCacheKey;
@@ -142,7 +141,6 @@ namespace UnityEngine.UI
             _logger ??= Debug.unityLogger;
             Debug.Log($"Deleted cache key '{cacheKey}'.", context: this);
         }
-#endif
 
     }
 
