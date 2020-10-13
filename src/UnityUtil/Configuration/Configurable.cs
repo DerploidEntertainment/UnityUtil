@@ -1,4 +1,4 @@
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using UnityEngine.DependencyInjection;
 using UnityEngine.Logging;
 
@@ -27,7 +27,8 @@ namespace UnityEngine {
         protected virtual void Awake() {
             DependencyInjector.Instance.ResolveDependenciesOf(this);
 
-            Configurator.Configure(this);
+            ConfigKey = string.IsNullOrWhiteSpace(ConfigKey) ? DefaultConfigKey : ConfigKey;
+            Configurator.Configure(this, ConfigKey);
         }
 
         public void Inject(IConfigurator configurator, ILoggerProvider loggerProvider) {

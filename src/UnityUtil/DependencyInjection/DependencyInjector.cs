@@ -166,7 +166,10 @@ namespace UnityEngine.DependencyInjection
         /// Get the number of times that each service <see cref="Type"/> has been resolved at runtime.
         /// </summary>
         /// <param name="counts">Upon return, will contain the number of times that services were resolved.</param>
-        public void GetServiceResolutionCounts(ref ResolutionCounts counts) => counts = new ResolutionCounts(_cachedResolutionCounts, _uncachedResolutionCounts);
+        public void GetServiceResolutionCounts(ref ResolutionCounts counts) => counts = new ResolutionCounts(
+            cachedResolutionCounts: new Dictionary<Type, int>(_cachedResolutionCounts),
+            uncachedResolutionCounts: new Dictionary<Type, int>(_uncachedResolutionCounts)
+        );
 
         /// <summary>
         /// Inject all dependencies into the specified client.
@@ -189,7 +192,7 @@ namespace UnityEngine.DependencyInjection
                     for (int m = 0; m < compiledInjectMethods.Length; ++m)
                         compiledInjectMethods[m](client);
                     if (_recording)
-                        ++_cachedResolutionCounts[serviceType];
+                        _cachedResolutionCounts[serviceType] = _cachedResolutionCounts.TryGetValue(serviceType, out int count) ? count + 1 : 1;
                     return;
                 }
 
