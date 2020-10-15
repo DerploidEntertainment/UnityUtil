@@ -359,7 +359,7 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
             Type clientType = typeof(TestClient);
             Type baseType = typeof(TestClientBase);
             Mock<ITypeMetadataProvider> mockTypeMetadataProvider = getTypeMetadataProvider();
-            DependencyInjector.ResolutionCounts counts = null;
+            DependencyResolutionCounts counts = null;
             DependencyInjector dependencyInjector = getDependencyInjector(
                 cachedResolutionTypes: new[] { typeof(TestClientBase) },
                 typeMetadataProvider: mockTypeMetadataProvider.Object
@@ -409,7 +409,7 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
             dependencyInjector.RecordingResolutions = false;
 
             // ASSERT
-            DependencyInjector.ResolutionCounts counts = null;
+            DependencyResolutionCounts counts = null;
             dependencyInjector.GetServiceResolutionCounts(ref counts);
             Assert.That(counts.Uncached.Count, Is.Zero);
             Assert.That(counts.Cached.Count, Is.Zero);
@@ -424,7 +424,7 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
             dependencyInjector.RegisterService(getComponentService<TestComponent>());
 
             dependencyInjector.RecordingResolutions = false;
-            DependencyInjector.ResolutionCounts counts = null;
+            DependencyResolutionCounts counts = null;
             dependencyInjector.ResolveDependenciesOf(new TestClientBase());
             dependencyInjector.ResolveDependenciesOf(new TestClientBase());
             dependencyInjector.ResolveDependenciesOf(new TestClientBase());

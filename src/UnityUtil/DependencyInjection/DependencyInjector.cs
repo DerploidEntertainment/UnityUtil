@@ -7,6 +7,17 @@ using UnityEngine.SceneManagement;
 
 namespace UnityEngine.DependencyInjection
 {
+    public class DependencyResolutionCounts
+    {
+        public DependencyResolutionCounts(IReadOnlyDictionary<Type, int> cachedResolutionCounts, IReadOnlyDictionary<Type, int> uncachedResolutionCounts)
+        {
+            Cached = cachedResolutionCounts;
+            Uncached = uncachedResolutionCounts;
+        }
+        public IReadOnlyDictionary<Type, int> Cached { get; }
+        public IReadOnlyDictionary<Type, int> Uncached { get; }
+    }
+
     public class DependencyInjector
     {
         internal class Service {
@@ -39,17 +50,6 @@ namespace UnityEngine.DependencyInjection
         private bool _recording = false;
         private readonly Dictionary<Type, int> _uncachedResolutionCounts = new Dictionary<Type, int>();
         private readonly Dictionary<Type, int> _cachedResolutionCounts = new Dictionary<Type, int>();
-
-        public class ResolutionCounts
-        {
-            public ResolutionCounts(IReadOnlyDictionary<Type, int> cachedResolutionCounts, IReadOnlyDictionary<Type, int> uncachedResolutionCounts)
-            {
-                Cached = cachedResolutionCounts;
-                Uncached = uncachedResolutionCounts;
-            }
-            public IReadOnlyDictionary<Type, int> Cached { get; }
-            public IReadOnlyDictionary<Type, int> Uncached { get; }
-        }
 
         /// <summary>
         /// <para>
@@ -170,7 +170,7 @@ namespace UnityEngine.DependencyInjection
         /// Get the number of times that each service <see cref="Type"/> has been resolved at runtime.
         /// </summary>
         /// <param name="counts">Upon return, will contain the number of times that services were resolved.</param>
-        public void GetServiceResolutionCounts(ref ResolutionCounts counts) => counts = new ResolutionCounts(
+        public void GetServiceResolutionCounts(ref DependencyResolutionCounts counts) => counts = new DependencyResolutionCounts(
             cachedResolutionCounts: new Dictionary<Type, int>(_cachedResolutionCounts),
             uncachedResolutionCounts: new Dictionary<Type, int>(_uncachedResolutionCounts)
         );

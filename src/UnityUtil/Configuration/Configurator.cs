@@ -9,24 +9,24 @@ using System.Reflection;
 using UnityEngine.DependencyInjection;
 using UnityEngine.Logging;
 
-namespace UnityEngine {
+namespace UnityEngine
+{
+    public class ConfigurationCounts
+    {
+        public ConfigurationCounts(
+            IReadOnlyDictionary<(Type, string), int> cachedConfigCounts,
+            IReadOnlyDictionary<(Type, string), int> uncachedConfigCounts
+        )
+        {
+            Cached = cachedConfigCounts;
+            Uncached = uncachedConfigCounts;
+        }
+        public IReadOnlyDictionary<(Type, string), int> Cached { get; }
+        public IReadOnlyDictionary<(Type, string), int> Uncached { get; }
+    }
 
     public class Configurator : MonoBehaviour, IConfigurator
     {
-
-        public class ConfigurationCounts
-        {
-            public ConfigurationCounts(
-                IReadOnlyDictionary<(Type, string), int> cachedConfigCounts,
-                IReadOnlyDictionary<(Type, string), int> uncachedConfigCounts
-            ) {
-                Cached = cachedConfigCounts;
-                Uncached = uncachedConfigCounts;
-            }
-            public IReadOnlyDictionary<(Type, string), int> Cached { get; }
-            public IReadOnlyDictionary<(Type, string), int> Uncached { get; }
-        }
-
         public const bool DefaultRecordConfigurationsOnAwake = false;
 
         private ILogger _logger;
