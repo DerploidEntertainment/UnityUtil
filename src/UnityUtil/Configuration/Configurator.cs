@@ -1,4 +1,4 @@
-using Sirenix.OdinInspector;
+﻿using Sirenix.OdinInspector;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -23,8 +23,8 @@ namespace UnityEngine {
                 Cached = cachedConfigCounts;
                 Uncached = uncachedConfigCounts;
             }
-            public IReadOnlyDictionary<(Type, string), int> Cached { get; } = new Dictionary<(Type, string), int>();
-            public IReadOnlyDictionary<(Type, string), int> Uncached { get; } = new Dictionary<(Type, string), int>();
+            public IReadOnlyDictionary<(Type, string), int> Cached { get; }
+            public IReadOnlyDictionary<(Type, string), int> Uncached { get; }
         }
 
         public const bool DefaultRecordConfigurationsOnAwake = false;
@@ -76,33 +76,18 @@ namespace UnityEngine {
         /// </remarks>
         public List<(Type, string ConfigKey)> CachedConfigurations { get; } = new List<(Type, string ConfigKey)>();
 
-        public static Dictionary<string, object> LoadConfigValues(IEnumerable<ConfigurationSource> configurationSources)
-        {
-            int numLoaded = 0;
-            var allVals = new Dictionary<string, object>();
-            foreach (ConfigurationSource src in configurationSources) {
-                // If this configuration source is not supposed to be loaded in this context, then skip it
-                if (!(
-                    ((src.LoadContext & ConfigurationLoadContext.Editor) > 0 && Application.isEditor) ||
-                    ((src.LoadContext & ConfigurationLoadContext.DebugBuild) > 0 && Debug.isDebugBuild) ||
-                    ((src.LoadContext & ConfigurationLoadContext.ReleaseBuild) > 0 && !Debug.isDebugBuild)
-                ))
-                    continue;
-
-                DependencyInjector.Instance.ResolveDependenciesOf(src);
-
-                IDictionary<string, object> vals = src.LoadConfigs();
-                if (vals.Count > 0) {
-                    ++numLoaded;
-                    allVals = allVals
-                        .Union(vals)
-                        .GroupBy(pair => pair.Key, pair => pair.Value)
-                        .ToDictionary(grp => grp.Key, grp => grp.First());
-                }
-            }
-
-            return allVals;
-        }
+        public static Dictionary<string, object> LoadConfigValues(IEnumerable<ConfigurationSource> configurationSources) =>
+            configurationSources
+                .Where(x =>
+                    ((x.LoadContext & ConfigurationLoadContext.Editor) > 0 && Application.isEditor) ||
+                    ((x.LoadContext & ConfigurationLoadContext.DebugBuild) > 0 && Debug.isDebugBuild) ||
+                    ((x.LoadContext & ConfigurationLoadContext.ReleaseBuild) > 0 && !Debug.isDebugBuild)
+                ).SelectMany(x => {
+                    DependencyInjector.Instance.ResolveDependenciesOf(x);
+                    return x.LoadConfigs();
+                })
+                .GroupBy(x => x.Key, x => x.Value)
+                .ToDictionary(grp => grp.Key, grp => grp.First());
         public void Configure(IEnumerable<(object, string)> clients)
         {
             foreach ((object clienObj, string configKey) in clients)
@@ -137,7 +122,7 @@ namespace UnityEngine {
             bool cache = CachedConfigurations.Any(x =>
                 clientType == x.Item1 &&
                 (x.ConfigKey == key || (x.ConfigKey.Length == 0 && key.Contains(x.Item1.FullName))));
-            IList<Expression> memberAssigns = new List<Expression>();
+            IList<Expression> memberAssigns = cache ? new List<Expression>() : null;
             ParameterExpression clientObjParam = cache ? Expression.Parameter(typeof(object), nameof(client)) : null;
             Expression clientParam = cache ? Expression.Convert(clientObjParam, clientType) : null;
 

@@ -27,9 +27,18 @@ namespace UnityEngine.DependencyInjection
         private ITypeMetadataProvider _typeMetadataProvider;
 
         private readonly HashSet<Type> _cachedResolutionTypes = new HashSet<Type>();
-        private readonly IDictionary<Type, Action<object>[]> _compiledInject = new Dictionary<Type, Action<object>[]>();
+        private readonly IDictionary<Type, List<Action<object>>> _compiledInject = new Dictionary<Type, List<Action<object>>>();
         private readonly Dictionary<int, Dictionary<Type, Dictionary<string, Service>>> _services =
             new Dictionary<int, Dictionary<Type, Dictionary<string, Service>>>();
+
+        /// <summary>
+        /// This collection is only a field (rather than a local var) so as to reduce allocations in <see cref="loadDependeciesOfInjectMethod(object, MethodInfo)"/>
+        /// </summary>
+        private readonly HashSet<Type> _injectedTypes = new HashSet<Type>();
+
+        private bool _recording = false;
+        private readonly Dictionary<Type, int> _uncachedResolutionCounts = new Dictionary<Type, int>();
+        private readonly Dictionary<Type, int> _cachedResolutionCounts = new Dictionary<Type, int>();
 
         public class ResolutionCounts
         {
@@ -38,12 +47,9 @@ namespace UnityEngine.DependencyInjection
                 Cached = cachedResolutionCounts;
                 Uncached = uncachedResolutionCounts;
             }
-            public IReadOnlyDictionary<Type, int> Cached { get; } = new Dictionary<Type, int>();
-            public IReadOnlyDictionary<Type, int> Uncached { get; } = new Dictionary<Type, int>();
+            public IReadOnlyDictionary<Type, int> Cached { get; }
+            public IReadOnlyDictionary<Type, int> Uncached { get; }
         }
-
-        private readonly Dictionary<Type, int> _uncachedResolutionCounts = new Dictionary<Type, int>();
-        private readonly Dictionary<Type, int> _cachedResolutionCounts = new Dictionary<Type, int>();
 
         /// <summary>
         /// <para>
@@ -141,8 +147,6 @@ namespace UnityEngine.DependencyInjection
             }
         }
 
-        private bool _recording = false;
-
         /// <summary>
         /// Toggles recording how many times service <see cref="Type"/>s are resolved at runtime, for optimization purposes.
         /// </summary>
@@ -184,12 +188,12 @@ namespace UnityEngine.DependencyInjection
             Type serviceType = client.GetType();
             Type objectType = typeof(object);
             Type cachedParentType = null;
-            var compiledInjectList = new List<Action<object>>();
+            List<Action<object>> compiledInjectList = null;     // Will only be initialized if this client's type or one of its parent types is cached, to save heap allocations
             BindingFlags bindingFlags = BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance;
             do {
                 // Use compiled inject methods, if they exist
-                if (_compiledInject.TryGetValue(serviceType, out Action<object>[] compiledInjectMethods)) {
-                    for (int m = 0; m < compiledInjectMethods.Length; ++m)
+                if (_compiledInject.TryGetValue(serviceType, out List<Action<object>> compiledInjectMethods)) {
+                    for (int m = 0; m < compiledInjectMethods.Count; ++m)
                         compiledInjectMethods[m](client);
                     if (_recording)
                         _cachedResolutionCounts[serviceType] = _cachedResolutionCounts.TryGetValue(serviceType, out int count) ? count + 1 : 1;
@@ -201,7 +205,8 @@ namespace UnityEngine.DependencyInjection
                 if (injectMethod == null)
                     goto Loop;
 
-                object[] dependencies = getDependeciesOfInjectMethod(client, injectMethod);
+                string clientName = (client as MonoBehaviour)?.GetHierarchyNameWithType() ?? (client as Object)?.name ?? $"{injectMethod.DeclaringType.FullName} instance";
+                object[] dependencies = getDependeciesOfInjectMethod(clientName, injectMethod);
                 if (dependencies.Length == 0)
                     goto Loop;
 
@@ -220,7 +225,7 @@ namespace UnityEngine.DependencyInjection
                 if (compile) {
                     string compiledMethodName = $"{nameof(ResolveDependenciesOf)}_{injectMethod.DeclaringType.Name}_Generated";
                     Action<object> compiledInject = _typeMetadataProvider.CompileMethodCall(compiledMethodName, nameof(client), injectMethod, dependencies);
-                    compiledInjectList.Add(compiledInject);
+                    (compiledInjectList ??= new List<Action<object>>()).Add(compiledInject);
                     compiledInject(client);
                     if (_recording)
                         _cachedResolutionCounts[serviceType] = 1;
@@ -231,7 +236,7 @@ namespace UnityEngine.DependencyInjection
             } while (serviceType != objectType && serviceType != null);
 
             if (cachedParentType != null)
-                _compiledInject.Add(cachedParentType, compiledInjectList.ToArray());
+                _compiledInject.Add(cachedParentType, compiledInjectList);
         }
         /// <summary>
         /// Inject all dependencies into the specified clients.
@@ -255,17 +260,22 @@ namespace UnityEngine.DependencyInjection
             _logger.Log($"Successfully unregistered all {numSceneServices} services from scene '{scene.name}'.");
         }
 
-        private object[] getDependeciesOfInjectMethod(object client, MethodInfo injectMethod)
+        /// <summary>
+        /// Load the dependencies of <paramref name="injectMethod"/>
+        /// </summary>
+        /// <param name="client">The client object instance on which <paramref name="injectMethod"/> can be called</param>
+        /// <param name="injectMethod">The method for which to resolve dependencies</param>
+        /// <returns>The number of dependencies (parameters) required by <paramref name="injectMethod"/></returns>
+        private object[] getDependeciesOfInjectMethod(string clientName, MethodInfo injectMethod)
         {
-            var injectedTypes = new HashSet<Type>();
+            _injectedTypes.Clear();
             ParameterInfo[] parameters = _typeMetadataProvider.GetMethodParameters(injectMethod);
             object[] dependencies = new object[parameters.Length];
             for (int p = 0; p < parameters.Length; ++p) {
                 Type paramType = parameters[p].ParameterType;
-                string clientName = (client as MonoBehaviour)?.GetHierarchyNameWithType() ?? (client as Object)?.name ?? $"{injectMethod.DeclaringType.FullName} instance";
 
                 // Warn if a dependency with this Type has already been injected
-                bool firstInjection = injectedTypes.Add(paramType);
+                bool firstInjection = _injectedTypes.Add(paramType);
                 if (!firstInjection)
                     _logger.LogWarning($"{clientName} has multiple dependencies of Type '{paramType.FullName}'.");
 
