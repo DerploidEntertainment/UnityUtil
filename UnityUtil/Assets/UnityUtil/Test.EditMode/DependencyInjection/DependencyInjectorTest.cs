@@ -122,10 +122,10 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
             dependencyInjector.RegisterService(serviceInstance);
 
             // ACT/ASSERT
-            DependencyInjector.Service service = dependencyInjector.GetService(typeof(TestComponent), tag: "test", clientName: "Unit test");
+            dependencyInjector.TryGetService(typeof(TestComponent), tag: "test", clientName: "Unit test", out Service service);
             Assert.That(service.Instance, Is.SameAs(serviceInstance));
 
-            Assert.Throws<KeyNotFoundException>(() => dependencyInjector.GetService(typeof(TestComponent), tag: "other", clientName: "Unit test"));
+            Assert.Throws<KeyNotFoundException>(() => dependencyInjector.TryGetService(typeof(TestComponent), tag: "other", clientName: "Unit test", out _));
         }
 
         [Test]
@@ -140,10 +140,10 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
             dependencyInjector.RegisterService(serviceInstance);
 
             // ACT/ASSERT
-            DependencyInjector.Service service = dependencyInjector.GetService(typeof(object), tag: DependencyInjector.DefaultTag, clientName: "Unit test");
+            dependencyInjector.TryGetService(typeof(object), tag: DependencyInjector.DefaultTag, clientName: "Unit test", out Service service);
             Assert.That(service.Instance, Is.SameAs(serviceInstance));
 
-            Assert.Throws<KeyNotFoundException>(() => dependencyInjector.GetService(typeof(object), tag: "test", clientName: "Unit test"));
+            Assert.Throws<KeyNotFoundException>(() => dependencyInjector.TryGetService(typeof(object), tag: "test", clientName: "Unit test", out _));
         }
 
         #endregion
@@ -159,7 +159,7 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
             object serviceInstance = new object();
             dependencyInjector.RegisterService(serviceInstance);
 
-            DependencyInjector.Service service = dependencyInjector.GetService(typeof(object), tag: DependencyInjector.DefaultTag, clientName: "Unit test");
+            dependencyInjector.TryGetService(typeof(object), tag: DependencyInjector.DefaultTag, clientName: "Unit test", out Service service);
             Assert.That(service.Instance, Is.SameAs(serviceInstance));
         }
 
@@ -172,10 +172,10 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
             var serviceInstance = new ApplicationException();
             dependencyInjector.RegisterService<Exception>(serviceInstance);
 
-            DependencyInjector.Service service = dependencyInjector.GetService(typeof(Exception), tag: DependencyInjector.DefaultTag, clientName: "Unit test");
+            dependencyInjector.TryGetService(typeof(Exception), tag: DependencyInjector.DefaultTag, clientName: "Unit test", out Service service);
             Assert.That(service.Instance, Is.SameAs(serviceInstance));
             Assert.Throws<KeyNotFoundException>(() =>
-                dependencyInjector.GetService(typeof(ApplicationException), tag: DependencyInjector.DefaultTag, clientName: "Unit test"));
+                dependencyInjector.TryGetService(typeof(ApplicationException), tag: DependencyInjector.DefaultTag, clientName: "Unit test", out _));
         }
 
         [Test]
@@ -188,7 +188,7 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
             TestComponent serviceInstance = obj.AddComponent<TestComponent>();
             dependencyInjector.RegisterService(serviceInstance);
 
-            DependencyInjector.Service service = dependencyInjector.GetService(typeof(TestComponent), tag: "test", clientName: "Unit test");
+            dependencyInjector.TryGetService(typeof(TestComponent), tag: "test", clientName: "Unit test", out Service service);
             Assert.That(service.Instance, Is.SameAs(serviceInstance));
         }
 
@@ -199,10 +199,10 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
 
             DependencyInjector dependencyInjector = getDependencyInjector();
 
-            Assert.Throws<KeyNotFoundException>(() => dependencyInjector.GetService(typeof(Component), tag: "any", clientName: "Unit test"));
-            Assert.Throws<KeyNotFoundException>(() => dependencyInjector.GetService(typeof(Component), tag: "Untagged", clientName: "Unit test"));
-            Assert.Throws<KeyNotFoundException>(() => dependencyInjector.GetService(typeof(MonoBehaviour), tag: "any", clientName: "Unit test"));
-            Assert.Throws<KeyNotFoundException>(() => dependencyInjector.GetService(typeof(MonoBehaviour), tag: "Untagged", clientName: "Unit test"));
+            Assert.Throws<KeyNotFoundException>(() => dependencyInjector.TryGetService(typeof(Component), tag: "any", clientName: "Unit test", out _));
+            Assert.Throws<KeyNotFoundException>(() => dependencyInjector.TryGetService(typeof(Component), tag: "Untagged", clientName: "Unit test", out _));
+            Assert.Throws<KeyNotFoundException>(() => dependencyInjector.TryGetService(typeof(MonoBehaviour), tag: "any", clientName: "Unit test", out _));
+            Assert.Throws<KeyNotFoundException>(() => dependencyInjector.TryGetService(typeof(MonoBehaviour), tag: "Untagged", clientName: "Unit test", out _));
         }
 
         [Test, Ignore("Haven't figured out a way to open a new Scene while in the unsaved scene created by the Test Runner")]
@@ -451,9 +451,9 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
             dependencyInjector.UnregisterSceneServices(activeScene);
 
             Assert.Throws<KeyNotFoundException>(() =>
-                dependencyInjector.GetService(typeof(object), DependencyInjector.DefaultTag, clientName: "Unit test"));
+                dependencyInjector.TryGetService(typeof(object), DependencyInjector.DefaultTag, clientName: "Unit test", out _));
             Assert.Throws<KeyNotFoundException>(() =>
-                dependencyInjector.GetService(typeof(Exception), DependencyInjector.DefaultTag, clientName: "Unit test"));
+                dependencyInjector.TryGetService(typeof(Exception), DependencyInjector.DefaultTag, clientName: "Unit test", out _));
         }
 
         [Test, Ignore("Haven't figured out a way to open a new Scene while in the unsaved scene created by the Test Runner")]

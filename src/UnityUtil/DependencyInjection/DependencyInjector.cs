@@ -18,14 +18,21 @@ namespace UnityEngine.DependencyInjection
         public IReadOnlyDictionary<Type, int> Uncached { get; }
     }
 
+    internal readonly struct Service
+    {
+        public Service(Type serviceType, string tag, object instance)
+        {
+            ServiceType = serviceType;
+            Tag = tag;
+            Instance = instance;
+        }
+        public readonly Type ServiceType;
+        public readonly string Tag;
+        public readonly object Instance;
+    }
+
     public class DependencyInjector
     {
-        internal class Service {
-            public Type ServiceType;
-            public string Tag;
-            public object Instance;
-        }
-
         public const string DefaultTag = "Untagged";
         public const string InjectMethodName = "Inject";
         public const string DefaultLoggerProviderName = "default-logger-provider";
@@ -109,11 +116,7 @@ namespace UnityEngine.DependencyInjection
         /// </exception>
         public void RegisterService(Type serviceType, object instance, Scene? scene = null)
         {
-            var service = new Service {
-                Instance = instance,
-                Tag = (instance as Component)?.tag ?? DefaultTag,
-                ServiceType = serviceType,
-            };
+            var service = new Service(serviceType, (instance as Component)?.tag ?? DefaultTag, instance);
 
             // Check if the provided service is for logging
             if (serviceType == typeof(ILoggerProvider) && _logger == null)
@@ -283,7 +286,7 @@ namespace UnityEngine.DependencyInjection
                 InjectTagAttribute injAttr = _typeMetadataProvider.GetCustomAttribute<InjectTagAttribute>(parameters[p]);
                 bool untagged = string.IsNullOrEmpty(injAttr?.Tag);
                 string tag = untagged ? DefaultTag : injAttr.Tag;
-                Service service = GetService(paramType, tag, clientName);
+                TryGetService(paramType, tag, clientName, out Service service);
 
                 // Log that this dependency has been resolved
                 dependencies[p] = service.Instance;
@@ -292,7 +295,7 @@ namespace UnityEngine.DependencyInjection
 
             return dependencies;
         }
-        internal Service GetService(Type serviceType, string tag, string clientName)
+        internal void TryGetService(Type serviceType, string tag, string clientName, out Service service)
         {
             bool resolved = false;
             Dictionary<string, Service> typedServices = null;
@@ -305,10 +308,9 @@ namespace UnityEngine.DependencyInjection
             if (!resolved)
                 throw new KeyNotFoundException($"{clientName} has a dependency of Type '{serviceType.FullName}', but no service was registered with that Type. Did you forget to add a service to the service collection?");
 
-            resolved = typedServices.TryGetValue(tag, out Service service);
-            return resolved
-                ? service
-                : throw new KeyNotFoundException($"{clientName} has a dependency of Type '{serviceType.FullName}' with tag '{tag}', but no matching service was registered. Did you forget to tag a service?");
+            resolved = typedServices.TryGetValue(tag, out service);
+            if (!resolved)
+                throw new KeyNotFoundException($"{clientName} has a dependency of Type '{serviceType.FullName}' with tag '{tag}', but no matching service was registered. Did you forget to tag a service?");
         }
 
     }
