@@ -80,16 +80,23 @@ namespace UnityEngine.DependencyInjection
         {
             CachedResolutionTypes = new List<Type>(cachedResolutionTypes);
         }
+
+        public bool Initialized { get; private set; } = false;
         public void Initialize(ILoggerProvider loggerProvider) => Initialize(loggerProvider, new TypeMetadataProvider());
         internal void Initialize(ILoggerProvider loggerProvider, ITypeMetadataProvider typeMetadataProvider)
         {
+            if (Initialized)
+                throw new InvalidOperationException($"Cannot initialize a {nameof(DependencyInjector)} multiple times!");
+
             _typeMetadataProvider = typeMetadataProvider;
             _logger = loggerProvider.GetLogger(this);
 
-            RegisterService(typeof(ILoggerProvider), loggerProvider);
-
             for (int t = 0; t < CachedResolutionTypes.Count; ++t)
                 _cachedResolutionTypes.Add(CachedResolutionTypes[t]);
+
+            Initialized = true;     // Must be set before registering logging services
+
+            RegisterService(typeof(ILoggerProvider), loggerProvider);
         }
 
         public void RegisterService(string serviceTypeName, object instance, Scene? scene = null)
@@ -116,6 +123,8 @@ namespace UnityEngine.DependencyInjection
         /// </exception>
         public void RegisterService(Type serviceType, object instance, Scene? scene = null)
         {
+            throwIfUninitialized();
+
             var service = new Service(serviceType, (instance as Component)?.tag ?? DefaultTag, instance);
 
             // Check if the provided service is for logging
@@ -185,6 +194,8 @@ namespace UnityEngine.DependencyInjection
         /// <param name="client">A client with service dependencies that need to be resolved.</param>
         public void ResolveDependenciesOf(object client)
         {
+            throwIfUninitialized();
+
             // Resolve dependencies by calling every Inject method in the client's inheritance hierarchy.
             // If the client's type or any of its inherited types have cached inject methods,
             // then use/compile those as necessary so that injection is faster for future clients with these types.
@@ -251,7 +262,10 @@ namespace UnityEngine.DependencyInjection
                 ResolveDependenciesOf(client);
         }
 
-        public void UnregisterSceneServices(Scene scene) {
+        public void UnregisterSceneServices(Scene scene)
+        {
+            throwIfUninitialized();
+
             if (!_services.ContainsKey(scene.handle)) {
                 _logger.LogWarning($"Cannot unregister services from scene '{scene.name}', as none have been registered. Are you trying to destroy multiple service collections from the same scene?");
                 return;
@@ -311,6 +325,11 @@ namespace UnityEngine.DependencyInjection
             resolved = typedServices.TryGetValue(tag, out service);
             if (!resolved)
                 throw new KeyNotFoundException($"{clientName} has a dependency of Type '{serviceType.FullName}' with tag '{tag}', but no matching service was registered. Did you forget to tag a service?");
+        }
+        private void throwIfUninitialized()
+        {
+            if (!Initialized)
+                throw new InvalidOperationException($"Must call {nameof(Initialize)}() on a {nameof(DependencyInjector)} before using any of its business methods.");
         }
 
     }

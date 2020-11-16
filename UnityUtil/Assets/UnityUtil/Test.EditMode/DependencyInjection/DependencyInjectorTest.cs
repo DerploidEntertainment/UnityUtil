@@ -55,6 +55,54 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
     public class DependencyInjectorTest
     {
 
+        #region Initialization tests
+
+        [Test]
+        public void Cannot_Initialize_MultipleTimes() {
+            var dependencyInjector = new DependencyInjector(Array.Empty<Type>());
+            dependencyInjector.Initialize(new TestLoggerProvider());
+
+            Assert.Throws<InvalidOperationException>(() => dependencyInjector.Initialize(new TestLoggerProvider()));
+        }
+
+        [Test]
+        public void Cannot_Register_UntilInitialized()
+        {
+            var dependencyInjector = new DependencyInjector(Array.Empty<Type>());
+            object testService = new object();
+
+            Assert.Throws<InvalidOperationException>(() => dependencyInjector.RegisterService(testService));
+
+            dependencyInjector.Initialize(new TestLoggerProvider());
+            Assert.DoesNotThrow(() => dependencyInjector.RegisterService(testService));
+        }
+
+        [Test]
+        public void Cannot_Unegister_UntilInitialized()
+        {
+            var dependencyInjector = new DependencyInjector(Array.Empty<Type>());
+            Scene testScene = SceneManager.GetActiveScene();
+
+            Assert.Throws<InvalidOperationException>(() => dependencyInjector.UnregisterSceneServices(testScene));
+
+            dependencyInjector.Initialize(new TestLoggerProvider());
+            Assert.DoesNotThrow(() => dependencyInjector.UnregisterSceneServices(testScene));
+        }
+
+        [Test]
+        public void Cannot_Resolve_UntilInitialized()
+        {
+            var dependencyInjector = new DependencyInjector(Array.Empty<Type>());
+            object testClient = new object();
+
+            Assert.Throws<InvalidOperationException>(() => dependencyInjector.ResolveDependenciesOf(testClient));
+
+            dependencyInjector.Initialize(new TestLoggerProvider());
+            Assert.DoesNotThrow(() => dependencyInjector.ResolveDependenciesOf(testClient));
+        }
+
+        #endregion
+
         #region Service registration tests
 
         [Test]
@@ -389,6 +437,7 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
 
             // Clears cached resolutions
             dependencyInjector.RecordingResolutions = false;
+            dependencyInjector.GetServiceResolutionCounts(ref counts);
             Assert.That(counts.Uncached.Count, Is.Zero);
             Assert.That(counts.Cached.Count, Is.Zero);
         }
