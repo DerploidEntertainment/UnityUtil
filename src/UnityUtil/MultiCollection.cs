@@ -8,20 +8,6 @@ namespace UnityEngine {
     /// Represents a strongly typed list of objects with constant-time insertion, removal, and duplicate checks,
     /// as well as low-overhead iteration, at the cost of additional memory.
     /// </summary>
-    /// <typeparam name="TValue">The type of the items in the collection.</typeparam>
-    public class MultiCollection<T> : MultiCollection<T, T>, ICollection<T>, IReadOnlyCollection<T>, IEnumerable<T>, IEnumerable {
-
-        public bool IsReadOnly => false;
-
-        public bool Contains(T item) => _dict.ContainsKey(item);
-        public void Add(T item) => Add(item, item);
-
-    }
-
-    /// <summary>
-    /// Represents a strongly typed list of objects with constant-time insertion, removal, and duplicate checks,
-    /// as well as low-overhead iteration, at the cost of additional memory.
-    /// </summary>
     /// <typeparam name="TKey">The type of the keys in the collection.</typeparam>
     /// <typeparam name="TValue">The type of the values in the collection.</typeparam>
     public class MultiCollection<TKey, TValue> : IEnumerable<TValue> {
@@ -35,45 +21,45 @@ namespace UnityEngine {
             }
         }
 
-        protected readonly IDictionary<TKey, int> _dict = new Dictionary<TKey, int>();
-        protected readonly List<Element> _list = new List<Element>();
+        protected readonly IDictionary<TKey, int> IndexLookup = new Dictionary<TKey, int>();
+        protected readonly List<Element> List = new List<Element>();
 
-        public int Count => _list.Count;
+        public int Count => List.Count;
 
-        public TValue this[TKey key] => _list[_dict[key]].Value;
-        public TValue this[int index] => _list[index].Value;
+        public TValue this[TKey key] => List[IndexLookup[key]].Value;
+        public TValue this[int index] => List[index].Value;
 
-        public void TrimExcess() => _list.TrimExcess();
+        public void TrimExcess() => List.TrimExcess();
         public void Clear() {
-            _dict.Clear();
-            _list.Clear();
+            IndexLookup.Clear();
+            List.Clear();
         }
-        public bool ContainsKey(TKey key) => _dict.ContainsKey(key);
+        public bool ContainsKey(TKey key) => IndexLookup.ContainsKey(key);
         public void CopyTo(TValue[] array, int arrayIndex) {
-            for (int i = 0; i < _list.Count; ++i)
-                array[arrayIndex + i] = _list[i].Value;
+            for (int i = 0; i < List.Count; ++i)
+                array[arrayIndex + i] = List[i].Value;
         }
         public bool Remove(TKey key) {
-            bool contained = _dict.TryGetValue(key, out int index);
+            bool contained = IndexLookup.TryGetValue(key, out int index);
             if (!contained)
                 return false;
 
-            Element last = _list[_list.Count - 1];
-            _dict[last.Key] = index;
-            _list[index] = last;
-            _dict.Remove(key);
-            _list.RemoveAt(_list.Count - 1);
+            Element last = List[List.Count - 1];
+            IndexLookup[last.Key] = index;
+            List[index] = last;
+            IndexLookup.Remove(key);
+            List.RemoveAt(List.Count - 1);
 
             return true;
         }
         public void Add(TKey key, TValue value) {
-            _dict.Add(key, _list.Count);
-            _list.Add(new Element(key, value));
+            IndexLookup.Add(key, List.Count);
+            List.Add(new Element(key, value));
         }
         public bool TryGetValue(TKey key, out TValue value) => throw new System.NotImplementedException();
 
-        public IEnumerator<TValue> GetEnumerator() => _list.Select(i => i.Value).GetEnumerator();
-        IEnumerator IEnumerable.GetEnumerator() => _list.Select(i => i.Value).GetEnumerator();
+        public IEnumerator<TValue> GetEnumerator() => List.Select(i => i.Value).GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => List.Select(i => i.Value).GetEnumerator();
 
     }
 

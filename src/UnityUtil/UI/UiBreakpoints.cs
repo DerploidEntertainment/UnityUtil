@@ -68,7 +68,6 @@ namespace UnityEngine.UI
         public UnityEvent NoBreakpointMatched = new UnityEvent();
 
         [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
-        [SuppressMessage("Code Quality", "IDE0051:Remove unused private members", Justification = "Unity message")]
         private new void Reset() {
             Mode = BreakpointMode.SafeAreaAspectRatio;
             MatchMode = BreakpointMatchMode.MinEqualOrGreater;
