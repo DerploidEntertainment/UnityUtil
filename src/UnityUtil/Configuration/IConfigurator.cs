@@ -4,8 +4,8 @@ namespace UnityEngine {
 
     public interface IConfigurator {
 
-        void Configure(object client);
-        void Configure(IEnumerable<object> clients);
+        void Configure(object client, string cacheKey);
+        void Configure(IEnumerable<(object, string)> clients);
 
     }
 

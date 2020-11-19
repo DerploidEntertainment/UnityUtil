@@ -1,5 +1,6 @@
 ﻿using Sirenix.OdinInspector;
 using System.Runtime.CompilerServices;
+using UnityEngine.DependencyInjection;
 using UnityEngine.Events;
 using UnityEngine.Logging;
 
@@ -18,7 +19,7 @@ namespace UnityEngine.Triggers {
 
         public void Inject(ILoggerProvider loggerProvider) => _logger = loggerProvider.GetLogger(this);
 
-        private void Awake() => DependencyInjector.ResolveDependenciesOf(this);
+        private void Awake() => DependencyInjector.Instance.ResolveDependenciesOf(this);
 
         [Button]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

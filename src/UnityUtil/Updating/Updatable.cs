@@ -1,8 +1,8 @@
 using System;
-using UnityEngine.Assertions;
-using UnityEngine.Logging;
+using UnityEngine.DependencyInjection;
 
-namespace UnityEngine {
+namespace UnityEngine
+{
 
     public abstract class Updatable : Configurable {
 

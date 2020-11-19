@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using UnityEngine.Logging;
 
-namespace UnityEngine {
+namespace UnityEngine
+{
 
     [Flags]
     public enum ConfigurationLoadContext {
@@ -29,7 +29,6 @@ namespace UnityEngine {
 
         protected ILogger Logger;
 
-        [Conditional("UNITY_EDITOR")]
         [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
         private void Reset() {
             Required = true;

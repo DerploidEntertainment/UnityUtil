@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.Assertions;
+using UnityEngine.DependencyInjection;
 using UnityEngine.Events;
 using UnityEngine.Logging;
 
@@ -28,7 +29,7 @@ namespace UnityEngine.Inventory {
 
         public void Inject(ILoggerProvider loggerProvider) => _logger = loggerProvider.GetLogger(this);
 
-        private void Awake() => DependencyInjector.ResolveDependenciesOf(this);
+        private void Awake() => DependencyInjector.Instance.ResolveDependenciesOf(this);
 
         // INTERFACE FUNCTIONS
         public InventoryCollectible[] GetCollectibles() => _collectibles.ToArray();

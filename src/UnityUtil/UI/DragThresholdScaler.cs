@@ -1,9 +1,9 @@
-﻿using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using UnityEngine.EventSystems;
 using UnityEngine.Logging;
 
-namespace UnityEngine.UI {
+namespace UnityEngine.UI
+{
     /// <summary>
     /// This class is used to automatically scale an <see cref="EventSystem"/>'s <see cref="EventSystem.pixelDragThreshold"/> with respect to a <see cref="Canvas"/>.
     /// </summary>
@@ -23,10 +23,14 @@ namespace UnityEngine.UI {
         [Min(0f), Tooltip(TOOLTIP)]
         public int DragThresholdFactor;
 
-        [Conditional("UNITY_EDITOR")]
         [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
         [SuppressMessage("Code Quality", "IDE0051:Remove unused private members", Justification = "Unity message")]
-        private void Reset() => DragThresholdFactor = 5;
+        protected override void Reset()
+        {
+            base.Reset();
+
+            DragThresholdFactor = 5;
+        }
 
         protected override void Awake() {
             base.Awake();

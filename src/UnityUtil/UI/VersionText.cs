@@ -1,8 +1,8 @@
-﻿using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using UnityEngine.Logging;
 
-namespace UnityEngine.UI {
+namespace UnityEngine.UI
+{
     public class VersionText : Configurable {
 
         private IAppVersion _appVersion;
@@ -13,10 +13,15 @@ namespace UnityEngine.UI {
 
         public void Inject(IAppVersion appVersion) => _appVersion = appVersion;
 
-        [Conditional("UNITY_EDITOR")]
         [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
         [SuppressMessage("Code Quality", "IDE0051:Remove unused private members", Justification = "Unity message")]
-        private void Reset() => FormatString = "Version {0}, \"{1}\" (build {2})";
+        protected override void Reset()
+        {
+            base.Reset();
+
+            FormatString = "Version {0}, \"{1}\" (build {2})";
+        }
+
         protected override void Awake() {
             base.Awake();
 

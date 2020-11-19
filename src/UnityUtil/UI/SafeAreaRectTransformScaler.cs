@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using UnityEngine.DependencyInjection;
 using UnityEngine.Logging;
 
 namespace UnityEngine.UI
@@ -20,7 +21,7 @@ namespace UnityEngine.UI
         {
             this.AssertAssociation(RectTransform, nameof(RectTransform));
 
-            DependencyInjector.ResolveDependenciesOf(this);
+            DependencyInjector.Instance.ResolveDependenciesOf(this);
 
             // Calculations inspired by this article: https://connect.unity.com/p/updating-your-gui-for-the-iphone-x-and-other-notched-devices
             Rect safeArea = Screen.safeArea;

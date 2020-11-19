@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace UnityEngine
+namespace UnityEngine.DependencyInjection
 {
 
     /// <summary>

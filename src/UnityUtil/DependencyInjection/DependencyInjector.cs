@@ -1,312 +1,335 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using UnityEngine.Logging;
 using UnityEngine.SceneManagement;
 
-namespace UnityEngine {
-
-    [Serializable]
-    public class InspectorService {
-        #pragma warning disable CA2235 // Mark all non-serializable fields
-
-        [Tooltip(
-            "Optional. All services are associated with a System.Type. This Type can be any Type in the service's inheritance hierarchy. " +
-            "For example, a service component derived from Monobehaviour could be associated with its actual declared Type, " +
-            "with Monobehaviour, or with UnityEngine.Object. The actual declared Type is assumed if you leave this field blank."
-        )]
-        public string TypeName;
-        [HideInInspector, NonSerialized]
-        public string Tag;
-        public Object Instance;
-
-        #pragma warning restore CA2235 // Mark all non-serializable fields
+namespace UnityEngine.DependencyInjection
+{
+    public class DependencyResolutionCounts
+    {
+        public DependencyResolutionCounts(IReadOnlyDictionary<Type, int> cachedResolutionCounts, IReadOnlyDictionary<Type, int> uncachedResolutionCounts)
+        {
+            Cached = cachedResolutionCounts;
+            Uncached = uncachedResolutionCounts;
+        }
+        public IReadOnlyDictionary<Type, int> Cached { get; }
+        public IReadOnlyDictionary<Type, int> Uncached { get; }
     }
 
-    public class DependencyInjector : MonoBehaviour {
-
-        private class Service {
-            public Type ServiceType;
-            public string Tag;
-            public object Instance;
+    internal readonly struct Service
+    {
+        public Service(Type serviceType, string tag, object instance)
+        {
+            ServiceType = serviceType;
+            Tag = tag;
+            Instance = instance;
         }
+        public readonly Type ServiceType;
+        public readonly string Tag;
+        public readonly object Instance;
+    }
 
+    public class DependencyInjector
+    {
         public const string DefaultTag = "Untagged";
-
-        private static readonly ICollection<int> s_registeredScenes = new HashSet<int>();
-        private static readonly IDictionary<Type, IDictionary<string, Service>> s_services = new Dictionary<Type, IDictionary<string, Service>>();
-
-        private static ILogger s_logger;
-
-        [Tooltip(
-            "The service collection from which dependencies will be resolved. Order does not matter.\n\n" +
-            "If there are multiple " + nameof(DependencyInjector) + " instances present in the scene, " +
-            "or multiple scenes with a " + nameof(DependencyInjector) + " are loaded at the same time, " +
-            "then their " + nameof(ServiceCollection) + "s will be combined. " +
-            "This allows a game to dynamically register and unregister a scene's services at runtime. " +
-            "Note, however, that an error will result if multiple " + nameof(DependencyInjector) + " instances " +
-            "try to register a service with the same parameters. In this case, it may be better to create a 'base' scene " +
-            "with all common services, so that they are each registered once, or register the services with different tags."
-        )]
-        public InspectorService[] ServiceCollection;
-
         public const string InjectMethodName = "Inject";
+        public const string DefaultLoggerProviderName = "default-logger-provider";
 
-        public void AddService<TInstance>(TInstance instance) where TInstance : class => AddService<TInstance, TInstance>(instance);
-        public void AddService<TService, TInstance>(TInstance instance) where TInstance : class, TService {
-            Type serviceType = typeof(TService);
-            var service = new Service {
-                Instance = instance,
-                Tag = (instance as Component)?.tag ?? DefaultTag,
-                ServiceType = serviceType,
-            };
+        private const int DEFAULT_SCENE_HANDLE = -1;
 
-            addService(service);
-        }
+        public static readonly DependencyInjector Instance = new DependencyInjector(Array.Empty<Type>()) { RecordingResolutions = Application.isEditor };
+
+        private ILogger _logger = Debug.unityLogger;
+        private ITypeMetadataProvider _typeMetadataProvider;
+
+        private readonly HashSet<Type> _cachedResolutionTypes = new HashSet<Type>();
+        private readonly IDictionary<Type, List<Action<object>>> _compiledInject = new Dictionary<Type, List<Action<object>>>();
+        private readonly Dictionary<int, Dictionary<Type, Dictionary<string, Service>>> _services =
+            new Dictionary<int, Dictionary<Type, Dictionary<string, Service>>>();
+
         /// <summary>
-        /// Add the service to the service collection, throwing an error if it's Type/Tag have already been configured
+        /// This collection is only a field (rather than a local var) so as to reduce allocations in <see cref="loadDependeciesOfInjectMethod(object, MethodInfo)"/>
         /// </summary>
-        private static void addService(Service service) {
-            bool typeAdded = s_services.TryGetValue(service.ServiceType, out IDictionary<string, Service> typedServices);
-            if (typeAdded) {
-                bool tagAdded = typedServices.TryGetValue(service.Tag, out _);
-                if (tagAdded) {
-                    log(LogType.Error, $"Configured multiple services with Type '{service.ServiceType}' and tag '{service.Tag}'");
-                    return;
-                }
-                else {
-                    typedServices.Add(service.Tag, service);
-                    log(LogType.Log, $"Successfully configured service of type '{service.ServiceType}' and tag '{service.Tag}'.");
-                }
-            }
-            else
-                s_services.Add(service.ServiceType, new Dictionary<string, Service> { { service.Tag, service } });
+        private readonly HashSet<Type> _injectedTypes = new HashSet<Type>();
+
+        private bool _recording = false;
+        private readonly Dictionary<Type, int> _uncachedResolutionCounts = new Dictionary<Type, int>();
+        private readonly Dictionary<Type, int> _cachedResolutionCounts = new Dictionary<Type, int>();
+
+        /// <summary>
+        /// <para>
+        /// Use these rules to cache commonly resolved dependencies, speeding up Scene load times.
+        /// We use this whitelist approach because caching ALL dependency resolutions could use up significant memory, and could actually
+        /// worsen performance if many of the dependencies were only to be resolved by one client.
+        /// </para>
+        /// <para>
+        /// After a class instance with one of these types has had its dependences resolved via reflection,
+        /// the reflected metadata and matching services will be cached, so that
+        /// subsequent clients of the same type will have their dependencies injected much faster.
+        /// This is useful if you know you will have many client components in a scene with the same type.
+        /// </para>
+        /// </summary>
+        public List<Type> CachedResolutionTypes { get; } = new List<Type>();
+
+        /// <summary>
+        /// DO NOT USE THIS CONSTRUCTOR. It exists purely for unit testing
+        /// </summary>
+        internal DependencyInjector(IEnumerable<Type> cachedResolutionTypes)
+        {
+            CachedResolutionTypes = new List<Type>(cachedResolutionTypes);
         }
+
+        public bool Initialized { get; private set; } = false;
+        public void Initialize(ILoggerProvider loggerProvider) => Initialize(loggerProvider, new TypeMetadataProvider());
+        internal void Initialize(ILoggerProvider loggerProvider, ITypeMetadataProvider typeMetadataProvider)
+        {
+            if (Initialized)
+                throw new InvalidOperationException($"Cannot initialize a {nameof(DependencyInjector)} multiple times!");
+
+            _typeMetadataProvider = typeMetadataProvider;
+            _logger = loggerProvider.GetLogger(this);
+
+            for (int t = 0; t < CachedResolutionTypes.Count; ++t)
+                _cachedResolutionTypes.Add(CachedResolutionTypes[t]);
+
+            Initialized = true;     // Must be set before registering logging services
+
+            RegisterService(typeof(ILoggerProvider), loggerProvider);
+        }
+
+        public void RegisterService(string serviceTypeName, object instance, Scene? scene = null)
+        {
+            if (string.IsNullOrEmpty(serviceTypeName))
+                serviceTypeName = instance.GetType().AssemblyQualifiedName;
+
+            var serviceType = Type.GetType(serviceTypeName);
+            if (serviceType == null)
+                throw new InvalidOperationException($"Could not load Type '{serviceTypeName}'. Make sure that you provided its assembly-qualified name and that its assembly is loaded.");
+            if (!serviceType.IsAssignableFrom(instance.GetType()))
+                throw new InvalidOperationException($"The service instance registered for Type '{serviceTypeName}' is not actually derived from that Type!");
+
+            RegisterService(serviceType, instance, scene);
+        }
+        public void RegisterService<TInstance>(TInstance instance, Scene? scene = null) where TInstance : class => RegisterService(typeof(TInstance), instance, scene);
+        public void RegisterService<TService, TInstance>(TInstance instance, Scene? scene = null) where TInstance : class, TService => RegisterService(typeof(TService), instance, scene);
+
+        /// <summary>
+        /// Register <paramref name="service"/> present in <paramref name="scene"/>
+        /// </summary>
+        /// <exception cref="InvalidOperationException">
+        /// A <see cref="Service"/> with the provided <see cref="Service.ServiceType"/> and <see cref="Service.Tag"/> has already been registered.
+        /// </exception>
+        public void RegisterService(Type serviceType, object instance, Scene? scene = null)
+        {
+            throwIfUninitialized();
+
+            var service = new Service(serviceType, (instance as Component)?.tag ?? DefaultTag, instance);
+
+            // Check if the provided service is for logging
+            if (serviceType == typeof(ILoggerProvider) && _logger == null)
+                _logger = ((ILoggerProvider)instance).GetLogger(this);
+            else if (serviceType == typeof(ILogger) && _logger == null)
+                _logger = (ILogger)instance;
+
+
+            // Register this service with the provided scene (if one was provided), so that it can be unloaded later if the scene is unloaded
+            // Show an error if provided service's type/tag match those of an already registered service
+            int sceneHandle = scene.HasValue ? scene.Value.handle : DEFAULT_SCENE_HANDLE;
+            bool sceneAdded = _services.TryGetValue(sceneHandle, out var sceneServices);
+            if (!sceneAdded) {
+                sceneServices = new Dictionary<Type, Dictionary<string, Service>>();
+                _services.Add(sceneHandle, sceneServices);
+            }
+
+            bool typeAdded = sceneServices.TryGetValue(serviceType, out var typedServices);
+            if (!typeAdded) {
+                typedServices = new Dictionary<string, Service>();
+                sceneServices.Add(serviceType, typedServices);
+            }
+
+            bool tagAdded = typedServices.ContainsKey(service.Tag);
+            string fromSceneMsg = scene.HasValue ? $" from scene '{scene.Value.name}'" : "";
+            if (tagAdded)
+                throw new InvalidOperationException($"Attempt to register multiple services with Type '{service.ServiceType.Name}' and tag '{service.Tag}'{fromSceneMsg}");
+            else {
+                typedServices.Add(service.Tag, service);
+                _logger.Log($"Successfully registered service of type '{service.ServiceType.Name}' and tag '{service.Tag}'{fromSceneMsg}");
+            }
+        }
+
+        /// <summary>
+        /// Toggles recording how many times service <see cref="Type"/>s are resolved at runtime, for optimization purposes.
+        /// </summary>
+        public bool RecordingResolutions {
+            get => _recording;
+            set {
+                if (_recording == value)
+                    return;
+
+                _recording = value;
+                if (!_recording) {
+                    _cachedResolutionCounts.Clear();
+                    _uncachedResolutionCounts.Clear();
+                }
+
+                _logger?.Log($"{(_recording ? "Started" : "Stopped")} recording dependency resolutions");
+            }
+        }
+
+        /// <summary>
+        /// Get the number of times that each service <see cref="Type"/> has been resolved at runtime.
+        /// </summary>
+        /// <param name="counts">Upon return, will contain the number of times that services were resolved.</param>
+        public void GetServiceResolutionCounts(ref DependencyResolutionCounts counts) => counts = new DependencyResolutionCounts(
+            cachedResolutionCounts: new Dictionary<Type, int>(_cachedResolutionCounts),
+            uncachedResolutionCounts: new Dictionary<Type, int>(_uncachedResolutionCounts)
+        );
 
         /// <summary>
         /// Inject all dependencies into the specified client.
         /// Can be called at runtime to satisfy dependencies of procedurally generated components, e.g., by a spawner.
         /// </summary>
         /// <param name="client">A client with service dependencies that need to be resolved.</param>
-        public static void ResolveDependenciesOf(object client)
+        public void ResolveDependenciesOf(object client)
         {
-            // Ensure that the necessary services have been registered to resolve this dependency
-            // For GameObject clients, these are all services added to all DependencyInjector components in the same scene
-            // For non-GameObject clients, these are all services added to all DependencyInjector components in all loaded scenes
-            if (client is GameObject clientObj)
-                ensureServicesRegistered(clientObj.scene);
-            else {
-                for (int s = 0; s < SceneManager.sceneCount; ++s)
-                    ensureServicesRegistered(SceneManager.GetSceneAt(s));
-            }
+            throwIfUninitialized();
 
-            // Resolve dependencies by calling every Inject method in the client's inheritance hierarchy
-            MethodInfo[] injectMethods = client.GetType().GetMethods().Where(m => m.Name == InjectMethodName).ToArray();
-            for (int m = 0; m < injectMethods.Length; ++m)
-                inject(injectMethods[m], client);
+            // Resolve dependencies by calling every Inject method in the client's inheritance hierarchy.
+            // If the client's type or any of its inherited types have cached inject methods,
+            // then use/compile those as necessary so that injection is faster for future clients with these types.
+            Type serviceType = client.GetType();
+            Type objectType = typeof(object);
+            Type cachedParentType = null;
+            List<Action<object>> compiledInjectList = null;     // Will only be initialized if this client's type or one of its parent types is cached, to save heap allocations
+            BindingFlags bindingFlags = BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance;
+            do {
+                // Use compiled inject methods, if they exist
+                if (_compiledInject.TryGetValue(serviceType, out List<Action<object>> compiledInjectMethods)) {
+                    for (int m = 0; m < compiledInjectMethods.Count; ++m)
+                        compiledInjectMethods[m](client);
+                    if (_recording)
+                        _cachedResolutionCounts[serviceType] = _cachedResolutionCounts.TryGetValue(serviceType, out int count) ? count + 1 : 1;
+                    return;
+                }
+
+                // Get the inject method on this type (will throw if more than one method matches)
+                MethodInfo injectMethod = _typeMetadataProvider.GetMethod(serviceType, InjectMethodName, bindingFlags);
+                if (injectMethod == null)
+                    goto Loop;
+
+                string clientName = (client as MonoBehaviour)?.GetHierarchyNameWithType() ?? (client as Object)?.name ?? $"{injectMethod.DeclaringType.FullName} instance";
+                object[] dependencies = getDependeciesOfInjectMethod(clientName, injectMethod);
+                if (dependencies.Length == 0)
+                    goto Loop;
+
+                // Check if the inject method should be compiled. If so, compile/call it; otherwise, invoke it via reflection
+                bool compile = true;
+                if (cachedParentType == null) {
+                    if (_cachedResolutionTypes.Contains(serviceType))
+                        cachedParentType = serviceType;
+                    else {
+                        compile = false;
+                        injectMethod.Invoke(client, dependencies);
+                        if (_recording)
+                            _uncachedResolutionCounts[serviceType] = _uncachedResolutionCounts.TryGetValue(serviceType, out int count) ? count + 1 : 1;
+                    }
+                }
+                if (compile) {
+                    string compiledMethodName = $"{nameof(ResolveDependenciesOf)}_{injectMethod.DeclaringType.Name}_Generated";
+                    Action<object> compiledInject = _typeMetadataProvider.CompileMethodCall(compiledMethodName, nameof(client), injectMethod, dependencies);
+                    (compiledInjectList ??= new List<Action<object>>()).Add(compiledInject);
+                    compiledInject(client);
+                    if (_recording)
+                        _cachedResolutionCounts[serviceType] = 1;
+                }
+
+                Loop:
+                serviceType = serviceType.BaseType;
+            } while (serviceType != objectType && serviceType != null);
+
+            if (cachedParentType != null)
+                _compiledInject.Add(cachedParentType, compiledInjectList);
         }
         /// <summary>
         /// Inject all dependencies into the specified clients.
         /// Can be called at runtime to satisfy dependencies of procedurally generated components, e.g., by a spawner.
         /// </summary>
         /// <param name="clients">A collection of clients with service dependencies that need to be resolved.</param>
-        public static void ResolveDependenciesOf(IEnumerable<object> clients) {
+        public void ResolveDependenciesOf(IEnumerable<object> clients) {
             foreach (object client in clients)
                 ResolveDependenciesOf(client);
         }
 
-        // EVENT HANDLERS
-        private static void ensureServicesRegistered(Scene scene)
+        public void UnregisterSceneServices(Scene scene)
         {
-            if (s_registeredScenes.Contains(scene.buildIndex))
-                return;
+            throwIfUninitialized();
 
-            DependencyInjector[] dependencyInjectors = scene.GetRootGameObjects().SelectMany(g => g.GetComponentsInChildren<DependencyInjector>()).ToArray();
-            if (dependencyInjectors.Length == 0) {
-                Debug.LogWarning($"No {nameof(DependencyInjector)} present in scene '{scene.path}'. Only default services will be loaded.");
-                if (s_logger == null)
-                    registerDefaultLoggerProvider();
+            if (!_services.ContainsKey(scene.handle)) {
+                _logger.LogWarning($"Cannot unregister services from scene '{scene.name}', as none have been registered. Are you trying to destroy multiple service collections from the same scene?");
                 return;
             }
-            else {
-                if (dependencyInjectors.Length > 1)
-                    Debug.LogWarning($"More than one {nameof(DependencyInjector)} present in scene '{scene.path}'. For simplicity, consider maintaining one {nameof(DependencyInjector)} per scene, and pull services shared by multiple scenes into a separate scene."); ;
-                for (int i = 0; i < dependencyInjectors.Length; ++i)
-                    registerServicesOf(dependencyInjectors[i]);
-                s_registeredScenes.Add(scene.buildIndex);
-            }
-        }
-        private static void registerServicesOf(DependencyInjector dependencyInjector) {
-            InspectorService[] services = dependencyInjector.ServiceCollection;
 
-            // Update every service's Type/Tag
-            // Each service instance will be associated with the named Type (which could be, e.g., some base class or interface type)
-            // If no Type name was provided, then use the actual name of the service's runtime instance type
-            for (int s = 0; s < services.Length; ++s) {
-                InspectorService service = services[s];
-
-                if (string.IsNullOrEmpty(service.TypeName))
-                    service.TypeName = service.Instance.GetType().AssemblyQualifiedName;
-                service.Tag = (service.Instance as Component)?.tag ?? DefaultTag;
-                services[s] = service;
-            }
-
-            // Get or set the logger that we will use for our own logging
-            if (s_logger == null) {
-                InspectorService[] loggerProviderServices = services
-                    .Where(s => typeof(ILoggerProvider).AssemblyQualifiedName.Contains(s.TypeName))
-                    .ToArray();
-                if (loggerProviderServices.Length == 0)
-                    registerDefaultLoggerProvider(dependencyInjector);
-                else {
-                    InspectorService service = loggerProviderServices[0];
-                    s_logger = (service.Instance as ILoggerProvider).GetLogger(dependencyInjector);
-                    if (loggerProviderServices.Length > 1)
-                        log(LogType.Warning, $"Configured multiple services with Type '{typeof(ILoggerProvider).FullName}'. {dependencyInjector.GetHierarchyNameWithType()} will use the first one (tag '{service.Tag}') for its own logging.");
-                }
-            }
-
-            // Add every service specified in the Inspector to the private service collection
-            log(LogType.Log, $"Awaking in scene '{SceneManager.GetActiveScene().path}', adding services...");
-            for (int s = 0; s < services.Length; ++s) {
-                InspectorService service = services[s];
-
-                // Get the service's Type, if it is valid
-                Type serviceType;
-                try {
-                    serviceType = Type.GetType(service.TypeName);
-                    if (serviceType == null)
-                        throw new InvalidOperationException($"Could not load Type '{service.TypeName}'.  Make sure that you provided its assembly-qualified name and that its assembly is loaded.");
-                    if (!serviceType.IsAssignableFrom(service.Instance.GetType()))
-                        throw new InvalidOperationException($"The service instance configured for Type '{service.TypeName}' is not actually derived from that Type!");
-                }
-                catch (Exception ex) {
-                    log(LogType.Error, $"Could not configure service of Type '{service.TypeName}': {ex.Message}");
-                    continue;
-                }
-
-                addService(new Service {
-                    Instance = service.Instance,
-                    Tag = service.Tag,
-                    ServiceType = serviceType,
-                });
-            }
+            _logger.Log($"Unregistering services from scene '{scene.name}'...");
+            int numSceneServices = _services[scene.handle].Sum(x => x.Value.Values.Count);
+            _services.Remove(scene.handle);
+            _logger.Log($"Successfully unregistered all {numSceneServices} services from scene '{scene.name}'.");
         }
 
-        private static void registerDefaultLoggerProvider(DependencyInjector dependencyInjector = null)
+        /// <summary>
+        /// Load the dependencies of <paramref name="injectMethod"/>
+        /// </summary>
+        /// <param name="client">The client object instance on which <paramref name="injectMethod"/> can be called</param>
+        /// <param name="injectMethod">The method for which to resolve dependencies</param>
+        /// <returns>The number of dependencies (parameters) required by <paramref name="injectMethod"/></returns>
+        private object[] getDependeciesOfInjectMethod(string clientName, MethodInfo injectMethod)
         {
-            DebugLoggerProvider loggerProvider = new GameObject().AddComponent<DebugLoggerProvider>();
-            if (dependencyInjector == null) {
-                s_logger = Debug.unityLogger;
-                s_logger.LogWarning($"No {nameof(ILoggerProvider)} registered in service collection. A default one has been registered instead for our own logging.");
-            }
-            else {
-                s_logger = loggerProvider.GetLogger(dependencyInjector);
-                s_logger.LogWarning($"No {nameof(ILoggerProvider)} registered in service collection. {dependencyInjector.GetHierarchyNameWithType()} will register a default one instead to do its own logging.", context: dependencyInjector);
-            }
-            addService(new Service {
-                ServiceType = typeof(ILoggerProvider),
-                Instance = loggerProvider,
-                Tag = DefaultTag,
-            });
-        }
-
-        [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
-        private void OnDestroy() {
-            // Assume that we are only being destroyed if the parent scene is being unloaded. Thus, that scene can be forgotten
-            // If there are multiple DependencyInjector instances in same scene, all services in that scene will be removed after the first one is destroyed
-            if (!s_registeredScenes.Contains(gameObject.scene.buildIndex))
-                return;
-
-            // Remove every service specified in the Inspector from the private service collection
-            log(LogType.Log, $"Being destroyed, removing services...");
-            int numSuccesses = 0;
-            for (int s = 0; s < ServiceCollection.Length; ++s) {
-                InspectorService service = ServiceCollection[s];
-
-                // Get the service's Type, if it is valid
-                Type type;
-                if (string.IsNullOrEmpty(service.TypeName))
-                    type = service.Instance.GetType();
-                else {
-                    try {
-                        type = Type.GetType(service.TypeName);
-                    }
-                    catch (Exception ex) {
-                        log(LogType.Error, $"Could not remove service of Type '{service.TypeName}': {ex.Message}");
-                        continue;
-                    }
-                }
-
-                // Remove the service from the service collection
-                bool typeAdded = s_services.TryGetValue(type, out IDictionary<string, Service> typedServices);
-                if (typeAdded) {
-                    bool tagAdded = typedServices.TryGetValue(service.Tag, out _);
-                    if (tagAdded) {
-                        typedServices.Remove(service.Tag);
-                        if (typedServices.Count == 0)
-                            s_services.Remove(type);
-                        ++numSuccesses;
-                    }
-                    else {
-                        log(LogType.Error, $"Couldn't remove service with Type '{type}' and tag '{service.Tag}' because somehow it wasn't present in the service collection!");
-                        continue;
-                    }
-                }
-                else {
-                    log(LogType.Error, $"Couldn't remove service of Type '{type}' because somehow it wasn't present in the service collection!");
-                    continue;
-                }
-            }
-
-            s_registeredScenes.Remove(gameObject.scene.buildIndex);
-
-            // Log whether or not all services were removed successfully
-            if (numSuccesses == ServiceCollection.Length)
-                log(LogType.Log, $"Successfully removed all {ServiceCollection.Length} services.");
-            else
-                log(LogType.Error, $"Only removed {numSuccesses} out of {ServiceCollection.Length} registered services.");
-        }
-
-        private static void log(LogType logType, object message) => s_logger?.Log(logType, message);
-        private static void inject(MethodInfo injectMethod, object client) {
-            var injectedTypes = new HashSet<Type>();
-
-            ParameterInfo[] parameters = injectMethod.GetParameters();
-            object[] services = new object[parameters.Length];
+            _injectedTypes.Clear();
+            ParameterInfo[] parameters = _typeMetadataProvider.GetMethodParameters(injectMethod);
+            object[] dependencies = new object[parameters.Length];
             for (int p = 0; p < parameters.Length; ++p) {
-                ParameterInfo param = parameters[p];
-                Type pType = param.ParameterType;
-                string clientName = (client as MonoBehaviour)?.GetHierarchyNameWithType() ?? (client as Object)?.name ?? $"{client.GetType().FullName} instance";
+                Type paramType = parameters[p].ParameterType;
 
                 // Warn if a dependency with this Type has already been injected
-                bool firstInjection = injectedTypes.Add(pType);
+                bool firstInjection = _injectedTypes.Add(paramType);
                 if (!firstInjection)
-                    log(LogType.Warning, $"{clientName} has multiple dependencies of Type '{pType.FullName}'.");
+                    _logger.LogWarning($"{clientName} has multiple dependencies of Type '{paramType.FullName}'.");
 
-                // If this dependency can't be resolved, then skip it with an error and clear the field
-                bool resolved = s_services.TryGetValue(pType, out IDictionary<string, Service> typedServices);
-                if (!resolved) {
-                    log(LogType.Error, $"{clientName} has a dependency of Type '{pType.FullName}', but no service was registered with that Type. Did you forget to add a service to the service collection?");
-                    continue;
-                }
-                InjectTagAttribute injAttr = param.GetCustomAttribute<InjectTagAttribute>();
+                // If this dependency can't be resolved, then skip it with an error message and clear the field
+                InjectTagAttribute injAttr = _typeMetadataProvider.GetCustomAttribute<InjectTagAttribute>(parameters[p]);
                 bool untagged = string.IsNullOrEmpty(injAttr?.Tag);
                 string tag = untagged ? DefaultTag : injAttr.Tag;
-                resolved = typedServices.TryGetValue(tag, out Service service);
-                if (!resolved) {
-                    log(LogType.Error, $"{clientName} has a dependency of Type '{pType.FullName}' with tag '{tag}', but no matching service was registered. Did you forget to tag a service?");
-                    continue;
-                }
+                TryGetService(paramType, tag, clientName, out Service service);
 
                 // Log that this dependency has been resolved
-                services[p] = service.Instance;
-                log(LogType.Log, $"{clientName} had dependency of Type '{pType.FullName}'{(untagged ? "" : $" with tag '{tag}'")} injected into field '{param.Name}'.");
+                dependencies[p] = service.Instance;
+                _logger.Log($"{clientName} had dependency of Type '{paramType.FullName}'{(untagged ? "" : $" with tag '{tag}'")} injected into parameter '{parameters[p].Name}'.");
             }
 
-            injectMethod.Invoke(client, services);
+            return dependencies;
+        }
+        internal void TryGetService(Type serviceType, string tag, string clientName, out Service service)
+        {
+            bool resolved = false;
+            Dictionary<string, Service> typedServices = null;
+            foreach (int scene in _services.Keys) {
+                if (_services[scene].TryGetValue(serviceType, out typedServices)) {
+                    resolved = true;
+                    break;
+                }
+            }
+            if (!resolved)
+                throw new KeyNotFoundException($"{clientName} has a dependency of Type '{serviceType.FullName}', but no service was registered with that Type. Did you forget to add a service to the service collection?");
+
+            resolved = typedServices.TryGetValue(tag, out service);
+            if (!resolved)
+                throw new KeyNotFoundException($"{clientName} has a dependency of Type '{serviceType.FullName}' with tag '{tag}', but no matching service was registered. Did you forget to tag a service?");
+        }
+        private void throwIfUninitialized()
+        {
+            if (!Initialized)
+                throw new InvalidOperationException($"Must call {nameof(Initialize)}() on a {nameof(DependencyInjector)} before using any of its business methods.");
         }
 
     }

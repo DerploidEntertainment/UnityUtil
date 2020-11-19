@@ -1,18 +1,21 @@
 ﻿using Sirenix.OdinInspector;
 using System;
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using UnityEngine.Assertions;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.Logging;
 
-namespace UnityEngine.UI {
+namespace UnityEngine.UI
+{
 
     [RequireComponent(typeof(RectTransform))]   // So the OnRectTransformDimensionsChange message gets called
     [ExecuteAlways]                             // So the OnRectTransformDimensionsChange message gets called in the Editor too...kind of a necessity for UI tweaking
-    [TypeInfoBox("Note that changes to some fields may not take effect until the next time the UI value is updated (e.g., by changing the size of the Game window or the frustum of the Camera).\nAlso, updates may take a few seconds if the attached RectTransform is deeply nested in the hierarchy.")]
+    [TypeInfoBox(
+        "Note that changes to some fields may not take effect until the next time the UI value is updated " +
+        "(e.g., by changing the size of the Game window or the frustum of the Camera).\n\n" +
+        "Also, updates may take a few seconds if the attached RectTransform is deeply nested in the hierarchy."
+    )]
     public class UiBreakpoints : UIBehaviour {
 
         private bool _noMatch;
@@ -64,7 +67,6 @@ namespace UnityEngine.UI {
         )]
         public UnityEvent NoBreakpointMatched = new UnityEvent();
 
-        [Conditional("UNITY_EDITOR")]
         [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
         [SuppressMessage("Code Quality", "IDE0051:Remove unused private members", Justification = "Unity message")]
         private new void Reset() {

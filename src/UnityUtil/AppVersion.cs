@@ -1,8 +1,8 @@
 ﻿using Sirenix.OdinInspector;
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 
-namespace UnityEngine {
+namespace UnityEngine
+{
     [CreateAssetMenu(menuName = "UnityUtil" + "/" + nameof(AppVersion), fileName = "version")]
     public class AppVersion : ScriptableObject, IAppVersion
     {
@@ -18,7 +18,6 @@ namespace UnityEngine {
         [field: Tooltip("This number represents the build number from the continuous deployment system, such as Unity Cloud Build.")]
         public int BuildNumber { get; set; }
 
-        [Conditional("UNITY_EDITOR")]
         [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
         private void Reset() {
             Description = "Initial Release";

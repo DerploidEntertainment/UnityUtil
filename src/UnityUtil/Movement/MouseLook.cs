@@ -44,10 +44,11 @@ namespace UnityEngine.Movement {
             };
 
         // EVENT HANDLERS
-        [Conditional("UNITY_EDITOR")]
         [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
         [SuppressMessage("Code Quality", "IDE0051:Remove unused private members", Justification = "Unity message")]
-        private void Reset() {
+        protected override void Reset() {
+            base.Reset();
+
             MaxPositiveAngle = 360f;
             MaxNegativeAngle = -360f;
             UsePhysicsToLook = true;
