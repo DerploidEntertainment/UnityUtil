@@ -45,7 +45,7 @@ namespace UnityEngine.Logging {
         /// Should be present-tense phrase, like "stop", or "perform that action". Padding spaces are not required.
         /// </param>
         [Conditional("UNITY_ASSERTIONS")]
-        public static void AssertAcitveAndEnabled(this Behaviour behaviour, string verbMessage = "use") {
+        public static void AssertActiveAndEnabled(this Behaviour behaviour, string verbMessage = "use") {
             Assert.IsTrue(behaviour.gameObject.activeInHierarchy, $"Cannot {verbMessage} {behaviour.GetHierarchyNameWithType()} because its GameObject is inactive!");
             Assert.IsTrue(behaviour.enabled, $"Cannot {verbMessage} {behaviour.GetHierarchyNameWithType()} because it is disabled!");
         }

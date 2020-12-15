@@ -156,22 +156,22 @@ namespace UnityUtil.Test.EditMode.Logging {
             obj.name = EditModeTestHelpers.GetUniqueLog("none");
             obj.SetActive(true);
             behaviour.enabled = true;
-            Assert.DoesNotThrow(() => behaviour.AssertAcitveAndEnabled());
+            Assert.DoesNotThrow(() => behaviour.AssertActiveAndEnabled());
 
             obj.name = EditModeTestHelpers.GetUniqueLog("GameObject-Behaviour");
             obj.SetActive(false);
             behaviour.enabled = false;
-            Assert.Throws<UA.AssertionException>(() => behaviour.AssertAcitveAndEnabled());
+            Assert.Throws<UA.AssertionException>(() => behaviour.AssertActiveAndEnabled());
 
             obj.name = EditModeTestHelpers.GetUniqueLog("Behaviour");
             obj.SetActive(true);
             behaviour.enabled = false;
-            Assert.Throws<UA.AssertionException>(() => behaviour.AssertAcitveAndEnabled());
+            Assert.Throws<UA.AssertionException>(() => behaviour.AssertActiveAndEnabled());
 
             obj.name = EditModeTestHelpers.GetUniqueLog("GameObject");
             obj.SetActive(false);
             behaviour.enabled = true;
-            Assert.Throws<UA.AssertionException>(() => behaviour.AssertAcitveAndEnabled());
+            Assert.Throws<UA.AssertionException>(() => behaviour.AssertActiveAndEnabled());
         }
 
         private GameObject getGameObject(string name, int numParents = 1, string parentNameFormatString = "parent{0}") {
