@@ -4,9 +4,15 @@
     <LangVersion>latest</LangVersion>
     <UnityVersion>2020.1.8f1</UnityVersion>
 
-    <UnityProjectPath Condition="'$(SolutionName)'=='UnityUtil'">$(SolutionDir)\..\UnityUtil</UnityProjectPath>
-    <UnityProjectPath Condition="'$(SolutionName)'!='UnityUtil'">$(SolutionDir)\..\..\UnityUtil\UnityUtil</UnityProjectPath>
-    <SirenixAssembliesDir>$(UnityProjectPath)\Assets\Plugins\Sirenix\Assemblies</SirenixAssembliesDir>
+    <UnityProjectPath_Ours>$(SolutionDir)\..\UnityUtil</UnityProjectPath_Ours>
+    <UnityProjectPath_Theirs>$(SolutionDir)\..\$(SolutionName)</UnityProjectPath_Theirs>
+    <UnityProjectPath_OursToThem>$(SolutionDir)\..\..\UnityUtil\UnityUtil</UnityProjectPath_OursToThem>
+    <UnityProjectPath Condition="'$(SolutionName)'=='UnityUtil'">$(UnityProjectPath_Ours)</UnityProjectPath>
+    <UnityProjectPath Condition="'$(SolutionName)'!='UnityUtil'">$(UnityProjectPath_OursToThem)</UnityProjectPath>
+    
+    <SirenixAssembliesDir Condition="'$(SolutionName)'=='UnityUtil'">$(UnityProjectPath_Ours)\Assets\Plugins\Sirenix\Assemblies</SirenixAssembliesDir>
+    <SirenixAssembliesDir Condition="'$(SolutionName)'!='UnityUtil' And Exists('$(UnityProjectPath_Theirs)\Assets\Plugins\Sirenix')">$(UnityProjectPath_Theirs)\Assets\Plugins\Sirenix\Assemblies</SirenixAssembliesDir>
+    <SirenixAssembliesDir Condition="'$(SolutionName)'!='UnityUtil' And !Exists('$(UnityProjectPath_Theirs)\Assets\Plugins\Sirenix')">$(UnityProjectPath_OursToThem)\Assets\Plugins\Sirenix\Assemblies</SirenixAssembliesDir>
 
     <DefineConstants Condition="'$(Configuration)'=='Debug'">UNITY_ASSERTIONS;UNITY_EDITOR</DefineConstants>
   </PropertyGroup>
