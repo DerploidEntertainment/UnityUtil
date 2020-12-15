@@ -1,8 +1,44 @@
-.vs/
-bin/
-obj/
+#########################
+## UnityUtil
+#########################
+
+.DS_Store
+
+
+#########################
+## Unity
+#########################
 
 Library/
+Logs/
 Temp/
-[Ll]ogs/
 UserSettings/
+
+UnityUtil/Assets/BuildReports/
+UnityUtil/Assets/BuildReports.meta
+
+UnityUtil/*.csproj
+UnityUtil/*.sln
+
+UnityUtil/.vsconfig
+
+
+#########################
+## VISUAL STUDIO
+#########################
+
+# Build results
+[Dd]ebug/
+[Rr]elease/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+
+# Visual Studio generated files
+.vs/
+*.user
+
+# NuGet Packages
+*.nupkg
+
+*.DS_Store
