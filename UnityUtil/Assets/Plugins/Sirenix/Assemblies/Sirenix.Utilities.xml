@@ -286,21 +286,21 @@
             </summary>
             <param name="source">The collection.</param>
         </member>
-        <member name="M:Sirenix.Utilities.LinqExtensions.Prepend``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0})">
+        <member name="M:Sirenix.Utilities.LinqExtensions.PrependWith``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0})">
             <summary>
             Add an item to the beginning of a collection.
             </summary>
             <param name="source">The collection.</param>
             <param name="prepend">Func to create the item to prepend.</param>
         </member>
-        <member name="M:Sirenix.Utilities.LinqExtensions.Prepend``1(System.Collections.Generic.IEnumerable{``0},``0)">
+        <member name="M:Sirenix.Utilities.LinqExtensions.PrependWith``1(System.Collections.Generic.IEnumerable{``0},``0)">
             <summary>
             Add an item to the beginning of a collection.
             </summary>
             <param name="source">The collection.</param>
             <param name="prepend">The item to prepend.</param>
         </member>
-        <member name="M:Sirenix.Utilities.LinqExtensions.Prepend``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``0})">
+        <member name="M:Sirenix.Utilities.LinqExtensions.PrependWith``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``0})">
             <summary>
             Add a collection to the beginning of another collection.
             </summary>
@@ -782,7 +782,7 @@
             PropertyInfo method extensions.
             </summary>
         </member>
-        <member name="M:Sirenix.Utilities.PropertyInfoExtensions.IsAutoProperty(System.Reflection.PropertyInfo)">
+        <member name="M:Sirenix.Utilities.PropertyInfoExtensions.IsAutoProperty(System.Reflection.PropertyInfo,System.Boolean)">
             <summary>
             Determines whether a property is an auto property.
             </summary>
@@ -1381,6 +1381,7 @@
              <remarks>
              <para>Note that in the special case of the type <see cref="T:UnityEngine.Quaternion"/>, a special equality comparer is returned that only checks whether all the Quaternion components are equal.</para>
              <para>This is because, by default, Quaternion's equality operator is broken when operating on invalid quaternions; "default(Quaternion) == default(Quaternion)" evaluates to false, and this causes a multitude of problems.</para>
+             <para>Special delegates are also returned for float and double, that consider float.NaN to be equal to float.NaN, and double.NaN to be equal to double.NaN.</para>
              </remarks>
         </member>
         <member name="M:Sirenix.Utilities.TypeExtensions.GetAttribute``1(System.Type,System.Boolean)">
@@ -1441,6 +1442,11 @@
             </summary>
             <param name="candidateType">Type of the candidate.</param>
             <param name="openGenericInterfaceType">Type of the open generic interface.</param>
+        </member>
+        <member name="M:Sirenix.Utilities.TypeExtensions.GetOperatorMethod(System.Type,Sirenix.Utilities.Operator,System.Type,System.Type)">
+            <summary>
+            Gets the MethodInfo of a specific operator kind, with the given left and right operands. This overload is *far* faster than any of the other GetOperatorMethod implementations, and should be used whenever possible.
+            </summary>
         </member>
         <member name="M:Sirenix.Utilities.TypeExtensions.GetOperatorMethod(System.Type,Sirenix.Utilities.Operator)">
             <summary>
@@ -1601,7 +1607,7 @@
             </exception>
         </member>
         <member name="M:Sirenix.Utilities.TypeExtensions.TryInferGenericParameters(System.Type,System.Type[]@,System.Type[])">
-            <summary>
+            <summary>//
             Tries to infer a set of valid generic parameters for a generic type definition, given a subset of known parameters.
             </summary>
             <param name="genericTypeDefinition">The generic type definition to attempt to infer parameters for.</param>
@@ -2757,131 +2763,6 @@
             <param name="list">The list.</param>
             <param name="length">The new length.</param>
             <param name="newElement">Value of new elements.</param>
-        </member>
-        <member name="T:Sirenix.Utilities.IndexedDictionary`2">
-            <summary>
-            Not yet documented.
-            </summary>
-        </member>
-        <member name="P:Sirenix.Utilities.IndexedDictionary`2.Keys">
-            <summary>
-            Not yet documented.
-            </summary>
-        </member>
-        <member name="P:Sirenix.Utilities.IndexedDictionary`2.Values">
-            <summary>
-            Not yet documented.
-            </summary>
-        </member>
-        <member name="P:Sirenix.Utilities.IndexedDictionary`2.Count">
-            <summary>
-            Not yet documented.
-            </summary>
-        </member>
-        <member name="P:Sirenix.Utilities.IndexedDictionary`2.IsReadOnly">
-            <summary>
-            Not yet documented.
-            </summary>
-        </member>
-        <member name="P:Sirenix.Utilities.IndexedDictionary`2.Item(`0)">
-            <summary>
-            Not yet documented.
-            </summary>
-        </member>
-        <member name="M:Sirenix.Utilities.IndexedDictionary`2.#ctor">
-            <summary>
-            Not yet documented.
-            </summary>
-        </member>
-        <member name="M:Sirenix.Utilities.IndexedDictionary`2.#ctor(System.Int32)">
-            <summary>
-            Not yet documented.
-            </summary>
-            <param name="capacity">Not yet documented.</param>
-        </member>
-        <member name="M:Sirenix.Utilities.IndexedDictionary`2.Get(System.Int32)">
-            <summary>
-            Not yet documented.
-            </summary>
-        </member>
-        <member name="M:Sirenix.Utilities.IndexedDictionary`2.GetKey(System.Int32)">
-            <summary>
-            Not yet documented.
-            </summary>
-        </member>
-        <member name="M:Sirenix.Utilities.IndexedDictionary`2.GetValue(System.Int32)">
-            <summary>
-            Not yet documented.
-            </summary>
-        </member>
-        <member name="M:Sirenix.Utilities.IndexedDictionary`2.IndexOf(`0)">
-            <summary>
-            Not yet documented.
-            </summary>
-            <param name="key"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Sirenix.Utilities.IndexedDictionary`2.Add(`0,`1)">
-            <summary>
-            Not yet documented.
-            </summary>
-            <param name="key"></param>
-            <param name="value"></param>
-        </member>
-        <member name="M:Sirenix.Utilities.IndexedDictionary`2.Clear">
-            <summary>
-            Not yet documented.
-            </summary>
-        </member>
-        <member name="M:Sirenix.Utilities.IndexedDictionary`2.Remove(`0)">
-            <summary>
-            Not yet documented.
-            </summary>
-        </member>
-        <member name="M:Sirenix.Utilities.IndexedDictionary`2.RemoveAt(System.Int32)">
-            <summary>
-            Not yet documented.
-            </summary>
-        </member>
-        <member name="M:Sirenix.Utilities.IndexedDictionary`2.ContainsKey(`0)">
-            <summary>
-            Not yet documented.
-            </summary>
-        </member>
-        <member name="M:Sirenix.Utilities.IndexedDictionary`2.TryGetValue(`0,`1@)">
-            <summary>
-            Not yet documented.
-            </summary>
-        </member>
-        <member name="M:Sirenix.Utilities.IndexedDictionary`2.Add(System.Collections.Generic.KeyValuePair{`0,`1})">
-            <summary>
-            Not yet documented.
-            </summary>
-        </member>
-        <member name="M:Sirenix.Utilities.IndexedDictionary`2.Contains(System.Collections.Generic.KeyValuePair{`0,`1})">
-            <summary>
-            Not yet documented.
-            </summary>
-        </member>
-        <member name="M:Sirenix.Utilities.IndexedDictionary`2.CopyTo(System.Collections.Generic.KeyValuePair{`0,`1}[],System.Int32)">
-            <summary>
-            Not yet documented.
-            </summary>
-        </member>
-        <member name="M:Sirenix.Utilities.IndexedDictionary`2.Remove(System.Collections.Generic.KeyValuePair{`0,`1})">
-            <summary>
-            Not yet documented.
-            </summary>
-        </member>
-        <member name="M:Sirenix.Utilities.IndexedDictionary`2.GetEnumerator">
-            <summary>
-            Not yet documented.
-            </summary>
-        </member>
-        <member name="M:Sirenix.Utilities.IndexedDictionary`2.System#Collections#IEnumerable#GetEnumerator">
-            <summary>
-            Not yet documented.
-            </summary>
         </member>
         <member name="T:Sirenix.Utilities.MathUtilities">
             <summary>
