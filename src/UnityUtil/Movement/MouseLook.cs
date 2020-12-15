@@ -1,10 +1,8 @@
-﻿using System;
-using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
-using UnityEngine.Inputs;
+﻿using UnityEngine.Inputs;
 using UnityEngine.Logging;
 
-namespace UnityEngine.Movement {
+namespace UnityEngine.Movement
+{
 
     public class MouseLook : Updatable {
         // HIDDEN FIELDS
@@ -44,8 +42,6 @@ namespace UnityEngine.Movement {
             };
 
         // EVENT HANDLERS
-        [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
-        [SuppressMessage("Code Quality", "IDE0051:Remove unused private members", Justification = "Unity message")]
         protected override void Reset() {
             base.Reset();
 

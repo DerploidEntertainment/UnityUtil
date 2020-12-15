@@ -8,13 +8,13 @@
  *      - Split out its public methods into a separate interface for dependency injection
 */
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using System;
 using System.Threading.Tasks;
-using System.Diagnostics.CodeAnalysis;
 
-namespace UnityEngine {
+namespace UnityEngine
+{
 
     /// <summary>
     /// Original author: Pim de Witte (pimdewitte.com) and contributors, https://github.com/PimDeWitte/UnityMainThreadDispatcher.
@@ -63,14 +63,11 @@ namespace UnityEngine {
             return tcs.Task;
         }
 
-
         private IEnumerator actionWrapper(Action action) {
             action();
             yield return null;
         }
 
-
-        [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
         protected override void Awake() {
             base.Awake();
 

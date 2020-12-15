@@ -1,6 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
-
-namespace UnityEngine.Triggers {
+﻿namespace UnityEngine.Triggers
+{
 
     public abstract class MultiConditionalTrigger : ConditionalTrigger {
 
@@ -12,8 +11,6 @@ namespace UnityEngine.Triggers {
         public bool TriggerWhenConditionsMaintained = false;
         public ConditionalTrigger[] Conditions;
 
-        [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
-        [SuppressMessage("Code Quality", "IDE0051:Remove unused private members", Justification = "Unity message")]
         protected virtual void Awake()
         {
             if (Conditions != null)

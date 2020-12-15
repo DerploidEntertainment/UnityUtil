@@ -47,7 +47,6 @@ namespace UnityEngine.UI
 
         public string FinalCacheKey => string.IsNullOrEmpty(CacheKey) ? ExposedParameterName : CacheKey;
 
-        [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
         protected override void Reset()
         {
             base.Reset();

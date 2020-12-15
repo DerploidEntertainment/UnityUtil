@@ -5,17 +5,17 @@ namespace UnityEngine.Triggers {
 
     public class ToggleTrigger : ConditionalTrigger {
 
-        [PropertyOrder(-5), ReadOnly, ShowInInspector, Tooltip("Note that this property may not refresh unless you select a different component in the Inspector then select this component again.")]
+        [PropertyOrder(-5f), ReadOnly, ShowInInspector, Tooltip("Note that this property may not refresh unless you select a different component in the Inspector then select this component again.")]
         private bool _currentState;
 
-        [PropertyOrder(-4)]
+        [PropertyOrder(-4f)]
         public bool AwakeState = false;
 
         [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
         [SuppressMessage("Code Quality", "IDE0051:Remove unused private members", Justification = "Unity message")]
         private void Awake() => _currentState = AwakeState;
 
-        [Button, PropertyOrder(-3), HorizontalGroup(BUTTON_GROUP)]
+        [Button, PropertyOrder(-3f), HorizontalGroup(BUTTON_GROUP)]
         public void TurnOn() {
             if (!_currentState) {
                 _currentState = true;
@@ -24,12 +24,12 @@ namespace UnityEngine.Triggers {
             else
                 StillTrue.Invoke();
         }
-        [Button, PropertyOrder(-2), HorizontalGroup(BUTTON_GROUP)]
+        [Button, PropertyOrder(-2f), HorizontalGroup(BUTTON_GROUP)]
         public void Toggle() {
             _currentState = !_currentState;
             (_currentState ? BecameTrue : BecameFalse).Invoke();
         }
-        [Button, PropertyOrder(-1), HorizontalGroup(BUTTON_GROUP)]
+        [Button, PropertyOrder(-1f), HorizontalGroup(BUTTON_GROUP)]
         public void TurnOff() {
             if (_currentState) {
                 _currentState = false;

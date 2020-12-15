@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using UnityEngine.EventSystems;
+﻿using UnityEngine.EventSystems;
 using UnityEngine.Logging;
 
 namespace UnityEngine.UI
@@ -23,8 +22,6 @@ namespace UnityEngine.UI
         [Min(0f), Tooltip(TOOLTIP)]
         public int DragThresholdFactor;
 
-        [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
-        [SuppressMessage("Code Quality", "IDE0051:Remove unused private members", Justification = "Unity message")]
         protected override void Reset()
         {
             base.Reset();

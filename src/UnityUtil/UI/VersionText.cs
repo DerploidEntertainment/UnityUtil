@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using UnityEngine.Logging;
+﻿using UnityEngine.Logging;
 
 namespace UnityEngine.UI
 {
@@ -13,8 +12,6 @@ namespace UnityEngine.UI
 
         public void Inject(IAppVersion appVersion) => _appVersion = appVersion;
 
-        [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
-        [SuppressMessage("Code Quality", "IDE0051:Remove unused private members", Justification = "Unity message")]
         protected override void Reset()
         {
             base.Reset();

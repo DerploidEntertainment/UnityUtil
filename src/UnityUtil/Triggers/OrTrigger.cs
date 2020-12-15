@@ -1,14 +1,12 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Linq;
+﻿using System.Linq;
 
-namespace UnityEngine.Triggers {
+namespace UnityEngine.Triggers
+{
 
     public class OrTrigger : MultiConditionalTrigger {
 
         private int _numTrue = 0;
 
-        [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
-        [SuppressMessage("Code Quality", "IDE0051:Remove unused private members", Justification = "Unity message")]
         protected override void Awake() {
             base.Awake();
 
