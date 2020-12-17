@@ -18,7 +18,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Unity3D" Version="1.5.0" />
+    <PackageReference Include="Unity3D" Version="1.6.0" />
   </ItemGroup>
 
   <ItemGroup>
