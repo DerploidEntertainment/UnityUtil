@@ -29,6 +29,9 @@ namespace UnityEngine {
         public TValue this[TKey key] => List[IndexLookup[key]].Value;
         public TValue this[int index] => List[index].Value;
 
+        /// <summary>
+        /// Sets the capacity to the actual number of elements in the underlying collection, to save on memory.
+        /// </summary>
         public void TrimExcess() => List.TrimExcess();
         public void Clear() {
             IndexLookup.Clear();

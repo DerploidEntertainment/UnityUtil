@@ -1,13 +1,12 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using UnityEngine.Logging;
 
 namespace UnityEngine {
 
     [DisallowMultipleComponent]
-    public class Updater : MonoBehaviour, IUpdater {
-
-        private float _tSinceTrim = 0f;
-
+    public class Updater : MonoBehaviour, IUpdater
+    {
         private readonly MultiCollection<int, Action<float>> _updates = new MultiCollection<int, Action<float>>();
         private readonly MultiCollection<int, Action<float>> _fixed   = new MultiCollection<int, Action<float>>();
         private readonly MultiCollection<int, Action<float>> _late    = new MultiCollection<int, Action<float>>();
@@ -56,28 +55,33 @@ namespace UnityEngine {
                 throw new ArgumentException($"{this.GetHierarchyNameWithType()} could not unregister the LateUpdate action for the object with {nameof(instanceID)} {instanceID} because no such action was ever registered!", nameof(instanceID));
         }
 
-        // EVENT HANDLERS
-        public void Update() {
-            _tSinceTrim += Time.unscaledDeltaTime;
-            if (_tSinceTrim >= TrimPeriod) {
-                _tSinceTrim -= TrimPeriod;
-                _updates.TrimExcess();
-                _late.TrimExcess();
-                _fixed.TrimExcess();
-            }
-
+        [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
+        [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
+        private void Update() {
             for (int u = 0; u < _updates.Count; ++u)
                 _updates[u](Time.deltaTime);
         }
-        public void FixedUpdate() {
+
+        [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
+        [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
+        private void FixedUpdate() {
             for (int fu = 0; fu < _fixed.Count; ++fu)
                 _fixed[fu](Time.fixedDeltaTime);
         }
-        public void LateUpdate() {
+
+        [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
+        [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
+        private void LateUpdate() {
             for (int lu = 0; lu < _late.Count; ++lu)
                 _late[lu](Time.deltaTime);
         }
 
+        public void TrimStorage()
+        {
+            _updates.TrimExcess();
+            _late.TrimExcess();
+            _fixed.TrimExcess();
+        }
     }
 
 }

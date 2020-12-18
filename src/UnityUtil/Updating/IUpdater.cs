@@ -40,9 +40,14 @@ namespace UnityEngine {
         /// <param name="instanceId">The instance ID of the component that no longer needs to be updated at the end of every frame (returned by <see cref="Updatable.InstanceID"/> or <see cref="UnityEngine.Object.GetInstanceID"/>).</param>
         void UnregisterLateUpdate(int instanceId);
 
-        public void Update();
-        public void FixedUpdate();
-        public void LateUpdate();
+        /// <summary>
+        /// Sets the capacity of all underlying collections to the actual number of elements in those collections.
+        /// Depending on implementation, there may be separate collections for Update actions, FixedUpdate actions, etc.,
+        /// the memory of which are all auto-allocated as more actions are added.
+        /// Trimming the capacity of these collections is thus an important way of saving memory, e.g., after several updatable
+        /// objects have been destroyed.
+        /// </summary>
+        void TrimStorage();
 
     }
 
