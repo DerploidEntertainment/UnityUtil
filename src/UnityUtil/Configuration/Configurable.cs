@@ -21,10 +21,7 @@ namespace UnityEngine {
         [Tooltip(ConfigKeyTooltip)]
         public string ConfigKey;
 
-        protected virtual void Reset()
-        {
-            ConfigKey = DefaultConfigKey(GetType());
-        }
+        protected virtual void Reset() => ConfigKey = DefaultConfigKey(GetType());
 
         protected virtual void Awake() {
             DependencyInjector.Instance.ResolveDependenciesOf(this);

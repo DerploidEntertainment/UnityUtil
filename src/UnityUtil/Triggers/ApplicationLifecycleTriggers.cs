@@ -17,6 +17,7 @@ namespace UnityEngine.Triggers
         public void Inject(ILoggerProvider loggerProvider) => _logger = loggerProvider.GetLogger(this);
 
         [SuppressMessage("Code Quality", "IDE0051:Remove unused private members", Justification = "Unity message")]
+        [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
         private void OnApplicationFocus(bool hasFocus)
         {
             _logger.Log($"Application {(hasFocus ? "focused" : "blurred")}", context: this);
@@ -24,6 +25,7 @@ namespace UnityEngine.Triggers
         }
 
         [SuppressMessage("Code Quality", "IDE0051:Remove unused private members", Justification = "Unity message")]
+        [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
         private void OnApplicationPause(bool pauseStatus)
         {
             _logger.Log($"Application {(pauseStatus ? "" : "un")}paused", context: this);
@@ -31,6 +33,7 @@ namespace UnityEngine.Triggers
         }
 
         [SuppressMessage("Code Quality", "IDE0051:Remove unused private members", Justification = "Unity message")]
+        [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
         private void OnApplicationQuit()
         {
             _logger.Log($"Application quitting...", context: this);

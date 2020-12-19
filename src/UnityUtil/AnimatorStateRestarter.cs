@@ -9,9 +9,7 @@ namespace UnityEngine {
 
         [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
         [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
-        private void Awake() {
-            _animator = GetComponent<Animator>();
-        }
+        private void Awake() => _animator = GetComponent<Animator>();
 
         private int CurrentAnimStateHash => _animator.GetCurrentAnimatorStateInfo(layerIndex: 0).shortNameHash; 
 

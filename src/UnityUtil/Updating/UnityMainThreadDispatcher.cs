@@ -37,9 +37,7 @@ namespace UnityEngine
         /// <inheritdoc/>
         public void Enqueue(IEnumerator action) {
             lock (s_actionQueue) {
-                s_actionQueue.Enqueue(() => {
-                    StartCoroutine(action);
-                });
+                s_actionQueue.Enqueue(() => StartCoroutine(action));
             }
         }
 

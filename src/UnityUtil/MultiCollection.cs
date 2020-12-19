@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace UnityEngine {
 
@@ -59,6 +60,8 @@ namespace UnityEngine {
             IndexLookup.Add(key, List.Count);
             List.Add(new Element(key, value));
         }
+
+        [SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "Parameters required to implement interface")]
         public bool TryGetValue(TKey key, out TValue value) => throw new System.NotImplementedException();
 
         public IEnumerator<TValue> GetEnumerator() => List.Select(i => i.Value).GetEnumerator();
