@@ -5,11 +5,19 @@ using UnityEngine.Logging;
 
 namespace UnityEngine {
 
-    [CreateAssetMenu(menuName = nameof(UnityUtil) + "/" + nameof(ScriptableObjectConfigurationSource), fileName = "appsettings.cfgsource.asset")]
-    public class ScriptableObjectConfigurationSource : ConfigurationSource {
+    [CreateAssetMenu(menuName = nameof(UnityUtil) + "/" + nameof(ScriptableObjectConfigurationSource), fileName = DefaultResourceName + ".cfgsource.asset")]
+    public class ScriptableObjectConfigurationSource : ConfigurationSource
+    {
 
-        [Tooltip("Path to a " + nameof(ConfigObject) + " file under a Resources/ folder. No matter what the full path of the file is, the directory name up to and including 'Resources/' must be omitted. Leading and trailing slashes, and .asset extension, must be omitted. Must use forward slashes, not backslashes (even on Windows).")]
-        public string ResourceName = "appsettings";
+        public const string DefaultResourceName = "appsettings";
+
+        [Tooltip(
+            "Path to a " + nameof(ConfigObject) + " file under a Resources/ folder. " +
+            "No matter what the full path of the file is, the directory name up to and including 'Resources/' must be omitted. " +
+            "Leading and trailing slashes, and .asset extension, must be omitted. " +
+            "Must use forward slashes, not backslashes (even on Windows)."
+        )]
+        public string ResourceName = DefaultResourceName;
 
         public override IDictionary<string, object> LoadConfigs() {
             string resFileName = $"{ResourceName}.asset";
@@ -18,10 +26,10 @@ namespace UnityEngine {
             // Load the specified resource file, if it exists
             ConfigObject config = Resources.Load<ConfigObject>(ResourceName);
             if (config == null) {
-                string notFoundMsg = $"Expected ScriptableObject file ('{resFileName}') for configuration source could not be found. Make sure the file exists and is not locked by any other applications.";
+                string notFoundMsg = $"ScriptableObject configuration file ('{resFileName}') could not be found. If this was not expected, make sure that the file exists and is not locked by another application.";
                 if (Required)
                     throw new FileNotFoundException(notFoundMsg, ResourceName);
-                Logger.LogWarning(notFoundMsg, context: this);
+                Logger.Log(notFoundMsg, context: this);
                 return new Dictionary<string, object>();
             }
 
