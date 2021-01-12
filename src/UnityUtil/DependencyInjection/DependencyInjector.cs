@@ -94,9 +94,7 @@ namespace UnityEngine.DependencyInjection
             for (int t = 0; t < CachedResolutionTypes.Count; ++t)
                 _cachedResolutionTypes.Add(CachedResolutionTypes[t]);
 
-            Initialized = true;     // Must be set before registering logging services
-
-            RegisterService(typeof(ILoggerProvider), loggerProvider);
+            Initialized = true;
         }
 
         public void RegisterService(string serviceTypeName, object instance, Scene? scene = null)
