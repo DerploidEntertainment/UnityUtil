@@ -4,6 +4,7 @@
     "com.unity.analytics": "3.3.5",
     "com.unity.ext.nunit": "1.0.0",
     "com.unity.ide.visualstudio": "2.0.5",
+    "com.unity.remote-config": "2.0.1",
     "com.unity.test-framework": "1.1.20",
     "com.unity.textmeshpro": "3.0.3",
     "com.unity.ugui": "1.0.0",

@@ -1,14 +1,12 @@
-using System.Collections.Generic;
+using System.Collections;
 using System.IO;
 using System.Linq;
-using UnityEngine.Logging;
 
-namespace UnityEngine {
-
-    [CreateAssetMenu(menuName = nameof(UnityUtil) + "/" + nameof(ScriptableObjectConfigurationSource), fileName = DefaultResourceName + ".cfgsource.asset")]
+namespace UnityEngine
+{
+    [CreateAssetMenu(menuName = nameof(UnityUtil) + "/" + "Configuration" + "/" + nameof(ScriptableObjectConfigurationSource), fileName = DefaultResourceName + ".cfgsource.asset")]
     public class ScriptableObjectConfigurationSource : ConfigurationSource
     {
-
         public const string DefaultResourceName = "appsettings";
 
         [Tooltip(
@@ -19,34 +17,36 @@ namespace UnityEngine {
         )]
         public string ResourceName = DefaultResourceName;
 
-        public override IDictionary<string, object> LoadConfigs() {
+        public override IEnumerator Load() {
             string resFileName = $"{ResourceName}.asset";
-            Logger.Log($"Loading configs from ScriptableObject configuration file '{resFileName}'...", context: this);
+            Log($"Loading configs from ScriptableObject configuration file '{resFileName}'...");
 
             // Load the specified resource file, if it exists
-            ConfigObject config = Resources.Load<ConfigObject>(ResourceName);
+            ResourceRequest req = Resources.LoadAsync<ConfigObject>(ResourceName);
+            while (!req.isDone)
+                yield return null;
+
+            var config = (ConfigObject)req.asset;
             if (config == null) {
                 string notFoundMsg = $"ScriptableObject configuration file ('{resFileName}') could not be found. If this was not expected, make sure that the file exists and is not locked by another application.";
                 if (Required)
                     throw new FileNotFoundException(notFoundMsg, ResourceName);
-                Logger.Log(notFoundMsg, context: this);
-                return new Dictionary<string, object>();
+                Log(notFoundMsg);
+                yield break;
             }
 
             // Read the config keys/values into a Dictionary
-            var values = config.Configs
+            var configGrps = config.Configs
                 .Select(cfg => (cfg.Key, Value: cfg.GetValue()))
-                .GroupBy(kv => kv.Key)
-                .ToDictionary(g => g.Key, g => {
-                    var keyVals = g.ToArray();
-                    if (keyVals.Length > 1)
-                        Logger.LogWarning($"Duplicate config key ('{g.Key}') detected in ScriptableObject configuration file '{resFileName}'. Keeping the last value...", context: this);
-                    return keyVals[keyVals.Length - 1].Value;
-                });
+                .GroupBy(kv => kv.Key);
+            foreach (var cfgGrp in configGrps) {
+                var keyVals = cfgGrp.ToArray();
+                if (keyVals.Length > 1)
+                    LogWarning($"Duplicate config key ('{cfgGrp.Key}') detected in ScriptableObject configuration file '{resFileName}'. Keeping the last value...");
+                LoadedConfigsHidden.Add(cfgGrp.Key, keyVals[keyVals.Length - 1].Value);
+            }
 
-            Logger.Log($"Successfully loaded {values.Count} configs from ScriptableObject configuration file '{resFileName}'.", context: this);
-
-            return values.ToDictionary(x => x.Key, x => x.Value);
+            Log($"Successfully loaded {LoadedConfigs.Count} configs from ScriptableObject configuration file '{resFileName}'.");
         }
     }
 

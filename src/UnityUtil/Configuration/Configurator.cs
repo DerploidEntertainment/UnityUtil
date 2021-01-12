@@ -1,8 +1,8 @@
-﻿using Sirenix.OdinInspector;
+using Sirenix.OdinInspector;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -25,39 +25,16 @@ namespace UnityEngine
         public IReadOnlyDictionary<(Type, string), int> Uncached { get; }
     }
 
-    public class Configurator : MonoBehaviour, IConfigurator
+    public class Configurator : IConfigurator
     {
-        public const bool DefaultRecordConfigurationsOnAwake = false;
+        private readonly ILogger _logger;
 
-        private ILogger _logger;
-
+        private bool _loading = false;
         private bool _recording = false;
-        private Dictionary<string, object> _configs;
+        private readonly Dictionary<string, object> _configs = new Dictionary<string, object>();
         private readonly Dictionary<(Type, string), Action<object>> _compiledConfigs = new Dictionary<(Type, string), Action<object>>();
         private readonly Dictionary<(Type, string), int> _uncachedConfigCounts = new Dictionary<(Type, string), int>();
         private readonly Dictionary<(Type, string), int> _cachedConfigCounts = new Dictionary<(Type, string), int>();
-
-        [Tooltip(
-            "If true, then " + nameof(RecordingConfigurations) + " will be enabled when this Component awakes. " +
-            "You can use this to ensure all configurations are recorded, even early in the Scene lifecycle before you have a chance " +
-            "to press " + nameof(ToggleConfigurationRecording) + "."
-        )]
-        public bool RecordConfigurationsOnAwake = DefaultRecordConfigurationsOnAwake;
-
-        [Tooltip(
-            "Sources must be provided in reverse order of importance (i.e., configs in source 0 will override configs in source 1, " +
-            "which will override configs in source 2, etc.)"
-        )]
-        public ConfigurationSource[] ConfigurationSources;
-
-        [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
-        private void Reset()
-        {
-            RecordingConfigurations = DefaultRecordConfigurationsOnAwake;
-            ConfigurationSources = Array.Empty<ConfigurationSource>();
-        }
-
-        public void Inject(ILoggerProvider loggerProvider) => _logger = loggerProvider.GetLogger(this);
 
         /// <summary>
         /// Use these rules to cache commonly resolved configurations, speeding up Scene load times.
@@ -76,35 +53,63 @@ namespace UnityEngine
         /// </remarks>
         public List<(Type, string ConfigKey)> CachedConfigurations { get; } = new List<(Type, string ConfigKey)>();
 
-        public static Dictionary<string, object> LoadConfigValues(IEnumerable<ConfigurationSource> configurationSources) =>
-            configurationSources
+        public Configurator(ILoggerProvider loggerProvider) => _logger = loggerProvider.GetLogger(this);
+
+        public event EventHandler<IReadOnlyDictionary<string, object>> LoadingComplete;
+        public IEnumerator LoadConfigs(IEnumerable<ConfigurationSource> configurationSources)
+        {
+            if (_loading)
+                yield break;
+
+            // Load all configuration sources in parallel
+            var loadRoutines = new HashSet<IEnumerator>(configurationSources
                 .Where(x =>
                     ((x.LoadContext & ConfigurationLoadContext.Editor) > 0 && Application.isEditor) ||
-                    ((x.LoadContext & ConfigurationLoadContext.DebugBuild) > 0 && Debug.isDebugBuild) ||
-                    ((x.LoadContext & ConfigurationLoadContext.ReleaseBuild) > 0 && !Debug.isDebugBuild)
-                ).SelectMany(x => {
+                    ((x.LoadContext & ConfigurationLoadContext.DebugBuild) > 0 && !Application.isEditor && Debug.isDebugBuild) ||
+                    ((x.LoadContext & ConfigurationLoadContext.ReleaseBuild) > 0 && !Application.isEditor && !Debug.isDebugBuild)
+                )
+                .Select(x => {
                     DependencyInjector.Instance.ResolveDependenciesOf(x);
-                    return x.LoadConfigs();
+                    return x.Load();
                 })
+            );
+
+            _loading = true;
+            var finishedLoadRouties = new List<IEnumerator>(loadRoutines.Count);
+            while (loadRoutines.Count > 0) {
+                foreach (IEnumerator loadRoutine in loadRoutines) {
+                    bool srcStillLoading = loadRoutine.MoveNext();
+                    if (!srcStillLoading)
+                        finishedLoadRouties.Add(loadRoutine);   // Can't just remove from the collection of load routines, since we are still enumerating it
+                }
+                loadRoutines.ExceptWith(finishedLoadRouties);
+                finishedLoadRouties.Clear();
+                yield return null;
+            }
+
+            // Once all config sources have been loaded, deduplicate keys in the order provided
+            IEnumerable<(string key, object val)> configs = configurationSources
+                .SelectMany(x => x.LoadedConfigs)
                 .GroupBy(x => x.Key, x => x.Value)
-                .ToDictionary(grp => grp.Key, grp => grp.First());
+                .Select(grp => (key: grp.Key, val: grp.First()));
+
+            foreach ((string key, object val) in configs)
+                _configs.Add(key, val);
+
+            LoadingComplete?.Invoke(sender: this, _configs);
+
+            _loading = false;
+        }
+
         public void Configure(IEnumerable<(object, string)> clients)
         {
-            foreach ((object clienObj, string configKey) in clients)
-                Configure(clienObj, configKey);
+            foreach ((object clientObj, string configKey) in clients)
+                Configure(clientObj, configKey);
         }
         public void Configure(object client, string configKey)
         {
             if (string.IsNullOrWhiteSpace(configKey))
                 throw new ArgumentException($"'{nameof(configKey)}' cannot be null or whitespace", nameof(configKey));
-
-            // Resolve our dependencies, if that hasn't been done already
-            if (_configs == null) {
-                DependencyInjector.Instance.ResolveDependenciesOf(this);
-                _logger.Log($"Loading {ConfigurationSources.Length} configuration sources...", context: this);
-                _configs = LoadConfigValues(ConfigurationSources);
-                _recording = RecordConfigurationsOnAwake;
-            }
 
             // If there's a cached configuration for this type/configKey, then use that
             // The config key is either the provided key (trimmed), or the full name of the client's Type
@@ -138,7 +143,7 @@ namespace UnityEngine
                         memberAssigns.Add(Expression.Assign(Expression.MakeMemberAccess(clientParam, field), Expression.Constant(val)));
                     else
                         field.SetValue(client, val);
-                    _logger.Log($"Field '{field.Name}' of {clientType.Name} clients with config key '{key}' will be configured with value '{val}'", context: this);
+                    _logger.Log($"Field '{field.Name}' of {clientType.Name} clients with config key '{key}' will be configured with value '{val}'");
                 }
             }
 
@@ -153,7 +158,7 @@ namespace UnityEngine
                         memberAssigns.Add(Expression.Assign(Expression.MakeMemberAccess(clientParam, prop), Expression.Constant(val)));
                     else
                         prop.SetValue(client, val);
-                    _logger.Log($"Property '{prop.Name}' of {clientType.Name} clients with config key '{key}' will be configured with value '{val}'", context: this);
+                    _logger.Log($"Property '{prop.Name}' of {clientType.Name} clients with config key '{key}' will be configured with value '{val}'");
                 }
             }
 
@@ -172,35 +177,6 @@ namespace UnityEngine
                 if (_recording)
                     _uncachedConfigCounts[(clientType, key)] = _uncachedConfigCounts.TryGetValue((clientType, key), out int count) ? count + 1 : 1;
             }
-        }
-
-        /// <summary>
-        /// Toggle recording of how many times configurations are looked up at runtime, for optimization purposes.
-        /// When recording is toggled off, a summary report will be logged to the Unity Console.
-        /// </summary>
-        [Button]
-        public void ToggleConfigurationRecording()
-        {
-            ConfigurationCounts counts = null;
-            GetConfigurationCounts(ref counts);
-            RecordingConfigurations = !_recording;
-            if (_recording)
-                return;
-
-            Debug.Log($@"
-Uncached configuration counts:
-(If any of these counts are greater than 1, consider caching configurations for that Type/ConfigKey on the {nameof(Configurator)} to improve performance)
-{getCountLines(counts.Uncached)}
-
-Cached configuration counts:
-(If any of these counts equal 1, consider NOT caching configurations for that Type/ConfigKey on the {nameof(Configurator)}, to speed up its configurations and save memory)
-{getCountLines(counts.Cached)}
-            ");
-
-            static string getCountLines(IEnumerable<KeyValuePair<(Type Type, string ConfigKey), int>> counts) => string.Join(
-                Environment.NewLine,
-                counts.OrderByDescending(x => x.Value).Select(x => $"    ({x.Key.Type.FullName}, {x.Key.ConfigKey}): {x.Value}")
-            );
         }
 
         /// <summary>

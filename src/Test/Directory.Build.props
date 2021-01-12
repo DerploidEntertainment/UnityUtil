@@ -2,9 +2,14 @@
 
   <Import Project="../Directory.Build.props" />
 
+  <PropertyGroup>
+    <MoqPath>$(UnityProjectPath)\Assets\$(SolutionName)\logic\Editor\Moq\Moq.dll</MoqPath>
+    <MoqPath Condition="!Exists('$(MoqPath)')">$(UnityUtilProjectPath)\Assets\Editor\Moq\Moq.dll</MoqPath>
+  </PropertyGroup>
+  
   <ItemGroup>
-    <Reference Include="$(UnityProjectPath)\$(UnityPackageCache)\$(NunitPath)" />
-    <Reference Include="$(UnityProjectPath)\Assets\Editor\Moq\Moq.dll" />
+    <Reference Include="$(UnityProjectPath)\$(UnityPackageCache)\$(NunitPath)" Private="false" />
+    <Reference Include="$(MoqPath)" Private="false" />
   </ItemGroup>
 
   <ItemGroup>
