@@ -1,8 +1,12 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <RootNamespace>UnityEngine</RootNamespace>
     <DebugSymbols>true</DebugSymbols> <!-- Always emit debug symbols, even in Release. We can decide in Unity whether they're then included in a game build. -->
+
+    <RemoteConfigRelativeDir>$(UnityScriptAssembliesPath)\Unity.RemoteConfig.dll</RemoteConfigRelativeDir>
+    <UnityRemoteConfigPath>$(UnityProjectPath)\$(RemoteConfigRelativeDir)</UnityRemoteConfigPath>
+    <UnityRemoteConfigPath Condition="!Exists('$(UnityRemoteConfigPath)')">$(UnityUtilProjectPath)\$(RemoteConfigRelativeDir)</UnityRemoteConfigPath>
   </PropertyGroup>
 
   <ItemGroup>
@@ -23,6 +27,8 @@
     <Reference Include="$(UnityInstallRoot)\$(UnityVersion)\$(UnityModulesPath)\UnityEngine.Physics2DModule.dll" Private="false" />
     <Reference Include="$(UnityInstallRoot)\$(UnityVersion)\$(UnityModulesPath)\UnityEngine.PhysicsModule.dll" Private="false" />
     <Reference Include="$(UnityInstallRoot)\$(UnityVersion)\$(UnityModulesPath)\UnityEngine.UnityWebRequestModule.dll" Private="false" />
+
+    <Reference Include="$(UnityRemoteConfigPath)" Private="false" />
   </ItemGroup>
 
   <Target Name="CopyOutputs" AfterTargets="AfterBuild">
