@@ -5,7 +5,7 @@ using UnityEngine.Logging;
 
 namespace UnityEngine {
 
-    [CreateAssetMenu(menuName = nameof(UnityUtil) + "/" + nameof(ScriptableObjectConfigurationSource), fileName = DefaultResourceName + ".cfgsource.asset")]
+    [CreateAssetMenu(menuName = nameof(UnityUtil) + "/" + "Configuration" + "/" + nameof(ScriptableObjectConfigurationSource), fileName = DefaultResourceName + ".cfgsource.asset")]
     public class ScriptableObjectConfigurationSource : ConfigurationSource
     {
 
