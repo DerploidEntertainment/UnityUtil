@@ -1,7 +1,6 @@
-using System.Collections.Generic;
+using System.Collections;
 using System.IO;
 using System.Linq;
-using UnityEngine.Logging;
 
 namespace UnityEngine
 {
@@ -18,23 +17,26 @@ namespace UnityEngine
         )]
         public string ResourceName = DefaultResourceName;
 
-        public override IDictionary<string, object> LoadConfigs() {
+        public override IEnumerator Load() {
             string resFileName = $"{ResourceName}.csv";
-            Logger.Log($"Loading configs from CSV configuration file '{resFileName}'...", context: this);
+            Log($"Loading configs from CSV configuration file '{resFileName}'...");
 
             // Load the specified resource CSV file, if it exists
-            TextAsset txt = Resources.Load<TextAsset>(ResourceName);
+            ResourceRequest req = Resources.LoadAsync<TextAsset>(ResourceName);
+            while (!req.isDone)
+                yield return null;
+
+            var txt = (TextAsset)req.asset;
             if (txt == null) {
                 string notFoundMsg = $"CSV configuration file ('{resFileName}') could not be found. If this was not expected, make sure that the file exists and is not locked by another application.";
                 if (Required)
                     throw new FileNotFoundException(notFoundMsg, ResourceName);
-                Logger.Log(notFoundMsg, context: this);
-                return new Dictionary<string, object>();
+                Log(notFoundMsg);
+                yield break;
             }
 
             // Read the config keys/values into a Dictionary
-            // TODO: Assume that CSV contents is encoded, not plaintext
-            var values = txt.text
+            var configGrps = txt.text
                 .Split('\n')
                 .Where(cfg => !string.IsNullOrWhiteSpace(cfg))
                 .Select((cfg, line) => {
@@ -43,17 +45,15 @@ namespace UnityEngine
                         ? (Key: tokens[0], Value: tokens[1])
                         : throw new InvalidDataException($"Each line of CSV configuration file '{resFileName}' must contain exactly two fields, the config key and value. Line {line + 1} had {tokens.Length}.");
                 })
-                .GroupBy(kv => kv.Key)
-                .ToDictionary(g => g.Key, g => {
-                    var keyVals = g.ToArray();
-                    if (keyVals.Length > 1)
-                        Logger.LogWarning($"Duplicate config key ('{g.Key}') detected in CSV configuration file '{resFileName}'. Keeping the last value...", context: this);
-                    return (object)keyVals[keyVals.Length - 1].Value;
-                });
+                .GroupBy(kv => kv.Key);
+            foreach (var cfgGrp in configGrps) {
+                var keyVals = cfgGrp.ToArray();
+                if (keyVals.Length > 1)
+                    LogWarning($"Duplicate config key ('{cfgGrp.Key}') detected in CSV configuration file '{resFileName}'. Keeping the last value...");
+                LoadedConfigsHidden.Add(cfgGrp.Key, keyVals[keyVals.Length - 1].Value);
+            }
 
-            Logger.Log($"Successfully loaded {values.Count} configs from CSV configuration file '{resFileName}'.", context: this);
-
-            return values;
+            Log($"Successfully loaded {LoadedConfigs.Count} configs from CSV configuration file '{resFileName}'.");
         }
     }
 
