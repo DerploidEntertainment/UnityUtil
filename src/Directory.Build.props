@@ -1,21 +1,31 @@
 <Project>
+  
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <LangVersion>latest</LangVersion>
     <UnityVersion>2020.1.8f1</UnityVersion>
-
-    <UnityProjectPath_Ours>$(SolutionDir)\..\UnityUtil</UnityProjectPath_Ours>
-    <UnityProjectPath_Theirs>$(SolutionDir)\..\$(SolutionName)</UnityProjectPath_Theirs>
-    <UnityProjectPath_OursToThem>$(SolutionDir)\..\..\UnityUtil\UnityUtil</UnityProjectPath_OursToThem>
-    <UnityProjectPath Condition="'$(SolutionName)'=='UnityUtil'">$(UnityProjectPath_Ours)</UnityProjectPath>
-    <UnityProjectPath Condition="'$(SolutionName)'!='UnityUtil'">$(UnityProjectPath_OursToThem)</UnityProjectPath>
-    
-    <SirenixAssembliesDir Condition="'$(SolutionName)'=='UnityUtil'">$(UnityProjectPath_Ours)\Assets\Plugins\Sirenix\Assemblies</SirenixAssembliesDir>
-    <SirenixAssembliesDir Condition="'$(SolutionName)'!='UnityUtil' And Exists('$(UnityProjectPath_Theirs)\Assets\Plugins\Sirenix')">$(UnityProjectPath_Theirs)\Assets\Plugins\Sirenix\Assemblies</SirenixAssembliesDir>
-    <SirenixAssembliesDir Condition="'$(SolutionName)'!='UnityUtil' And !Exists('$(UnityProjectPath_Theirs)\Assets\Plugins\Sirenix')">$(UnityProjectPath_OursToThem)\Assets\Plugins\Sirenix\Assemblies</SirenixAssembliesDir>
-
     <DefineConstants Condition="'$(Configuration)'=='Debug'">UNITY_ASSERTIONS;UNITY_EDITOR</DefineConstants>
+
+    <SirenixAssembliesRelativeDir>Assets\Plugins\Sirenix\Assemblies</SirenixAssembliesRelativeDir>
   </PropertyGroup>
+  
+  <Choose>
+    <When Condition="'$(SolutionName)'=='UnityUtil'">
+      <PropertyGroup>
+        <UnityUtilProjectPath>$(SolutionDir)\..\UnityUtil</UnityUtilProjectPath>
+        <UnityProjectPath>$(UnityUtilProjectPath)</UnityProjectPath>
+        <SirenixAssembliesDir>$(UnityProjectPath)\$(SirenixAssembliesRelativeDir)</SirenixAssembliesDir>
+      </PropertyGroup>
+    </When>
+    <Otherwise>
+      <PropertyGroup>
+        <UnityUtilProjectPath>$(SolutionDir)\..\..\UnityUtil\UnityUtil</UnityUtilProjectPath>
+        <UnityProjectPath>$(SolutionDir)\..\$(SolutionName)</UnityProjectPath>
+        <SirenixAssembliesDir>$(UnityProjectPath)\$(SirenixAssembliesRelativeDir)</SirenixAssembliesDir>
+        <SirenixAssembliesDir Condition="!Exists('$(SirenixAssembliesDir)')">$(UnityUtilProjectPath)\$(SirenixAssembliesRelativeDir)</SirenixAssembliesDir>
+      </PropertyGroup>
+    </Otherwise>
+  </Choose>
 
   <ItemGroup>
     <PackageReference Include="Unity3D" Version="1.7.0" />

@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <RootNamespace>UnityEngine</RootNamespace>
@@ -31,7 +31,7 @@
       <ProjectOutput Include="$(OutDir)/$(ProjectName).pdb" />
     </ItemGroup>
     <Message Importance="high" Text="Moving $(ProjectName) outputs into appropriate subfolders of '$([System.IO.Path]::GetFullPath($(UnityProjectPath)))\Assets'" />
-    <Copy SourceFiles="%(ProjectOutput.Identity)" DestinationFolder="$(UnityProjectPath)\Assets\UnityUtil\Plugins" />
+    <Copy SourceFiles="%(ProjectOutput.Identity)" DestinationFolder="$(UnityUtilProjectPath)\Assets\UnityUtil\Plugins" />
   </Target>
 
 </Project>
