@@ -3,8 +3,8 @@ using System.IO;
 using System.Linq;
 using UnityEngine.Logging;
 
-namespace UnityEngine {
-
+namespace UnityEngine
+{
     [CreateAssetMenu(menuName = nameof(UnityUtil) + "/" + "Configuration" + "/" + nameof(CsvConfigurationSource), fileName = DefaultResourceName + ".csv.asset")]
     public class CsvConfigurationSource : ConfigurationSource {
 

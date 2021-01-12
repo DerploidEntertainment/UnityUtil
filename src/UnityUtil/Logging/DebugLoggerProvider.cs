@@ -1,17 +1,16 @@
 ﻿using System;
 using System.Text;
 
-namespace UnityEngine.Logging {
-    public class DebugLoggerProvider : Configurable, ILoggerProvider {
-
+namespace UnityEngine.Logging
+{
+    public class DebugLoggerProvider : Configurable, ILoggerProvider
+    {
         public string EnrichedLogSeparator = " | ";
         public LogEnricher[] LogEnrichers = Array.Empty<LogEnricher>();
 
-        public ILogger GetLogger(object source) {
-            if (source == null)
-                throw new ArgumentNullException(nameof(source));
-
-            return new DebugLogger(enrich);
+        public ILogger GetLogger(object source)
+        {
+            return (source == null) ? throw new ArgumentNullException(nameof(source)) : new DebugLogger(enrich);
 
 
             string enrich() {

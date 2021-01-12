@@ -1,4 +1,4 @@
-﻿/*
+/*
  * This file copied from Pim de Witte's original repo on GitHub: https://github.com/PimDeWitte/UnityMainThreadDispatcher
  * That repo is licensed under the Apache License 2.0: https://spdx.org/licenses/Apache-2.0.html
  * That license requires me to document changes, so... 
@@ -11,6 +11,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 
 namespace UnityEngine
@@ -22,15 +23,15 @@ namespace UnityEngine
     /// It can be used to make calls to Unity's main thread for things such as UI manipulation.
     /// It was developed for use in combination with the Firebase Unity plugin, which uses separate threads for event handling.
     /// </summary>
-    public class UnityMainThreadDispatcher : Updatable, IUnityMainThreadDispatcher {
+    public class UnityMainThreadDispatcher : Updatable, IUnityMainThreadDispatcher
+    {
 
         private static readonly Queue<Action> s_actionQueue = new Queue<Action>();
 
         private void processActionQueue(float deltaTime) {
             lock (s_actionQueue) {
-                while (s_actionQueue.Count > 0) {
+                while (s_actionQueue.Count > 0)
                     s_actionQueue.Dequeue().Invoke();
-                }
             }
         }
 
@@ -42,26 +43,29 @@ namespace UnityEngine
         }
 
         /// <inheritdoc/>
-        public void Enqueue(Action action) => Enqueue(actionWrapper(action));
+        public void Enqueue(Action action) => Enqueue(actionEnumerator(action));
 
         /// <inheritdoc/>
         public Task EnqueueAsync(Action action) {
             var tcs = new TaskCompletionSource<bool>();
 
-            Enqueue(actionWrapper(() => {
+            Enqueue(actionEnumerator(() => {
                 try {
                     action();
                     tcs.TrySetResult(true);
                 }
+
+                #pragma warning disable CA1031 // Do not catch general exception types
                 catch (Exception ex) {
                     tcs.TrySetException(ex);
                 }
+                #pragma warning restore CA1031 // Do not catch general exception types
             }));
 
             return tcs.Task;
         }
 
-        private IEnumerator actionWrapper(Action action) {
+        private IEnumerator actionEnumerator(Action action) {
             action();
             yield return null;
         }

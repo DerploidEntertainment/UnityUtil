@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using UnityEngine.Logging;
@@ -15,7 +15,8 @@ namespace UnityEngine
         Always = 0b111,
     }
 
-    public abstract class ConfigurationSource : ScriptableObject {
+    public abstract class ConfigurationSource : ScriptableObject
+    {
 
         public bool Required = true;
         [Tooltip(

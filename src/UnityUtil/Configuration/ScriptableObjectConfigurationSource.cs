@@ -3,12 +3,11 @@ using System.IO;
 using System.Linq;
 using UnityEngine.Logging;
 
-namespace UnityEngine {
-
+namespace UnityEngine
+{
     [CreateAssetMenu(menuName = nameof(UnityUtil) + "/" + "Configuration" + "/" + nameof(ScriptableObjectConfigurationSource), fileName = DefaultResourceName + ".cfgsource.asset")]
     public class ScriptableObjectConfigurationSource : ConfigurationSource
     {
-
         public const string DefaultResourceName = "appsettings";
 
         [Tooltip(
