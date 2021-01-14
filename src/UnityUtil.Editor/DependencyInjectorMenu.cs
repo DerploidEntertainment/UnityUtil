@@ -12,7 +12,7 @@ namespace UnityUtil.Editor
         public const string ItemName = nameof(UnityUtil) + "/Record dependency resolutions";
 
         [MenuItem(ItemName)]
-        public static void ToggleRecording()
+        private static void toggleRecording()
         {
             DependencyResolutionCounts counts = null;
             DependencyInjector.Instance.GetServiceResolutionCounts(ref counts);
@@ -37,7 +37,7 @@ Cached dependency resolution counts:
         }
 
         [MenuItem(ItemName, isValidateFunction: true)]
-        public static bool ToggleRecording_Validate()
+        private static bool canToggleRecording()
         {
             Menu.SetChecked(ItemName, DependencyInjector.Instance.RecordingResolutions);
             return true;
