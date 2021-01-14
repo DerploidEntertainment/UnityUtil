@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics.CodeAnalysis;
 using UnityEngine.Logging;
 
@@ -10,10 +10,6 @@ namespace UnityEngine {
         private readonly MultiCollection<int, Action<float>> _updates = new MultiCollection<int, Action<float>>();
         private readonly MultiCollection<int, Action<float>> _fixed   = new MultiCollection<int, Action<float>>();
         private readonly MultiCollection<int, Action<float>> _late    = new MultiCollection<int, Action<float>>();
-
-        // INSPECTOR FIELDS
-        [Tooltip("Every time this many seconds passes (in real time, not game time), the update action lists will have their capacities trimmed, if possible, using the List<T>.TrimExcess() method.")]
-        public float TrimPeriod = 30f;
 
         // API INTERFACE
         public void RegisterUpdate(int instanceID, Action<float> action) {
