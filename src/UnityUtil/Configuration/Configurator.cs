@@ -27,6 +27,8 @@ namespace UnityEngine
 
     public class Configurator : IConfigurator
     {
+        private const BindingFlags BINDING_FLAGS = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
+
         private readonly ILogger _logger;
 
         private bool _loading = false;
@@ -132,8 +134,9 @@ namespace UnityEngine
             Expression clientParam = cache ? Expression.Convert(clientObjParam, clientType) : null;
 
             // Set all fields on this client for which there is a config value
-            BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
-            FieldInfo[] fields = clientType.GetFields(bindingFlags);
+            string clientName = (client is not Object clientObj) ? null : (client is Component component ? component.GetHierarchyName() : clientObj.name);
+            string quotedClientName = (clientName == null) ? null : $"'{clientName}' ";
+            FieldInfo[] fields = clientType.GetFields(BINDING_FLAGS);
             for (int f = 0; f < fields.Length; ++f) {
                 FieldInfo field = fields[f];
                 string fieldKey = $"{key}.{field.Name}";
@@ -143,12 +146,13 @@ namespace UnityEngine
                         memberAssigns.Add(Expression.Assign(Expression.MakeMemberAccess(clientParam, field), Expression.Constant(val)));
                     else
                         field.SetValue(client, val);
-                    _logger.Log($"Field '{field.Name}' of {clientType.Name} clients with config key '{key}' will be configured with value '{val}'");
+                    
+                    _logger.Log($"Field '{field.Name}' of {clientType.Name} client {quotedClientName}with config key '{key}' will be configured with value '{val}'");
                 }
             }
 
             // Set all properties on this client for which there is a config value
-            PropertyInfo[] props = clientType.GetProperties(bindingFlags);
+            PropertyInfo[] props = clientType.GetProperties(BINDING_FLAGS);
             for (int p = 0; p < props.Length; ++p) {
                 PropertyInfo prop = props[p];
                 string propKey = $"{key}.{prop.Name}";
@@ -158,7 +162,7 @@ namespace UnityEngine
                         memberAssigns.Add(Expression.Assign(Expression.MakeMemberAccess(clientParam, prop), Expression.Constant(val)));
                     else
                         prop.SetValue(client, val);
-                    _logger.Log($"Property '{prop.Name}' of {clientType.Name} clients with config key '{key}' will be configured with value '{val}'");
+                    _logger.Log($"Property '{prop.Name}' of {clientType.Name} client {quotedClientName}with config key '{key}' will be configured with value '{val}'");
                 }
             }
 

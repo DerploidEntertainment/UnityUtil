@@ -36,6 +36,7 @@ namespace UnityEngine.DependencyInjection
         public const string DefaultTag = "Untagged";
         public const string InjectMethodName = "Inject";
         public const string DefaultLoggerProviderName = "default-logger-provider";
+        public const BindingFlags BINDING_FLAGS = BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance;
 
         private const int DEFAULT_SCENE_HANDLE = -1;
 
@@ -121,7 +122,7 @@ namespace UnityEngine.DependencyInjection
         /// </exception>
         public void RegisterService(Type serviceType, object instance, Scene? scene = null)
         {
-            throwIfUninitialized();
+            throwIfUninitialized(nameof(RegisterService));
 
             var service = new Service(serviceType, (instance as Component)?.tag ?? DefaultTag, instance);
 
@@ -192,7 +193,7 @@ namespace UnityEngine.DependencyInjection
         /// <param name="client">A client with service dependencies that need to be resolved.</param>
         public void ResolveDependenciesOf(object client)
         {
-            throwIfUninitialized();
+            throwIfUninitialized(nameof(ResolveDependenciesOf));
 
             // Resolve dependencies by calling every Inject method in the client's inheritance hierarchy.
             // If the client's type or any of its inherited types have cached inject methods,
@@ -201,7 +202,6 @@ namespace UnityEngine.DependencyInjection
             Type objectType = typeof(object);
             Type cachedParentType = null;
             List<Action<object>> compiledInjectList = null;     // Will only be initialized if this client's type or one of its parent types is cached, to save heap allocations
-            BindingFlags bindingFlags = BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance;
             do {
                 // Use compiled inject methods, if they exist
                 if (_compiledInject.TryGetValue(serviceType, out List<Action<object>> compiledInjectMethods)) {
@@ -213,7 +213,7 @@ namespace UnityEngine.DependencyInjection
                 }
 
                 // Get the inject method on this type (will throw if more than one method matches)
-                MethodInfo injectMethod = _typeMetadataProvider.GetMethod(serviceType, InjectMethodName, bindingFlags);
+                MethodInfo injectMethod = _typeMetadataProvider.GetMethod(serviceType, InjectMethodName, BINDING_FLAGS);
                 if (injectMethod == null)
                     goto Loop;
 
@@ -262,7 +262,7 @@ namespace UnityEngine.DependencyInjection
 
         public void UnregisterSceneServices(Scene scene)
         {
-            throwIfUninitialized();
+            throwIfUninitialized(nameof(UnregisterSceneServices));
 
             if (!_services.ContainsKey(scene.handle)) {
                 _logger.LogWarning($"Cannot unregister services from scene '{scene.name}', as none have been registered. Are you trying to destroy multiple service collections from the same scene?");
@@ -324,10 +324,10 @@ namespace UnityEngine.DependencyInjection
             if (!resolved)
                 throw new KeyNotFoundException($"{clientName} has a dependency of Type '{serviceType.FullName}' with tag '{tag}', but no matching service was registered. Did you forget to tag a service?");
         }
-        private void throwIfUninitialized()
+        private void throwIfUninitialized(string methodName)
         {
             if (!Initialized)
-                throw new InvalidOperationException($"Must call {nameof(Initialize)}() on a {nameof(DependencyInjector)} before using any of its business methods.");
+                throw new InvalidOperationException($"Must call {nameof(Initialize)}() on a {nameof(DependencyInjector)} before calling its '{methodName}' method.");
         }
 
     }
