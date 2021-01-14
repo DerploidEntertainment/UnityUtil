@@ -8,6 +8,7 @@ namespace UnityEngine
 
         // HIDDEN FIELDS
         protected IUpdater Updater;
+        private IRuntimeIdProvider _runtimeIdProvider;
 
         public int InstanceID { get; private set; }
 
@@ -21,13 +22,17 @@ namespace UnityEngine
         protected Action<float> BetterFixedUpdate;
         protected Action<float> BetterLateUpdate;
 
-        public void Inject(IUpdater updater) => Updater = updater;
+        public void Inject(IUpdater updater, IRuntimeIdProvider runtimeIdProvider)
+        {
+            Updater = updater;
+            _runtimeIdProvider = runtimeIdProvider;
+        }
 
         // EVENT HANDLERS
         protected override void Awake() {
             base.Awake();
 
-            InstanceID = GetInstanceID();   // A cached int is faster than repeated GetInstanceID() calls, due to method call overhead and some unsafe code in that method
+            InstanceID = _runtimeIdProvider.GetId();
         }
         protected virtual void OnEnable() {
             if (RegisterUpdatesAutomatically) {

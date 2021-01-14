@@ -146,7 +146,7 @@ namespace UnityUtil.Test.EditMode.UI {
         private ScrollRectVelocityClamper getScrollRectVelocityClamper() {
             var clamperObj = new GameObject("test");
             ScrollRectVelocityClamper clamper = clamperObj.AddComponent<ScrollRectVelocityClamper>();
-            clamper.Inject(Mock.Of<IUpdater>());
+            clamper.Inject(Mock.Of<IUpdater>(), Mock.Of<IRuntimeIdProvider>());
             clamper.Inject(Mock.Of<IConfigurator>(), new TestLoggerProvider());
 
             return clamper;

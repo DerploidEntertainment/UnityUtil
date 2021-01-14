@@ -3,18 +3,15 @@
  * That repo is licensed under the Apache License 2.0: https://spdx.org/licenses/Apache-2.0.html
  * That license requires me to document changes, so... 
  *      - I made a couple tweaks to satisfy Visual Studio's compiler/style warnings
- *      - It now derives from the UnityUtil Updatable class so that its part of our custom, managed update loop
+ *      - It no longer derives from MonoBehaviour, and is just a simple class that registers itself with the update system
  *      - Added it to the UnityEngine namespace, like the rest of UnityUtil
  *      - Split out its public methods into a separate interface for dependency injection
+ *      - Removed the Enqueue(IEnumerator) overload b/c I seldom use coroutines and consider them kind of an anti-pattern
 */
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
-using UnityEngine.DependencyInjection;
-using UnityEngine.Logging;
 
 namespace UnityEngine
 {
@@ -25,53 +22,41 @@ namespace UnityEngine
     /// It can be used to make calls to Unity's main thread for things such as UI manipulation.
     /// It was developed for use in combination with the Firebase Unity plugin, which uses separate threads for event handling.
     /// </summary>
-    public class UnityMainThreadDispatcher : MonoBehaviour, IUnityMainThreadDispatcher
+    public class UnityMainThreadDispatcher : IUnityMainThreadDispatcher
     {
 
-        private IUpdater _updater;
-        private static readonly Queue<Action> s_actionQueue = new Queue<Action>();
+        private readonly IUpdater _updater;
+        private readonly Queue<Action> _actionQueue = new Queue<Action>();
         public int InstanceID { get; private set; }
 
-        [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
-        [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
-        private void Awake()
+        public UnityMainThreadDispatcher(IUpdater updater, IRuntimeIdProvider runtimeIdProvider)
         {
-            DependencyInjector.Instance.ResolveDependenciesOf(this);
-            InstanceID = GetInstanceID();   // A cached int is faster than repeated GetInstanceID() calls, due to method call overhead and some unsafe code in that method
+            _updater = updater;
+            InstanceID = runtimeIdProvider.GetId();
+
+            _updater.RegisterUpdate(InstanceID, processActionQueue);
         }
 
-        public void Inject(IUpdater updater) => _updater = updater;
-
-        [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
-        [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
-        private void OnEnable() => _updater.RegisterUpdate(InstanceID, processActionQueue);
-
-        [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
-        [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
-        private void OnDisable() => _updater.UnregisterUpdate(InstanceID);
+        ~UnityMainThreadDispatcher()
+        {
+            _updater.UnregisterUpdate(InstanceID);
+        }
 
         private void processActionQueue(float deltaTime) {
-            lock (s_actionQueue) {
-                while (s_actionQueue.Count > 0)
-                    s_actionQueue.Dequeue().Invoke();
+            lock (_actionQueue) {
+                while (_actionQueue.Count > 0)
+                    _actionQueue.Dequeue().Invoke();
             }
         }
 
         /// <inheritdoc/>
-        public void Enqueue(IEnumerator action) {
-            lock (s_actionQueue) {
-                s_actionQueue.Enqueue(() => StartCoroutine(action));
-            }
-        }
-
-        /// <inheritdoc/>
-        public void Enqueue(Action action) => Enqueue(actionEnumerator(action));
+        public void Enqueue(Action action) => _actionQueue.Enqueue(action);
 
         /// <inheritdoc/>
         public Task EnqueueAsync(Action action) {
             var tcs = new TaskCompletionSource<bool>();
 
-            Enqueue(actionEnumerator(() => {
+            Enqueue(() => {
                 try {
                     action();
                     tcs.TrySetResult(true);
@@ -82,14 +67,9 @@ namespace UnityEngine
                     tcs.TrySetException(ex);
                 }
                 #pragma warning restore CA1031 // Do not catch general exception types
-            }));
+            });
 
             return tcs.Task;
-        }
-
-        private IEnumerator actionEnumerator(Action action) {
-            action();
-            yield return null;
         }
 
     }
