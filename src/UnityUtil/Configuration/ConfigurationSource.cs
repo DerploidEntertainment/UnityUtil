@@ -1,4 +1,4 @@
-﻿using Sirenix.OdinInspector;
+using Sirenix.OdinInspector;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -22,8 +22,7 @@ namespace UnityEngine
     {
         public static readonly IReadOnlyDictionary<string, object> EmptyConfigs = new Dictionary<string, object>();
 
-        private ILogger _logger;
-        protected IUnityMainThreadDispatcher UnityMainThreadDispatcher;
+        protected ILogger Logger;
 
         protected readonly Dictionary<string, object> LoadedConfigsHidden = new Dictionary<string, object>();
 
@@ -47,18 +46,10 @@ namespace UnityEngine
             LoadContext = ConfigurationLoadContext.Always;
         }
 
-        public void Inject(ILoggerProvider loggerProvider, IUnityMainThreadDispatcher unityMainThreadDispatcher)
-        {
-            UnityMainThreadDispatcher = unityMainThreadDispatcher;
-            _logger = loggerProvider.GetLogger(this);
-        }
+        public void Inject(ILoggerProvider loggerProvider) => Logger = loggerProvider.GetLogger(this);
 
         public abstract IEnumerator Load();
         public IReadOnlyDictionary<string, object> LoadedConfigs => LoadedConfigsHidden;
 
-        protected void Log(string message) => UnityMainThreadDispatcher.Enqueue(() => _logger.Log(message, context: this));
-        protected void LogWarning(string message) => UnityMainThreadDispatcher.Enqueue(() => _logger.LogWarning(message, context: this));
-        protected void LogError(string message) => UnityMainThreadDispatcher.Enqueue(() => _logger.LogError(message, context: this));
     }
-
 }

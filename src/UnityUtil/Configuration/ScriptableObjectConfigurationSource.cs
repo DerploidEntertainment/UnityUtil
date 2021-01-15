@@ -1,6 +1,7 @@
 using System.Collections;
 using System.IO;
 using System.Linq;
+using UnityEngine.Logging;
 
 namespace UnityEngine
 {
@@ -19,7 +20,7 @@ namespace UnityEngine
 
         public override IEnumerator Load() {
             string resFileName = $"{ResourceName}.asset";
-            Log($"Loading configs from ScriptableObject configuration file '{resFileName}'...");
+            Logger.Log($"Loading configs from ScriptableObject configuration file '{resFileName}'...", context: this);
 
             // Load the specified resource file, if it exists
             ResourceRequest req = Resources.LoadAsync<ConfigObject>(ResourceName);
@@ -31,7 +32,7 @@ namespace UnityEngine
                 string notFoundMsg = $"ScriptableObject configuration file ('{resFileName}') could not be found. If this was not expected, make sure that the file exists and is not locked by another application.";
                 if (Required)
                     throw new FileNotFoundException(notFoundMsg, ResourceName);
-                Log(notFoundMsg);
+                Logger.Log(notFoundMsg, context: this);
                 yield break;
             }
 
@@ -42,11 +43,11 @@ namespace UnityEngine
             foreach (var cfgGrp in configGrps) {
                 var keyVals = cfgGrp.ToArray();
                 if (keyVals.Length > 1)
-                    LogWarning($"Duplicate config key ('{cfgGrp.Key}') detected in ScriptableObject configuration file '{resFileName}'. Keeping the last value...");
+                    Logger.LogWarning($"Duplicate config key ('{cfgGrp.Key}') detected in ScriptableObject configuration file '{resFileName}'. Keeping the last value...", context: this);
                 LoadedConfigsHidden.Add(cfgGrp.Key, keyVals[keyVals.Length - 1].Value);
             }
 
-            Log($"Successfully loaded {LoadedConfigs.Count} configs from ScriptableObject configuration file '{resFileName}'.");
+            Logger.Log($"Successfully loaded {LoadedConfigs.Count} configs from ScriptableObject configuration file '{resFileName}'.", context: this);
         }
     }
 
