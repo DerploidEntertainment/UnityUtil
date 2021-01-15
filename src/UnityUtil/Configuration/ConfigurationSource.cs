@@ -11,11 +11,12 @@ namespace UnityEngine
 
     [Flags]
     public enum ConfigurationLoadContext {
-        Never = 0b000,
-        Editor = 0b001,
-        DebugBuild = 0b010,
-        ReleaseBuild = 0b100,
-        Always = 0b111,
+        Never = 0b0000,
+        BuildScript = 0b0001,
+        PlayMode = 0b0010,
+        DebugBuild = 0b0100,
+        ReleaseBuild = 0b1000,
+        Always = 0b1111,
     }
 
     public abstract class ConfigurationSource : ScriptableObject

@@ -66,7 +66,8 @@ namespace UnityEngine
             // Load all configuration sources in parallel
             var loadRoutines = new HashSet<IEnumerator>(configurationSources
                 .Where(x =>
-                    ((x.LoadContext & ConfigurationLoadContext.Editor) > 0 && Application.isEditor) ||
+                    ((x.LoadContext & ConfigurationLoadContext.BuildScript) > 0 && Application.isEditor && !Application.isPlaying) ||
+                    ((x.LoadContext & ConfigurationLoadContext.PlayMode) > 0 && Application.isEditor && Application.isPlaying) ||
                     ((x.LoadContext & ConfigurationLoadContext.DebugBuild) > 0 && !Application.isEditor && Debug.isDebugBuild) ||
                     ((x.LoadContext & ConfigurationLoadContext.ReleaseBuild) > 0 && !Application.isEditor && !Debug.isDebugBuild)
                 )
