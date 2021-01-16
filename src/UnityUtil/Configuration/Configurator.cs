@@ -1,8 +1,6 @@
-using Sirenix.OdinInspector;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
@@ -34,8 +32,9 @@ namespace UnityEngine
 
         private bool _loading = false;
         private bool _recording = false;
-        private readonly Dictionary<string, object> _configs = new Dictionary<string, object>();
         private readonly HashSet<ConfigurationSource> _loadedCfgSources = new HashSet<ConfigurationSource>();
+        private readonly Dictionary<string, object> _configs = new Dictionary<string, object>();
+        private readonly HashSet<(Type, string)> _cachedConfigurations = new HashSet<(Type, string)>();
         private readonly Dictionary<(Type, string), Action<object>> _compiledConfigs = new Dictionary<(Type, string), Action<object>>();
         private readonly Dictionary<(Type, string), int> _uncachedConfigCounts = new Dictionary<(Type, string), int>();
         private readonly Dictionary<(Type, string), int> _cachedConfigCounts = new Dictionary<(Type, string), int>();
@@ -55,9 +54,11 @@ namespace UnityEngine
         /// That is, if configKey is blank, then class instances of the matching type whose config keys
         /// are blank or equal to that type will have their configuration cached.
         /// </remarks>
-        public List<(Type, string ConfigKey)> CachedConfigurations { get; } = new List<(Type, string ConfigKey)>();
+        public IReadOnlyCollection<(Type, string ConfigKey)> CachedConfigurations => _cachedConfigurations;
 
         public Configurator(ILoggerProvider loggerProvider) => _logger = loggerProvider.GetLogger(this);
+
+        #region Loading configuration sources
 
         public event EventHandler<IReadOnlyDictionary<string, object>> LoadingComplete;
 
@@ -131,7 +132,6 @@ namespace UnityEngine
             Application.isEditor
                 ? (Application.isPlaying ? ConfigurationLoadContext.PlayMode : ConfigurationLoadContext.BuildScript)
                 : (Debug.isDebugBuild ? ConfigurationLoadContext.DebugBuild : ConfigurationLoadContext.ReleaseBuild);
-
         private void finishLoading(IEnumerable<ConfigurationSource> configurationSources)
         {
             // Once all config sources have been loaded, deduplicate keys in the order provided
@@ -147,6 +147,12 @@ namespace UnityEngine
 
             _loading = false;
         }
+
+        #endregion
+
+        #region Applying configs to clients
+
+        public void CacheConfiguration(Type clientType, string configKey) => _cachedConfigurations.Add((clientType, configKey));
 
         public void Configure(object client, string configKey)
         {
@@ -272,6 +278,8 @@ namespace UnityEngine
 
             return true;
         }
+
+        #endregion
 
     }
 

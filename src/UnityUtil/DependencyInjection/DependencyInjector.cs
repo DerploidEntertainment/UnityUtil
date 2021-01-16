@@ -45,8 +45,6 @@ namespace UnityEngine.DependencyInjection
         private ILogger _logger = Debug.unityLogger;
         private ITypeMetadataProvider _typeMetadataProvider;
 
-        private readonly HashSet<Type> _cachedResolutionTypes = new HashSet<Type>();
-        private readonly IDictionary<Type, List<Action<object>>> _compiledInject = new Dictionary<Type, List<Action<object>>>();
         private readonly Dictionary<int, Dictionary<Type, Dictionary<string, Service>>> _services =
             new Dictionary<int, Dictionary<Type, Dictionary<string, Service>>>();
 
@@ -56,30 +54,19 @@ namespace UnityEngine.DependencyInjection
         private readonly HashSet<Type> _injectedTypes = new HashSet<Type>();
 
         private bool _recording = false;
+        private readonly HashSet<Type> _cachedResolutionTypes;
+        private readonly IDictionary<Type, List<Action<object>>> _compiledInject = new Dictionary<Type, List<Action<object>>>();
         private readonly Dictionary<Type, int> _uncachedResolutionCounts = new Dictionary<Type, int>();
         private readonly Dictionary<Type, int> _cachedResolutionCounts = new Dictionary<Type, int>();
 
-        /// <summary>
-        /// <para>
-        /// Use these rules to cache commonly resolved dependencies, speeding up Scene load times.
-        /// We use this whitelist approach because caching ALL dependency resolutions could use up significant memory, and could actually
-        /// worsen performance if many of the dependencies were only to be resolved by one client.
-        /// </para>
-        /// <para>
-        /// After a class instance with one of these types has had its dependences resolved via reflection,
-        /// the reflected metadata and matching services will be cached, so that
-        /// subsequent clients of the same type will have their dependencies injected much faster.
-        /// This is useful if you know you will have many client components in a scene with the same type.
-        /// </para>
-        /// </summary>
-        public List<Type> CachedResolutionTypes { get; } = new List<Type>();
+        #region Constructors/initialization
 
         /// <summary>
         /// DO NOT USE THIS CONSTRUCTOR. It exists purely for unit testing
         /// </summary>
         internal DependencyInjector(IEnumerable<Type> cachedResolutionTypes)
         {
-            CachedResolutionTypes = new List<Type>(cachedResolutionTypes);
+            _cachedResolutionTypes = new HashSet<Type>(cachedResolutionTypes);
         }
 
         public bool Initialized { get; private set; } = false;
@@ -92,11 +79,17 @@ namespace UnityEngine.DependencyInjection
             _typeMetadataProvider = typeMetadataProvider;
             _logger = loggerProvider.GetLogger(this);
 
-            for (int t = 0; t < CachedResolutionTypes.Count; ++t)
-                _cachedResolutionTypes.Add(CachedResolutionTypes[t]);
-
             Initialized = true;
         }
+        private void throwIfUninitialized(string methodName)
+        {
+            if (!Initialized)
+                throw new InvalidOperationException($"Must call {nameof(Initialize)}() on a {nameof(DependencyInjector)} before calling its '{methodName}' method.");
+        }
+
+        #endregion
+
+        #region Service registration
 
         public void RegisterService(string serviceTypeName, object instance, Scene? scene = null)
         {
@@ -158,6 +151,26 @@ namespace UnityEngine.DependencyInjection
             }
         }
 
+        #endregion
+
+        #region Resolving client dependencies
+
+
+        /// <summary>
+        /// <para>
+        /// Use these rules to cache commonly resolved dependencies, speeding up Scene load times.
+        /// We use this whitelist approach because caching ALL dependency resolutions could use up significant memory, and could actually
+        /// worsen performance if many of the dependencies were only to be resolved by one client.
+        /// </para>
+        /// <para>
+        /// After a class instance with one of these types has had its dependences resolved via reflection,
+        /// the reflected metadata and matching services will be cached, so that
+        /// subsequent clients of the same type will have their dependencies injected much faster.
+        /// This is useful if you know you will have many client components in a scene with the same type.
+        /// </para>
+        /// </summary>
+        public IReadOnlyCollection<Type> CachedResolutionTypes => _cachedResolutionTypes;
+
         /// <summary>
         /// Toggles recording how many times service <see cref="Type"/>s are resolved at runtime, for optimization purposes.
         /// </summary>
@@ -176,6 +189,8 @@ namespace UnityEngine.DependencyInjection
                 _logger?.Log($"{(_recording ? "Started" : "Stopped")} recording dependency resolutions");
             }
         }
+
+        public void CacheResolution(Type clientType) => _cachedResolutionTypes.Add(clientType);
 
         /// <summary>
         /// Get the number of times that each service <see cref="Type"/> has been resolved at runtime.
@@ -315,11 +330,8 @@ namespace UnityEngine.DependencyInjection
             if (!resolved)
                 throw new KeyNotFoundException($"{clientName} has a dependency of Type '{serviceType.FullName}' with tag '{tag}', but no matching service was registered. Did you forget to tag a service?");
         }
-        private void throwIfUninitialized(string methodName)
-        {
-            if (!Initialized)
-                throw new InvalidOperationException($"Must call {nameof(Initialize)}() on a {nameof(DependencyInjector)} before calling its '{methodName}' method.");
-        }
+
+        #endregion
 
     }
 
