@@ -2,6 +2,7 @@ using Sirenix.OdinInspector;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
@@ -179,8 +180,7 @@ namespace UnityEngine
             for (int f = 0; f < fields.Length; ++f) {
                 FieldInfo field = fields[f];
                 string fieldKey = $"{key}.{field.Name}";
-                object val = getValue(fieldKey, field.FieldType);
-                if (val != null) {
+                if (tryGetTypedValue(fieldKey, field.FieldType, out object val)) {
                     if (cache)
                         memberAssigns.Add(Expression.Assign(Expression.MakeMemberAccess(clientParam, field), Expression.Constant(val)));
                     else
@@ -195,8 +195,7 @@ namespace UnityEngine
             for (int p = 0; p < props.Length; ++p) {
                 PropertyInfo prop = props[p];
                 string propKey = $"{key}.{prop.Name}";
-                object val = getValue(propKey, prop.PropertyType);
-                if (val != null) {
+                if (tryGetTypedValue(propKey, prop.PropertyType, out object val)) {
                     if (cache)
                         memberAssigns.Add(Expression.Assign(Expression.MakeMemberAccess(clientParam, prop), Expression.Constant(val)));
                     else
@@ -252,10 +251,27 @@ namespace UnityEngine
             uncachedConfigCounts: new Dictionary<(Type, string), int>(_uncachedConfigCounts)
         );
 
-        private object getValue(string memberKey, Type memberType) =>
-            _configs.TryGetValue(memberKey, out object val)
-                ? Convert.ChangeType(val, memberType)
-                : null;
+        private bool tryGetTypedValue(string memberKey, Type memberType, out object typedValue)
+        {
+            typedValue = null;
+
+            bool hasValue = _configs.TryGetValue(memberKey, out object configVal);
+            if (!hasValue)
+                return false;
+
+            string errMsg = null;
+            try { typedValue = Convert.ChangeType(configVal, memberType); }
+            catch (InvalidCastException ex) { errMsg = ex.Message; }
+            catch (FormatException ex) { errMsg = ex.Message; }
+            catch (OverflowException ex) { errMsg = ex.Message; }
+
+            if (errMsg != null) {
+                _logger.LogWarning($"Error converting value '{configVal}' to type '{memberType.FullName}' for member '{memberKey}': {errMsg} This config will be skipped.");
+                return false;
+            }
+
+            return true;
+        }
 
     }
 
