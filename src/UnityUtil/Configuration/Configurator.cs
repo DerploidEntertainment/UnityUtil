@@ -104,11 +104,6 @@ namespace UnityEngine
             _loading = false;
         }
 
-        public void Configure(IEnumerable<(object, string)> clients)
-        {
-            foreach ((object clientObj, string configKey) in clients)
-                Configure(clientObj, configKey);
-        }
         public void Configure(object client, string configKey)
         {
             if (string.IsNullOrWhiteSpace(configKey))

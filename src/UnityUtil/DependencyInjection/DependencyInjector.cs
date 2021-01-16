@@ -250,15 +250,6 @@ namespace UnityEngine.DependencyInjection
             if (cachedParentType != null)
                 _compiledInject.Add(cachedParentType, compiledInjectList);
         }
-        /// <summary>
-        /// Inject all dependencies into the specified clients.
-        /// Can be called at runtime to satisfy dependencies of procedurally generated components, e.g., by a spawner.
-        /// </summary>
-        /// <param name="clients">A collection of clients with service dependencies that need to be resolved.</param>
-        public void ResolveDependenciesOf(IEnumerable<object> clients) {
-            foreach (object client in clients)
-                ResolveDependenciesOf(client);
-        }
 
         public void UnregisterSceneServices(Scene scene)
         {
