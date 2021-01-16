@@ -19,6 +19,13 @@ namespace UnityEngine
         Always = 0b1111,
     }
 
+    public enum ConfigurationSourceLoadBehavior
+    {
+        SyncOnly,
+        AsyncOnly,
+        SyncAndAsync,
+    }
+
     public abstract class ConfigurationSource : ScriptableObject
     {
         public static readonly IReadOnlyDictionary<string, object> EmptyConfigs = new Dictionary<string, object>();
@@ -40,6 +47,8 @@ namespace UnityEngine
         [field: ShowInInspector, SerializeField]
         public ConfigurationLoadContext LoadContext { get; private set; }
 
+        public abstract ConfigurationSourceLoadBehavior LoadBehavior { get; }
+
         [Conditional("UNITY_EDITOR")]
         [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
         private void Reset() {
@@ -49,7 +58,8 @@ namespace UnityEngine
 
         public void Inject(ILoggerProvider loggerProvider) => Logger = loggerProvider.GetLogger(this);
 
-        public abstract IEnumerator Load();
+        public virtual void Load() { }
+        public virtual IEnumerator LoadAsync() { yield return null; }
         public IReadOnlyDictionary<string, object> LoadedConfigs => LoadedConfigsHidden;
 
     }

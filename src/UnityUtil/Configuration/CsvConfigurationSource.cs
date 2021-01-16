@@ -18,22 +18,38 @@ namespace UnityEngine
         )]
         public string ResourceName = DefaultResourceName;
 
-        public override IEnumerator Load() {
-            string resFileName = $"{ResourceName}.csv";
-            Logger.Log($"Loading configs from CSV configuration file '{resFileName}'...", context: this);
+        public override ConfigurationSourceLoadBehavior LoadBehavior => ConfigurationSourceLoadBehavior.SyncAndAsync;
 
-            // Load the specified resource CSV file, if it exists
+        public override void Load()
+        {
+            string resFileName = $"{ResourceName}.csv";
+            Logger.Log($"Loading configs synchronously from CSV configuration file '{resFileName}'...", context: this);
+
+            TextAsset txt = Resources.Load<TextAsset>(ResourceName);
+            finishLoading(txt, resFileName);
+        }
+
+        public override IEnumerator LoadAsync()
+        {
+            string resFileName = $"{ResourceName}.csv";
+            Logger.Log($"Loading configs asynchronously from CSV configuration file '{resFileName}'...", context: this);
+
             ResourceRequest req = Resources.LoadAsync<TextAsset>(ResourceName);
             while (!req.isDone)
                 yield return null;
 
             var txt = (TextAsset)req.asset;
+            finishLoading(txt, resFileName);
+        }
+
+        private void finishLoading(TextAsset txt, string resFileName) {
+
             if (txt == null) {
                 string notFoundMsg = $"CSV configuration file ('{resFileName}') could not be found. If this was not expected, make sure that the file exists and is not locked by another application.";
                 if (Required)
                     throw new FileNotFoundException(notFoundMsg, ResourceName);
                 Logger.Log(notFoundMsg, context: this);
-                yield break;
+                return;
             }
 
             // Read the config keys/values into a Dictionary

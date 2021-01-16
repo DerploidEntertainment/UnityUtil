@@ -18,9 +18,21 @@ namespace UnityEngine
         )]
         public string ResourceName = DefaultResourceName;
 
-        public override IEnumerator Load() {
+        public override ConfigurationSourceLoadBehavior LoadBehavior => ConfigurationSourceLoadBehavior.SyncAndAsync;
+
+        public override void Load()
+        {
             string resFileName = $"{ResourceName}.asset";
-            Logger.Log($"Loading configs from ScriptableObject configuration file '{resFileName}'...", context: this);
+            Logger.Log($"Loading configs synchronously from ScriptableObject configuration file '{resFileName}'...", context: this);
+
+            ConfigObject config = Resources.Load<ConfigObject>(ResourceName);
+            finishLoading(config, resFileName);
+        }
+
+        public override IEnumerator LoadAsync()
+        {
+            string resFileName = $"{ResourceName}.asset";
+            Logger.Log($"Loading configs asynchronously from ScriptableObject configuration file '{resFileName}'...", context: this);
 
             // Load the specified resource file, if it exists
             ResourceRequest req = Resources.LoadAsync<ConfigObject>(ResourceName);
@@ -28,12 +40,16 @@ namespace UnityEngine
                 yield return null;
 
             var config = (ConfigObject)req.asset;
+            finishLoading(config, resFileName);
+        }
+
+        private void finishLoading(ConfigObject config, string resFileName) {
             if (config == null) {
                 string notFoundMsg = $"ScriptableObject configuration file ('{resFileName}') could not be found. If this was not expected, make sure that the file exists and is not locked by another application.";
                 if (Required)
                     throw new FileNotFoundException(notFoundMsg, ResourceName);
                 Logger.Log(notFoundMsg, context: this);
-                yield break;
+                return;
             }
 
             // Read the config keys/values into a Dictionary

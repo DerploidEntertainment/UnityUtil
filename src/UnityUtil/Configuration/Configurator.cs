@@ -34,6 +34,7 @@ namespace UnityEngine
         private bool _loading = false;
         private bool _recording = false;
         private readonly Dictionary<string, object> _configs = new Dictionary<string, object>();
+        private readonly HashSet<ConfigurationSource> _loadedCfgSources = new HashSet<ConfigurationSource>();
         private readonly Dictionary<(Type, string), Action<object>> _compiledConfigs = new Dictionary<(Type, string), Action<object>>();
         private readonly Dictionary<(Type, string), int> _uncachedConfigCounts = new Dictionary<(Type, string), int>();
         private readonly Dictionary<(Type, string), int> _cachedConfigCounts = new Dictionary<(Type, string), int>();
@@ -58,38 +59,80 @@ namespace UnityEngine
         public Configurator(ILoggerProvider loggerProvider) => _logger = loggerProvider.GetLogger(this);
 
         public event EventHandler<IReadOnlyDictionary<string, object>> LoadingComplete;
-        public IEnumerator LoadConfigs(IEnumerable<ConfigurationSource> configurationSources)
+
+        public void LoadConfigs(IEnumerable<ConfigurationSource> configurationSources)
+        {
+            List<ConfigurationSource> cfgSourcesToLoad = getConfigurationSourcesToLoad(configurationSources, async: false);
+
+            for (int x = 0; x < cfgSourcesToLoad.Count; ++x) {
+                DependencyInjector.Instance.ResolveDependenciesOf(cfgSourcesToLoad[x]);
+                cfgSourcesToLoad[x].Load();
+                _loadedCfgSources.Add(cfgSourcesToLoad[x]);
+            }
+
+            finishLoading(cfgSourcesToLoad);
+        }
+
+        public IEnumerator LoadConfigsAsync(IEnumerable<ConfigurationSource> configurationSources)
         {
             if (_loading)
                 yield break;
 
-            // Load all configuration sources in parallel
-            var loadRoutines = new HashSet<IEnumerator>(configurationSources
-                .Where(x =>
-                    ((x.LoadContext & ConfigurationLoadContext.BuildScript) > 0 && Application.isEditor && !Application.isPlaying) ||
-                    ((x.LoadContext & ConfigurationLoadContext.PlayMode) > 0 && Application.isEditor && Application.isPlaying) ||
-                    ((x.LoadContext & ConfigurationLoadContext.DebugBuild) > 0 && !Application.isEditor && Debug.isDebugBuild) ||
-                    ((x.LoadContext & ConfigurationLoadContext.ReleaseBuild) > 0 && !Application.isEditor && !Debug.isDebugBuild)
-                )
-                .Select(x => {
-                    DependencyInjector.Instance.ResolveDependenciesOf(x);
-                    return x.Load();
-                })
-            );
-
             _loading = true;
-            var finishedLoadRouties = new List<IEnumerator>(loadRoutines.Count);
-            while (loadRoutines.Count > 0) {
-                foreach (IEnumerator loadRoutine in loadRoutines) {
-                    bool srcStillLoading = loadRoutine.MoveNext();
-                    if (!srcStillLoading)
-                        finishedLoadRouties.Add(loadRoutine);   // Can't just remove from the collection of load routines, since we are still enumerating it
+
+            // Load all configuration sources in parallel
+            List<ConfigurationSource> cfgSourcesToLoad = getConfigurationSourcesToLoad(configurationSources, async: true);
+            var loadingCfgSources = cfgSourcesToLoad.Select(x => (configurationSource: x, enumerator: x.LoadAsync())).ToList();
+
+            while (loadingCfgSources.Count > 0) {
+                for (int x = loadingCfgSources.Count - 1; x >= 0; --x) {
+                    bool srcStillLoading = loadingCfgSources[x].enumerator.MoveNext();
+                    if (!srcStillLoading) {
+                        _loadedCfgSources.Add(loadingCfgSources[x].configurationSource);
+                        loadingCfgSources.RemoveAt(x);
+                    }
                 }
-                loadRoutines.ExceptWith(finishedLoadRouties);
-                finishedLoadRouties.Clear();
                 yield return null;
             }
 
+            finishLoading(cfgSourcesToLoad);
+        }
+
+        private List<ConfigurationSource> getConfigurationSourcesToLoad(IEnumerable<ConfigurationSource> configurationSources, bool async)
+        {
+            ConfigurationLoadContext currLoadContext = getCurrentConfigurationLoadContext();
+
+            var cfgSourcesToLoad = new List<ConfigurationSource>();
+            foreach (ConfigurationSource cfgSrc in configurationSources) {
+                if (
+                    (async && cfgSrc.LoadBehavior == ConfigurationSourceLoadBehavior.SyncOnly) ||
+                    (!async && cfgSrc.LoadBehavior == ConfigurationSourceLoadBehavior.AsyncOnly)
+                ) {
+                    _logger.Log($"{nameof(ConfigurationSource)} '{cfgSrc.name}' will not be loaded because it does not support {(async ? "a" : "")}synchronous loading");
+                    continue;
+                }
+
+                if ((cfgSrc.LoadContext & currLoadContext) == 0) {
+                    _logger.Log($"{nameof(ConfigurationSource)} '{cfgSrc.name}' will not be loaded because it was not set to load in the context '{currLoadContext}'");
+                    continue;
+                }
+
+                if (_loadedCfgSources.Contains(cfgSrc))
+                    continue;
+
+                DependencyInjector.Instance.ResolveDependenciesOf(cfgSrc);
+                cfgSourcesToLoad.Add(cfgSrc);
+            }
+
+            return cfgSourcesToLoad;
+        }
+        private ConfigurationLoadContext getCurrentConfigurationLoadContext() =>
+            Application.isEditor
+                ? (Application.isPlaying ? ConfigurationLoadContext.PlayMode : ConfigurationLoadContext.BuildScript)
+                : (Debug.isDebugBuild ? ConfigurationLoadContext.DebugBuild : ConfigurationLoadContext.ReleaseBuild);
+
+        private void finishLoading(IEnumerable<ConfigurationSource> configurationSources)
+        {
             // Once all config sources have been loaded, deduplicate keys in the order provided
             IEnumerable<(string key, object val)> configs = configurationSources
                 .SelectMany(x => x.LoadedConfigs)

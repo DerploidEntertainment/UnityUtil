@@ -13,7 +13,7 @@ namespace UnityEngine
         private struct AppAttributes { }
 
         private static int s_numLoads = 0;
-        private bool _loaded = false;
+        private bool _fetchComplete = false;
 
         public const string DefaultEnvironment = "Release";
 
@@ -21,22 +21,26 @@ namespace UnityEngine
         [InfoBox("Note that you should only load one Remote Config environment per environment of your app. If you do not, you will likely experience errors with " + nameof(fetchCompleted) + " callbacks being called too many times.")]
         public string Environment = DefaultEnvironment;
 
-        public override IEnumerator Load() {
+        public override ConfigurationSourceLoadBehavior LoadBehavior => ConfigurationSourceLoadBehavior.AsyncOnly;
+
+        public override IEnumerator LoadAsync() {
             Logger.Log($"Loading configs from Remote Config environment '{Environment}'...", context: this);
             if (++s_numLoads > 1)
                 Logger.LogError($"Attempt to load configs from {s_numLoads} Remote Config environments. Only one environment should ever be loaded.", context: this);
+
+            _fetchComplete = false;
 
             ConfigManager.SetEnvironmentID(Environment);
             ConfigManager.FetchCompleted += fetchCompleted;
             ConfigManager.FetchConfigs(new UserAttributes(), new AppAttributes());
 
-            while (!_loaded)
+            while (!_fetchComplete)
                 yield return null;
         }
 
         private void fetchCompleted(ConfigResponse res)
         {
-            _loaded = true;
+            _fetchComplete = true;
 
             if (res.status == ConfigRequestStatus.Failed) {
                 Logger.LogWarning("Something went wrong while loading configuration settings from Remote Config. Using default values.", context: this);
