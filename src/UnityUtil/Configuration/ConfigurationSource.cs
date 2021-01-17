@@ -58,8 +58,8 @@ namespace UnityEngine
 
         public void Inject(ILoggerProvider loggerProvider) => Logger = loggerProvider.GetLogger(this);
 
-        public virtual void Load() { }
-        public virtual IEnumerator LoadAsync() { yield return null; }
+        public virtual void Load() { LoadedConfigsHidden.Clear(); }
+        public virtual IEnumerator LoadAsync() { LoadedConfigsHidden.Clear(); yield return null; }
         public IReadOnlyDictionary<string, object> LoadedConfigs => LoadedConfigsHidden;
 
     }

@@ -23,7 +23,10 @@ namespace UnityEngine
 
         public override ConfigurationSourceLoadBehavior LoadBehavior => ConfigurationSourceLoadBehavior.AsyncOnly;
 
-        public override IEnumerator LoadAsync() {
+        public override IEnumerator LoadAsync()
+        {
+            yield return base.LoadAsync();
+
             Logger.Log($"Loading configs from Remote Config environment '{Environment}'...", context: this);
             if (++s_numLoads > 1)
                 Logger.LogError($"Attempt to load configs from {s_numLoads} Remote Config environments. Only one environment should ever be loaded.", context: this);

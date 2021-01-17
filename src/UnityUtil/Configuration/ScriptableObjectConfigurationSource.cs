@@ -22,6 +22,8 @@ namespace UnityEngine
 
         public override void Load()
         {
+            base.Load();
+
             string resFileName = $"{ResourceName}.asset";
             Logger.Log($"Loading configs synchronously from ScriptableObject configuration file '{resFileName}'...", context: this);
 
@@ -31,6 +33,8 @@ namespace UnityEngine
 
         public override IEnumerator LoadAsync()
         {
+            yield return base.LoadAsync();
+
             string resFileName = $"{ResourceName}.asset";
             Logger.Log($"Loading configs asynchronously from ScriptableObject configuration file '{resFileName}'...", context: this);
 

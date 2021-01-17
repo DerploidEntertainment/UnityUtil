@@ -22,6 +22,8 @@ namespace UnityEngine
 
         public override void Load()
         {
+            base.Load();
+
             string resFileName = $"{ResourceName}.csv";
             Logger.Log($"Loading configs synchronously from CSV configuration file '{resFileName}'...", context: this);
 
@@ -31,6 +33,8 @@ namespace UnityEngine
 
         public override IEnumerator LoadAsync()
         {
+            yield return base.LoadAsync();
+
             string resFileName = $"{ResourceName}.csv";
             Logger.Log($"Loading configs asynchronously from CSV configuration file '{resFileName}'...", context: this);
 
@@ -42,8 +46,8 @@ namespace UnityEngine
             finishLoading(txt, resFileName);
         }
 
-        private void finishLoading(TextAsset txt, string resFileName) {
-
+        private void finishLoading(TextAsset txt, string resFileName)
+        {
             if (txt == null) {
                 string notFoundMsg = $"CSV configuration file ('{resFileName}') could not be found. If this was not expected, make sure that the file exists and is not locked by another application.";
                 if (Required)
