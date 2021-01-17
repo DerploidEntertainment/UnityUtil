@@ -14,7 +14,7 @@ namespace UnityEngine.DependencyInjection
             IEnumerable<Expression> dependencyArgs = injectMethod
                 .GetParameters()
                 .Select((param, p) => Expression.Constant(arguments[p], param.ParameterType));
-            return (Action<object>)Expression.Lambda(
+            return Expression.Lambda<Action<object>>(
                 body: Expression.Call(instance: Expression.Convert(clientParam, injectMethod.DeclaringType), injectMethod, dependencyArgs),
                 name: methodName,
                 parameters: new[] { clientParam }

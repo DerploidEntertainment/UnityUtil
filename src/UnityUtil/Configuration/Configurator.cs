@@ -67,7 +67,6 @@ namespace UnityEngine
             List<ConfigurationSource> cfgSourcesToLoad = getConfigurationSourcesToLoad(configurationSources, async: false);
 
             for (int x = 0; x < cfgSourcesToLoad.Count; ++x) {
-                DependencyInjector.Instance.ResolveDependenciesOf(cfgSourcesToLoad[x]);
                 cfgSourcesToLoad[x].Load();
                 _loadedCfgSources.Add(cfgSourcesToLoad[x]);
             }
@@ -188,7 +187,7 @@ namespace UnityEngine
                 string fieldKey = $"{key}.{field.Name}";
                 if (tryGetTypedValue(fieldKey, field.FieldType, out object val)) {
                     if (cache)
-                        memberAssigns.Add(Expression.Assign(Expression.MakeMemberAccess(clientParam, field), Expression.Constant(val)));
+                        memberAssigns.Add(Expression.Assign(Expression.MakeMemberAccess(clientParam, field), Expression.Constant(val, field.FieldType)));
                     else
                         field.SetValue(client, val);
                     
@@ -203,7 +202,7 @@ namespace UnityEngine
                 string propKey = $"{key}.{prop.Name}";
                 if (tryGetTypedValue(propKey, prop.PropertyType, out object val)) {
                     if (cache)
-                        memberAssigns.Add(Expression.Assign(Expression.MakeMemberAccess(clientParam, prop), Expression.Constant(val)));
+                        memberAssigns.Add(Expression.Assign(Expression.MakeMemberAccess(clientParam, prop), Expression.Constant(val, prop.PropertyType)));
                     else
                         prop.SetValue(client, val);
                     _logger.Log($"Property '{prop.Name}' of {clientType.Name} client {quotedClientName}with config key '{key}' will be configured with value '{val}'");
@@ -212,12 +211,13 @@ namespace UnityEngine
 
             // Cache the configuration now, if requested
             if (cache) {
-                compiledConfig = (Action<object>)Expression.Lambda(
+                compiledConfig = Expression.Lambda<Action<object>>(
                     body: Expression.Block(memberAssigns),
                     name: $"{nameof(Configure)}_{clientType.Name}_Generated",
                     parameters: new[] { clientObjParam }
                 ).Compile();
                 _compiledConfigs.Add((clientType, key), compiledConfig);
+                compiledConfig(client);     // Don't forget to CALL the cached config method!!
                 if (_recording)
                     _cachedConfigCounts[(clientType, key)] = 1;
             }
