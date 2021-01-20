@@ -127,7 +127,7 @@ namespace UnityEngine
 
             return cfgSourcesToLoad;
         }
-        private ConfigurationLoadContext getCurrentConfigurationLoadContext() =>
+        private static ConfigurationLoadContext getCurrentConfigurationLoadContext() =>
             Application.isEditor
                 ? (Application.isPlaying ? ConfigurationLoadContext.PlayMode : ConfigurationLoadContext.BuildScript)
                 : (Debug.isDebugBuild ? ConfigurationLoadContext.DebugBuild : ConfigurationLoadContext.ReleaseBuild);

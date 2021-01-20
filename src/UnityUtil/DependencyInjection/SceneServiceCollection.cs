@@ -46,13 +46,12 @@ namespace UnityEngine.DependencyInjection
             }
         }
 
+        /// <summary>
+        /// Unregisters all services from this collection and any others in the scene.
+        /// There should only be one collection per scene anyway.
+        /// </summary>
         [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
-        private void OnDestroy()
-        {
-            // Unregister all services from this collection and any others in the scene
-            // There should only be one collection per scene anyway
-            DependencyInjector.Instance.UnregisterSceneServices(gameObject.scene);
-        }
+        private void OnDestroy() => DependencyInjector.Instance.UnregisterSceneServices(gameObject.scene);
 
     }
 

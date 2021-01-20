@@ -143,7 +143,7 @@ namespace UnityUtil.Test.EditMode.UI {
             Assert.That(vClamped.y, Is.Zero);
         }
 
-        private ScrollRectVelocityClamper getScrollRectVelocityClamper() {
+        private static ScrollRectVelocityClamper getScrollRectVelocityClamper() {
             var clamperObj = new GameObject("test");
             ScrollRectVelocityClamper clamper = clamperObj.AddComponent<ScrollRectVelocityClamper>();
             clamper.Inject(Mock.Of<IUpdater>(), Mock.Of<IRuntimeIdProvider>());
