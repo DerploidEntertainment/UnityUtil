@@ -3,7 +3,6 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using UnityEngine.Events;
-using UnityEngine.EventSystems;
 using UnityEngine.Logging;
 
 namespace UnityEngine.UI
@@ -16,9 +15,11 @@ namespace UnityEngine.UI
         "(e.g., by changing the size of the Game window or the frustum of the Camera).\n\n" +
         "Also, updates may take a few seconds if the attached RectTransform is deeply nested in the hierarchy."
     )]
-    public class UiBreakpoints : UIBehaviour {
+    public class UiBreakpoints : MonoBehaviour {
 
         private bool _noMatch;
+
+        [ShowInInspector, ReadOnly]
         private float _currentValue;
 
         [Tooltip(
@@ -27,7 +28,6 @@ namespace UnityEngine.UI
         )]
         public BreakpointMode Mode;
 
-        [ShowInInspector, ReadOnly]
         [Tooltip(
             "How will breakpoints be matched against the value specified by " + nameof(Mode) + "? " +
             "You can use this to specify UI that applies at only a specific value, or across a range of values. " +
@@ -68,30 +68,30 @@ namespace UnityEngine.UI
         public UnityEvent NoBreakpointMatched = new UnityEvent();
 
         [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
-        private new void Reset() {
+        private void Reset() {
             Mode = BreakpointMode.SafeAreaAspectRatio;
             MatchMode = BreakpointMatchMode.MinEqualOrGreater;
-
             RecheckMatchesOnResize = true;
         }
 
-        protected override void Start() {
-            base.Start();
-
+        [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
+        private void Start() {
             // Using Start rather than Awake cause we don't want to mess with breakpoints being raised by Awake during Edit Mode tests
             // Awake is called by AddComponent since we've added the ExecuteAlwaysAttribute to this class
 
             if (IsCameraMode)
                 this.AssertAssociation(Camera, nameof(Camera));
 
-            // Get the UI breakpoints and display value (height, width, etc.) requested for consideration
             _currentValue = getModeValue(Mode);
             InvokeMatchingBreakpoints(_currentValue);
         }
 
-        protected override void OnRectTransformDimensionsChange() {
-            base.OnRectTransformDimensionsChange();
-
+        /// <summary>
+        /// This Unity message is not documented in the MonoBehaviour docs, but apparently it IS a message that any MonoBehaviour can receive (not just UIBehaviour)
+        /// See this <a href="https://www.programmersought.com/article/1195140410/">weird and obscure source</a> :P
+        /// </summary>
+        [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
+        private void OnRectTransformDimensionsChange() {
             if (RecheckMatchesOnResize) {
                 _currentValue = getModeValue(Mode);
                 InvokeMatchingBreakpoints(_currentValue);
