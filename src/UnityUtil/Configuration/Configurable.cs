@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Diagnostics;
 using UnityEngine.DependencyInjection;
 using UnityEngine.Logging;
 
-namespace UnityEngine {
-
-    public class Configurable : MonoBehaviour {
-
+namespace UnityEngine
+{
+    public abstract class Configurable : MonoBehaviour
+    {
         protected IConfigurator Configurator;
         protected ILogger Logger;
 
