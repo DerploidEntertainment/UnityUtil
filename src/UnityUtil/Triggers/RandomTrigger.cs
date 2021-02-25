@@ -1,10 +1,9 @@
 ﻿using Sirenix.OdinInspector;
-using UnityEngine;
 
-namespace UnityEngine.Triggers {
-
-    public class RandomTrigger : MonoBehaviour {
-
+namespace UnityEngine.Triggers
+{
+    public class RandomTrigger : MonoBehaviour
+    {
         public SimpleTrigger[] Triggers;
 
         [Button]

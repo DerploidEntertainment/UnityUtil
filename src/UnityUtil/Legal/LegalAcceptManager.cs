@@ -1,4 +1,4 @@
-﻿using Sirenix.OdinInspector;
+using Sirenix.OdinInspector;
 using System;
 using System.Diagnostics;
 using UnityEngine.Events;
@@ -7,11 +7,10 @@ using UnityEngine.Networking;
 using UnityEngine.Storage;
 using UnityEngine.UI;
 
-namespace UnityEngine.Legal {
-
+namespace UnityEngine.Legal
+{
     public class LegalAcceptManager : Configurable
     {
-
         private ILogger _logger;
         private ILocalCache _localCache;
 
@@ -32,12 +31,14 @@ namespace UnityEngine.Legal {
         [Tooltip("If the player has already accepted the latest versions of all legal documents, then this event will be raised instead.")]
         public UnityEvent AlreadyAccepted = new UnityEvent();
 
-        public void Inject(ILoggerProvider loggerProvider, ILocalCache localCache) {
+        public void Inject(ILoggerProvider loggerProvider, ILocalCache localCache)
+        {
             _logger = loggerProvider.GetLogger(this);
             _localCache = localCache;
         }
 
-        protected override void Awake() {
+        protected override void Awake()
+        {
             base.Awake();
 
             this.AssertAssociation(AcceptInitialUi, nameof(AcceptInitialUi));
@@ -52,7 +53,8 @@ namespace UnityEngine.Legal {
             for (int d = 0; d < Documents.Length; ++d)
                 CheckForUpdate(Documents[d], d);
         }
-        internal void CheckForUpdate(LegalDocument doc, int index, DownloadHandler downloadHandler = null, UploadHandler uploadHandler = null) {
+        internal void CheckForUpdate(LegalDocument doc, int index, DownloadHandler downloadHandler = null, UploadHandler uploadHandler = null)
+        {
             if (downloadHandler == null ^ uploadHandler == null)
                 throw new InvalidOperationException();
 
@@ -109,7 +111,8 @@ namespace UnityEngine.Legal {
         }
         public bool HasAccepted { get; private set; }
 
-        public void Accept() {
+        public void Accept()
+        {
             for (int v = 0; v < _latestVersionTags.Length; ++v)
                 _localCache.SetString(Documents[v].CacheKey, _latestVersionTags[v].ToString());
 
@@ -119,7 +122,8 @@ namespace UnityEngine.Legal {
         }
 
         [Button, Conditional("DEBUG")]
-        public void ClearAcceptance() {
+        public void ClearAcceptance()
+        {
             if (_localCache == null) {
                 for (int d = 0; d < Documents.Length; ++d)
                     PlayerPrefs.DeleteKey(Documents[d].CacheKey);
