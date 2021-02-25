@@ -1,4 +1,4 @@
-using Sirenix.OdinInspector;
+﻿using Sirenix.OdinInspector;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -26,6 +26,9 @@ namespace UnityEngine.UI
         private ILogger _logger;
 
         private bool _noMatch;
+
+        [ShowInInspector, ReadOnly, Tooltip("Width x Height")]
+        private Vector2 _currentDimensions;
 
         [ShowInInspector, ReadOnly]
         private float _currentValue;
@@ -61,7 +64,7 @@ namespace UnityEngine.UI
         )]
         public bool RecheckMatchesOnResize = DefaultRecheckMatchesOnResize;
 
-        [Tooltip("Should the dimensions of the screen and safe area be logged in the Editor? Useful for debugging.")]
+        [Tooltip("Should the dimensions of the screen and safe area be logged in the Editor? Useful for debugging, but makes the Console quite noisy.")]
         public bool LogDimensionsInEditor = DefaultLogDimensionsInEditor;
 
         [Tooltip("Should the dimensions of the screen and safe area be logged in a built player? Useful for troubleshooting in Development builds.")]
@@ -120,14 +123,23 @@ namespace UnityEngine.UI
         [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
         private void OnRectTransformDimensionsChange()
         {
-            _logger ??= Debug.unityLogger;
+            if (!RecheckMatchesOnResize)
+                return;
 
-            if (RecheckMatchesOnResize) {
-                _currentValue = getModeValue(Mode);
-                InvokeMatchingBreakpoints(_currentValue);
+            if (Application.isEditor) {
+                _currentDimensions =
+                    IsScreenMode ? new Vector2(Screen.width, Screen.height) :
+                    IsSafeAreaMode ? new Vector2(Screen.safeArea.width, Screen.safeArea.height) :
+                    Camera != null ? new Vector2(Camera.pixelWidth, Camera.pixelHeight) :
+                    Vector2.zero;
             }
+            _currentValue = getModeValue(Mode);
+
+            InvokeMatchingBreakpoints(_currentValue);
         }
 
+        public bool IsScreenMode => Mode == BreakpointMode.ScreenWidth || Mode == BreakpointMode.ScreenHeight || Mode == BreakpointMode.ScreenAspectRatio;
+        public bool IsSafeAreaMode => Mode == BreakpointMode.SafeAreaWidth || Mode == BreakpointMode.SafeAreaHeight || Mode == BreakpointMode.SafeAreaAspectRatio;
         public bool IsCameraMode => Mode == BreakpointMode.CameraWidth || Mode == BreakpointMode.CameraHeight || Mode == BreakpointMode.CameraAspectRatio;
         public bool IsWidthMode => Mode == BreakpointMode.ScreenWidth || Mode == BreakpointMode.SafeAreaWidth || Mode == BreakpointMode.CameraWidth;
         public bool IsHeightMode => Mode == BreakpointMode.ScreenHeight || Mode == BreakpointMode.SafeAreaHeight || Mode == BreakpointMode.CameraHeight;
@@ -168,7 +180,10 @@ namespace UnityEngine.UI
 
         internal const string MsgNegativeModeValue = "UI breakpoints can only be matched against non-negative values. You can ignore this warning if you just restarted the Editor.";
 
-        internal void InvokeMatchingBreakpoints(float modeValue) {
+        internal void InvokeMatchingBreakpoints(float modeValue)
+        {
+            _logger ??= Debug.unityLogger;
+
             if (modeValue < 0f) {
                 _logger.LogWarning(MsgNegativeModeValue);
                 return;
@@ -181,12 +196,12 @@ namespace UnityEngine.UI
             bool log = (Application.isEditor && LogDimensionsInEditor) || (!Application.isEditor && LogDimensionsInPlayer);
             if (log) {
                 _logger.Log(
-                    $"Current doodle dimensions (width x height) are {Screen.width} x {Screen.height} (screen) and {Screen.safeArea.width} x {Screen.safeArea.height} (safe area). " +
+                    $"Current screen dimensions (width x height) are {Screen.width} x {Screen.height} (screen) and {Screen.safeArea.width} x {Screen.safeArea.height} (safe area). " +
                     $"Updating breakpoints with {nameof(Mode)} {Mode} and {nameof(MatchMode)} {MatchMode}..."
                 , context: this);
             }
 
-            // Reset all UI breakpoints to not matched state
+            // Reset all UI breakpoints to not-matched state
             _noMatch = true;
             for (int b = 0; b < Breakpoints.Length; ++b)
                 Breakpoints[b].IsMatched = false;

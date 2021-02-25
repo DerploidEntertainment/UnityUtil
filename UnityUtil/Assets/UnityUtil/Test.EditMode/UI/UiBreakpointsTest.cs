@@ -12,21 +12,76 @@ namespace UnityUtil.Test.EditMode.UI {
     public class UiBreakpointsTest
     {
         [Test]
+        public void ReturnsCorrect_IsScreenMode()
+        {
+            EditModeTestHelpers.ResetScene();
+
+            UiBreakpoints uiBreakpoints = getUiBreakpoints();
+
+            assert(BreakpointMode.ScreenWidth, true);
+            assert(BreakpointMode.ScreenHeight, true);
+            assert(BreakpointMode.ScreenAspectRatio, true);
+
+            assert(BreakpointMode.SafeAreaWidth, false);
+            assert(BreakpointMode.SafeAreaHeight, false);
+            assert(BreakpointMode.SafeAreaAspectRatio, false);
+
+            assert(BreakpointMode.CameraWidth, false);
+            assert(BreakpointMode.CameraHeight, false);
+            assert(BreakpointMode.CameraAspectRatio, false);
+
+
+            void assert(BreakpointMode mode, bool assertion)
+            {
+                uiBreakpoints.Mode = mode;
+                Assert.That(uiBreakpoints.IsScreenMode, assertion ? Is.True : (Constraint)Is.False);
+            }
+        }
+
+        [Test]
+        public void ReturnsCorrect_IsSafeAreaMode()
+        {
+            EditModeTestHelpers.ResetScene();
+
+            UiBreakpoints uiBreakpoints = getUiBreakpoints();
+
+            assert(BreakpointMode.ScreenWidth, false);
+            assert(BreakpointMode.ScreenHeight, false);
+            assert(BreakpointMode.ScreenAspectRatio, false);
+
+            assert(BreakpointMode.SafeAreaWidth, true);
+            assert(BreakpointMode.SafeAreaHeight, true);
+            assert(BreakpointMode.SafeAreaAspectRatio, true);
+
+            assert(BreakpointMode.CameraWidth, false);
+            assert(BreakpointMode.CameraHeight, false);
+            assert(BreakpointMode.CameraAspectRatio, false);
+
+
+            void assert(BreakpointMode mode, bool assertion)
+            {
+                uiBreakpoints.Mode = mode;
+                Assert.That(uiBreakpoints.IsSafeAreaMode, assertion ? Is.True : (Constraint)Is.False);
+            }
+        }
+
+        [Test]
         public void ReturnsCorrect_IsCameraMode() {
             EditModeTestHelpers.ResetScene();
 
             UiBreakpoints uiBreakpoints = getUiBreakpoints();
 
-            assert(BreakpointMode.CameraWidth, true);
-            assert(BreakpointMode.CameraHeight, true);
-            assert(BreakpointMode.CameraAspectRatio, true);
-
             assert(BreakpointMode.ScreenWidth, false);
             assert(BreakpointMode.ScreenHeight, false);
             assert(BreakpointMode.ScreenAspectRatio, false);
+
             assert(BreakpointMode.SafeAreaWidth, false);
             assert(BreakpointMode.SafeAreaHeight, false);
             assert(BreakpointMode.SafeAreaAspectRatio, false);
+
+            assert(BreakpointMode.CameraWidth, true);
+            assert(BreakpointMode.CameraHeight, true);
+            assert(BreakpointMode.CameraAspectRatio, true);
 
 
             void assert(BreakpointMode mode, bool assertion) {
