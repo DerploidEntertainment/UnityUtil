@@ -9,7 +9,8 @@ using UnityEngine.UI;
 
 namespace UnityEngine.Legal {
 
-    public class LegalAcceptManager : Configurable {
+    public class LegalAcceptManager : Configurable
+    {
 
         private ILogger _logger;
         private ILocalCache _localCache;
@@ -106,10 +107,14 @@ namespace UnityEngine.Legal {
                 }
             };
         }
+        public bool HasAccepted { get; private set; }
 
         public void Accept() {
             for (int v = 0; v < _latestVersionTags.Length; ++v)
                 _localCache.SetString(Documents[v].CacheKey, _latestVersionTags[v].ToString());
+
+            HasAccepted = true;
+
             _logger.Log($"User has accepted latest versions all legal documents.", context: this);
         }
 
