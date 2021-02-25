@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Text;
 using UnityEngine.Assertions;
 
-namespace UnityEngine.Logging {
+namespace UnityEngine {
 
     public static class UnityObjectExtensions {
 

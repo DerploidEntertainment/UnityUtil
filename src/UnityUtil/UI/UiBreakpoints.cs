@@ -2,12 +2,12 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using UnityEngine.DependencyInjection;
 using UnityEngine.Events;
 using UnityEngine.Logging;
 
 namespace UnityEngine.UI
 {
-
     [RequireComponent(typeof(RectTransform))]   // So the OnRectTransformDimensionsChange message gets called
     [ExecuteAlways]                             // So the OnRectTransformDimensionsChange message gets called in the Editor too...kind of a necessity for UI tweaking
     [TypeInfoBox(
@@ -15,9 +15,20 @@ namespace UnityEngine.UI
         "(e.g., by changing the size of the Game window or the frustum of the Camera).\n\n" +
         "Also, updates may take a few seconds if the attached RectTransform is deeply nested in the hierarchy."
     )]
-    public class UiBreakpoints : MonoBehaviour {
+    public class UiBreakpoints : MonoBehaviour
+    {
+        public const BreakpointMode DefaultMode = BreakpointMode.SafeAreaAspectRatio;
+        public const BreakpointMatchMode DefaultMatchMode = BreakpointMatchMode.MinEqualOrGreater;
+        public const bool DefaultRecheckMatchesOnResize = true;
+        public const bool DefaultLogDimensionsInEditor = true;
+        public const bool DefaultLogDimensionsInPlayer = false;
+
+        private ILogger _logger;
 
         private bool _noMatch;
+
+        [ShowInInspector, ReadOnly, Tooltip("Width x Height")]
+        private Vector2 _currentDimensions;
 
         [ShowInInspector, ReadOnly]
         private float _currentValue;
@@ -26,7 +37,7 @@ namespace UnityEngine.UI
             "What value will breakpoints be matched against? Can be the width, height, or aspect ratio of the physical device screen, " +
             "the device's 'safe area', or a particular Camera."
         )]
-        public BreakpointMode Mode;
+        public BreakpointMode Mode = DefaultMode;
 
         [Tooltip(
             "How will breakpoints be matched against the value specified by " + nameof(Mode) + "? " +
@@ -38,7 +49,7 @@ namespace UnityEngine.UI
             "if " + nameof(MatchMode) + " is " + nameof(BreakpointMatchMode.MaxEqualOrLess) + ", then only the 576 breakpoint will match (or the 768 breakpoint on a device that's exactly 768 pixels wide); and " +
             "if " + nameof(MatchMode) + " is " + nameof(BreakpointMatchMode.MinEqualOrGreater) + ", then only the 768 breakpoint will match."
             )]
-        public BreakpointMatchMode MatchMode;
+        public BreakpointMatchMode MatchMode = DefaultMatchMode;
 
         [ShowIf(nameof(IsCameraMode))]
         [Tooltip("This is the Camera whose height, width, or aspect ratio will be matched against the provided breakpoints.")]
@@ -51,7 +62,13 @@ namespace UnityEngine.UI
             "Note that, if this value is true, then handlers for the breakpoint match events will run in the Editor " +
             "if they are set to run in 'Editor and Runtime', and then they will run even if this component is disabled."
         )]
-        public bool RecheckMatchesOnResize;
+        public bool RecheckMatchesOnResize = DefaultRecheckMatchesOnResize;
+
+        [Tooltip("Should the dimensions of the screen and safe area be logged in the Editor? Useful for debugging, but makes the Console quite noisy.")]
+        public bool LogDimensionsInEditor = DefaultLogDimensionsInEditor;
+
+        [Tooltip("Should the dimensions of the screen and safe area be logged in a built player? Useful for troubleshooting in Development builds.")]
+        public bool LogDimensionsInPlayer = DefaultLogDimensionsInPlayer;
 
         [InfoBox("No matching breakpoints. Raising " + nameof(NoBreakpointMatched) + " event instead", nameof(_noMatch))]
         [TableList(AlwaysExpanded = true), ValidateInput(nameof(AreBreakpointsValid), "Breakpoint values must be provided in ascending order with no duplicates")]
@@ -68,14 +85,27 @@ namespace UnityEngine.UI
         public UnityEvent NoBreakpointMatched = new UnityEvent();
 
         [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
-        private void Reset() {
-            Mode = BreakpointMode.SafeAreaAspectRatio;
-            MatchMode = BreakpointMatchMode.MinEqualOrGreater;
-            RecheckMatchesOnResize = true;
+        private void Reset()
+        {
+            Mode = DefaultMode;
+            MatchMode = DefaultMatchMode;
+            RecheckMatchesOnResize = DefaultRecheckMatchesOnResize;
+            LogDimensionsInEditor = DefaultLogDimensionsInEditor;
+            LogDimensionsInPlayer = DefaultLogDimensionsInPlayer;
         }
 
         [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
-        private void Start() {
+        private void Awake()
+        {
+            if (DependencyInjector.Instance.Initialized)
+                DependencyInjector.Instance.ResolveDependenciesOf(this);
+        }
+
+        public void Inject(ILoggerProvider loggerProvider) => _logger = loggerProvider.GetLogger(this);
+
+        [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
+        private void Start()
+        {
             // Using Start rather than Awake cause we don't want to mess with breakpoints being raised by Awake during Edit Mode tests
             // Awake is called by AddComponent since we've added the ExecuteAlwaysAttribute to this class
 
@@ -91,13 +121,25 @@ namespace UnityEngine.UI
         /// See this <a href="https://www.programmersought.com/article/1195140410/">weird and obscure source</a> :P
         /// </summary>
         [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
-        private void OnRectTransformDimensionsChange() {
-            if (RecheckMatchesOnResize) {
-                _currentValue = getModeValue(Mode);
-                InvokeMatchingBreakpoints(_currentValue);
+        private void OnRectTransformDimensionsChange()
+        {
+            if (!RecheckMatchesOnResize)
+                return;
+
+            if (Application.isEditor) {
+                _currentDimensions =
+                    IsScreenMode ? new Vector2(Screen.width, Screen.height) :
+                    IsSafeAreaMode ? new Vector2(Screen.safeArea.width, Screen.safeArea.height) :
+                    Camera != null ? new Vector2(Camera.pixelWidth, Camera.pixelHeight) :
+                    Vector2.zero;
             }
+            _currentValue = getModeValue(Mode);
+
+            InvokeMatchingBreakpoints(_currentValue);
         }
 
+        public bool IsScreenMode => Mode == BreakpointMode.ScreenWidth || Mode == BreakpointMode.ScreenHeight || Mode == BreakpointMode.ScreenAspectRatio;
+        public bool IsSafeAreaMode => Mode == BreakpointMode.SafeAreaWidth || Mode == BreakpointMode.SafeAreaHeight || Mode == BreakpointMode.SafeAreaAspectRatio;
         public bool IsCameraMode => Mode == BreakpointMode.CameraWidth || Mode == BreakpointMode.CameraHeight || Mode == BreakpointMode.CameraAspectRatio;
         public bool IsWidthMode => Mode == BreakpointMode.ScreenWidth || Mode == BreakpointMode.SafeAreaWidth || Mode == BreakpointMode.CameraWidth;
         public bool IsHeightMode => Mode == BreakpointMode.ScreenHeight || Mode == BreakpointMode.SafeAreaHeight || Mode == BreakpointMode.CameraHeight;
@@ -138,9 +180,12 @@ namespace UnityEngine.UI
 
         internal const string MsgNegativeModeValue = "UI breakpoints can only be matched against non-negative values. You can ignore this warning if you just restarted the Editor.";
 
-        internal void InvokeMatchingBreakpoints(float modeValue) {
+        internal void InvokeMatchingBreakpoints(float modeValue)
+        {
+            _logger ??= Debug.unityLogger;
+
             if (modeValue < 0f) {
-                Debug.LogWarning(MsgNegativeModeValue);
+                _logger.LogWarning(MsgNegativeModeValue);
                 return;
             }
 
@@ -148,7 +193,15 @@ namespace UnityEngine.UI
             if (Breakpoints.Length == 0)
                 return;
 
-            // Reset all UI breakpoints to not matched state
+            bool log = (Application.isEditor && LogDimensionsInEditor) || (!Application.isEditor && LogDimensionsInPlayer);
+            if (log) {
+                _logger.Log(
+                    $"Current screen dimensions (width x height) are {Screen.width} x {Screen.height} (screen) and {Screen.safeArea.width} x {Screen.safeArea.height} (safe area). " +
+                    $"Updating breakpoints with {nameof(Mode)} {Mode} and {nameof(MatchMode)} {MatchMode}..."
+                , context: this);
+            }
+
+            // Reset all UI breakpoints to not-matched state
             _noMatch = true;
             for (int b = 0; b < Breakpoints.Length; ++b)
                 Breakpoints[b].IsMatched = false;

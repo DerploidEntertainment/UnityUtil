@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using UnityEngine.DependencyInjection;
 using UnityEngine.Logging;
 using UnityEngine.Triggers;
 
@@ -9,9 +11,11 @@ namespace UnityEngine.UI {
         private ILogger _logger;
         private readonly Stack<SimpleTrigger> _popTriggers = new Stack<SimpleTrigger>();
 
-        public void Inject(ILoggerProvider loggerProvider) {
-            _logger = loggerProvider.GetLogger(this);
-        }
+        [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
+        [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
+        private void Awake() => DependencyInjector.Instance.ResolveDependenciesOf(this);
+
+        public void Inject(ILoggerProvider loggerProvider) => _logger = loggerProvider.GetLogger(this);
 
         public void PushUi(SimpleTrigger popTrigger) {
             if (popTrigger == null) {
