@@ -163,12 +163,10 @@ namespace UnityUtil.Editor {
             // Log success/warnings
             string msg;
             int numAttempted = lastChar - firstChar + 1;
-            if (numLoaded == 0)
-                msg = $"Character Sprites were not loaded.  See warnings above.";
-            else if (numLoaded < numAttempted)
-                msg = $"Loaded {numLoaded} / {numAttempted} character Sprites.  See warnings above.";
-            else
-                msg = $"Successfully loaded all {numAttempted} character Sprites!";
+            msg =
+                numLoaded == 0 ? $"Character Sprites were not loaded. See warnings above." :
+                numLoaded < numAttempted ? $"Loaded {numLoaded} / {numAttempted} character Sprites. See warnings above." :
+                $"Successfully loaded all {numAttempted} character Sprites!";
             _logger.Log(msg, context: this);
         }
         internal static string GetAssetName(char character, string templateFileName) {
