@@ -10,7 +10,7 @@ namespace UnityEngine {
     public sealed class AsyncCaller : IDisposable {
 
         private readonly ILogger _logger;
-        private readonly CancellationTokenSource _cts = new CancellationTokenSource();
+        private readonly CancellationTokenSource _cts = new();
 
         public AsyncCaller(ILoggerProvider loggerProvider) {
             _logger = loggerProvider.GetLogger(this);

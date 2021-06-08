@@ -29,7 +29,7 @@ namespace UnityEngine.Legal
         public GameObject AcceptUi;
 
         [Tooltip("If the player has already accepted the latest versions of all legal documents, then this event will be raised instead.")]
-        public UnityEvent AlreadyAccepted = new UnityEvent();
+        public UnityEvent AlreadyAccepted = new();
 
         public void Inject(ILoggerProvider loggerProvider, ILocalCache localCache)
         {

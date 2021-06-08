@@ -51,7 +51,7 @@ namespace UnityEngine {
         }
 
         public static NotImplementedException SwitchDefaultException<T>(T value) where T : Enum =>
-            new NotImplementedException($"Gah! We haven't accounted for {typeof(T).Name} {value} yet!");
+            new($"Gah! We haven't accounted for {typeof(T).Name} {value} yet!");
 
         // HELPERS
         private static string getName(Transform transform, uint numParents, string separator, string formatString) {

@@ -26,7 +26,7 @@ namespace UnityEngine
     {
 
         private readonly IUpdater _updater;
-        private readonly Queue<Action> _actionQueue = new Queue<Action>();
+        private readonly Queue<Action> _actionQueue = new();
         public int InstanceID { get; private set; }
 
         public UnityMainThreadDispatcher(IUpdater updater, IRuntimeIdProvider runtimeIdProvider)

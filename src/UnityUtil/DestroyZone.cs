@@ -11,7 +11,7 @@ namespace UnityEngine {
         public string AttachedRigidbodyTagFilter;
         [Tooltip("If true, then the " + nameof(DestroyZone.AttachedRigidbodyTagFilter) + " will be used as a blacklist (i.e., any enterring Collider will raise the UnityEvent EXCEPT those with an attached Rigidbody matching that Tag); if false, then " + nameof(DestroyZone.AttachedRigidbodyTagFilter) + " will be used as whitelist (i.e., only enterring Colliders with attached Rigidbodies MATCHING the filter will raise the event.)")]
         public bool FilterIsBlacklist = false;
-        public UnityEvent SomethingDestroyed = new UnityEvent();
+        public UnityEvent SomethingDestroyed = new();
 
         private void OnTriggerEnter(Collider other) {
             // Destroy the triggering Collider's GameObject, if requested

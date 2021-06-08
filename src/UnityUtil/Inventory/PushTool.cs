@@ -8,7 +8,7 @@ namespace UnityEngine.Inventory {
     public class PushTool : MonoBehaviour {
 
         private Weapon _weapon;
-        private readonly HashSet<Rigidbody> _pushedRigidbodies = new HashSet<Rigidbody>();
+        private readonly HashSet<Rigidbody> _pushedRigidbodies = new();
 
         // INSPECTOR FIELDS
         public PushToolInfo Info;

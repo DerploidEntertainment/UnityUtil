@@ -44,8 +44,8 @@ namespace UnityEngine.Inventory {
         /// </summary>
         public void ReloadClip() => doReloadClip();
 
-        public AmmoEvent Loaded = new AmmoEvent();
-        public AmmoEvent AmmoReduced = new AmmoEvent();
+        public AmmoEvent Loaded = new();
+        public AmmoEvent AmmoReduced = new();
 
         // EVENT HANDLERS
         private void Awake() {

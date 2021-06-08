@@ -5,11 +5,11 @@ namespace UnityEngine.Triggers {
     public class ComponentLifecycleTrigger : MonoBehaviour {
 
         // INSPECTOR FIELDS
-        public UnityEvent Awoken = new UnityEvent();
-        public UnityEvent Started = new UnityEvent();
-        public UnityEvent Enabled = new UnityEvent();
-        public UnityEvent Disabled = new UnityEvent();
-        public UnityEvent Destroyed = new UnityEvent();
+        public UnityEvent Awoken = new();
+        public UnityEvent Started = new();
+        public UnityEvent Enabled = new();
+        public UnityEvent Disabled = new();
+        public UnityEvent Destroyed = new();
 
         // EVENT HANDLERS
         private void Awake() => Awoken.Invoke();

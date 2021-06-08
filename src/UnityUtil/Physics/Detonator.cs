@@ -13,8 +13,8 @@ namespace UnityEngine {
         public float ExplosionRadius = 4f;
         public LayerMask AffectLayerMask;
 
-        public CancellableUnityEvent Detonating = new CancellableUnityEvent();
-        public DetonateEvent Detonated = new DetonateEvent();
+        public CancellableUnityEvent Detonating = new();
+        public DetonateEvent Detonated = new();
 
         // API INTERFACE
         public void Detonate() {

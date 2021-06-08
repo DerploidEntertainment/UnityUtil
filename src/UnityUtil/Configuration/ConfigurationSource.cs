@@ -32,7 +32,7 @@ namespace UnityEngine
 
         protected ILogger Logger;
 
-        protected readonly Dictionary<string, object> LoadedConfigsHidden = new Dictionary<string, object>();
+        protected readonly Dictionary<string, object> LoadedConfigsHidden = new();
 
         [field: ShowInInspector, SerializeField]
         public bool Required { get; private set; }

@@ -13,7 +13,7 @@ namespace UnityEngine.Triggers {
         public Joint Joint { get; private set; }
 
         public void Break() => Destroy(Joint);
-        public JointEvent Broken = new JointEvent();
+        public JointEvent Broken = new();
 
         private void Awake() => Joint = GetComponent<Joint>();
         private void OnJointBreak(float breakForce) => Broken.Invoke(Joint);

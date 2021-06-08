@@ -41,9 +41,9 @@ namespace UnityEngine.Triggers {
         public int RepeatIncrementAmount;
 
         [Tooltip("This event is raised whenever the encapsulated number DOES NOT reach a desired value.")]
-        public IntEvent ValueNotReached = new IntEvent();
+        public IntEvent ValueNotReached = new();
         [Tooltip("This event is raised whenever the encapsulated number reaches a desired value.")]
-        public IntEvent ValueReached = new IntEvent();
+        public IntEvent ValueReached = new();
 
         public void Increment() => checkValue(++_number);
         public void Decrement() => checkValue(--_number);

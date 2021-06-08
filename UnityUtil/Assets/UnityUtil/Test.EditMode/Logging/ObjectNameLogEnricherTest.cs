@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+using NUnit.Framework;
+using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
 using UnityEngine.Logging;
 using UnityUtil.Editor;
@@ -8,6 +9,7 @@ namespace UnityUtil.Test.EditMode.Logging {
     public class ObjectNameLogEnricherTest {
 
         [Test]
+        [SuppressMessage("Style", "IDE0090:Use 'new(...)'", Justification = "Unity doesn't support C#8 features")]
         public void NonUnityObjectsReturnEmpty() {
             EditModeTestHelpers.ResetScene();
 

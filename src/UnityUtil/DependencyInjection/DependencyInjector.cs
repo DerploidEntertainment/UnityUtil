@@ -40,24 +40,23 @@ namespace UnityEngine.DependencyInjection
 
         private const int DEFAULT_SCENE_HANDLE = -1;
 
-        public static readonly DependencyInjector Instance = new DependencyInjector(Array.Empty<Type>()) { RecordingResolutions = Device.Application.isEditor };
+        public static readonly DependencyInjector Instance = new(Array.Empty<Type>()) { RecordingResolutions = Device.Application.isEditor };
 
         private ILogger _logger = Debug.unityLogger;
         private ITypeMetadataProvider _typeMetadataProvider;
 
-        private readonly Dictionary<int, Dictionary<Type, Dictionary<string, Service>>> _services =
-            new Dictionary<int, Dictionary<Type, Dictionary<string, Service>>>();
+        private readonly Dictionary<int, Dictionary<Type, Dictionary<string, Service>>> _services = new();
 
         /// <summary>
         /// This collection is only a field (rather than a local var) so as to reduce allocations in <see cref="loadDependeciesOfInjectMethod(object, MethodInfo)"/>
         /// </summary>
-        private readonly HashSet<Type> _injectedTypes = new HashSet<Type>();
+        private readonly HashSet<Type> _injectedTypes = new();
 
         private bool _recording = false;
         private readonly HashSet<Type> _cachedResolutionTypes;
         private readonly IDictionary<Type, List<Action<object>>> _compiledInject = new Dictionary<Type, List<Action<object>>>();
-        private readonly Dictionary<Type, int> _uncachedResolutionCounts = new Dictionary<Type, int>();
-        private readonly Dictionary<Type, int> _cachedResolutionCounts = new Dictionary<Type, int>();
+        private readonly Dictionary<Type, int> _uncachedResolutionCounts = new();
+        private readonly Dictionary<Type, int> _cachedResolutionCounts = new();
 
         #region Constructors/initialization
 

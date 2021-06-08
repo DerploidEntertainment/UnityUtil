@@ -8,8 +8,8 @@ namespace UnityEngine.UI
     {
         public SplashScreen.StopBehavior StopBehavior;
 
-        public UnityEvent StartedDrawing = new UnityEvent();
-        public UnityEvent StoppedDrawing = new UnityEvent();
+        public UnityEvent StartedDrawing = new();
+        public UnityEvent StoppedDrawing = new();
 
         public void Begin()
         {

@@ -9,7 +9,7 @@ namespace UnityEngine.Inputs {
 
         // HIDDEN FIELDS
         private readonly IList<ToggleTrigger> _toggled = new List<ToggleTrigger>();
-        private readonly HashSet<ToggleTrigger> _triggerBuffer = new HashSet<ToggleTrigger>();
+        private readonly HashSet<ToggleTrigger> _triggerBuffer = new();
 
         // INSPECTOR FIELDS
         [Header("Raycasting")]

@@ -20,7 +20,7 @@ namespace UnityEngine.Inventory {
 
         public WeaponInfo Info;
 
-        public AttackEvent Attacked = new AttackEvent();
+        public AttackEvent Attacked = new();
 
         public float AccuracyConeHalfAngle => Mathf.LerpAngle(Info.InitialConeHalfAngle, Info.FinalConeHalfAngle, _accuracyLerpT);
 

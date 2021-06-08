@@ -32,12 +32,12 @@ namespace UnityEngine
 
         private bool _loading = false;
         private bool _recording = false;
-        private readonly HashSet<ConfigurationSource> _loadedCfgSources = new HashSet<ConfigurationSource>();
-        private readonly Dictionary<string, object> _configs = new Dictionary<string, object>();
-        private readonly HashSet<(Type, string)> _cachedConfigurations = new HashSet<(Type, string)>();
-        private readonly Dictionary<(Type, string), Action<object>> _compiledConfigs = new Dictionary<(Type, string), Action<object>>();
-        private readonly Dictionary<(Type, string), int> _uncachedConfigCounts = new Dictionary<(Type, string), int>();
-        private readonly Dictionary<(Type, string), int> _cachedConfigCounts = new Dictionary<(Type, string), int>();
+        private readonly HashSet<ConfigurationSource> _loadedCfgSources = new();
+        private readonly Dictionary<string, object> _configs = new();
+        private readonly HashSet<(Type, string)> _cachedConfigurations = new();
+        private readonly Dictionary<(Type, string), Action<object>> _compiledConfigs = new();
+        private readonly Dictionary<(Type, string), int> _uncachedConfigCounts = new();
+        private readonly Dictionary<(Type, string), int> _cachedConfigCounts = new();
 
         /// <summary>
         /// Use these rules to cache commonly resolved configurations, speeding up Scene load times.

@@ -90,8 +90,8 @@ namespace UnityEngine {
 
         // API INTERFACE
         public Liftable CurrentLiftable => _liftable;
-        public LiftablePickupEvent LoadPickedUp = new LiftablePickupEvent();
-        public LiftableReleaseEvent LoadReleased = new LiftableReleaseEvent();
+        public LiftablePickupEvent LoadPickedUp = new();
+        public LiftableReleaseEvent LoadReleased = new();
 
         // HELPER FUNCTIONS
         private void pickup() {
