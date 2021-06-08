@@ -70,7 +70,7 @@ namespace UnityEngine.Legal
             reqOp.completed += op => {
                 // Parse the tag from the response
                 string webTag = null;
-                if (req.isNetworkError || req.isHttpError)
+                if (req.result != UnityWebRequest.Result.Success)
                     _logger.LogWarning($"Unable to fetch latest version of legal document with URI '{doc.LatestVersionUri.Uri}'. Error received: {req.error}", context: this);
                 else
                     webTag = req.GetResponseHeader(doc.TagHeader);

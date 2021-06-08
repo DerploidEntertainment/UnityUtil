@@ -131,7 +131,7 @@ namespace UnityUtil.Test.EditMode.Logging {
             EditModeTestHelpers.ExpectLog(LogType.Log, $"Derp | Herp | {msg}");
         }
 
-        private DebugLoggerProvider getDebugLoggerProvider(string separator = " | ", params LogEnricher[] logEnrichers) {
+        private static DebugLoggerProvider getDebugLoggerProvider(string separator = " | ", params LogEnricher[] logEnrichers) {
             var obj = new GameObject();
             DebugLoggerProvider loggerProvider = obj.AddComponent<DebugLoggerProvider>();
             loggerProvider.Inject(Mock.Of<IConfigurator>(), loggerProvider);
