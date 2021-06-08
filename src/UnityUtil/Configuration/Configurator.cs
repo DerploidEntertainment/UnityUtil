@@ -128,8 +128,8 @@ namespace UnityEngine
             return cfgSourcesToLoad;
         }
         private static ConfigurationLoadContext getCurrentConfigurationLoadContext() =>
-            Application.isEditor
-                ? (Application.isPlaying ? ConfigurationLoadContext.PlayMode : ConfigurationLoadContext.BuildScript)
+            Device.Application.isEditor
+                ? (Device.Application.isPlaying ? ConfigurationLoadContext.PlayMode : ConfigurationLoadContext.BuildScript)
                 : (Debug.isDebugBuild ? ConfigurationLoadContext.DebugBuild : ConfigurationLoadContext.ReleaseBuild);
         private void finishLoading(IEnumerable<ConfigurationSource> configurationSources)
         {

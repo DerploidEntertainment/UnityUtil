@@ -20,14 +20,14 @@ namespace UnityEngine.UI
 
             DependencyInjector.Instance.ResolveDependenciesOf(this);
 
-            Rect safeArea = Screen.safeArea;
+            Rect safeArea = Device.Screen.safeArea;
             _logger.Log(
                 $"Current anchors of {RectTransform.GetHierarchyNameWithType()} (min, max): ({RectTransform.anchorMin}, {RectTransform.anchorMax}). " +
-                $"Updating for current screen (width x height) = ({Screen.width} x {Screen.height}) and safe area (width x height) = ({safeArea.width} x {safeArea.height})"
+                $"Updating for current screen (width x height) = ({Device.Screen.width} x {Device.Screen.height}) and safe area (width x height) = ({safeArea.width} x {safeArea.height})"
             , context: this);
 
             // Calculations inspired by this article: https://connect.unity.com/p/updating-your-gui-for-the-iphone-x-and-other-notched-devices
-            var scaleVect = new Vector2(1f / Screen.width, 1f / Screen.height);
+            var scaleVect = new Vector2(1f / Device.Screen.width, 1f / Device.Screen.height);
             RectTransform.anchorMin = safeArea.position * scaleVect;
             RectTransform.anchorMax = (safeArea.position + safeArea.size) * scaleVect;
 

@@ -1,6 +1,4 @@
-﻿using UnityEngine.Logging;
-
-namespace UnityEngine.UI
+﻿namespace UnityEngine.UI
 {
     public class VersionText : Configurable {
 
@@ -10,7 +8,7 @@ namespace UnityEngine.UI
 
         [Tooltip(
             "This string is used to populate " + nameof(Text) + ". " +
-            "'{0}' will be replaced with " + nameof(Application) + "." + nameof(Application.version) + " (from Project Settings > Player > Other settings > Identification > Version), " +
+            "'{0}' will be replaced with " + nameof(Device.Application) + "." + nameof(Device.Application.version) + " (from Project Settings > Player > Other settings > Identification > Version), " +
             "'{1}' will be replaced with " + nameof(AppVersion.Description) + ", and " +
             "'{2}' will be replaced with " + nameof(AppVersion.BuildNumber) + ". " +
             "See here for details on string composite formatting: https://docs.microsoft.com/en-us/dotnet/standard/base-types/composite-formatting"

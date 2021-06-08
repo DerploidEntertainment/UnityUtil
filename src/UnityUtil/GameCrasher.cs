@@ -2,6 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
 using UnityEngine.Diagnostics;
+using Application = UnityEngine.Device.Application;
 
 namespace HighHandHoldem.Unity
 {

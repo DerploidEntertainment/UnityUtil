@@ -40,7 +40,7 @@ namespace UnityEngine.DependencyInjection
 
         private const int DEFAULT_SCENE_HANDLE = -1;
 
-        public static readonly DependencyInjector Instance = new DependencyInjector(Array.Empty<Type>()) { RecordingResolutions = Application.isEditor };
+        public static readonly DependencyInjector Instance = new DependencyInjector(Array.Empty<Type>()) { RecordingResolutions = Device.Application.isEditor };
 
         private ILogger _logger = Debug.unityLogger;
         private ITypeMetadataProvider _typeMetadataProvider;
