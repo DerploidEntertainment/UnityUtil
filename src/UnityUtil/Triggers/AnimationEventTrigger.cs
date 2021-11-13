@@ -1,28 +1,50 @@
-﻿using System;
-using UnityEngine;
+﻿using Sirenix.OdinInspector;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using UnityEngine.Events;
 
-namespace UnityEngine {
+namespace UnityEngine.Triggers
+{
+    [Serializable]
+    public class NamedAnimationEvent
+    {
+        public string Name;
+        public UnityEvent Trigger = new();
+    }
 
     [RequireComponent(typeof(Animator))]
     public class AnimationEventTrigger : MonoBehaviour {
 
-        [Serializable]
-        public class AnimationEventTriggerEvent : UnityEvent<Animator, string> { }
+        private Dictionary<string, UnityEvent> _triggerDict = new();
 
-        // HIDDEN FIELDS
-        public Animator Animator { get; private set; }
+        [SerializeField, LabelText("Triggers")]
+        [SuppressMessage("Style", "IDE0044:Add readonly modifier", Justification = "Unity doesn't serialize readonly fields")]
+        private NamedAnimationEvent[] _triggers;
 
-        // EVENT HANDLERS
-        private void Awake() => Animator = GetComponent<Animator>();
+        [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
+        [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
+        private void Awake() => _triggerDict = _triggers.ToDictionary(x => x.Name, x => x.Trigger);
 
-        // API INTERFACE
-        public AnimationEventTriggerEvent AnimationEventOccurred = new AnimationEventTriggerEvent();
         /// <summary>
-        /// Warning! This method is not meant to be called programmatically.  Instead, create an <see cref="AnimationClip"/> with an <see cref="AnimationEvent"/> that calls this method.
+        /// Warning! This method is not meant to be called programmatically.
+        /// Instead, create an <see cref="AnimationClip"/> with an <see cref="AnimationEvent"/> that calls this method.
         /// </summary>
         /// <param name="eventName">Name of the event that was raised by the <see cref="UnityEngine.Animator"/></param>
-        public void RaiseEvent(string eventName) => AnimationEventOccurred.Invoke(Animator, eventName);
+        public void RaiseEvent(string eventName) {
+            if (!_triggerDict.TryGetValue(eventName, out UnityEvent trigger)) {
+                Debug.LogWarning($"No trigger associate with named AnimationEvent '{eventName}'");
+                return;
+            }
+
+            if (trigger == null) {
+                Debug.LogWarning($"Trigger associated with named AnimationEvent '{eventName}' cannot be null");
+                return;
+            }
+
+            trigger.Invoke();
+        }
 
     }
 
