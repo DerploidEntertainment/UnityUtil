@@ -1,5 +1,6 @@
 {
     "name": "UnityUtil.Test.PlayMode",
+    "rootNamespace": "",
     "references": [
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner"
