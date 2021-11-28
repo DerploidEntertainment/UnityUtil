@@ -20,16 +20,16 @@ namespace UnityEngine.Triggers {
         [ToggleGroup(nameof(RaiseBecameEvents), nameof(RaiseBecameEvents))]
         public bool RaiseBecameEvents = true;
         [ToggleGroup(nameof(RaiseBecameEvents), nameof(RaiseBecameEvents)), Tooltip(TRUE_MSG)]
-        public UnityEvent BecameTrue = new UnityEvent();
+        public UnityEvent BecameTrue = new();
         [ToggleGroup(nameof(RaiseBecameEvents), nameof(RaiseBecameEvents)), Tooltip(FALSE_MSG)]
-        public UnityEvent BecameFalse = new UnityEvent();
+        public UnityEvent BecameFalse = new();
 
         [ToggleGroup(nameof(RaiseStillEvents), nameof(RaiseStillEvents))]
         public bool RaiseStillEvents = true;
         [ToggleGroup(nameof(RaiseStillEvents), nameof(RaiseStillEvents)), Tooltip(TRUE_MSG)]
-        public UnityEvent StillTrue = new UnityEvent();
+        public UnityEvent StillTrue = new();
         [ToggleGroup(nameof(RaiseStillEvents), nameof(RaiseStillEvents)), Tooltip(FALSE_MSG)]
-        public UnityEvent StillFalse = new UnityEvent();
+        public UnityEvent StillFalse = new();
 
     }
 

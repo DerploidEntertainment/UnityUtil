@@ -1,9 +1,9 @@
 <Project>
   
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netstandard2.1</TargetFramework>
     <LangVersion>latest</LangVersion>
-    <UnityVersion>2020.1.8f1</UnityVersion>
+    <UnityVersion>2021.2.2f1</UnityVersion>
     <DefineConstants Condition="'$(Configuration)'=='Debug'">UNITY_ASSERTIONS;UNITY_EDITOR</DefineConstants>
 
     <SirenixAssembliesRelativeDir>Assets\Plugins\Sirenix\Assemblies</SirenixAssembliesRelativeDir>
@@ -37,7 +37,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="5.0.3">
+    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="6.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>

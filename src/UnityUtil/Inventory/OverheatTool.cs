@@ -25,7 +25,7 @@ namespace UnityEngine.Inventory {
 
         // API INTERFACE
         public float CurrentHeat { get; private set; } = 0f;
-        public OverheatChangedEvent OverheatStateChanged = new OverheatChangedEvent();
+        public OverheatChangedEvent OverheatStateChanged = new();
 
         // EVENT HANDLERS
         protected override void Awake() {

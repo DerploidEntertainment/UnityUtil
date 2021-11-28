@@ -12,8 +12,8 @@ namespace UnityEngine.Triggers {
         public float TimePassed = 0f;
         public bool Logging = false;
 
-        public UnityEvent Timeout = new UnityEvent();
-        public UnityEvent Stopped = new UnityEvent();
+        public UnityEvent Timeout = new();
+        public UnityEvent Stopped = new();
 
         // API INTERFACE
         public float PercentProgress => TimePassed / Duration;

@@ -23,7 +23,7 @@ namespace UnityEngine {
         }
 
         protected readonly IDictionary<TKey, int> IndexLookup = new Dictionary<TKey, int>();
-        protected readonly List<Element> List = new List<Element>();
+        protected readonly List<Element> List = new();
 
         public int Count => List.Count;
 

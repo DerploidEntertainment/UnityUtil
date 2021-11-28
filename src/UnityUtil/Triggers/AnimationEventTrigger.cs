@@ -17,7 +17,7 @@ namespace UnityEngine {
         private void Awake() => Animator = GetComponent<Animator>();
 
         // API INTERFACE
-        public AnimationEventTriggerEvent AnimationEventOccurred = new AnimationEventTriggerEvent();
+        public AnimationEventTriggerEvent AnimationEventOccurred = new();
         /// <summary>
         /// Warning! This method is not meant to be called programmatically.  Instead, create an <see cref="AnimationClip"/> with an <see cref="AnimationEvent"/> that calls this method.
         /// </summary>

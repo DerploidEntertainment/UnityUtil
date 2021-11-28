@@ -15,7 +15,7 @@ namespace UnityEngine.Inventory {
 
         // INSPECTOR FIELDS
         public float Radius = 1f;
-        public CollectEvent Collected = new CollectEvent();
+        public CollectEvent Collected = new();
 
         // EVENT HANDLERS
         protected virtual void Awake() {

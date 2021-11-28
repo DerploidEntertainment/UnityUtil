@@ -6,8 +6,8 @@ namespace UnityEngine.Triggers.Input {
     public class StartStopInputTrigger : Updatable {
 
         public StartStopInput Input;
-        public UnityEvent InputStarted = new UnityEvent();
-        public UnityEvent InputStopped = new UnityEvent();
+        public UnityEvent InputStarted = new();
+        public UnityEvent InputStopped = new();
 
         protected override void Awake() {
             base.Awake();

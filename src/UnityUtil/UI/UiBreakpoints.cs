@@ -82,7 +82,7 @@ namespace UnityEngine.UI
             "but the only breakpoint provided is for a value of 1200, then no breakpoint " + nameof(UiBreakpoint.Matched) + " events " +
             "will be raised, so this event will be raised instead."
         )]
-        public UnityEvent NoBreakpointMatched = new UnityEvent();
+        public UnityEvent NoBreakpointMatched = new();
 
         [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
         private void Reset()
@@ -126,10 +126,10 @@ namespace UnityEngine.UI
             if (!RecheckMatchesOnResize)
                 return;
 
-            if (Application.isEditor) {
+            if (Device.Application.isEditor) {
                 _currentDimensions =
-                    IsScreenMode ? new Vector2(Screen.width, Screen.height) :
-                    IsSafeAreaMode ? new Vector2(Screen.safeArea.width, Screen.safeArea.height) :
+                    IsScreenMode ? new Vector2(Device.Screen.width, Device.Screen.height) :
+                    IsSafeAreaMode ? new Vector2(Device.Screen.safeArea.width, Device.Screen.safeArea.height) :
                     Camera != null ? new Vector2(Camera.pixelWidth, Camera.pixelHeight) :
                     Vector2.zero;
             }
@@ -163,13 +163,13 @@ namespace UnityEngine.UI
 
         private float getModeValue(BreakpointMode mode) =>
             mode switch {
-                BreakpointMode.ScreenWidth => Screen.width,
-                BreakpointMode.ScreenHeight => Screen.height,
-                BreakpointMode.ScreenAspectRatio => (float)Screen.width / Screen.height,
+                BreakpointMode.ScreenWidth => Device.Screen.width,
+                BreakpointMode.ScreenHeight => Device.Screen.height,
+                BreakpointMode.ScreenAspectRatio => (float)Device.Screen.width / Device.Screen.height,
 
-                BreakpointMode.SafeAreaWidth => Screen.safeArea.width,
-                BreakpointMode.SafeAreaHeight => Screen.safeArea.height,
-                BreakpointMode.SafeAreaAspectRatio => Screen.safeArea.width / Screen.safeArea.height,
+                BreakpointMode.SafeAreaWidth => Device.Screen.safeArea.width,
+                BreakpointMode.SafeAreaHeight => Device.Screen.safeArea.height,
+                BreakpointMode.SafeAreaAspectRatio => Device.Screen.safeArea.width / Device.Screen.safeArea.height,
 
                 BreakpointMode.CameraWidth => Camera.pixelWidth,
                 BreakpointMode.CameraHeight => Camera.pixelHeight,
@@ -193,10 +193,10 @@ namespace UnityEngine.UI
             if (Breakpoints.Length == 0)
                 return;
 
-            bool log = (Application.isEditor && LogDimensionsInEditor) || (!Application.isEditor && LogDimensionsInPlayer);
+            bool log = (Device.Application.isEditor && LogDimensionsInEditor) || (!Device.Application.isEditor && LogDimensionsInPlayer);
             if (log) {
                 _logger.Log(
-                    $"Current screen dimensions (width x height) are {Screen.width} x {Screen.height} (screen) and {Screen.safeArea.width} x {Screen.safeArea.height} (safe area). " +
+                    $"Current screen dimensions (width x height) are {Device.Screen.width} x {Device.Screen.height} (screen) and {Device.Screen.safeArea.width} x {Device.Screen.safeArea.height} (safe area). " +
                     $"Updating breakpoints with {nameof(Mode)} {Mode} and {nameof(MatchMode)} {MatchMode}..."
                 , context: this);
             }

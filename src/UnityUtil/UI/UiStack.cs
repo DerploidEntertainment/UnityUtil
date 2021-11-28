@@ -9,7 +9,7 @@ namespace UnityEngine.UI {
     public class UiStack : MonoBehaviour {
 
         private ILogger _logger;
-        private readonly Stack<SimpleTrigger> _popTriggers = new Stack<SimpleTrigger>();
+        private readonly Stack<SimpleTrigger> _popTriggers = new();
 
         [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
         [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]

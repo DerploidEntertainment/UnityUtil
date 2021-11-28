@@ -9,9 +9,9 @@ namespace UnityEngine.Inventory {
         public GameObject Root;
         public float Amount = 25f;
         public CollectibleDestroyMode DestroyMode = CollectibleDestroyMode.WhenUsed;
-        public CollectEvent Detected = new CollectEvent();
-        public CollectEvent Used = new CollectEvent();
-        public CollectEvent Emptied = new CollectEvent();
+        public CollectEvent Detected = new();
+        public CollectEvent Used = new();
+        public CollectEvent Emptied = new();
 
         private void Awake() {
             this.AssertAssociation(Root, nameof(this.Root));

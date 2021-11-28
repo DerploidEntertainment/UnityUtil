@@ -15,7 +15,7 @@ namespace UnityEngine.Triggers {
     [RequireComponent(typeof(Collider2D))]
     public abstract class ColliderTriggerBase2D : MonoBehaviour {
 
-        public UnityEvent Triggered = new UnityEvent();
+        public UnityEvent Triggered = new();
 
         public Collider2D AttachedCollider { get; private set; }
 

@@ -1,5 +1,6 @@
 {
     "name": "UnityUtil.Test.PlayMode",
+    "rootNamespace": "",
     "references": [
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner"
@@ -10,7 +11,6 @@
     "overrideReferences": true,
     "precompiledReferences": [
         "UnityUtil.dll",
-        "Moq.dll",
         "nunit.framework.dll"
     ],
     "autoReferenced": false,

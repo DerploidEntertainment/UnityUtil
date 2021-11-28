@@ -20,9 +20,9 @@ namespace UnityEngine.Inventory {
         /// The current charge of this <see cref="Tool"/>.  0 is completely uncharged, 1 is completely charged.
         /// </summary>
         public float CurrentCharge { get; private set; } = 0f;
-        public CancellableUnityEvent Using = new CancellableUnityEvent();
-        public UnityEvent Used = new UnityEvent();
-        public UnityEvent UseFailed = new UnityEvent();
+        public CancellableUnityEvent Using = new();
+        public UnityEvent Used = new();
+        public UnityEvent UseFailed = new();
 
         // EVENT HANDLERS
         protected override void Awake() {

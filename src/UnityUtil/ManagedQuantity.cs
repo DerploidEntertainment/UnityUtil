@@ -22,10 +22,10 @@ namespace UnityEngine {
         public float Value = 100f;
         public float MinValue = 0f;
         public float MaxValue = 100f;
-        public QuantityEvent FullyFilled = new QuantityEvent();
-        public QuantityEvent Changed = new QuantityEvent();
-        public QuantityEvent FullyDepleted = new QuantityEvent();
-        public QuantityEvent Restored = new QuantityEvent();
+        public QuantityEvent FullyFilled = new();
+        public QuantityEvent Changed = new();
+        public QuantityEvent FullyDepleted = new();
+        public QuantityEvent Restored = new();
 
         // API
         public static float ConvertAmount(float amount, ChangeMode fromChangeMode, ChangeMode toChangeMode, float currentAmount, float maxAmount) {

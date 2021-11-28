@@ -8,11 +8,11 @@ namespace UnityEngine.Triggers
     {
         private ILogger _logger;
 
-        public UnityEvent Focused = new UnityEvent();
-        public UnityEvent Unfocused = new UnityEvent();
-        public UnityEvent Paused = new UnityEvent();
-        public UnityEvent Unpaused = new UnityEvent();
-        public UnityEvent Quitting = new UnityEvent();
+        public UnityEvent Focused = new();
+        public UnityEvent Unfocused = new();
+        public UnityEvent Paused = new();
+        public UnityEvent Unpaused = new();
+        public UnityEvent Quitting = new();
 
         public void Inject(ILoggerProvider loggerProvider) => _logger = loggerProvider.GetLogger(this);
 

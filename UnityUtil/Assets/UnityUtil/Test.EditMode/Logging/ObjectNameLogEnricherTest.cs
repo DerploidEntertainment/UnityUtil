@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
 using UnityEngine.Logging;
 using UnityUtil.Editor;
@@ -8,6 +9,7 @@ namespace UnityUtil.Test.EditMode.Logging {
     public class ObjectNameLogEnricherTest {
 
         [Test]
+        [SuppressMessage("Style", "IDE0090:Use 'new(...)'", Justification = "Unity doesn't support C#8 features")]
         public void NonUnityObjectsReturnEmpty() {
             EditModeTestHelpers.ResetScene();
 
@@ -38,7 +40,7 @@ namespace UnityUtil.Test.EditMode.Logging {
             ObjectNameLogEnricher enricher = getObjectNameLogEnricher();
             string log;
 
-            AudioClip audioClip = AudioClip.Create("audio", lengthSamples: 1, channels: 1, frequency: 1000, stream: false);
+            var audioClip = AudioClip.Create("audio", lengthSamples: 1, channels: 1, frequency: 1000, stream: false);
             log = enricher.GetEnrichedLog(audioClip);
             Assert.That(log, Is.EqualTo("audio"));
 
@@ -89,7 +91,7 @@ namespace UnityUtil.Test.EditMode.Logging {
             Assert.That(log, Is.EqualTo("parent>obj"));
         }
 
-        private ObjectNameLogEnricher getObjectNameLogEnricher(uint numParents = 1u, string ancestorNameSeparator = ">", string formatString = "{0}") {
+        private static ObjectNameLogEnricher getObjectNameLogEnricher(uint numParents = 1u, string ancestorNameSeparator = ">", string formatString = "{0}") {
             ObjectNameLogEnricher enricher = ScriptableObject.CreateInstance<ObjectNameLogEnricher>();
             enricher.NumParents = numParents;
             enricher.AncestorNameSeparator = ancestorNameSeparator;

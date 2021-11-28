@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
-using UnityEngine.Logging;
 
 namespace UnityEngine {
 
     [DisallowMultipleComponent]
     public class Updater : MonoBehaviour, IUpdater
     {
-        private readonly MultiCollection<int, Action<float>> _updates = new MultiCollection<int, Action<float>>();
-        private readonly MultiCollection<int, Action<float>> _fixed   = new MultiCollection<int, Action<float>>();
-        private readonly MultiCollection<int, Action<float>> _late    = new MultiCollection<int, Action<float>>();
+        private readonly MultiCollection<int, Action<float>> _updates = new();
+        private readonly MultiCollection<int, Action<float>> _fixed = new();
+        private readonly MultiCollection<int, Action<float>> _late = new();
 
         // API INTERFACE
         public void RegisterUpdate(int instanceID, Action<float> action) {

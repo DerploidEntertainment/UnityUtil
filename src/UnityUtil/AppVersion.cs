@@ -9,7 +9,7 @@ namespace UnityEngine
 
         [ReadOnly, ShowInInspector, LabelText(nameof(Version))]
         [PropertyTooltip("This is the version set under Project Settings > Player")]
-        public string Version => Application.version;
+        public string Version => Device.Application.version;
 
         [field: SerializeField, ShowInInspector, LabelText(nameof(Description))]
         [field: Tooltip("This can be any string to describe the version, but will usually be a short phrase like 'The Monster Update'. The numerical, semantic version of the app should be set in Project Settings > Player.")]

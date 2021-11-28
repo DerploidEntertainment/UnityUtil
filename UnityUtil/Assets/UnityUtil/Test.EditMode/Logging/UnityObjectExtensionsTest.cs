@@ -174,7 +174,7 @@ namespace UnityUtil.Test.EditMode.Logging {
             Assert.Throws<UA.AssertionException>(() => behaviour.AssertActiveAndEnabled());
         }
 
-        private GameObject getGameObject(string name, int numParents = 1, string parentNameFormatString = "parent{0}") {
+        private static GameObject getGameObject(string name, int numParents = 1, string parentNameFormatString = "parent{0}") {
             Transform lastParentTrans = null;
             for (int p = 0; p < numParents; ++p) {
                 Transform t = new GameObject(string.Format(parentNameFormatString, p)).transform;

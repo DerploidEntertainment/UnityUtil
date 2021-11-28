@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Application = UnityEngine.Device.Application;
 using UnityEngine.Logging;
 using UnityEngine.SceneManagement;
 

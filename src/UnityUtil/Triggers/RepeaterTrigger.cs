@@ -23,9 +23,9 @@ namespace UnityEngine.Triggers {
         public uint NumPassedTicks = 0u;
         public bool Logging = false;
 
-        public CountEvent Tick = new CountEvent();
-        public UnityEvent Stopped = new UnityEvent();
-        public UnityEvent NumTicksReached = new UnityEvent();
+        public CountEvent Tick = new();
+        public UnityEvent Stopped = new();
+        public UnityEvent NumTicksReached = new();
 
         // API INTERFACE
         public float PercentProgress => TimeSincePreviousTick / TimeBeforeTick;

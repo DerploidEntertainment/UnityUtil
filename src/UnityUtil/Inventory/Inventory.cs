@@ -15,7 +15,7 @@ namespace UnityEngine.Inventory {
     public class Inventory : MonoBehaviour {
 
         private ILogger _logger;
-        private readonly HashSet<InventoryCollectible> _collectibles = new HashSet<InventoryCollectible>();
+        private readonly HashSet<InventoryCollectible> _collectibles = new();
 
         // INSPECTOR FIELDS
         public int MaxItems = 10;
@@ -24,8 +24,8 @@ namespace UnityEngine.Inventory {
         [Tooltip("If dropped, items will take this many seconds to become collectible again.")]
         public float DropRefactoryPeriod = 1.5f;
         public Vector3 LocalDropOffset = Vector3.one;
-        public InventoryItemEvent ItemCollected = new InventoryItemEvent();
-        public InventoryItemEvent ItemDropped = new InventoryItemEvent();
+        public InventoryItemEvent ItemCollected = new();
+        public InventoryItemEvent ItemDropped = new();
 
         public void Inject(ILoggerProvider loggerProvider) => _logger = loggerProvider.GetLogger(this);
 
