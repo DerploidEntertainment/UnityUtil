@@ -515,15 +515,18 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
 
         #endregion
 
-        private DependencyInjector getDependencyInjector(Type[] cachedResolutionTypes = null, ILoggerProvider loggerProvider = null, ITypeMetadataProvider typeMetadataProvider = null)
-        {
+        private static DependencyInjector getDependencyInjector(
+            Type[]? cachedResolutionTypes = null,
+            ILoggerProvider? loggerProvider = null,
+            ITypeMetadataProvider? typeMetadataProvider = null
+        ) {
             var dependencyInjector = new DependencyInjector(cachedResolutionTypes ?? Array.Empty<Type>());
             dependencyInjector.Initialize(loggerProvider ?? new TestLoggerProvider(), typeMetadataProvider ?? new TypeMetadataProvider());
 
             return dependencyInjector;
         }
-        private T getComponentService<T>(string tag = "Untagged") where T : Component => new GameObject { tag = tag }.AddComponent<T>();
-        private Mock<ITypeMetadataProvider> getTypeMetadataProvider()
+        private static T getComponentService<T>(string tag = "Untagged") where T : Component => new GameObject { tag = tag }.AddComponent<T>();
+        private static Mock<ITypeMetadataProvider> getTypeMetadataProvider()
         {
             var mock = new Mock<ITypeMetadataProvider>();
             var typeMetadataProvider = new TypeMetadataProvider();

@@ -1,4 +1,4 @@
-﻿using NUnit.Framework;
+using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.Triggers;
 
@@ -283,14 +283,14 @@ namespace UnityUtil.Test.EditMode.Triggers {
             orTriggerWrapper.AssertTriggerCounts(2, 2, 8, 2);
         }
 
-        private MockConditionalTrigger getTrigger(bool state = false)
+        private static MockConditionalTrigger getTrigger(bool state = false)
         {
             MockConditionalTrigger trigger = new GameObject().AddComponent<MockConditionalTrigger>();
             trigger.State = state;
 
             return trigger;
         }
-        private OrTrigger getOrTrigger(params ConditionalTrigger[] conditions) {
+        private static OrTrigger getOrTrigger(params ConditionalTrigger[] conditions) {
             OrTrigger trigger = new GameObject().AddComponent<OrTrigger>();
             trigger.TriggerWhenConditionsChanged = true;
             trigger.TriggerWhenConditionsMaintained = true;

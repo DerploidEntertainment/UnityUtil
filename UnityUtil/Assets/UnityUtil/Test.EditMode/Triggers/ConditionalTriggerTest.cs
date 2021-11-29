@@ -56,11 +56,7 @@ namespace UnityUtil.Test.EditMode.Triggers {
             Assert.That(trueTriggerCount, Is.EqualTo(0));
         }
 
-        private MockConditionalTrigger getConditionalTrigger() {
-            MockConditionalTrigger trigger = new GameObject().AddComponent<MockConditionalTrigger>();
-
-            return trigger;
-        }
+        private static MockConditionalTrigger getConditionalTrigger() => new GameObject().AddComponent<MockConditionalTrigger>();
 
     }
 }

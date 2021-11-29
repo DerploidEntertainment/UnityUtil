@@ -1,4 +1,4 @@
-﻿using NUnit.Framework;
+using NUnit.Framework;
 using NUnit.Framework.Constraints;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -191,8 +191,7 @@ namespace UnityUtil.Test.EditMode.UI {
             breakpoints = getBreakpoints(0f, 1f, 2f);
             Assert.IsTrue(UiBreakpoints.AreBreakpointsValid(breakpoints));
 
-
-            UiBreakpoint[] getBreakpoints(params float[] values) => values.Select(val => new UiBreakpoint(val)).ToArray();
+            static UiBreakpoint[] getBreakpoints(params float[] values) => values.Select(val => new UiBreakpoint(val)).ToArray();
         }
 
         [Test]
@@ -223,8 +222,7 @@ namespace UnityUtil.Test.EditMode.UI {
             breakpoints = getBreakpoints(2f, 1f, 0f);
             Assert.IsFalse(UiBreakpoints.AreBreakpointsValid(breakpoints));
 
-
-            UiBreakpoint[] getBreakpoints(params float[] values) => values.Select(val => new UiBreakpoint(val)).ToArray();
+            static UiBreakpoint[] getBreakpoints(params float[] values) => values.Select(val => new UiBreakpoint(val)).ToArray();
         }
 
         [Test]
@@ -630,7 +628,7 @@ namespace UnityUtil.Test.EditMode.UI {
             Assert.That(counts[3], Is.EqualTo(4));
         }
 
-        private UiBreakpoints getUiBreakpoints(
+        private static UiBreakpoints getUiBreakpoints(
             BreakpointMode mode = BreakpointMode.SafeAreaAspectRatio,
             BreakpointMatchMode matchMode = BreakpointMatchMode.MaxEqualOrLess,
             UnityAction noMatchAction = null,

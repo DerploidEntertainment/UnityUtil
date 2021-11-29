@@ -1,4 +1,4 @@
-﻿using NUnit.Framework;
+using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.Triggers;
 
@@ -91,6 +91,6 @@ namespace UnityUtil.Test.EditMode.Triggers {
             Assert.That(numTrueTriggers, Is.EqualTo(1));
         }
 
-        private ToggleTrigger getToggleTrigger() => new GameObject().AddComponent<ToggleTrigger>();
+        private static ToggleTrigger getToggleTrigger() => new GameObject().AddComponent<ToggleTrigger>();
     }
 }

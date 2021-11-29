@@ -1,4 +1,4 @@
-﻿using NUnit.Framework;
+using NUnit.Framework;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
@@ -216,14 +216,14 @@ namespace UnityUtil.Test.PlayMode {
             Assert.That(numTriggers, Is.EqualTo(1));
         }
 
-        private Collider getCollidingObject(bool hasRigidbody = true) {
+        private static Collider getCollidingObject(bool hasRigidbody = true) {
             var obj = new GameObject($"test-collider");
             Collider collider = obj.AddComponent<SphereCollider>();
             if (hasRigidbody)
                 obj.AddComponent<Rigidbody>();
             return collider;
         }
-        private T getTriggerObject<T>(
+        private static T getTriggerObject<T>(
             bool isTrigger,
             UnityAction listener = null,
             string tagFilter = null,

@@ -1,4 +1,4 @@
-﻿using NUnit.Framework;
+using NUnit.Framework;
 using System;
 using UnityEngine;
 using UnityEngine.Triggers;
@@ -138,8 +138,12 @@ namespace UnityUtil.Test.EditMode.Triggers {
             Assert.That(numFalseTriggered, Is.EqualTo(2));
         }
 
-        private MockConditionalTrigger getTrigger() => new GameObject().AddComponent<MockConditionalTrigger>();
-        private MockMultiConditionalTrigger getMultiTrigger(bool triggerWhenConditionsChanged = true, bool triggerWhenConditionsMaintained = false, ConditionalTrigger[] conditions = null) {
+        private static MockConditionalTrigger getTrigger() => new GameObject().AddComponent<MockConditionalTrigger>();
+        private static MockMultiConditionalTrigger getMultiTrigger(
+            bool triggerWhenConditionsChanged = true,
+            bool triggerWhenConditionsMaintained = false,
+            ConditionalTrigger[]? conditions = null
+        ) {
             MockMultiConditionalTrigger trigger = new GameObject().AddComponent<MockMultiConditionalTrigger>();
             trigger.Conditions = conditions ?? Array.Empty<ConditionalTrigger>();
             trigger.TriggerWhenConditionsChanged = triggerWhenConditionsChanged;
