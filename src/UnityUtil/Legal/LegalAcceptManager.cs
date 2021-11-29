@@ -55,7 +55,7 @@ namespace UnityEngine.Legal
         }
         internal void CheckForUpdate(LegalDocument doc, int index, DownloadHandler downloadHandler = null, UploadHandler uploadHandler = null)
         {
-            if (downloadHandler == null ^ uploadHandler == null)
+            if (downloadHandler is null ^ uploadHandler is null)
                 throw new InvalidOperationException();
 
             // Get the last accepted tag from the cache (will be empty if none stored yet)
@@ -63,7 +63,7 @@ namespace UnityEngine.Legal
             bool firstTime = string.IsNullOrEmpty(acceptedTag);
 
             // Get the latest tag from the web
-            UnityWebRequest req = (downloadHandler == null)
+            UnityWebRequest req = downloadHandler is null
                 ? new UnityWebRequest(doc.LatestVersionUri.Uri, UnityWebRequest.kHttpVerbHEAD)
                 : new UnityWebRequest(doc.LatestVersionUri.Uri, UnityWebRequest.kHttpVerbHEAD, downloadHandler, uploadHandler);
             UnityWebRequestAsyncOperation reqOp = req.SendWebRequest();
@@ -124,7 +124,7 @@ namespace UnityEngine.Legal
         [Button, Conditional("DEBUG")]
         public void ClearAcceptance()
         {
-            if (_localCache == null) {
+            if (_localCache is null) {
                 for (int d = 0; d < Documents.Length; ++d)
                     PlayerPrefs.DeleteKey(Documents[d].CacheKey);
             }

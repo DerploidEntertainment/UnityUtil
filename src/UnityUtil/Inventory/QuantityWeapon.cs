@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using UnityEngine.Logging;
 
 namespace UnityEngine.Inventory {
@@ -26,7 +26,7 @@ namespace UnityEngine.Inventory {
                 RaycastHit hit = hits[h];
                 if (!Info.IgnoreColliderTags.Contains(hit.collider.tag)) {
                     ManagedQuantity quantity = hit.collider.attachedRigidbody?.GetComponent<ManagedQuantity>();
-                    if (quantity != null) {
+                    if (quantity is not null) {
                         quantity.Change(Info.Amount, Info.ChangeMode);
                         if (Info.OnlyAffectClosest && hits.Length > 0)
                             break;

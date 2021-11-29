@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEngine.Assertions;
 using UnityEngine.Events;
 using UnityEngine.Inputs;
@@ -62,7 +62,7 @@ namespace UnityEngine {
         // EVENT HANDLERS
         private void Awake() {
             Assert.IsTrue(
-                (LiftUsingPhysics && LiftingJoint != null) || (!LiftUsingPhysics && LiftingObject != null),
+                (LiftUsingPhysics && LiftingJoint is not null) || (!LiftUsingPhysics && LiftingObject is not null),
                 $"{this.GetHierarchyNameWithType()} must have a {nameof(this.LiftingJoint)} if {nameof(this.LiftUsingPhysics)} is set to true, or a {nameof(this.LiftingObject)} if {nameof(this.LiftUsingPhysics)} is set to false.");
         }
         private void Update() {
@@ -74,7 +74,7 @@ namespace UnityEngine {
 
             // If the player pressed Use, then pick up or drop a load
             if (toggleLift) {
-                if (_liftable == null)
+                if (_liftable is null)
                     pickup();
                 else {
                     LiftingJoint.Joint.connectedBody = null;
@@ -83,7 +83,7 @@ namespace UnityEngine {
             }
 
             // If the player pressed Throw and throwing is currently applicable, then do throw actions
-            if (throwing && CanThrow && _liftable != null)
+            if (throwing && CanThrow && _liftable is not null)
                 doThrow();
         }
         private void onJointBreak(Joint joint) => release(LiftableReleaseType.Accidental);
@@ -101,13 +101,13 @@ namespace UnityEngine {
             bool loadAhead = Physics.Raycast(transform.position, transform.forward, out RaycastHit hitInfo, Reach, LiftableLayerMask);
             if (loadAhead) {
                 rb = hitInfo.collider.attachedRigidbody;
-                if (rb != null && rb.mass <= MaxMass) {
+                if (rb is not null && rb.mass <= MaxMass) {
                     _liftable = rb.GetComponent<Liftable>();
                     if (!_liftable?.CanLift ?? false)
                         _liftable = null;
                 }
             }
-            if (_liftable == null)
+            if (_liftable is null)
                 return;
 
             // Connect that Liftable using Physics, if requested

@@ -1,4 +1,4 @@
-﻿using Sirenix.OdinInspector;
+using Sirenix.OdinInspector;
 using System.Runtime.CompilerServices;
 using UnityEngine.DependencyInjection;
 using UnityEngine.Events;
@@ -36,7 +36,7 @@ namespace UnityEngine.Triggers {
         [Button]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Trigger() {
-            if (StepTriggers[CurrentStep] == null)
+            if (StepTriggers[CurrentStep] is null)
                 _logger.LogWarning($"Triggered at step {CurrentStep}, but the trigger was null!", context: this);
             else
                 StepTriggers[CurrentStep]?.Invoke();

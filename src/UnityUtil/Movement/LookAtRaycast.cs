@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics.CodeAnalysis;
 using UnityEngine.Inventory;
 using UnityEngine.Logging;
@@ -48,7 +48,7 @@ namespace UnityEngine {
             Gizmos.DrawLine(TransformToRotate.position, TransformToRotate.TransformPoint(range * Vector3.forward));
         }
         private void doUpdate(float deltaTime) {
-            if (RaycastingTransform == null || TransformToRotate == null)
+            if (RaycastingTransform is null || TransformToRotate is null)
                 return;
 
             // Determine the point that the raycasting transform is looking at.

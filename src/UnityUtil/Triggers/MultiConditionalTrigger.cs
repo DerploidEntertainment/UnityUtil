@@ -1,4 +1,4 @@
-﻿namespace UnityEngine.Triggers
+namespace UnityEngine.Triggers
 {
 
     public abstract class MultiConditionalTrigger : ConditionalTrigger {
@@ -13,11 +13,9 @@
 
         protected virtual void Awake()
         {
-            if (Conditions != null)
-            {
-                foreach (ConditionalTrigger condition in Conditions)
-                {
-                    if (condition != null)
+            if (Conditions is not null) {
+                foreach (ConditionalTrigger condition in Conditions) {
+                    if (condition is not null)
                         addEventListeners(condition);
                 }
             }
@@ -36,11 +34,11 @@
         }
 
         public void ResetEventListeners() {
-            if (Conditions == null)
+            if (Conditions is null)
                 return;
 
             foreach (ConditionalTrigger condition in Conditions) {
-                if (condition == null)
+                if (condition is null)
                     continue;
 
                 condition.BecameTrue.RemoveAllListeners();

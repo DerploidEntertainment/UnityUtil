@@ -1,4 +1,4 @@
-﻿using Sirenix.OdinInspector;
+using Sirenix.OdinInspector;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -38,7 +38,7 @@ namespace UnityEngine.Triggers
                 return;
             }
 
-            if (trigger == null) {
+            if (trigger is null) {
                 Debug.LogWarning($"Trigger associated with named AnimationEvent '{eventName}' cannot be null");
                 return;
             }

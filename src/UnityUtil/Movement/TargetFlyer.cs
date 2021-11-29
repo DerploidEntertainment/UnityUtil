@@ -1,4 +1,4 @@
-﻿namespace UnityEngine.Movement {
+namespace UnityEngine.Movement {
 
     public class TargetFlyer : Updatable {
 
@@ -42,7 +42,7 @@
             BetterFixedUpdate = flyOrIdle;
         }
         private void flyOrIdle(float deltaTime) {
-            if (FlyingRigidbody == null)
+            if (FlyingRigidbody is null)
                 return;
 
             // If idling, then just apply an occasional, random force

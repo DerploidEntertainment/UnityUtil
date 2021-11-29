@@ -1,4 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace UnityEngine
@@ -30,7 +30,7 @@ namespace UnityEngine
             // Upwards modifier adjusts to gravity
             Rigidbody[] rigidbodies = colliders
                 .Select(c => c.attachedRigidbody)
-                .Where(rb => rb != null && rb != SafeRigidbody)
+                .Where(rb => rb is not null && rb != SafeRigidbody)
                 .Distinct()
                 .ToArray();
             for (int rb = 0; rb < rigidbodies.Length; ++rb) {

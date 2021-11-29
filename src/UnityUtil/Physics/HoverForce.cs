@@ -1,4 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.CodeAnalysis;
 using UnityEngine.Logging;
 
 namespace UnityEngine
@@ -53,7 +53,7 @@ namespace UnityEngine
 
         [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
         private void FixedUpdate() {
-            if (HoveringRigidbody == null)
+            if (HoveringRigidbody is null)
                 return;
 
             // Determine the upward direction

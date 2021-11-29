@@ -639,7 +639,7 @@ namespace UnityUtil.Test.EditMode.UI {
             uiBreakpoints.Mode = mode;
             uiBreakpoints.MatchMode = matchMode;
             uiBreakpoints.Breakpoints = breakpoints;
-            if (noMatchAction != null)
+            if (noMatchAction is not null)
                 uiBreakpoints.NoBreakpointMatched.AddListener(noMatchAction);
 
             return uiBreakpoints;

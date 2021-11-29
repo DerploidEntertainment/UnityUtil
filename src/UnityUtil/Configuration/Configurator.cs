@@ -180,7 +180,7 @@ namespace UnityEngine
 
             // Set all fields on this client for which there is a config value
             string clientName = (client is not Object clientObj) ? null : (client is Component component ? component.GetHierarchyName() : clientObj.name);
-            string quotedClientName = (clientName == null) ? null : $"'{clientName}' ";
+            string quotedClientName = clientName is null ? null : $"'{clientName}' ";
             FieldInfo[] fields = clientType.GetFields(BINDING_FLAGS);
             for (int f = 0; f < fields.Length; ++f) {
                 FieldInfo field = fields[f];
@@ -271,7 +271,7 @@ namespace UnityEngine
             catch (FormatException ex) { errMsg = ex.Message; }
             catch (OverflowException ex) { errMsg = ex.Message; }
 
-            if (errMsg != null) {
+            if (errMsg is not null) {
                 _logger.LogWarning($"Error converting value '{configVal}' to type '{memberType.FullName}' for member '{memberKey}': {errMsg} This config will be skipped.");
                 return false;
             }

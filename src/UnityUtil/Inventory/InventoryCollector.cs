@@ -1,4 +1,4 @@
-﻿using UnityEngine.Logging;
+using UnityEngine.Logging;
 
 namespace UnityEngine.Inventory {
 
@@ -21,7 +21,7 @@ namespace UnityEngine.Inventory {
         private void OnDrawGizmos() => Gizmos.DrawWireSphere(transform.position, Radius);
         private void OnTriggerEnter(Collider other) {
             InventoryCollectible c = other.attachedRigidbody.GetComponent<InventoryCollectible>();
-            if (c != null)
+            if (c is not null)
                 Inventory.Collect(c);
         }
 

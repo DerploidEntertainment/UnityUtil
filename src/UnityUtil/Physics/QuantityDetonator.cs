@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 
 namespace UnityEngine {
 
@@ -23,11 +23,11 @@ namespace UnityEngine {
         private void changeAll(Collider[] colliders) {
             // Change all unique Quantities among these Colliders
             // Change amount decreases linearly with distance from the explosion
-            ManagedQuantity[] quantities =
-                colliders.Select(c => c.attachedRigidbody?.GetComponent<ManagedQuantity>())
-                         .Where(h => h != null)
-                         .Distinct()
-                         .ToArray();
+            ManagedQuantity[] quantities = colliders
+                .Select(x => x.attachedRigidbody?.GetComponent<ManagedQuantity>())
+                .Where(x => x is not null)
+                .Distinct()
+                .ToArray();
             for (int h = 0; h < quantities.Length; ++h) {
                 ManagedQuantity health = quantities[h];
                 float dist = Vector3.Distance(health.transform.position, transform.position);

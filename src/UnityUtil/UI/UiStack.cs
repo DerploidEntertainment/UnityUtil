@@ -18,7 +18,7 @@ namespace UnityEngine.UI {
         public void Inject(ILoggerProvider loggerProvider) => _logger = loggerProvider.GetLogger(this);
 
         public void PushUi(SimpleTrigger popTrigger) {
-            if (popTrigger == null) {
+            if (popTrigger is null) {
                 _logger.LogError($"A {nameof(popTrigger)} must be provided when pushing to the UI stack, so that the correct actions can be triggered when this UI is later popped.", context: this);
                 return;
             }

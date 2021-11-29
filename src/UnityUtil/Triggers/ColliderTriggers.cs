@@ -1,4 +1,4 @@
-﻿using UnityEngine.Events;
+using UnityEngine.Events;
 
 namespace UnityEngine.Triggers {
 
@@ -28,7 +28,7 @@ namespace UnityEngine.Triggers {
 
         protected void TryTrigger(Rigidbody rb) {
             bool matches =
-                rb == null
+                rb is null
                 || string.IsNullOrEmpty(AttachedRigidbodyTagFilter)
                 || (FilterIsBlacklist && !rb.CompareTag(AttachedRigidbodyTagFilter))
                 || (!FilterIsBlacklist && rb.CompareTag(AttachedRigidbodyTagFilter));

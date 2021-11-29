@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using UnityEngine.Triggers;
@@ -70,7 +70,7 @@ namespace UnityEngine.Inputs {
             _triggerBuffer.Clear();
             for (int h = 0; h < hits.Length; ++h) {
                 ToggleTrigger trigger = hits[h].collider.GetComponent<ToggleTrigger>();
-                if (trigger != null)
+                if (trigger is not null)
                     _triggerBuffer.Add(trigger);
             }
 

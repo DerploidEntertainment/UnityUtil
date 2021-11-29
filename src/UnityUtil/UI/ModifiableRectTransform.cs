@@ -1,4 +1,4 @@
-﻿namespace UnityEngine.UI
+namespace UnityEngine.UI
 {
     [RequireComponent(typeof(RectTransform))]
     public class ModifiableRectTransform : MonoBehaviour {
@@ -33,7 +33,7 @@
 
         private bool hasRect()
         {
-            if (RectTransform == null) {
+            if (RectTransform is null) {
                 Debug.LogWarning($"Could not get the {nameof(RectTransform)} of this {nameof(ModifiableRectTransform)}. No values will be changed. Try enterring Play Mode once to correct this.");
                 return false;
             }

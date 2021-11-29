@@ -242,7 +242,7 @@ namespace UnityUtil.Test.PlayMode {
             T trigger = obj.AddComponent<T>();
             trigger.AttachedRigidbodyTagFilter = tagFilter;
             trigger.FilterIsBlacklist = filterIsBlacklist;
-            if (listener != null)
+            if (listener is not null)
                 trigger.Triggered.AddListener(listener);
 
             return trigger;

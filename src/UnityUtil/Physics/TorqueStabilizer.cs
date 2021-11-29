@@ -1,4 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.CodeAnalysis;
 using UnityEngine.Logging;
 
 namespace UnityEngine
@@ -42,12 +42,12 @@ namespace UnityEngine
         }
         [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
         private void OnDrawGizmos() {
-            if (RigidbodyToStabilize != null)
+            if (RigidbodyToStabilize is not null)
                 Gizmos.DrawLine(RigidbodyToStabilize.position, RigidbodyToStabilize.position + CustomUpwardDirection);
         }
         [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
         private void FixedUpdate() {
-            if (RigidbodyToStabilize == null)
+            if (RigidbodyToStabilize is null)
                 return;
 
             // Determine the upward direction

@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using UnityEngine.Logging;
 
 namespace UnityEngine.Inventory {
@@ -19,13 +19,13 @@ namespace UnityEngine.Inventory {
         private void collect(Collector collector, Collectible collectible) {
             // If no Ammo Collectible was found then just return
             AmmoCollectible ac = collectible.GetComponent<AmmoCollectible>();
-            if (ac == null)
+            if (ac is null)
                 return;
 
             // Try to find a Weapon with a matching name in the Inventory and adjust its ammo
             AmmoTool tool = Inventory.GetComponentsInChildren<AmmoTool>(true)
                                      .SingleOrDefault(t => t.Info.AmmoTypeName == ac.AmmoTypeName);
-            if (tool != null) {
+            if (tool is not null) {
                 int leftover = tool.Load((int)collectible.Amount);
                 collectible.Collect(collector, leftover);
             }

@@ -1,4 +1,4 @@
-﻿using UnityEngine.Inputs;
+using UnityEngine.Inputs;
 using UnityEngine.Logging;
 
 namespace UnityEngine.Movement
@@ -62,13 +62,13 @@ namespace UnityEngine.Movement
         private void doUpdate(float deltaTime) {
             _deltaSinceLast += LookInput.Value();
 
-            if (!UsePhysicsToLook && TransformToRotate != null) {
+            if (!UsePhysicsToLook && TransformToRotate is not null) {
                 doLookRotation();
                 _deltaSinceLast = 0f;
             }
         }
         private void doFixedUpdate(float fixedDeltaTime) {
-            if (UsePhysicsToLook && RigidbodyToRotate != null) {
+            if (UsePhysicsToLook && RigidbodyToRotate is not null) {
                 doLookRotation();
                 _deltaSinceLast = 0f;
             }

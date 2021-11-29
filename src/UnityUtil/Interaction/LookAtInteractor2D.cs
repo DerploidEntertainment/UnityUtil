@@ -1,4 +1,4 @@
-﻿using UnityEngine.Triggers;
+using UnityEngine.Triggers;
 
 namespace UnityEngine.Inputs {
 
@@ -19,10 +19,10 @@ namespace UnityEngine.Inputs {
         private void look(float deltaTime) {
             RaycastHit2D hit = Physics2D.Raycast(transform.position, transform.forward, Range, InteractLayerMask);
             ToggleTrigger trigger = hit.collider?.GetComponent<ToggleTrigger>();
-            if (trigger == null)
+            if (trigger is null)
                 _trigger?.TurnOff();
             else {
-                if (_trigger == null) {
+                if (_trigger is null) {
                     _trigger = trigger;
                     _trigger.TurnOn();
                 }

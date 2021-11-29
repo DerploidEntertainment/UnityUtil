@@ -1,4 +1,4 @@
-﻿namespace UnityEngine {
+namespace UnityEngine {
 
     public class LookAt : Updatable {
 
@@ -17,11 +17,11 @@
             BetterUpdate = look;
         }
         private void look(float deltaTime) {
-            if (TransformToRotate == null || (TransformToLookAt == null && TagToLookAt == null))
+            if (TransformToRotate is null || (TransformToLookAt is null && TagToLookAt is null))
                 return;
 
-            Transform target = (TagToLookAt == null) ? TransformToLookAt : GameObject.FindWithTag(TagToLookAt)?.transform;
-            if (target != null) {
+            Transform target = (TagToLookAt is null) ? TransformToLookAt : GameObject.FindWithTag(TagToLookAt)?.transform;
+            if (target is not null) {
                 TransformToRotate.LookAt(target, -Physics.gravity);
                 if (FlipOnLocalY)
                     TransformToRotate.localRotation *= Quaternion.Euler(180f * Vector3.up);

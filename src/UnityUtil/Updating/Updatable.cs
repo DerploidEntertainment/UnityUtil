@@ -35,21 +35,21 @@ namespace UnityEngine
         }
         protected virtual void OnEnable() {
             if (RegisterUpdatesAutomatically) {
-                if (BetterUpdate != null)
+                if (BetterUpdate is not null)
                     Updater.RegisterUpdate(InstanceID, BetterUpdate);
-                if (BetterFixedUpdate != null)
+                if (BetterFixedUpdate is not null)
                     Updater.RegisterFixedUpdate(InstanceID, BetterFixedUpdate);
-                if (BetterLateUpdate != null)
+                if (BetterLateUpdate is not null)
                     Updater.RegisterLateUpdate(InstanceID, BetterLateUpdate);
             }
         }
         protected virtual void OnDisable() {
             if (RegisterUpdatesAutomatically) {
-                if (BetterUpdate != null)
+                if (BetterUpdate is not null)
                     Updater.UnregisterUpdate(InstanceID);
-                if (BetterFixedUpdate != null)
+                if (BetterFixedUpdate is not null)
                     Updater.UnregisterFixedUpdate(InstanceID);
-                if (BetterLateUpdate != null)
+                if (BetterLateUpdate is not null)
                     Updater.UnregisterLateUpdate(InstanceID);
             }
         }

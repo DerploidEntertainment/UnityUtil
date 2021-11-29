@@ -1,4 +1,4 @@
-﻿namespace UnityEngine.Logging {
+namespace UnityEngine.Logging {
 
     [CreateAssetMenu(menuName = nameof(UnityUtil) + "/" + nameof(UnityEngine.Logging) + "/" + nameof(ObjectNameLogEnricher), fileName = "object-name-log-enricher")]
     public class ObjectNameLogEnricher : LogEnricher {
@@ -10,16 +10,12 @@
         [Tooltip("'{0}' will be replaced by the name of the Object. Read more about .NET composite formatting here: https://docs.microsoft.com/en-us/dotnet/standard/base-types/composite-formatting")]
         public string FormatString = UnityObjectExtensions.DefaultHierarchyNameFormatString;
 
-        public override string GetEnrichedLog(object source) {
-            var sourceObj = (source as Object);
-            if (sourceObj == null)
-                return string.Empty;
-
-            var component = (source as Component);
-            return (component == null)
+        public override string GetEnrichedLog(object source) =>
+            source is not Object sourceObj
+                ? string.Empty
+            : source is not Component component
                 ? sourceObj.name
-                : component.GetHierarchyName(NumParents, AncestorNameSeparator, FormatString);
-        }
+            : component.GetHierarchyName(NumParents, AncestorNameSeparator, FormatString);
     }
 
 }

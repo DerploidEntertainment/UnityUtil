@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.Logging;
 
@@ -34,12 +34,11 @@ namespace UnityEngine.Inventory {
             for (int h = 0; h < hits.Length; ++h) {
                 RaycastHit hit = hits[h];
                 Rigidbody rb = hit.collider.attachedRigidbody;
-                bool push = (
-                    rb != null &&
+                bool push =
+                    rb is not null &&
                     !Info.IgnoreColliderTags.Contains(hit.collider.tag) &&
                     !unpushableRbs.Contains(rb) &&
-                    !_pushedRigidbodies.Contains(rb)
-                );
+                    !_pushedRigidbodies.Contains(rb);
                 if (push) {
                     _pushedRigidbodies.Add(rb);
                     rb.AddForceAtPosition(Info.PushForce * ray.direction, hit.point, ForceMode.Impulse);

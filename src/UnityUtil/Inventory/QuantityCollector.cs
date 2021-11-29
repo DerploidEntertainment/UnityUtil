@@ -1,4 +1,4 @@
-﻿using UnityEngine.Logging;
+using UnityEngine.Logging;
 
 namespace UnityEngine.Inventory {
 
@@ -15,7 +15,7 @@ namespace UnityEngine.Inventory {
         private void collect(Collector collector, Collectible collectible) {
             // If no Quantity Collectible was found then just return
             QuantityCollectible qc = collectible.GetComponent<QuantityCollectible>();
-            if (qc == null)
+            if (qc is null)
                 return;
 
             // If one was found, then adjust its current health as necessary

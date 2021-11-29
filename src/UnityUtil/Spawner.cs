@@ -1,4 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.CodeAnalysis;
 using UnityEngine.DependencyInjection;
 using UnityEngine.Logging;
 using U = UnityEngine;
@@ -68,14 +68,14 @@ namespace UnityEngine
         // API INTERFACE
         public void Spawn() {
             // Destroy any previously spawned GameObjects, if requested
-            if (_previous != null && DestroyPrevious)
+            if (_previous is not null && DestroyPrevious)
                 Destroy(_previous);
 
             string newName = $"{BaseName}{(DestroyPrevious ? "" : "_" + _count)}";
             _logger.Log($"Spawning {newName}", context: this);
 
             // Instantiating a Prefab can sometimes give a GameObject or a Transform...we want the GameObject
-            GameObject obj = (SpawnParent == null) ?
+            GameObject obj = (SpawnParent is null) ?
                 Instantiate(Prefab, transform.position, transform.rotation) :
                 Instantiate(Prefab, transform.position, transform.rotation, SpawnParent);
             obj.name = newName;
@@ -88,7 +88,7 @@ namespace UnityEngine
 #else
             Rigidbody rb = obj.GetComponent<Rigidbody>();
 #endif
-            if (rb != null) {
+            if (rb is not null) {
 #if DEBUG_2D
                 Vector2 dir = getSpawnDirection();
 #else

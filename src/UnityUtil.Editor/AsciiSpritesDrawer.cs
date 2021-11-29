@@ -152,7 +152,7 @@ namespace UnityUtil.Editor {
             for (char ch = firstChar; ch <= lastChar; ++ch) {
                 string assetFileName = GetAssetName(ch, _pathProp.stringValue);
                 Sprite sprite = AssetDatabase.LoadAssetAtPath<Sprite>(assetFileName);
-                if (sprite == null)
+                if (sprite is null)
                     _logger.LogWarning($"Could not locate Sprite for character '{ch}' (expected at '{assetFileName}').", context: this);
                 else {
                     _charProps[ch].objectReferenceValue = sprite;

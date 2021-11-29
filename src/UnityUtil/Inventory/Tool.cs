@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using UnityEngine.Events;
 using UnityEngine.Inputs;
 using UnityEngine.Logging;
@@ -36,13 +36,13 @@ namespace UnityEngine.Inventory {
         }
         private void doUpdate(float deltaTime) {
             // Start using when the use input starts
-            if (UseInput.Started() && _usingRoutine == null && _refractoryRoutine == null)
+            if (UseInput.Started() && _usingRoutine is null && _refractoryRoutine is null)
                 _usingRoutine = StartCoroutine(startUsing());
 
             // Stop using when the use input stops
             // If the Tool is automatic and the player got a use in before stopping the UseInput,
             // then start the refractory period still
-            else if (UseInput.Stopped() && _usingRoutine != null) {
+            else if (UseInput.Stopped() && _usingRoutine is not null) {
                 StopCoroutine(_usingRoutine);
                 _usingRoutine = null;
                 CurrentCharge = 0f;
@@ -53,7 +53,7 @@ namespace UnityEngine.Inventory {
         protected override void OnDisable() {
             base.OnDisable();
 
-            if (_usingRoutine != null) {
+            if (_usingRoutine is not null) {
                 StopCoroutine(_usingRoutine);
                 _usingRoutine = null;
                 CurrentCharge = 0f;

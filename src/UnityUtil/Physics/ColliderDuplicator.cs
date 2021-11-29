@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -184,9 +184,9 @@ namespace UnityEngine {
             }
 
             // Attach a physics target component, if requested
-            if (PhysicsTarget != null) {
+            if (PhysicsTarget is not null) {
                 PhysTarget target = newParent.AddComponent<PhysTarget>();
-                if (target != null)
+                if (target is not null)
                     target.TargetComponent = PhysicsTarget;
             }
         }

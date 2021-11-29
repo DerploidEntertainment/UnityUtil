@@ -48,7 +48,7 @@ namespace UnityEngine
 
         private void finishLoading(TextAsset txt, string resFileName)
         {
-            if (txt == null) {
+            if (txt is null) {
                 string notFoundMsg = $"CSV configuration file ('{resFileName}') could not be found. If this was not expected, make sure that the file exists and is not locked by another application.";
                 if (Required)
                     throw new FileNotFoundException(notFoundMsg, ResourceName);

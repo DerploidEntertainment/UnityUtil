@@ -1,4 +1,4 @@
-﻿using Sirenix.OdinInspector;
+using Sirenix.OdinInspector;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -130,7 +130,7 @@ namespace UnityEngine.UI
                 _currentDimensions =
                     IsScreenMode ? new Vector2(Device.Screen.width, Device.Screen.height) :
                     IsSafeAreaMode ? new Vector2(Device.Screen.safeArea.width, Device.Screen.safeArea.height) :
-                    Camera != null ? new Vector2(Camera.pixelWidth, Camera.pixelHeight) :
+                    Camera is not null ? new Vector2(Camera.pixelWidth, Camera.pixelHeight) :
                     Vector2.zero;
             }
             _currentValue = getModeValue(Mode);
@@ -210,7 +210,7 @@ namespace UnityEngine.UI
             if (MatchMode == BreakpointMatchMode.MaxEqualOrLess)
             {
                 UiBreakpoint breakpoint = Breakpoints.LastOrDefault(b => b.Enabled && b.Value <= modeValue);
-                if (breakpoint != null)
+                if (breakpoint is not null)
                     invokeBreakpoint(breakpoint);
             }
             else

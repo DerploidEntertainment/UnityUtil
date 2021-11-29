@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEngine.Triggers;
 
 namespace UnityEngine.Inputs {
@@ -26,7 +26,7 @@ namespace UnityEngine.Inputs {
         private void raycast(float deltaTime) {
             if (Input.Started()) {
                 RaycastHit2D hit = Physics2D.Raycast(transform.position, transform.forward, Range, InteractLayerMask);
-                if (hit.collider != null) {
+                if (hit.collider is not null) {
                     SimpleTrigger st = hit.collider.GetComponent<SimpleTrigger>();
                     st?.Trigger();
                     Interacted?.Invoke(this, new Interaction2DEventArgs() { HitInfo = hit, InteractedTrigger = st });

@@ -8,7 +8,7 @@
             do {
                 ++genCount;
                 pTrans = transform.parent;
-            } while (pTrans != parent && pTrans != null && genCount < generationLimit);
+            } while (pTrans != parent && pTrans is not null && genCount < generationLimit);
             return pTrans = parent;
         }
 

@@ -96,7 +96,7 @@ namespace UnityEngine.DependencyInjection
                 serviceTypeName = instance.GetType().AssemblyQualifiedName;
 
             var serviceType = Type.GetType(serviceTypeName);
-            if (serviceType == null)
+            if (serviceType is null)
                 throw new InvalidOperationException($"Could not load Type '{serviceTypeName}'. Make sure that you provided its assembly-qualified name and that its assembly is loaded.");
             if (!serviceType.IsAssignableFrom(instance.GetType()))
                 throw new InvalidOperationException($"The service instance registered for Type '{serviceTypeName}' is not actually derived from that Type!");
@@ -119,9 +119,9 @@ namespace UnityEngine.DependencyInjection
             var service = new Service(serviceType, (instance as Component)?.tag ?? DefaultTag, instance);
 
             // Check if the provided service is for logging
-            if (serviceType == typeof(ILoggerProvider) && _logger == null)
+            if (serviceType == typeof(ILoggerProvider) && _logger is null)
                 _logger = ((ILoggerProvider)instance).GetLogger(this);
-            else if (serviceType == typeof(ILogger) && _logger == null)
+            else if (serviceType == typeof(ILogger) && _logger is null)
                 _logger = (ILogger)instance;
 
 
@@ -228,7 +228,7 @@ namespace UnityEngine.DependencyInjection
 
                 // Get the inject method on this type (will throw if more than one method matches)
                 MethodInfo injectMethod = _typeMetadataProvider.GetMethod(serviceType, InjectMethodName, BINDING_FLAGS);
-                if (injectMethod == null)
+                if (injectMethod is null)
                     goto Loop;
 
                 string clientName = (client as MonoBehaviour)?.GetHierarchyNameWithType() ?? (client as Object)?.name ?? $"{injectMethod.DeclaringType.FullName} instance";
@@ -238,7 +238,7 @@ namespace UnityEngine.DependencyInjection
 
                 // Check if the inject method should be compiled. If so, compile/call it; otherwise, invoke it via reflection
                 bool compile = true;
-                if (cachedParentType == null) {
+                if (cachedParentType is null) {
                     if (_cachedResolutionTypes.Contains(serviceType))
                         cachedParentType = serviceType;
                     else {
@@ -259,9 +259,9 @@ namespace UnityEngine.DependencyInjection
 
                 Loop:
                 serviceType = serviceType.BaseType;
-            } while (serviceType != objectType && serviceType != null);
+            } while (serviceType != objectType && serviceType is not null);
 
-            if (cachedParentType != null)
+            if (cachedParentType is not null)
                 _compiledInject.Add(cachedParentType, compiledInjectList);
         }
 

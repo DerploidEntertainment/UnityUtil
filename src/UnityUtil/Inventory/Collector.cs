@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEngine.Events;
 
 namespace UnityEngine.Inventory {
@@ -27,7 +27,7 @@ namespace UnityEngine.Inventory {
         private void OnTriggerEnter(Collider other) {
             // If no collectible was found then just return
             Collectible c = other.attachedRigidbody.GetComponent<Collectible>();
-            if (c != null)
+            if (c is not null)
                 Collected.Invoke(this, c);
         }
 

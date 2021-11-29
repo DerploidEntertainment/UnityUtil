@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using System.Text;
 using UnityEngine.Assertions;
@@ -59,7 +59,7 @@ namespace UnityEngine {
             var nameBuilder = new StringBuilder(trans.name);
             for (int p = 0; p < numParents; ++p) {
                 trans = trans.parent;
-                if (trans == null)
+                if (trans is null)
                     break;
                 nameBuilder.Insert(0, trans.name + separator);
             }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using UnityEngine.Assertions;
 using UnityEngine.Events;
@@ -55,7 +55,7 @@ namespace UnityEngine.Inventory {
         }
         private void doUpdate(float deltaTime) {
             // Cool this Tool, unless it is overheated
-            if (CurrentHeat > 0 && _overheatRoutine == null) {
+            if (CurrentHeat > 0 && _overheatRoutine is null) {
                 float rate = Info.AbsoluteHeat ? Info.CoolRate : Info.CoolRate * Info.MaxHeat;
                 CurrentHeat = Mathf.Max(0, CurrentHeat - deltaTime * rate);
             }
