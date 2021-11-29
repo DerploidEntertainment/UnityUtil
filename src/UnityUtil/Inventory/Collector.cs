@@ -13,11 +13,9 @@ namespace UnityEngine.Inventory {
 
         private SphereCollider _sphere;
 
-        // INSPECTOR FIELDS
         public float Radius = 1f;
         public CollectEvent Collected = new();
 
-        // EVENT HANDLERS
         protected virtual void Awake() {
             _sphere = gameObject.AddComponent<SphereCollider>();
             _sphere.radius = Radius;

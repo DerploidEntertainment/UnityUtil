@@ -5,17 +5,15 @@ using UnityEngine.Logging;
 namespace UnityEngine.Inventory {
 
     [RequireComponent(typeof(Weapon))]
-    public class PushTool : MonoBehaviour {
-
+    public class PushTool : MonoBehaviour
+    {
         private Weapon _weapon;
         private readonly HashSet<Rigidbody> _pushedRigidbodies = new();
 
-        // INSPECTOR FIELDS
         public PushToolInfo Info;
         [Tooltip("If true, then any colliders attached to the same Rigidbodies as one of these colldiers will NOT be affected.  You might use this field to prevent pushing of any of the colliders that make up a player's vehicle, for example.")]
         public Collider[] IgnoreRigidbodiesAttachedTo;
 
-        // EVENT HANDLERS
         private void Awake() {
             this.AssertAssociation(Info, nameof(PushToolInfo));
 

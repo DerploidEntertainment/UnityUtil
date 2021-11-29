@@ -3,11 +3,10 @@ using System.Linq;
 namespace UnityEngine.Inputs {
 
     [CreateAssetMenu(fileName = "value-input-array", menuName = $"{nameof(UnityUtil)}/{nameof(UnityEngine.Inputs)}/{nameof(UnityEngine.Inputs.ValueInputArray)}")]
-    public class ValueInputArray : ScriptableObject {
-        // API INTERFACE
+    public class ValueInputArray : ScriptableObject
+    {
         public ValueInput[] Inputs;
 
-        // API INTERFACE
         public int Length => Inputs.Length;
 
         public float[] Values() => Inputs.Select(i => i.Value()).ToArray();

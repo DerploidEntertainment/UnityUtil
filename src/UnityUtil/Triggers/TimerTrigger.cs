@@ -1,11 +1,10 @@
-﻿using UnityEngine.Events;
+using UnityEngine.Events;
 using UnityEngine.Logging;
 
 namespace UnityEngine.Triggers {
 
-    public class TimerTrigger : StartStoppable {
-
-        // INSPECTOR FIELDS
+    public class TimerTrigger : StartStoppable
+    {
         [Tooltip("The duration, in seconds, before the " + nameof(TimerTrigger.Timeout) + " event.")]
         public float Duration = 1f;
         [Tooltip("The time, in seconds, that has passed since the timer started.")]
@@ -15,10 +14,8 @@ namespace UnityEngine.Triggers {
         public UnityEvent Timeout = new();
         public UnityEvent Stopped = new();
 
-        // API INTERFACE
         public float PercentProgress => TimePassed / Duration;
 
-        // HELPERS
         protected override void DoRestart() {
             base.DoRestart();
 

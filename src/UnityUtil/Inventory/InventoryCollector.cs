@@ -6,11 +6,9 @@ namespace UnityEngine.Inventory {
 
         private SphereCollider _sphere;
 
-        // INSPECTOR FIELDS
         public Inventory Inventory;
         public float Radius = 1f;
 
-        // EVENT HANDLERS
         private void Awake() {
             this.AssertAssociation(Inventory, nameof(this.Inventory));
 

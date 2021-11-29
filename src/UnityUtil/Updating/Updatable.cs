@@ -3,9 +3,8 @@ using System;
 namespace UnityEngine
 {
 
-    public abstract class Updatable : Configurable {
-
-        // HIDDEN FIELDS
+    public abstract class Updatable : Configurable
+    {
         protected IUpdater Updater;
         private IRuntimeIdProvider _runtimeIdProvider;
 
@@ -27,7 +26,6 @@ namespace UnityEngine
             _runtimeIdProvider = runtimeIdProvider;
         }
 
-        // EVENT HANDLERS
         protected override void Awake() {
             base.Awake();
 

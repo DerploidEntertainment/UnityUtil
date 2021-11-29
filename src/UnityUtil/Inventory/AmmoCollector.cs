@@ -4,13 +4,11 @@ using UnityEngine.Logging;
 namespace UnityEngine.Inventory {
 
     [RequireComponent(typeof(Collector))]
-    public class AmmoCollector : MonoBehaviour {
-
-        // INSPECTOR FIELDS
+    public class AmmoCollector : MonoBehaviour
+    {
         public Inventory Inventory;
         public float Radius = 1f;
 
-        // EVENT HANDLERS
         private void Awake() {
             this.AssertAssociation(Inventory, nameof(this.Inventory));
 

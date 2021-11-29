@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEngine.Assertions;
 using UnityEngine.Events;
 using UnityEngine.Logging;
@@ -8,9 +8,8 @@ namespace UnityEngine.Triggers {
     [Serializable]
     public class CountEvent : UnityEvent<uint> { }
 
-    public class RepeaterTrigger : StartStoppable {
-
-        // INSPECTOR FIELDS
+    public class RepeaterTrigger : StartStoppable
+    {
         [Tooltip("The time, in seconds, before the next (or first) " + nameof(RepeaterTrigger.Tick) + " event.")]
         public float TimeBeforeTick = 1f;
         [Tooltip("The time, in seconds, that has passed since the previous " + nameof(RepeaterTrigger.Tick) + " event.")]
@@ -27,10 +26,8 @@ namespace UnityEngine.Triggers {
         public UnityEvent Stopped = new();
         public UnityEvent NumTicksReached = new();
 
-        // API INTERFACE
         public float PercentProgress => TimeSincePreviousTick / TimeBeforeTick;
 
-        // HELPERS
         protected override void DoRestart() {
             base.DoRestart();
 

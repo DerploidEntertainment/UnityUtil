@@ -1,10 +1,10 @@
-﻿using UnityEngine.Logging;
+using UnityEngine.Logging;
 
 namespace UnityEngine.Inventory {
 
-    public class InventoryCollectible : MonoBehaviour {
+    public class InventoryCollectible : MonoBehaviour
+    {
 
-        // INSPECTOR FIELDS
         public GameObject Root;
         public GameObject ItemRoot;
         [Tooltip("These should be the Colliders that allow your Collectible to be collected.  When dropped, these Colliders will be enabled/disabled to create the refactory period.")]

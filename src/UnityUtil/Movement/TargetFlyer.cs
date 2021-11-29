@@ -1,14 +1,12 @@
 namespace UnityEngine.Movement {
 
-    public class TargetFlyer : Updatable {
-
-        // HIDDEN FIELDS
+    public class TargetFlyer : Updatable
+    {
         private float _tSinceIdleMove = 0f;
         private float _tSinceIdleTorque = 0f;
         private float _idleMovePeriod = 0f;
         private float _idleTorquePeriod = 0f;
 
-        // INSPECTOR FIELDS
         public bool Idle = false;
         public Rigidbody FlyingRigidbody;
 
@@ -30,7 +28,6 @@ namespace UnityEngine.Movement {
         public float MinTorqueSpeed = 0.5f;
         public float MaxTorqueSpeed = 2f;
 
-        // EVENT HANDLERS
         protected override void Awake() {
             base.Awake();
 
@@ -58,7 +55,6 @@ namespace UnityEngine.Movement {
             }
         }
 
-        // HELPERS
         private Vector3 getFlyingForce(Vector3 targetPosition) {
             Vector3 netForce = Vector3.zero;
 

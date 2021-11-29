@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +17,6 @@ namespace UnityEngine.Inventory {
         private ILogger _logger;
         private readonly HashSet<InventoryCollectible> _collectibles = new();
 
-        // INSPECTOR FIELDS
         public int MaxItems = 10;
         [Tooltip("If true, then this Inventory can collect multiple items with the same name.")]
         public bool AllowMultiple = false;
@@ -31,7 +30,6 @@ namespace UnityEngine.Inventory {
 
         private void Awake() => DependencyInjector.Instance.ResolveDependenciesOf(this);
 
-        // INTERFACE FUNCTIONS
         public InventoryCollectible[] GetCollectibles() => _collectibles.ToArray();
         public GameObject[] GetItems() => _collectibles.Select(c => c.ItemRoot).ToArray();
         public bool Collect(InventoryCollectible collectible) {

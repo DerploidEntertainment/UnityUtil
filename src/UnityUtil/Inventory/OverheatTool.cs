@@ -6,7 +6,6 @@ using UnityEngine.Logging;
 
 namespace UnityEngine.Inventory {
 
-    // ABSTRACT DATA TYPES
     /// <summary>
     /// Type arguments are (bool isOverheated)
     /// </summary>
@@ -14,20 +13,16 @@ namespace UnityEngine.Inventory {
     public class OverheatChangedEvent : UnityEvent<bool> { }
 
     [RequireComponent(typeof(Tool))]
-    public class OverheatTool : Updatable {
-
-        // HIDDEN FIELDS
+    public class OverheatTool : Updatable
+    {
         private Tool _tool;
         private Coroutine _overheatRoutine;
 
-        // INSPECTOR FIELDS
         public OverheatToolInfo Info;
 
-        // API INTERFACE
         public float CurrentHeat { get; private set; } = 0f;
         public OverheatChangedEvent OverheatStateChanged = new();
 
-        // EVENT HANDLERS
         protected override void Awake() {
             base.Awake();
 
@@ -61,7 +56,6 @@ namespace UnityEngine.Inventory {
             }
         }
 
-        // HELPERS
         private IEnumerator doOverheatDuration() {
             yield return new WaitForSeconds(Info.OverheatDuration);
             OverheatStateChanged.Invoke(false);

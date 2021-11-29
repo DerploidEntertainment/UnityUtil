@@ -31,13 +31,12 @@ namespace UnityEngine
         AnyDirection,
     }
 
-    public class Spawner : MonoBehaviour {
-
+    public class Spawner : MonoBehaviour
+    {
         private ILogger _logger;
         private GameObject _previous;
         private long _count = 0;
 
-        // INSPECTOR FIELDS
         [Tooltip("The actual Unity prefab to spawn.  We highly recommend using a PREFAB, as opposed to an existing GameObject in the Scene, though either will technically work.")]
         public GameObject Prefab;
         [Tooltip("All spawned instances of " + nameof(Spawner.Prefab) + " will be parented to this Transform.")]
@@ -65,7 +64,6 @@ namespace UnityEngine
             this.AssertAssociation(Prefab, nameof(this.Prefab));
         }
 
-        // API INTERFACE
         public void Spawn() {
             // Destroy any previously spawned GameObjects, if requested
             if (_previous is not null && DestroyPrevious)
@@ -108,7 +106,6 @@ namespace UnityEngine
             _previous = obj;
         }
 
-        // HELPER FUNCTIONS
 #if DEBUG_2D
         private Vector2 getSpawnDirection() {
 #else

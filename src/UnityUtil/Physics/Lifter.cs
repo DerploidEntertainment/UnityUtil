@@ -31,15 +31,13 @@ namespace UnityEngine {
     public class LiftableReleaseEvent : UnityEvent<Liftable, Lifter, LiftableReleaseType> { }
 
     [DisallowMultipleComponent]
-    public class Lifter : MonoBehaviour {
-
-        // HIDDEN FIELDS
+    public class Lifter : MonoBehaviour
+    {
         private Liftable _liftable;
         private Transform _oldParent;
         private bool _oldKinematic;
         private bool _oldUseGravity;
 
-        // INSPECTOR FIELDS
         [Header("Inputs")]
         public StartStopInput LiftInput;
         public StartStopInput ThrowInput;
@@ -59,7 +57,6 @@ namespace UnityEngine {
         public bool CanThrow = true;
         public float ThrowForce = 10f;
 
-        // EVENT HANDLERS
         private void Awake() {
             Assert.IsTrue(
                 (LiftUsingPhysics && LiftingJoint is not null) || (!LiftUsingPhysics && LiftingObject is not null),
@@ -88,12 +85,10 @@ namespace UnityEngine {
         }
         private void onJointBreak(Joint joint) => release(LiftableReleaseType.Accidental);
 
-        // API INTERFACE
         public Liftable CurrentLiftable => _liftable;
         public LiftablePickupEvent LoadPickedUp = new();
         public LiftableReleaseEvent LoadReleased = new();
 
-        // HELPER FUNCTIONS
         private void pickup() {
             // Check if a physical object that's not too heavy is within range
             // If not, then just return

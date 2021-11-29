@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -12,8 +12,8 @@ namespace UnityEngine.Inventory {
     public class AttackEvent : UnityEvent<Ray, RaycastHit[]> { }
 
     [RequireComponent(typeof(Tool))]
-    public class Weapon : MonoBehaviour {
-
+    public class Weapon : MonoBehaviour
+    {
         private ILogger _logger;
         private Tool _tool;
         private float _accuracyLerpT = 0f;
@@ -57,7 +57,6 @@ namespace UnityEngine.Inventory {
             }
         }
 
-        // HELPERS
         private void attack() {
 
             // Get a random Ray within the accuracy cone

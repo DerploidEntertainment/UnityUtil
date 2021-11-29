@@ -35,7 +35,6 @@ namespace UnityEngine {
                 _ => throw UnityObjectExtensions.SwitchDefaultException(UpwardDirectionType),
             };
 
-        // EVENT HANDLERS
         protected override void Awake() {
             base.Awake();
 

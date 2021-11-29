@@ -5,13 +5,11 @@ using UnityEngine.Triggers;
 
 namespace UnityEngine.Inputs {
 
-    public class LookAtInteractor : Updatable {
-
-        // HIDDEN FIELDS
+    public class LookAtInteractor : Updatable
+    {
         private readonly IList<ToggleTrigger> _toggled = new List<ToggleTrigger>();
         private readonly HashSet<ToggleTrigger> _triggerBuffer = new();
 
-        // INSPECTOR FIELDS
         [Header("Raycasting")]
         public float Range;
         public LayerMask InteractLayerMask;
@@ -26,7 +24,6 @@ namespace UnityEngine.Inputs {
         [Tooltip("What color should the ray Gizmo be that indicates where this Component is looking?  Ignored if " + nameof(LookAtInteractor.DrawRay) + " is false.")]
         public Color RayColor = Color.black;
 
-        // EVENT HANDLERS
         protected override void Awake() {
             base.Awake();
 
@@ -52,7 +49,6 @@ namespace UnityEngine.Inputs {
             }
         }
 
-        // HELPERS
         private void look(float deltaTime) {
             // Raycast for Colliders to look at
             RaycastHit[] hits = Array.Empty<RaycastHit>();

@@ -5,17 +5,15 @@ using UnityEngine.Logging;
 
 namespace UnityEngine.Inventory {
 
-    public class Tool : Updatable {
-        // HIDDEN FIELDS
+    public class Tool : Updatable
+    {
         private Coroutine _usingRoutine;
         private Coroutine _refractoryRoutine;
         private uint _numUses = 0u;
 
-        // INSPECTOR FIELDS
         public ToolInfo Info;
         public StartStopInput UseInput;
 
-        // API INTERFACE
         /// <summary>
         /// The current charge of this <see cref="Tool"/>.  0 is completely uncharged, 1 is completely charged.
         /// </summary>
@@ -24,7 +22,6 @@ namespace UnityEngine.Inventory {
         public UnityEvent Used = new();
         public UnityEvent UseFailed = new();
 
-        // EVENT HANDLERS
         protected override void Awake() {
             base.Awake();
 
@@ -60,7 +57,6 @@ namespace UnityEngine.Inventory {
             }
         }
 
-        // HELPERS
         private IEnumerator startUsing() {
             _numUses = 0;
             do {

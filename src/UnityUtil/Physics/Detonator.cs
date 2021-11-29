@@ -6,16 +6,14 @@ namespace UnityEngine {
     [Serializable]
     public class DetonateEvent : UnityEvent<Collider[]> { }
 
-    public class Detonator : MonoBehaviour {
-
-        // INSPECTOR FIELDS
+    public class Detonator : MonoBehaviour
+    {
         public float ExplosionRadius = 4f;
         public LayerMask AffectLayerMask;
 
         public CancellableUnityEvent Detonating = new();
         public DetonateEvent Detonated = new();
 
-        // API INTERFACE
         public void Detonate() {
             // Raise the Detonating event, allowing listeners to cancel detonation
             Detonating.Invoke();

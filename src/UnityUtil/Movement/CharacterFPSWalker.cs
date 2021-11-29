@@ -1,11 +1,11 @@
-﻿using UnityEngine.Inputs;
+using UnityEngine.Inputs;
 using UnityEngine.Logging;
 
 namespace UnityEngine.Movement {
 
-    public class CharacterFPSWalker : Updatable {
+    public class CharacterFPSWalker : Updatable
+    {
 
-        // INSPECTOR FIELDS
         public CharacterController ControllerToMove;
 
         [Header("Inputs")]
@@ -30,11 +30,7 @@ namespace UnityEngine.Movement {
         public bool CanJump = true;
         public float JumpHeight = 3f;
 
-
-        // HIDDEN FIELDS
         private float _oldHeight;
-
-        // EVENT HANDLERS
         protected override void Awake() {
             base.Awake();
 
@@ -69,7 +65,6 @@ namespace UnityEngine.Movement {
             ControllerToMove.Move(targetV * deltaTime);
         }
 
-        // HELPER FUNCTIONS
         private Vector3 jumpComponent(float deltaTime, bool jumping) {
             // Account for gravity
             Vector3 jumpV = Vector3.zero;

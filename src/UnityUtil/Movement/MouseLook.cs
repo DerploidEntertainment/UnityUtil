@@ -4,12 +4,11 @@ using UnityEngine.Logging;
 namespace UnityEngine.Movement
 {
 
-    public class MouseLook : Updatable {
-        // HIDDEN FIELDS
+    public class MouseLook : Updatable
+    {
         private float _angle = 0f;
         private float _deltaSinceLast = 0f;
 
-        // INSPECTOR FIELDS
         [Tooltip("The Transform that will be kinematically rotated while looking around.  Only required if " + nameof(UsePhysicsToLook) + " is false.")]
         public Transform TransformToRotate;
         [Tooltip("The Rigidbody that will be rotated by physics while looking around.  Only required if " + nameof(UsePhysicsToLook) + " is true.")]
@@ -41,7 +40,6 @@ namespace UnityEngine.Movement
                 _ => throw UnityObjectExtensions.SwitchDefaultException(AxisDirectionType),
             };
 
-        // EVENT HANDLERS
         protected override void Awake() {
             base.Awake();
 
@@ -66,7 +64,6 @@ namespace UnityEngine.Movement
             }
         }
 
-        // HELPERS
         private void doLookRotation()
         {
             // Determine the upward direction

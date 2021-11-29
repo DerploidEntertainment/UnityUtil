@@ -4,9 +4,8 @@ using UnityEngine.Logging;
 namespace UnityEngine
 {
 
-    public class TorqueStabilizer : MonoBehaviour {
-
-        // INSPECTOR FIELDS
+    public class TorqueStabilizer : MonoBehaviour
+    {
         [Tooltip("The Rigidbody to which the stabilizing torque will be applied.")]
         public Rigidbody RigidbodyToStabilize;
         [Tooltip("The maximum torque that can be applied to stabilize the associated Rigidbody about the upward direction.  That is, if a larger torque than this is applied to the Rigidbody, this " + nameof(UnityEngine.TorqueStabilizer) + " will not be able to stabilize against it.")]
@@ -32,7 +31,6 @@ namespace UnityEngine
                 _ => throw UnityObjectExtensions.SwitchDefaultException(UpwardDirectionType),
             };
 
-        // EVENT HANDLERS
         [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
         [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
         private void OnDrawGizmos() {

@@ -18,10 +18,8 @@ namespace UnityEngine {
 
     public class ColliderDuplicator : MonoBehaviour {
 
-        // HIDDEN FIELDS
         IList<Transform> _duplicates = new List<Transform>();
 
-        // INSPECTOR FIELDS
         [Tooltip("Each Collider selected for duplication will be duplicated under each of these GameObjects.")]
         public Transform NewParentOfDuplicates;
         [Tooltip("Select the behavior for automatically duplicating child Colliders.")]
@@ -35,7 +33,6 @@ namespace UnityEngine {
         [Tooltip("If set, all duplicate Colliders will have a PhysTarget component attached that targets this value.")]
         public MonoBehaviour PhysicsTarget;
 
-        // EVENT HANDLERS
         private void Start() {
             // Create duplicate Colliders
             _duplicates = createDuplicates(NewParentOfDuplicates);
@@ -50,7 +47,6 @@ namespace UnityEngine {
             }
         }
 
-        // HELPERS
         private IList<Transform> createDuplicates(Transform newParent) {
             // Duplicate child Colliders, as requested...
             IList<Transform> dupls = new List<Transform>();

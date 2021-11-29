@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEngine.Events;
 using UnityEngine.Logging;
 
@@ -18,7 +18,6 @@ namespace UnityEngine {
             PercentMax,
         }
 
-        // INSPECTOR FIELDS
         public float Value = 100f;
         public float MinValue = 0f;
         public float MaxValue = 100f;
@@ -27,7 +26,6 @@ namespace UnityEngine {
         public QuantityEvent FullyDepleted = new();
         public QuantityEvent Restored = new();
 
-        // API
         public static float ConvertAmount(float amount, ChangeMode fromChangeMode, ChangeMode toChangeMode, float currentAmount, float maxAmount) {
             // Get the "from" change amount as an Absolute amount
             float absChange = fromChangeMode switch {
@@ -62,7 +60,6 @@ namespace UnityEngine {
         public void FillCompletely() => doChange(MaxValue - Value, ChangeMode.Absolute);
         public void DepleteCompletely() => doChange(-Value, ChangeMode.Absolute);
 
-        // HELPER FUNCTIONS
         private float doChange(float amount, ChangeMode changeMode) {
             if (amount == 0f)
                 return 0f;

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEngine.Triggers;
 
 namespace UnityEngine.Inputs {
@@ -8,18 +8,15 @@ namespace UnityEngine.Inputs {
         public SimpleTrigger InteractedTrigger;
     }
 
-    public class StartInteractor : Updatable {
-
-        // INSPECTOR INTERFACE
+    public class StartInteractor : Updatable
+    {
         public StartStopInput Input;
         public float Range;
         public LayerMask InteractLayerMask;
         public QueryTriggerInteraction QueryTriggerInteraction = QueryTriggerInteraction.UseGlobal;
 
-        // API INTERFACE
         public event EventHandler<InteractionEventArgs> Interacted;
 
-        // EVENT HANDLERS
         protected override void Awake() {
             base.Awake();
 

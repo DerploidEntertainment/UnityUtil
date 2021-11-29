@@ -1,11 +1,10 @@
-﻿using UnityEngine.Assertions;
+using UnityEngine.Assertions;
 using UnityEngine.Logging;
 
 namespace UnityEngine.Inventory {
 
     public class Collectible : MonoBehaviour {
 
-        // INSPECTOR FIELDS
         public GameObject Root;
         public float Amount = 25f;
         public CollectibleDestroyMode DestroyMode = CollectibleDestroyMode.WhenUsed;

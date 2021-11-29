@@ -113,7 +113,6 @@ namespace UnityEngine {
         public Sprite CurlyBraceClose;
         public Sprite Tilde;
 
-        // API INTERFACE
         public Sprite this[char charCode] {
             get => spriteRef(charCode);
             set => spriteRef(charCode) = value;

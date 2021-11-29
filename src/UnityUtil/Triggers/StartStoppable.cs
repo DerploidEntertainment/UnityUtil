@@ -8,18 +8,16 @@ namespace UnityEngine.Triggers {
         StopRestartAlways,
     }
 
-    public abstract class StartStoppable : Updatable {
-
+    public abstract class StartStoppable : Updatable
+    {
         private bool _starting = true;
         private bool _wasRunningB4Disable = false;
 
-        // INSPECTOR FIELDS
         [Tooltip("What should happen when this component is enabled/disabled? " + nameof(EnableDisableBehavior.PauseResume) + " will pause/resume it, if it was running. " + nameof(EnableDisableBehavior.StopRestart) + " will stop/restart it, if it was running. " + nameof(EnableDisableBehavior.StopRestartAlways) + " will stop/restart it, restarting it even if it was not previously running. In all cases, the first OnEnable is still controlled by " + nameof(StartAutomatically) + ".")]
         public EnableDisableBehavior EnableDisableBehavior = EnableDisableBehavior.PauseResume;
         [Tooltip("Should the repeater start automatically when this GameObject is enabled/started for the first time?")]
         public bool StartAutomatically = false;
 
-        // EVENT HANDLERS
         protected override void Awake() {
             base.Awake();
 
@@ -77,7 +75,6 @@ namespace UnityEngine.Triggers {
             }
         }
 
-        // API INTERFACE
         public bool Running { get; private set; } = false;
 
         private const string GRP_BUTTONS = "Buttons";
@@ -116,7 +113,6 @@ namespace UnityEngine.Triggers {
             DoStop();
         }
 
-        // HELPERS
         protected virtual void DoRestart() {
             Updater.RegisterUpdate(InstanceID, DoUpdate);
             Running = true;

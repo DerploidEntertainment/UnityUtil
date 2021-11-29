@@ -1,18 +1,16 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
 namespace UnityEngine {
 
     [RequireComponent(typeof(Collider))]
-    public class CollisionSounds : MonoBehaviour {
-        // HIDDEN FIELDS
+    public class CollisionSounds : MonoBehaviour
+    {
         private int _clip = -1;
 
-        // INSPECTOR FIELDS
         public AudioSource AudioSource;
         public bool RandomizeClips;
         public List<AudioClip> AudioClips;
 
-        // EVENT HANDLERS
         private void OnCollisionEnter(Collision collision) {
             if (AudioClips.Count == 0)
                 return;
@@ -23,7 +21,6 @@ namespace UnityEngine {
             AudioSource.Play();
         }
 
-        // HIDDEN FUNCTIONS
         private int nextClip() {
             // Get the next AudioClip to be played (random or in order)
             if (RandomizeClips)

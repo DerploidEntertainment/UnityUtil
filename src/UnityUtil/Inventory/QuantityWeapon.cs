@@ -4,14 +4,13 @@ using UnityEngine.Logging;
 namespace UnityEngine.Inventory {
 
     [RequireComponent(typeof(Weapon))]
-    public class QuantityWeapon : MonoBehaviour {
+    public class QuantityWeapon : MonoBehaviour
+    {
 
         private Weapon _weapon;
 
-        // INSPECTOR FIELDS
         public QuantityWeaponInfo Info;
 
-        // EVENT HANDLERS
         private void Awake() {
             this.AssertAssociation(Info, nameof(QuantityWeaponInfo));
 

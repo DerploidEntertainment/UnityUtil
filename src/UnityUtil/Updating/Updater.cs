@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics.CodeAnalysis;
 
 namespace UnityEngine {
@@ -10,7 +10,6 @@ namespace UnityEngine {
         private readonly MultiCollection<int, Action<float>> _fixed = new();
         private readonly MultiCollection<int, Action<float>> _late = new();
 
-        // API INTERFACE
         public void RegisterUpdate(int instanceID, Action<float> action) {
             if (action == null)
                 throw new ArgumentNullException(nameof(instanceID));

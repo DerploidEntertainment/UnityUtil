@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEngine.Assertions;
 using UnityEngine.Events;
 using UnityEngine.Inputs;
@@ -17,11 +17,9 @@ namespace UnityEngine.Inventory {
 
         private Tool _tool;
 
-        // INSPECTOR FIELDS
         public AmmoToolInfo Info;
         public StartStopInput ReloadInput;
 
-        // API INTERFACE
         /// <summary>
         /// The amount of ammo currently in the main clip.
         /// </summary>
@@ -47,7 +45,6 @@ namespace UnityEngine.Inventory {
         public AmmoEvent Loaded = new();
         public AmmoEvent AmmoReduced = new();
 
-        // EVENT HANDLERS
         private void Awake() {
             this.AssertAssociation(Info, nameof(AmmoToolInfo));
             this.AssertAssociation(ReloadInput, nameof(this.ReloadInput));
@@ -71,7 +68,6 @@ namespace UnityEngine.Inventory {
                 doReloadClip();
         }
 
-        // HELPERS
         private void doReloadClip() {
             // Fill the current clip as much as possible from backup ammo
             int oldClip = CurrentClipAmmo;

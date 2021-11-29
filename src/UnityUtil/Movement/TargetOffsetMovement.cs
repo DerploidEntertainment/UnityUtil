@@ -2,9 +2,8 @@
 
 namespace UnityEngine.Movement {
 
-    public class TargetOffsetMovement : MonoBehaviour {
-
-        // INSPECTOR FIELDS
+    public class TargetOffsetMovement : MonoBehaviour
+    {
         [Tooltip("The Transform to keep at the given " + nameof(Offset) + " from the " + nameof(Target))]
         public Transform TransformToMove;
         [Tooltip("The Transform being followed at the given " + nameof(Offset))]

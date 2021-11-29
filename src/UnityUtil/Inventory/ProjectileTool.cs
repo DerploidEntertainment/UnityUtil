@@ -1,18 +1,17 @@
-﻿using UnityEngine.Logging;
+using UnityEngine.Logging;
 
 namespace UnityEngine.Inventory {
 
     [RequireComponent(typeof(Tool))]
-    public class ProjectileTool : MonoBehaviour {
+    public class ProjectileTool : MonoBehaviour
+    {
 
         private Tool _tool;
 
-        // INSPECTOR FIELDS
         public ProjectileToolInfo Info;
         [Tooltip("The ProjectilePrefab will be parented to this Transform after it is instantiated.")]
         public Transform ProjectileParent;
 
-        // EVENT HANDLERS
         private void Awake() {
             this.AssertAssociation(Info, nameof(ProjectileToolInfo));
 
@@ -20,7 +19,6 @@ namespace UnityEngine.Inventory {
             _tool.Used.AddListener(spawnProjectile);
         }
 
-        // HELPER FUNCTIONS
         private void spawnProjectile() {
             // Instantiate the Projectile
             Vector3 pos = transform.TransformPoint(Info.SpawnPosition);

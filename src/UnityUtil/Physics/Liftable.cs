@@ -1,11 +1,8 @@
-﻿using UnityEngine;
-
-namespace UnityEngine {
+﻿namespace UnityEngine {
 
     [DisallowMultipleComponent]
-    public class Liftable : MonoBehaviour {
-
-        // INSPECTOR FIELDS
+    public class Liftable : MonoBehaviour
+    {
         public Transform Root;
         [Tooltip("Provides a way of enabling/disable Liftables, since this component doesn't have Start/Update functions.")]
         public bool CanLift = true;
@@ -13,7 +10,6 @@ namespace UnityEngine {
         public Vector3 PreferredLiftRotation = Vector3.zero;
         public bool UsePreferredRotation = false;
 
-        // API INTERFACE
         public Lifter Lifter { get; set; }
     }
 
