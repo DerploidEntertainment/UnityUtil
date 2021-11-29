@@ -1,9 +1,9 @@
-﻿using System;
+using System;
 using System.Diagnostics.CodeAnalysis;
 
 namespace UnityEngine
 {
-    [CreateAssetMenu(menuName = nameof(UnityUtil) + "/" + "Configuration" + "/" + nameof(ConfigurationSourceCollection), fileName = "configuration-sources.asset")]
+    [CreateAssetMenu(menuName = $"{nameof(UnityUtil)}/Configuration/{nameof(ConfigurationSourceCollection)}", fileName = "configuration-sources.asset")]
     public class ConfigurationSourceCollection : ScriptableObject
     {
         [Tooltip(

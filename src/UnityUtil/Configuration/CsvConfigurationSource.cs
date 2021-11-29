@@ -5,7 +5,7 @@ using UnityEngine.Logging;
 
 namespace UnityEngine
 {
-    [CreateAssetMenu(menuName = nameof(UnityUtil) + "/" + "Configuration" + "/" + nameof(CsvConfigurationSource), fileName = DefaultResourceName + ".csv.asset")]
+    [CreateAssetMenu(menuName = $"{nameof(UnityUtil)}/Configuration/{nameof(CsvConfigurationSource)}", fileName = DefaultResourceName + ".csv.asset")]
     public class CsvConfigurationSource : ConfigurationSource {
 
         public const string DefaultResourceName = "appsettings";

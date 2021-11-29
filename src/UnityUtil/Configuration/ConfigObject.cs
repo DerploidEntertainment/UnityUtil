@@ -118,7 +118,7 @@ namespace UnityEngine {
             };
     }
 
-    [CreateAssetMenu(menuName = nameof(UnityUtil) + "/" + "Configuration" + "/" + nameof(ConfigObject), fileName = "appsettings.asset")]
+    [CreateAssetMenu(menuName = $"{nameof(UnityUtil)}/Configuration/{nameof(ConfigObject)}", fileName = "appsettings.asset")]
     public class ConfigObject : ScriptableObject {
         public Config[] Configs;
     }

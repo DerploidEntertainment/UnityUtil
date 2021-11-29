@@ -1,6 +1,6 @@
 namespace UnityEngine.Logging {
 
-    [CreateAssetMenu(menuName = nameof(UnityUtil) + "/" + nameof(UnityEngine.Logging) + "/" + nameof(ObjectNameLogEnricher), fileName = "object-name-log-enricher")]
+    [CreateAssetMenu(menuName = $"{nameof(UnityUtil)}/{nameof(UnityEngine.Logging)}/{nameof(ObjectNameLogEnricher)}", fileName = "object-name-log-enricher")]
     public class ObjectNameLogEnricher : LogEnricher {
 
         [Tooltip("For Objects that are scene objects, the name will include up to this many parent objects' names in the logs. Use this to generate logs that more specifically identify a scene Object.")]

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
@@ -9,7 +9,7 @@ namespace UnityUtil.Editor
 {
     public static class DependencyInjectorMenu
     {
-        public const string ItemName = nameof(UnityUtil) + "/Record dependency resolutions";
+        public const string ItemName = $"{nameof(UnityUtil)}/Record dependency resolutions";
 
         [MenuItem(ItemName)]
         private static void toggleRecording()

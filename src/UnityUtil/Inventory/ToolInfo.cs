@@ -1,4 +1,4 @@
-﻿namespace UnityEngine.Inventory {
+namespace UnityEngine.Inventory {
 
     public enum AutomaticMode {
         SingleAction,
@@ -6,7 +6,7 @@
         FullyAutomatic,
     }
 
-    [CreateAssetMenu(fileName = "tool", menuName = "UnityUtil" + "/" + nameof(UnityEngine.Inventory) + "/" + nameof(UnityEngine.Inventory.ToolInfo))]
+    [CreateAssetMenu(fileName = "tool", menuName = $"{nameof(UnityUtil)}/{nameof(UnityEngine.Inventory)}/{nameof(UnityEngine.Inventory.ToolInfo)}")]
     public class ToolInfo : ScriptableObject {
 
         public AutomaticMode AutomaticMode;

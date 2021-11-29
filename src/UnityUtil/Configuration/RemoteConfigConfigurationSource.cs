@@ -5,7 +5,7 @@ using UnityEngine.Logging;
 
 namespace UnityEngine
 {
-    [CreateAssetMenu(menuName = nameof(UnityUtil) + "/" + "Configuration" + "/" + nameof(RemoteConfigConfigurationSource), fileName = DefaultEnvironment + ".remoteConfig.asset")]
+    [CreateAssetMenu(menuName = $"{nameof(UnityUtil)}/Configuration/{nameof(RemoteConfigConfigurationSource)}", fileName = DefaultEnvironment + ".remoteConfig.asset")]
     public class RemoteConfigConfigurationSource : ConfigurationSource
     {
         // These structs are required in order to fetch configs. See https://docs.unity3d.com/Packages/com.unity.remote-config@2.0/manual/CodeIntegration.html

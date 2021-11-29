@@ -1,9 +1,9 @@
-﻿using Sirenix.OdinInspector;
+using Sirenix.OdinInspector;
 using System.Diagnostics.CodeAnalysis;
 
 namespace UnityEngine
 {
-    [CreateAssetMenu(menuName = "UnityUtil" + "/" + nameof(AppVersion), fileName = "version")]
+    [CreateAssetMenu(menuName = $"{nameof(UnityUtil)}/{nameof(AppVersion)}", fileName = "version")]
     public class AppVersion : ScriptableObject, IAppVersion
     {
 

@@ -1,6 +1,6 @@
 namespace UnityEngine.Logging {
 
-    [CreateAssetMenu(menuName = nameof(UnityUtil) + "/" + nameof(UnityEngine.Logging) + "/" + nameof(TypeNameLogEnricher), fileName = "type-name-log-enricher")]
+    [CreateAssetMenu(menuName = $"{nameof(UnityUtil)}/{nameof(UnityEngine.Logging)}/{nameof(TypeNameLogEnricher)}", fileName = "type-name-log-enricher")]
     public class TypeNameLogEnricher : LogEnricher {
 
         [Tooltip("'{0}' will be replaced by the name of the type. Read more about .NET composite formatting here: https://docs.microsoft.com/en-us/dotnet/standard/base-types/composite-formatting")]

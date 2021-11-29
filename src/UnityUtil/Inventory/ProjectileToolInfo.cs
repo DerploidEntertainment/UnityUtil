@@ -1,6 +1,6 @@
-﻿namespace UnityEngine.Inventory {
+namespace UnityEngine.Inventory {
 
-    [CreateAssetMenu(fileName = "projectile-tool", menuName = "UnityUtil" + "/" + nameof(UnityEngine.Inventory) + "/" + nameof(UnityEngine.Inventory.ProjectileToolInfo))]
+    [CreateAssetMenu(fileName = "projectile-tool", menuName = $"{nameof(UnityUtil)}/{nameof(UnityEngine.Inventory)}/{nameof(UnityEngine.Inventory.ProjectileToolInfo)}")]
     public class ProjectileToolInfo : ScriptableObject {
 
         public GameObject ProjectilePrefab;
