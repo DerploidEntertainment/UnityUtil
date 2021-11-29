@@ -13,7 +13,13 @@ namespace UnityEngine.Triggers {
         private bool _starting = true;
         private bool _wasRunningB4Disable = false;
 
-        [Tooltip("What should happen when this component is enabled/disabled? " + nameof(EnableDisableBehavior.PauseResume) + " will pause/resume it, if it was running. " + nameof(EnableDisableBehavior.StopRestart) + " will stop/restart it, if it was running. " + nameof(EnableDisableBehavior.StopRestartAlways) + " will stop/restart it, restarting it even if it was not previously running. In all cases, the first OnEnable is still controlled by " + nameof(StartAutomatically) + ".")]
+        [Tooltip(
+            "What should happen when this component is enabled/disabled? " +
+            $"{nameof(EnableDisableBehavior.PauseResume)} will pause/resume it, if it was running. " +
+            $"{nameof(EnableDisableBehavior.StopRestart)} will stop/restart it, if it was running. " +
+            $"{nameof(EnableDisableBehavior.StopRestartAlways)} will stop/restart it, restarting it even if it was not previously running. " +
+            $"In all cases, the first OnEnable is still controlled by {nameof(StartAutomatically)}."
+        )]
         public EnableDisableBehavior EnableDisableBehavior = EnableDisableBehavior.PauseResume;
         [Tooltip("Should the repeater start automatically when this GameObject is enabled/started for the first time?")]
         public bool StartAutomatically = false;

@@ -15,7 +15,7 @@ namespace UnityEngine.UI {
         [TableColumnWidth(THIN_COL_WIDTH, Resizable = false)]
         [Tooltip(
             "Set to false if you want to prevent this breakpoint from being matched, " +
-            "without completing deleting it or its " + nameof(Matched) + " handlers."
+            $"without completing deleting it or its {nameof(Matched)} handlers."
         )]
         public bool Enabled;
 

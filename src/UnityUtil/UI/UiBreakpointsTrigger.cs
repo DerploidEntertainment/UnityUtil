@@ -9,10 +9,10 @@ namespace UnityEngine.UI
 
         [ValidateInput(nameof(isNumBreakpointsValid), ContinuousValidationCheck = true)]
         [Tooltip(
-            "Define one event for each breakpoint in the associated " + nameof(UiBreakpoints) + ". " +
-            "Every time " + nameof(Trigger) + " is invoked, the events corresponding to the currently matching breakpoints will be raised. " +
-            "For example, if " + nameof(UiBreakpoints) + " has 3 breakpoints, and only the 2nd one is currently matching, " +
-            "then the 2nd event from this array will be raised when " + nameof(Trigger) + " is called."
+            $"Define one event for each breakpoint in the associated {nameof(UiBreakpoints)}. " +
+            $"Every time {nameof(Trigger)} is invoked, the events corresponding to the currently matching breakpoints will be raised. " +
+            $"For example, if {nameof(UiBreakpoints)} has 3 breakpoints, and only the 2nd one is currently matching, " +
+            $"then the 2nd event from this array will be raised when {nameof(Trigger)} is called."
         )]
         public UnityEvent[] BreakpointTriggers;
 

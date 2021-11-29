@@ -9,22 +9,35 @@ namespace UnityEngine.Movement
         private float _angle = 0f;
         private float _deltaSinceLast = 0f;
 
-        [Tooltip("The Transform that will be kinematically rotated while looking around.  Only required if " + nameof(UsePhysicsToLook) + " is false.")]
+        [Tooltip($"The Transform that will be kinematically rotated while looking around.  Only required if {nameof(UsePhysicsToLook)} is false.")]
         public Transform TransformToRotate;
-        [Tooltip("The Rigidbody that will be rotated by physics while looking around.  Only required if " + nameof(UsePhysicsToLook) + " is true.")]
+
+        [Tooltip($"The Rigidbody that will be rotated by physics while looking around.  Only required if {nameof(UsePhysicsToLook)} is true.")]
         public Rigidbody RigidbodyToRotate;
+
         public ValueInput LookInput;
-        [Tooltip("The maximum angle around the vertical that can be looked through in the positive direction.  For best results, use values less than 180° to limit the view, or exactly 360° to allow full rotation.")]
+
+        [Tooltip(
+            "The maximum angle around the vertical that can be looked through in the positive direction. " +
+            "For best results, use values less than 180° to limit the view, or exactly 360° to allow full rotation."
+        )]
         [Range(0f, 360f)]
         public float MaxPositiveAngle = 360f;
-        [Tooltip("The maximum angle around the vertical that can be looked through in the negative direction.  For best results, use values greater than -180° to limit the view, or exactly -360° to allow full rotation.")]
+
+        [Tooltip(
+            "The maximum angle around the vertical that can be looked through in the negative direction. " +
+            "For best results, use values greater than -180° to limit the view, or exactly -360° to allow full rotation."
+        )]
         [Range(-360f, 0f)]
         public float MaxNegativeAngle = -360f;
+
         [Tooltip("If true, then the look rotation is applied using physics, otherwise it is applied using kinematic Transform rotation.")]
         public bool UsePhysicsToLook = true;
+
         [Tooltip("Around what axis will the look rotation be applied?")]
         public AxisDirection AxisDirectionType = AxisDirection.OppositeGravity;
-        [Tooltip("Only required if " + nameof(AxisDirectionType) + " is " + nameof(AxisDirection.CustomWorldSpace) + " or " + nameof(AxisDirection.CustomLocalSpace) + ".")]
+
+        [Tooltip($"Only required if {nameof(AxisDirectionType)} is {nameof(AxisDirection.CustomWorldSpace)} or {nameof(AxisDirection.CustomLocalSpace)}.")]
         public Vector3 CustomAxisDirection = Vector3.up;
 
         /// <summary>

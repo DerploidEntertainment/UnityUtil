@@ -24,10 +24,16 @@ namespace UnityEngine {
         public Transform NewParentOfDuplicates;
         [Tooltip("Select the behavior for automatically duplicating child Colliders.")]
         public ChildColliderDuplicateMode ChildColliderDuplication = ChildColliderDuplicateMode.None;
-        [Tooltip("Add additional Colliders to duplicate here.  If these are child Colliders, we recommend that you set ChildColliderDuplication to 'None'.")]
+
+        [Tooltip(
+            "Add additional Colliders to duplicate here. If these are child Colliders, " +
+            $"we recommend that you set {nameof(ChildColliderDuplication)} to '{nameof(ChildColliderDuplicateMode.None)}'."
+        )]
         public Collider[] CollidersToDuplicate;
+
         [Tooltip("Select the behavior for changing the 'isTrigger' field of all duplicate Colliders")]
         public ChangeTriggerMode ChangeTriggerMode = ChangeTriggerMode.KeepOriginal;
+
         [Tooltip("All duplicate Colliders will be placed in the Layer with this name.")]
         public string DuplicateLayerName;
         [Tooltip("If set, all duplicate Colliders will have a PhysTarget component attached that targets this value.")]

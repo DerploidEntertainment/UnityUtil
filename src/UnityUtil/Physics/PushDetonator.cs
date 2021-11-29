@@ -12,7 +12,10 @@ namespace UnityEngine
         public float ExplosionForce = 10f;
         public float ExplosionUpwardsModifier = 2f;
 
-        [Tooltip("This rigidbody is 'safe' from pushing. Useful if this detonator has a relationship with a rigidbody such that the rigidbody should not be pushed.")]
+        [Tooltip(
+            "This rigidbody is 'safe' from pushing. " +
+            "Useful if this detonator has a relationship with a rigidbody such that the rigidbody should not be pushed."
+        )]
         public Rigidbody SafeRigidbody;
 
         [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]

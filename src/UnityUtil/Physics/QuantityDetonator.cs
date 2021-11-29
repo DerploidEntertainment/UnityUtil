@@ -3,13 +3,17 @@ using System.Linq;
 namespace UnityEngine {
 
     [RequireComponent(typeof(Detonator))]
-    public class HurtDetonator : MonoBehaviour {
-
+    public class HurtDetonator : MonoBehaviour
+    {
         private Detonator _detonator;
 
-        [Tooltip("Nearby " + nameof(UnityEngine.ManagedQuantity) + "s will be changed by this amount, at most.  How this amount is applied depends on the value of " + nameof(ChangeMode) + ", and the distance from this " + nameof(UnityEngine.Detonator) + ".")]
+        [Tooltip(
+            $"Nearby {nameof(UnityEngine.ManagedQuantity)}s will be changed by this amount, at most. " +
+            $"How this amount is applied depends on the value of {nameof(ChangeMode)}, and the distance from this {nameof(UnityEngine.Detonator)}."
+        )]
         public float MaxAmount = 10f;
-        [Tooltip("Determines how the value of " + nameof(MaxAmount) + " is used to change nearby " + nameof(UnityEngine.ManagedQuantity) + "s.")]
+
+        [Tooltip($"Determines how the value of {nameof(MaxAmount)} is used to change nearby {nameof(UnityEngine.ManagedQuantity)}s.")]
         public ManagedQuantity.ChangeMode ChangeMode = ManagedQuantity.ChangeMode.Absolute;
 
         private void Awake() {

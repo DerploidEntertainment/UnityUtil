@@ -3,11 +3,20 @@ namespace UnityEngine.Triggers
 
     public abstract class MultiConditionalTrigger : ConditionalTrigger {
 
-        private const string MSG_ONLY_WHEN_CALLED = "Note that, if both " + nameof(TriggerWhenConditionsChanged) + " and " + nameof(TriggerWhenConditionsMaintained) + " are false, then this trigger will only raise events if its " + nameof(TriggerState) + "() method is called directly.";
+        private const string MSG_ONLY_WHEN_CALLED =
+            $"Note that, if both {nameof(TriggerWhenConditionsChanged)} and {nameof(TriggerWhenConditionsMaintained)} are false, " +
+            $"then this trigger will only raise events if its {nameof(TriggerState)}() method is called directly.";
 
-        [Tooltip("If true, then this trigger will listen for " + nameof(BecameTrue) + " and " + nameof(BecameFalse) + " events raised by the " + nameof(Conditions) + ", and will raise either a 'became' or a 'still' event in response. " + MSG_ONLY_WHEN_CALLED)]
+        [Tooltip(
+            $"If true, then this trigger will listen for {nameof(BecameTrue)} and {nameof(BecameFalse)} events raised by the {nameof(Conditions)}, " +
+            "and will raise either a 'became' or a 'still' event in response. " + MSG_ONLY_WHEN_CALLED
+        )]
         public bool TriggerWhenConditionsChanged = true;
-        [Tooltip("If true, then this trigger will listen for " + nameof(StillTrue) + " and " + nameof(StillFalse) + " events raised by the " + nameof(Conditions) + ", and will raise a 'still' event in response. " + MSG_ONLY_WHEN_CALLED)]
+
+        [Tooltip(
+            $"If true, then this trigger will listen for {nameof(StillTrue)} and {nameof(StillFalse)} events raised by the {nameof(Conditions)}, " +
+            "and will raise a 'still' event in response. " + MSG_ONLY_WHEN_CALLED
+        )]
         public bool TriggerWhenConditionsMaintained = false;
         public ConditionalTrigger[] Conditions;
 

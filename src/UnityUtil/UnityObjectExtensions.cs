@@ -5,8 +5,8 @@ using UnityEngine.Assertions;
 
 namespace UnityEngine {
 
-    public static class UnityObjectExtensions {
-
+    public static class UnityObjectExtensions
+    {
         public const uint DefaultNumParents = 1u;
         public const string DefaultAncestorSeparator = ">";
         public const string DefaultHierarchyNameFormatString = "'{0}'";

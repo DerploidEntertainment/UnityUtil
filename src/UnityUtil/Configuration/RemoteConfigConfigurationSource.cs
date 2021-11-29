@@ -18,7 +18,10 @@ namespace UnityEngine
         public const string DefaultEnvironment = "Release";
 
         [Tooltip("The Remote Config environment from which to request configuration settings")]
-        [InfoBox("Note that you should only load one Remote Config environment per environment of your app. If you do not, you will likely experience errors with " + nameof(fetchCompleted) + " callbacks being called too many times.")]
+        [InfoBox(
+            "Note that you should only load one Remote Config environment per environment of your app. " +
+            $"If you do not, you will likely experience errors with {nameof(fetchCompleted)} callbacks being called too many times."
+        )]
         public string Environment = DefaultEnvironment;
 
         public override ConfigurationSourceLoadBehavior LoadBehavior => ConfigurationSourceLoadBehavior.AsyncOnly;

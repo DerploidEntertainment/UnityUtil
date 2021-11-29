@@ -13,15 +13,29 @@ namespace UnityEngine.Inputs {
         [Header("Raycasting")]
         public float Range;
         public LayerMask InteractLayerMask;
-        [Tooltip("If true, then all colliders within " + nameof(LookAtInteractor.Range) + " and on the " + nameof(LookAtInteractor.InteractLayerMask) + " will be interacted with (using the relatively expensive Physics.RaycastAll() method)  If false, then only " + nameof(LookAtInteractor.MaxInteractions) + " colliders will be interacted with.")]
+
+        [Tooltip(
+            $"If true, then all colliders within {nameof(LookAtInteractor.Range)} and on the {nameof(LookAtInteractor.InteractLayerMask)} will be " +
+            $"interacted with (using the relatively expensive Physics.RaycastAll() method)." +
+            $"If false, then only {nameof(LookAtInteractor.MaxInteractions)} colliders will be interacted with."
+        )]
         public bool InteractWithAllInRange = false;
-        [Tooltip("The maximum number of colliders within " + nameof(LookAtInteractor.Range) + " and on the " + nameof(LookAtInteractor.InteractLayerMask) + " to interacted with.  If this value is 1, then Physics.Raycast() will be used to find colliders to interact with, otherwise the relatively expensive Physics.RaycastAll() will be used (with only the " + nameof(LookAtInteractor.MaxInteractions) + " closest colliders actually being interacted with).  This value can theoretically be zero, but that would make this " + nameof(Inputs.LookAtInteractor) + " kind of pointless!")]
+
+        [Tooltip(
+            $"The maximum number of colliders within {nameof(LookAtInteractor.Range)} and on the {nameof(LookAtInteractor.InteractLayerMask)} to " +
+            $"interact with. If this value is 1, then Physics.Raycast() will be used to find colliders to interact with, " +
+            $"otherwise the relatively expensive Physics.RaycastAll() will be used (with only the {nameof(LookAtInteractor.MaxInteractions)} " +
+            $"closest colliders actually being interacted with)."
+        )]
         public uint MaxInteractions = 1;
 
+
         [Header("Gizmos")]
+
         [Tooltip("Should a ray Gizmo be drawn to indicate where this Component is looking?")]
         public bool DrawRay = true;
-        [Tooltip("What color should the ray Gizmo be that indicates where this Component is looking?  Ignored if " + nameof(LookAtInteractor.DrawRay) + " is false.")]
+
+        [Tooltip($"What color should the ray Gizmo be that indicates where this Component is looking? Ignored if {nameof(LookAtInteractor.DrawRay)} is false.")]
         public Color RayColor = Color.black;
 
         protected override void Awake() {

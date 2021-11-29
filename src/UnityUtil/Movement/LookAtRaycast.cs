@@ -7,19 +7,41 @@ namespace UnityEngine {
 
     public class LookAtRaycast : Updatable {
 
-        [Tooltip("This Transform will always rotate to look at whatever the " + nameof(RaycastingTransform) + " is looking at.  This point is at most " + nameof(Range) + " units ahead, but will be closer if an object matching " + nameof(LayerMask) + " is closer.")]
+        [Tooltip(
+            $"This Transform will always rotate to look at whatever the {nameof(RaycastingTransform)} is looking at. " +
+            $"This point is at most {nameof(Range)} units ahead, but will be closer if an object matching {nameof(LayerMask)} is closer."
+        )]
         public Transform TransformToRotate;
-        [Tooltip("The " + nameof(LookAtRaycast.TransformToRotate) + " will always rotate to look at whatever the " + nameof(RaycastingTransform) + " is looking at.  This point is at most " + nameof(Range) + " units ahead, but will be closer if an object matching " + nameof(LayerMask) + " is closer.")]
+
+        private const string TOOLTIP_TRANSFORM_ROTATE =
+            $"The {nameof(LookAtRaycast.TransformToRotate)} will always rotate to look at whatever the {nameof(RaycastingTransform)} is looking at. " +
+            $"This point is at most {nameof(Range)} units ahead, but will be closer if an object matching {nameof(LayerMask)} is closer.";
+        private const string TOOLTIP_WEAPONINFO = $"If a {nameof(WeaponInfo)} is provided, then its values will be given priority over this value.";
+
+
+        [Tooltip(TOOLTIP_TRANSFORM_ROTATE)]
         public Transform RaycastingTransform;
-        [Tooltip("The " + nameof(LookAtRaycast.TransformToRotate) + " will always rotate to look at whatever the " + nameof(RaycastingTransform) + " is looking at.  This point is at most " + nameof(Range) + " units ahead, but will be closer if an object matching " + nameof(LayerMask) + " is closer.  If a " + nameof(WeaponInfo) + " is provided, then its " + nameof(UnityEngine.Inventory.WeaponInfo.Range) + " will be given priority over this value.")]
+
+        [Tooltip($"{TOOLTIP_TRANSFORM_ROTATE} {TOOLTIP_WEAPONINFO}")]
         public float Range;
-        [Tooltip("The " + nameof(LookAtRaycast.TransformToRotate) + " will always rotate to look at whatever the " + nameof(RaycastingTransform) + " is looking at.  This point is at most " + nameof(Range) + " units ahead, but will be closer if an object matching " + nameof(LayerMask) + " is closer.  If a " + nameof(WeaponInfo) + " is provided, then its " + nameof(UnityEngine.Inventory.WeaponInfo.AttackLayerMask) + " will be given priority over this value.")]
+
+        [Tooltip($"{TOOLTIP_TRANSFORM_ROTATE} {TOOLTIP_WEAPONINFO}")]
         public LayerMask LayerMask;
-        [Tooltip("If the " + nameof(LookAtRaycast.RaycastingTransform) + " is associated with a " + nameof(UnityEngine.Inventory.Weapon) + ", then providing its " + nameof(UnityEngine.Inventory.WeaponInfo) + " here will override " + nameof(Range) + " and " + nameof(LayerMask) + ", which might be less error-prone during development.")]
+
+        [Tooltip(
+            $"If the {nameof(LookAtRaycast.RaycastingTransform)} is associated with a {nameof(UnityEngine.Inventory.Weapon)}, " +
+            $"then providing its {nameof(UnityEngine.Inventory.WeaponInfo)} here will override {nameof(Range)} and {nameof(LayerMask)}, " +
+            $"which might be less error-prone during development."
+        )]
         public WeaponInfo WeaponInfo;
-        [Tooltip("This upward direction will be used by the " + nameof(LookAtRaycast.TransformToRotate) + " to rotate toward whatever the " + nameof(RaycastingTransform) + " is looking at.")]
+
+        [Tooltip(
+            $"This upward direction will be used by the {nameof(LookAtRaycast.TransformToRotate)} to rotate toward " +
+            $"whatever the {nameof(RaycastingTransform)} is looking at."
+        )]
         public AxisDirection UpwardDirectionType = AxisDirection.OppositeGravity;
-        [Tooltip("Only required if " + nameof(UpwardDirectionType) + " is " + nameof(AxisDirection.CustomWorldSpace) + " or " + nameof(AxisDirection.CustomLocalSpace) + ".")]
+
+        [Tooltip($"Only required if {nameof(UpwardDirectionType)} is {nameof(AxisDirection.CustomWorldSpace)} or {nameof(AxisDirection.CustomLocalSpace)}.")]
         public Vector3 CustomUpwardDirection = Vector3.up;
 
         /// <summary>

@@ -1,4 +1,4 @@
-﻿using Sirenix.OdinInspector;
+using Sirenix.OdinInspector;
 using System;
 using System.Diagnostics.CodeAnalysis;
 
@@ -26,11 +26,11 @@ namespace UnityEngine.DependencyInjection
         [Tooltip(
             "The service collection from which dependencies will be resolved. Order does not matter. " +
             "Note also that runtime changes to this collection will not have any affect.\n\n" +
-            "If there are multiple " + nameof(SceneServiceCollection) + " instances present in the scene, " +
-            "or multiple scenes with a " + nameof(SceneServiceCollection) + " are loaded at the same time, " +
-            "then their " + nameof(Services) + " will be combined. " +
+            $"If there are multiple {nameof(SceneServiceCollection)} instances present in the scene, " +
+            $"or multiple scenes with a {nameof(SceneServiceCollection)} are loaded at the same time, " +
+            $"then their {nameof(Services)} will be combined. " +
             "This allows a game to dynamically register and unregister a scene's services at runtime. " +
-            "Note, however, that an error will result if multiple " + nameof(SceneServiceCollection) + " instances " +
+            $"Note, however, that an error will result if multiple {nameof(SceneServiceCollection)} instances " +
             "try to register a service with the same parameters. In this case, it may be better to create a 'base' scene " +
             "with all common services, so that they are each registered once, or register the services with different tags."
         )]

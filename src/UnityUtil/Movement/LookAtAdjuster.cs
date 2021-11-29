@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.Assertions;
 
 namespace UnityEngine {
@@ -8,7 +8,7 @@ namespace UnityEngine {
     /// </summary>
     public class LookAtAdjuster : Updatable {
 
-        [Tooltip("These are the " + nameof(UnityEngine.LookAt) + " components that will be told what new Transforms to look at.")]
+        [Tooltip($"These are the {nameof(UnityEngine.LookAt)} components that will be told what new Transforms to look at.")]
         public LookAt[] AssociatedLookAts;
 
         /// <summary>

@@ -37,21 +37,46 @@ namespace UnityEngine
         private GameObject _previous;
         private long _count = 0;
 
-        [Tooltip("The actual Unity prefab to spawn.  We highly recommend using a PREFAB, as opposed to an existing GameObject in the Scene, though either will technically work.")]
+        [Tooltip(
+            "The actual Unity prefab to spawn. We highly recommend using a PREFAB, as opposed to " +
+            "an existing GameObject in the Scene, though either will technically work."
+        )]
         public GameObject Prefab;
-        [Tooltip("All spawned instances of " + nameof(Spawner.Prefab) + " will be parented to this Transform.")]
+
+        [Tooltip($"All spawned instances of {nameof(Spawner.Prefab)} will be parented to this Transform.")]
         public Transform SpawnParent;
-        [Tooltip("All spawned " + nameof(Spawner.Prefab) + " instances will be given this name, along with a numeric suffix.  If " + nameof(Spawner.DestroyPrevious) + " is true, then the numeric suffix will not be added.")]
+
+        [Tooltip(
+            $"All spawned {nameof(Spawner.Prefab)} instances will be given this name, along with a numeric suffix. " +
+            $"If {nameof(Spawner.DestroyPrevious)} is true, then the numeric suffix will not be added."
+        )]
         public string BaseName = "Object";
-        [Tooltip("If true, then previously spawned " + nameof(Spawner.Prefab) + " instances will be destroyed before the next instance is spawned, so there will only ever be one spawned instance in existence.  If false, then multiple instances may be spawned.")]
+
+        [Tooltip(
+            $"If true, then previously spawned {nameof(Spawner.Prefab)} instances will be destroyed before " +
+            "the next instance is spawned, so there will only ever be one spawned instance in existence. " +
+            "If false, then multiple instances may be spawned."
+        )]
         public bool DestroyPrevious;
-        [Tooltip("All spawned " + nameof(Spawner.Prefab) + " instances will be launched in the " + nameof(Spawner.SpawnDirection) + ", with at least this speed.  Setting both " + nameof(Spawner.MinSpeed) + " and " + nameof(Spawner.MaxSpeed) + " to zero will spawn instances right at this " + nameof(UnityEngine.Spawner) + "'s position, without any launching.")]
+
+        private const string TOOLTIP_LAUNCH_SPEED =
+            $"All spawned {nameof(Spawner.Prefab)} instances will be launched in the {nameof(Spawner.SpawnDirection)}, " +
+            $"with at least this speed. Setting both {nameof(Spawner.MinSpeed)} and {nameof(Spawner.MaxSpeed)} to zero will " +
+            $"spawn instances right at this {nameof(UnityEngine.Spawner)}'s position, without any launching.";
+
+        [Tooltip(TOOLTIP_LAUNCH_SPEED)]
         public float MinSpeed = 0f;
-        [Tooltip("All spawned " + nameof(Spawner.Prefab) + " instances will be launched in the " + nameof(Spawner.SpawnDirection) + ", with at most this speed.  Setting both " + nameof(Spawner.MinSpeed) + " and " + nameof(Spawner.MaxSpeed) + " to zero will spawn instances right at this " + nameof(UnityEngine.Spawner) + "'s position, without any launching.")]
+
+        [Tooltip(TOOLTIP_LAUNCH_SPEED)]
         public float MaxSpeed = 10f;
-        [Tooltip("This property defines the direction in which spawned " + nameof(Spawner.Prefab) + " instances will be  launched.")]
+
+        [Tooltip($"Defines the direction in which spawned {nameof(Spawner.Prefab)} instances will be launched.")]
         public SpawnDirection SpawnDirection = SpawnDirection.Straight;
-        [Tooltip("If " + nameof(Spawner.SpawnDirection) + " is set to " + nameof(SpawnDirection.ConeRandom) + " or " + nameof(SpawnDirection.ConeBoundary) + ", then this value determines the half-angle of that cone.  Otherwise, this value is ignored.")]
+
+        [Tooltip(
+            $"If {nameof(Spawner.SpawnDirection)} is set to {nameof(SpawnDirection.ConeRandom)} or {nameof(SpawnDirection.ConeBoundary)}, " +
+            "then this value determines the half-angle of that cone. Otherwise, this value is ignored."
+        )]
         [Range(0f, 90f)]
         public float ConeHalfAngle = 30f;
 

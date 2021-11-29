@@ -38,9 +38,9 @@ namespace UnityEngine
         public bool Required { get; private set; } = true;
 
         [field: Tooltip(
-            "In what contexts should we attempt to load this " + nameof(ConfigurationSource) + "? " +
+            $"In what contexts should we attempt to load this {nameof(ConfigurationSource)}? " +
             "E.g., only when entering Play Mode in the Editor, or only in Release builds. " +
-            "One handy use of the Editor context is for " + nameof(ConfigurationSource) + "s whose corresponding config assets " +
+            $"One handy use of the Editor context is for {nameof(ConfigurationSource)}s whose corresponding config assets " +
             "are included under an Assets/**/Editor/ folder. This lets you keep those config assets out of builds so they don't take up space, " +
             "and then the configuration system won't attempt to load them or warn that they are missing."
         )]

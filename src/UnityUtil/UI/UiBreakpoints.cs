@@ -34,15 +34,15 @@ namespace UnityEngine.UI
         public BreakpointMode Mode = BreakpointMode.SafeAreaAspectRatio;
 
         [Tooltip(
-            "How will breakpoints be matched against the value specified by " + nameof(Mode) + "? " +
+            $"How will breakpoints be matched against the value specified by {nameof(Mode)}? " +
             "You can use this to specify UI that applies at only a specific value, or across a range of values. " +
-            "For example, suppose that " + nameof(Mode) + " is " + nameof(BreakpointMode.ScreenWidth) + ", " +
-            "and you provide breakpoints at values of 576, 768, and 1200 on a screen that is 700 pixels wide. " +
-            "If " + nameof(MatchMode) + " is " + nameof(BreakpointMatchMode.AnyEqualOrGreater) + ", then the 768 and 1200 breakpoints will match and have their " + nameof(UiBreakpoint.Matched) + " event raised; " +
-            "if " + nameof(MatchMode) + " is " + nameof(BreakpointMatchMode.AnyEqualOrLess) + ", then only the 576 breakpoint will match; " +
-            "if " + nameof(MatchMode) + " is " + nameof(BreakpointMatchMode.MaxEqualOrLess) + ", then only the 576 breakpoint will match (or the 768 breakpoint on a device that's exactly 768 pixels wide); and " +
-            "if " + nameof(MatchMode) + " is " + nameof(BreakpointMatchMode.MinEqualOrGreater) + ", then only the 768 breakpoint will match."
-            )]
+            $"For example, suppose that {nameof(Mode)} is {nameof(BreakpointMode.ScreenWidth)}, " +
+            "and you provide breakpoints at values of 576, 768, and 1200 on a screen that is 700 pixels wide. Then:" +
+            $"\n\t- If {nameof(MatchMode)} is {nameof(BreakpointMatchMode.AnyEqualOrGreater)}, then the 768 and 1200 breakpoints will match and have their {nameof(UiBreakpoint.Matched)} event raised" +
+            $"\n\t- If {nameof(MatchMode)} is {nameof(BreakpointMatchMode.AnyEqualOrLess)}, then only the 576 breakpoint will match" +
+            $"\n\t- If {nameof(MatchMode)} is {nameof(BreakpointMatchMode.MaxEqualOrLess)}, then only the 576 breakpoint will match (or the 768 breakpoint on a device that's exactly 768 pixels wide)" +
+            $"\n\t- If {nameof(MatchMode)} is {nameof(BreakpointMatchMode.MinEqualOrGreater)}, then only the 768 breakpoint will match"
+        )]
         public BreakpointMatchMode MatchMode = BreakpointMatchMode.MinEqualOrGreater;
 
         [ShowIf(nameof(IsCameraMode))]
@@ -64,16 +64,16 @@ namespace UnityEngine.UI
         [Tooltip("Should the dimensions of the screen and safe area be logged in a built player? Useful for troubleshooting in Development builds.")]
         public bool LogDimensionsInPlayer = false;
 
-        [InfoBox("No matching breakpoints. Raising " + nameof(NoBreakpointMatched) + " event instead", nameof(_noMatch))]
+        [InfoBox($"No matching breakpoints. Raising {nameof(NoBreakpointMatched)} event instead", nameof(_noMatch))]
         [TableList(AlwaysExpanded = true), ValidateInput(nameof(AreBreakpointsValid), "Breakpoint values must be provided in ascending order with no duplicates")]
         public UiBreakpoint[] Breakpoints = Array.Empty<UiBreakpoint>();
 
         [Tooltip(
             "If no breakpoints are matched, then this UnityEvent will be raised instead, e.g., " +
             "to set any UI defaults that are not already set in the Inspector. " +
-            "For example, when breakpoints are being matched in " + nameof(Mode) + " '" + nameof(BreakpointMode.ScreenWidth) +
-            "' and " + nameof(MatchMode) + " '" + nameof(BreakpointMatchMode.AnyEqualOrLess) + "' against a 700px-wide device, " +
-            "but the only breakpoint provided is for a value of 1200, then no breakpoint " + nameof(UiBreakpoint.Matched) + " events " +
+            $"For example, when breakpoints are being matched in {nameof(Mode)} '{nameof(BreakpointMode.ScreenWidth)}' " +
+            $"and {nameof(MatchMode)} '{nameof(BreakpointMatchMode.AnyEqualOrLess)}' against a 700px-wide device, " +
+            $"but the only breakpoint provided is for a value of 1200, then no breakpoint {nameof(UiBreakpoint.Matched)} events " +
             "will be raised, so this event will be raised instead."
         )]
         public UnityEvent NoBreakpointMatched = new();

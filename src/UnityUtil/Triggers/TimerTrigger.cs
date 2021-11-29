@@ -5,7 +5,7 @@ namespace UnityEngine.Triggers {
 
     public class TimerTrigger : StartStoppable
     {
-        [Tooltip("The duration, in seconds, before the " + nameof(TimerTrigger.Timeout) + " event.")]
+        [Tooltip($"The duration, in seconds, before the {nameof(TimerTrigger.Timeout)} event.")]
         public float Duration = 1f;
         [Tooltip("The time, in seconds, that has passed since the timer started.")]
         public float TimePassed = 0f;

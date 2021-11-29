@@ -11,7 +11,7 @@ namespace UnityEngine
         public const string DefaultResourceName = "appsettings";
 
         [Tooltip(
-            "Path to a " + nameof(ConfigObject) + " file under a Resources/ folder. " +
+            $"Path to a {nameof(ConfigObject)} file under a Resources/ folder. " +
             "No matter what the full path of the file is, the directory name up to and including 'Resources/' must be omitted. " +
             "Leading and trailing slashes, and .asset extension, must be omitted. " +
             "Must use forward slashes, not backslashes (even on Windows)."

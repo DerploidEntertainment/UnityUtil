@@ -10,11 +10,17 @@ namespace UnityEngine.Triggers {
 
         private ILogger _logger;
 
-        [Tooltip("The current step; i.e., the index (0-based) of " + nameof(StepTriggers) + " that will be invoked the next time " + nameof(Trigger) + " is called..")]
+        [Tooltip($"The current step; i.e., the index (0-based) of {nameof(StepTriggers)} that will be invoked the next time {nameof(Trigger)} is called.")]
         public int CurrentStep = 0;
-        [Tooltip("If true, then " + nameof(CurrentStep) + " will wrap around whenever it goes past the first or last index of " + nameof(StepTriggers) + ". If false, then calls to " + nameof(Step) + " will be clamped between the first and last index.")]
+        [Tooltip(
+            $"If true, then {nameof(CurrentStep)} will wrap around whenever it goes past the first or last index of {nameof(StepTriggers)}. " +
+            $"If false, then calls to {nameof(Step)} will be clamped between the first and last index."
+        )]
         public bool Cycle;
-        [Tooltip("The sequence of triggers to iterate through. Every time " + nameof(Step) + " is called, the " + nameof(CurrentStep) + " index will be incremented. Call " + nameof(Trigger) + " to invoke the trigger at " + nameof(CurrentStep) + " (multiple times, if desired).")]
+        [Tooltip(
+            $"The sequence of triggers to iterate through. Every time {nameof(Step)} is called, the {nameof(CurrentStep)} index will be incremented. " +
+            $"Call {nameof(Trigger)} to invoke the trigger at {nameof(CurrentStep)} (multiple times, if desired)."
+        )]
         public UnityEvent[] StepTriggers;
 
         public void Inject(ILoggerProvider loggerProvider) => _logger = loggerProvider.GetLogger(this);

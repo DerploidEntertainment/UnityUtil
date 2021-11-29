@@ -43,11 +43,22 @@ namespace UnityEngine {
         public StartStopInput ThrowInput;
 
         [Header("Options")]
-        [Tooltip("If true, Liftables will be attached to this Lifter via the LiftingJoint.  Otherwise, the Liftable will just be parented to the LiftingObject.")]
+        [Tooltip(
+            $"If true, {nameof(Liftable)}s will be attached to this {nameof(Lifter)} via the {nameof(LiftingJoint)}. " +
+            $"Otherwise, the {nameof(Liftable)} will just be parented to the {nameof(LiftingObject)}."
+        )]
         public bool LiftUsingPhysics = false;
-        [Tooltip("If LiftUsingPhysics is true, then Liftables will be attached to this Lifter via the Joint on this GameObject.  Ignored if LiftUsingPhysics is false.")]
+
+        [Tooltip(
+            $"If {nameof(LiftUsingPhysics)} is true, then {nameof(Liftable)}s will be attached to this {nameof(Lifter)} via the Joint on this GameObject. " +
+            $"Ignored if {nameof(LiftUsingPhysics)} is false."
+        )]
         public JointBreakTrigger LiftingJoint;
-        [Tooltip("If LiftUsingPhysics is false, then Liftables will be attached to this Transform via parenting.  Ignored if LiftUsingPhysics is true.")]
+
+        [Tooltip(
+            $"If {nameof(LiftUsingPhysics)} is false, then {nameof(Liftable)}s will be attached to this Transform via parenting. " +
+            $"Ignored if {nameof(LiftUsingPhysics)} is true."
+        )]
         public Transform LiftingObject;
         public LayerMask LiftableLayerMask;
         public float Reach = 4f;
