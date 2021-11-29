@@ -1,4 +1,4 @@
-﻿using Moq;
+using Moq;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -69,7 +69,7 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
         public void Cannot_Register_UntilInitialized()
         {
             var dependencyInjector = new DependencyInjector(Array.Empty<Type>());
-            object testService = new object();
+            object testService = new();
 
             Assert.Throws<InvalidOperationException>(() => dependencyInjector.RegisterService(testService));
 
@@ -93,7 +93,7 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
         public void Cannot_Resolve_UntilInitialized()
         {
             var dependencyInjector = new DependencyInjector(Array.Empty<Type>());
-            object testClient = new object();
+            object testClient = new();
 
             Assert.Throws<InvalidOperationException>(() => dependencyInjector.ResolveDependenciesOf(testClient));
 
@@ -184,7 +184,7 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
             // ARRANGE
             DependencyInjector dependencyInjector = getDependencyInjector();
 
-            object serviceInstance = new object();
+            object serviceInstance = new();
             dependencyInjector.RegisterService(serviceInstance);
 
             // ACT/ASSERT
@@ -204,7 +204,7 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
             EditModeTestHelpers.ResetScene();
 
             DependencyInjector dependencyInjector = getDependencyInjector();
-            object serviceInstance = new object();
+            object serviceInstance = new();
             dependencyInjector.RegisterService(serviceInstance);
 
             dependencyInjector.TryGetService(typeof(object), tag: DependencyInjector.DefaultTag, clientName: "Unit test", out Service service);
