@@ -1758,72 +1758,6 @@
             Tries to update the Guid of a specified asset with the Guid from a specified script type.
             </summary>
         </member>
-        <member name="T:Sirenix.Utilities.Cache`1">
-            <summary>
-            Provides an easy way of claiming and freeing cached values of any non-abstract reference type with a public parameterless constructor.
-            <para />
-            Cached types which implement the <see cref="T:Sirenix.Utilities.ICacheNotificationReceiver"/> interface will receive notifications when they are claimed and freed.
-            <para />
-            Only one thread should be holding a given cache instance at a time if <see cref="T:Sirenix.Utilities.ICacheNotificationReceiver"/> is implemented, since the invocation of 
-            <see cref="M:Sirenix.Utilities.ICacheNotificationReceiver.OnFreed"/> is not thread safe, IE, weird stuff might happen if multiple different threads are trying to free
-            the same cache instance at the same time. This will practically never happen unless you're doing really strange stuff, but the case is documented here.
-            </summary>
-            <typeparam name="T">The type which is cached.</typeparam>
-            <seealso cref="T:System.IDisposable" />
-        </member>
-        <member name="P:Sirenix.Utilities.Cache`1.MaxCacheSize">
-            <summary>
-            Gets or sets the maximum size of the cache. This value can never go beneath 1.
-            </summary>
-            <value>
-            The maximum size of the cache.
-            </value>
-        </member>
-        <member name="F:Sirenix.Utilities.Cache`1.Value">
-            <summary>
-            The cached value.
-            </summary>
-        </member>
-        <member name="P:Sirenix.Utilities.Cache`1.IsFree">
-            <summary>
-            Gets a value indicating whether this cached value is free.
-            </summary>
-            <value>
-              <c>true</c> if this cached value is free; otherwise, <c>false</c>.
-            </value>
-        </member>
-        <member name="M:Sirenix.Utilities.Cache`1.Claim">
-            <summary>
-            Claims a cached value of type <see cref="!:T"/>.
-            </summary>
-            <returns>A cached value of type <see cref="!:T"/>.</returns>
-        </member>
-        <member name="M:Sirenix.Utilities.Cache`1.Release(Sirenix.Utilities.Cache{`0})">
-            <summary>
-            Releases a cached value.
-            </summary>
-            <param name="cache">The cached value to release.</param>
-            <exception cref="T:System.ArgumentNullException">The cached value to release is null.</exception>
-        </member>
-        <member name="M:Sirenix.Utilities.Cache`1.op_Implicit(Sirenix.Utilities.Cache{`0})~`0">
-            <summary>
-            Performs an implicit conversion from <see cref="T:Sirenix.Utilities.Cache`1"/> to <see cref="!:T"/>.
-            </summary>
-            <param name="cache">The cache to convert.</param>
-            <returns>
-            The result of the conversion.
-            </returns>
-        </member>
-        <member name="M:Sirenix.Utilities.Cache`1.Release">
-            <summary>
-            Releases this cached value.
-            </summary>
-        </member>
-        <member name="M:Sirenix.Utilities.Cache`1.System#IDisposable#Dispose">
-            <summary>
-            Releases this cached value.
-            </summary>
-        </member>
         <member name="T:Sirenix.Utilities.DeepReflection">
             <summary>
             Not yet documented.
@@ -2478,21 +2412,6 @@
         <member name="M:Sirenix.Utilities.GUILayoutOptions.ExpandWidth(System.Boolean)">
             <summary>
             Option passed to a control to allow or disallow horizontal expansion.
-            </summary>
-        </member>
-        <member name="T:Sirenix.Utilities.ICacheNotificationReceiver">
-            <summary>
-            Provides notification callbacks for values that are cached using the <see cref="T:Sirenix.Utilities.Cache`1"/> class.
-            </summary>
-        </member>
-        <member name="M:Sirenix.Utilities.ICacheNotificationReceiver.OnFreed">
-            <summary>
-            Called when the cached value is freed.
-            </summary>
-        </member>
-        <member name="M:Sirenix.Utilities.ICacheNotificationReceiver.OnClaimed">
-            <summary>
-            Called when the cached value is claimed.
             </summary>
         </member>
         <member name="T:Sirenix.Utilities.ImmutableHashSet`1">
@@ -3646,6 +3565,11 @@
             <param name="bytes">Not yet documented.</param>
             <param name="decimals">Not yet documented.</param>
             <returns>Not yet documented.</returns>
+        </member>
+        <member name="M:Sirenix.Utilities.StringUtilities.NumberAwareStringCompare(System.String,System.String,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+            Compares two strings in a number-aware manner, IE, "[2] Foo" is considered to come before "[10] Bar".
+            </summary>
         </member>
         <member name="T:Sirenix.Utilities.UnityVersion">
             <summary>

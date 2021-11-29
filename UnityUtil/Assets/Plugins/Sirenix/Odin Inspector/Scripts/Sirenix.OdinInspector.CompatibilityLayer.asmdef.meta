@@ -1,8 +1,7 @@
 fileFormatVersion: 2
-guid: 01dcaeb2689056c489ba2224a70fd0e9
-timeCreated: 1606141027
-licenseType: Store
-DefaultImporter:
+guid: e048eeec9bdb9d30448017b829deb3f6
+AssemblyDefinitionImporter:
+  externalObjects: {}
   userData: 
   assetBundleName: 
   assetBundleVariant: 
