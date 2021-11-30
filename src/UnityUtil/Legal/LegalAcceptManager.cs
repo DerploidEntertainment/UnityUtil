@@ -14,12 +14,12 @@ namespace UnityEngine.Legal
         private ILogger _logger;
         private ILocalCache _localCache;
 
-        private string[] _latestVersionTags;
+        private string[] _latestVersionTags = Array.Empty<string>();
         private bool _acceptRequired = false;
         private bool _acceptUpdate = false;
         private int _numTagsFetched = 0;
 
-        public LegalDocument[] Documents;
+        public LegalDocument[] Documents = Array.Empty<LegalDocument>();
 
         [Tooltip("This UI object will be activated if no version tags of the provided legal documents have been accepted yet.")]
         public GameObject AcceptInitialUi;

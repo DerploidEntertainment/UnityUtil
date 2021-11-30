@@ -1,3 +1,5 @@
+﻿using System;
+
 namespace UnityEngine.Triggers
 {
 
@@ -18,7 +20,8 @@ namespace UnityEngine.Triggers
             "and will raise a 'still' event in response. " + MSG_ONLY_WHEN_CALLED
         )]
         public bool TriggerWhenConditionsMaintained = false;
-        public ConditionalTrigger[] Conditions;
+
+        public ConditionalTrigger[] Conditions = Array.Empty<ConditionalTrigger>();
 
         protected virtual void Awake()
         {

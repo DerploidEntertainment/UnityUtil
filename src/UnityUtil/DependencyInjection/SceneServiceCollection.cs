@@ -15,9 +15,9 @@ namespace UnityEngine.DependencyInjection
             "For example, a service component derived from Monobehaviour could be associated with its actual declared Type, " +
             "with Monobehaviour, or with UnityEngine.Object. The actual declared Type is assumed if you leave this field blank."
         )]
-        public string TypeName;
+        public string TypeName = "";
         [HideInInspector, NonSerialized]
-        public string Tag;
+        public string Tag = "";
 #pragma warning restore CA2235 // Mark all non-serializable fields
     }
 
@@ -35,7 +35,7 @@ namespace UnityEngine.DependencyInjection
             "with all common services, so that they are each registered once, or register the services with different tags."
         )]
         [TableList(AlwaysExpanded = true, ShowIndexLabels = false)]
-        public InspectorService[] Services;
+        public InspectorService[] Services = Array.Empty<InspectorService>();
 
         [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
         private void Awake()

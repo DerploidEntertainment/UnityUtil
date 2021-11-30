@@ -1,4 +1,5 @@
 using Sirenix.OdinInspector;
+using System;
 using System.Runtime.CompilerServices;
 using UnityEngine.DependencyInjection;
 using UnityEngine.Events;
@@ -21,7 +22,7 @@ namespace UnityEngine.Triggers {
             $"The sequence of triggers to iterate through. Every time {nameof(Step)} is called, the {nameof(CurrentStep)} index will be incremented. " +
             $"Call {nameof(Trigger)} to invoke the trigger at {nameof(CurrentStep)} (multiple times, if desired)."
         )]
-        public UnityEvent[] StepTriggers;
+        public UnityEvent[] StepTriggers = Array.Empty<UnityEvent>();
 
         public void Inject(ILoggerProvider loggerProvider) => _logger = loggerProvider.GetLogger(this);
 

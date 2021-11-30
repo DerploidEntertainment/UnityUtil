@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -29,13 +30,14 @@ namespace UnityEngine {
             "Add additional Colliders to duplicate here. If these are child Colliders, " +
             $"we recommend that you set {nameof(ChildColliderDuplication)} to '{nameof(ChildColliderDuplicateMode.None)}'."
         )]
-        public Collider[] CollidersToDuplicate;
+        public Collider[] CollidersToDuplicate = Array.Empty<Collider>();
 
         [Tooltip("Select the behavior for changing the 'isTrigger' field of all duplicate Colliders")]
         public ChangeTriggerMode ChangeTriggerMode = ChangeTriggerMode.KeepOriginal;
 
         [Tooltip("All duplicate Colliders will be placed in the Layer with this name.")]
-        public string DuplicateLayerName;
+        public string DuplicateLayerName = "";
+
         [Tooltip("If set, all duplicate Colliders will have a PhysTarget component attached that targets this value.")]
         public MonoBehaviour PhysicsTarget;
 

@@ -1,7 +1,6 @@
-using Sirenix.OdinInspector;
+﻿using Sirenix.OdinInspector;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 
 namespace UnityEngine
 {
@@ -39,6 +38,6 @@ namespace UnityEngine
         public BuildContext PreserveBuildContexts;
 
         [Tooltip(MSG_PRESERVE_CONTEXT + " Order does not matter.")]
-        public List<RuntimePlatform> PreservePlatforms;
+        public List<RuntimePlatform> PreservePlatforms = new();
     }
 }

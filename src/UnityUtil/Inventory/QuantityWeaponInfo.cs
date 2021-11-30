@@ -1,3 +1,5 @@
+﻿using System;
+
 namespace UnityEngine.Inventory {
 
     [CreateAssetMenu(fileName = "quantity-weapon", menuName = $"{nameof(UnityUtil)}/{nameof(UnityEngine.Inventory)}/{nameof(UnityEngine.Inventory.QuantityWeaponInfo)}")]
@@ -19,7 +21,7 @@ namespace UnityEngine.Inventory {
         public bool OnlyAffectClosest = true;
 
         [Tooltip("If a Collider has any of these tags, then it will be ignored, allowing Colliders inside/behind it to be affected.")]
-        public string[] IgnoreColliderTags;
+        public string[] IgnoreColliderTags = Array.Empty<string>();
     }
 
 }

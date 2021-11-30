@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEngine.DependencyInjection;
 using UnityEngine.Logging;
 
@@ -18,7 +18,7 @@ namespace UnityEngine
             "then its field config keys would have the form '<configkey>.<fieldname>'.";
 
         [Tooltip(ConfigKeyTooltip)]
-        public string ConfigKey;
+        public string ConfigKey = "";
 
         protected virtual void Reset() => ConfigKey = DefaultConfigKey(GetType());
 

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.Logging;
@@ -12,7 +13,7 @@ namespace UnityEngine.Inventory {
 
         public PushToolInfo Info;
         [Tooltip("If true, then any colliders attached to the same Rigidbodies as one of these colldiers will NOT be affected.  You might use this field to prevent pushing of any of the colliders that make up a player's vehicle, for example.")]
-        public Collider[] IgnoreRigidbodiesAttachedTo;
+        public Collider[] IgnoreRigidbodiesAttachedTo = Array.Empty<Collider>();
 
         private void Awake() {
             this.AssertAssociation(Info, nameof(PushToolInfo));

@@ -31,7 +31,7 @@ namespace UnityEngine {
 
         #pragma warning disable CA2235 // Mark all non-serializable fields
 
-        public string Key;
+        public string Key = "";
         public ConfigValueType Type;
 
         [ShowIf(nameof(Config.Type), ConfigValueType.Integer)]
@@ -44,7 +44,7 @@ namespace UnityEngine {
         public float FloatValue;
 
         [ShowIf(nameof(Config.Type), ConfigValueType.String)]
-        public string StringValue;
+        public string StringValue = "";
 
         [ShowIf(nameof(Config.Type), ConfigValueType.Color)]
         public Color ColorValue;
@@ -120,7 +120,7 @@ namespace UnityEngine {
 
     [CreateAssetMenu(menuName = $"{nameof(UnityUtil)}/Configuration/{nameof(ConfigObject)}", fileName = "appsettings.asset")]
     public class ConfigObject : ScriptableObject {
-        public Config[] Configs;
+        public Config[] Configs = Array.Empty<Config>();
     }
 
 }

@@ -1,4 +1,4 @@
-﻿using Sirenix.OdinInspector;
+using Sirenix.OdinInspector;
 using System;
 using UnityEngine.Logging;
 using S = System;
@@ -9,7 +9,7 @@ namespace UnityEngine {
 
         [field: Tooltip("Type any string to seed the random number generator, or leave this field blank to use a time-dependent default seed value.")]
         [field: SerializeField, LabelText(nameof(Seed))]
-        public string Seed { get; private set; }
+        public string Seed { get; private set; } = "";
 
         protected override void Awake() {
             base.Awake();

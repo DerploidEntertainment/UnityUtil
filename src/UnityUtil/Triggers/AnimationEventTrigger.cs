@@ -1,4 +1,4 @@
-using Sirenix.OdinInspector;
+﻿using Sirenix.OdinInspector;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -10,7 +10,7 @@ namespace UnityEngine.Triggers
     [Serializable]
     public class NamedAnimationEvent
     {
-        public string Name;
+        public string Name = "";
         public UnityEvent Trigger = new();
     }
 
@@ -21,7 +21,7 @@ namespace UnityEngine.Triggers
 
         [SerializeField, LabelText("Triggers")]
         [SuppressMessage("Style", "IDE0044:Add readonly modifier", Justification = "Unity doesn't serialize readonly fields")]
-        private NamedAnimationEvent[] _triggers;
+        private NamedAnimationEvent[] _triggers = Array.Empty<NamedAnimationEvent>();
 
         [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
         [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]

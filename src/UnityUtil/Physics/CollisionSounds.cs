@@ -9,7 +9,7 @@ namespace UnityEngine {
 
         public AudioSource AudioSource;
         public bool RandomizeClips;
-        public List<AudioClip> AudioClips;
+        public List<AudioClip> AudioClips = new();
 
         private void OnCollisionEnter(Collision collision) {
             if (AudioClips.Count == 0)

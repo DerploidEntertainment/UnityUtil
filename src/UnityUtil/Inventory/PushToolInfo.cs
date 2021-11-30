@@ -1,3 +1,5 @@
+﻿using System;
+
 namespace UnityEngine.Inventory {
 
     [CreateAssetMenu(fileName = "push-tool", menuName = $"{nameof(UnityUtil)}/{nameof(UnityEngine.Inventory)}/{nameof(UnityEngine.Inventory.PushToolInfo)}")]
@@ -12,7 +14,7 @@ namespace UnityEngine.Inventory {
         public bool OnlyPushClosest = true;
 
         [Tooltip("If a Collider has any of these tags, then it will be ignored, allowing Colliders inside/behind it to be affected.")]
-        public string[] IgnoreColliderTags;
+        public string[] IgnoreColliderTags = Array.Empty<string>();
 
     }
 

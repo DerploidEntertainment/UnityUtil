@@ -1,4 +1,5 @@
 using Sirenix.OdinInspector;
+using System;
 using UnityEngine.Events;
 
 namespace UnityEngine.UI
@@ -14,7 +15,7 @@ namespace UnityEngine.UI
             $"For example, if {nameof(UiBreakpoints)} has 3 breakpoints, and only the 2nd one is currently matching, " +
             $"then the 2nd event from this array will be raised when {nameof(Trigger)} is called."
         )]
-        public UnityEvent[] BreakpointTriggers;
+        public UnityEvent[] BreakpointTriggers = Array.Empty<UnityEvent>();
 
         public void Awake() => this.AssertAssociation(UiBreakpoints, nameof(UiBreakpoints));
 
