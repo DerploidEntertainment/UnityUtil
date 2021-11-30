@@ -1,10 +1,12 @@
+using Sirenix.OdinInspector;
 using System.Diagnostics.CodeAnalysis;
 
 namespace UnityEngine.UI
 {
     public class ScrollRectVelocityClamper : Updatable
     {
-        public ScrollRect ScrollRect;
+        [Required]
+        public ScrollRect? ScrollRect;
 
         [Tooltip(
             $"If the components of {nameof(ScrollRect)}'s velocity have absolute values less than the components of this vector, " +

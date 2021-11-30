@@ -30,7 +30,8 @@ namespace UnityEngine.UI
         private ILogger _logger;
         private ILocalCache _localCache;
 
-        public AudioMixer AudioMixer;
+        [Required]
+        public AudioMixer? AudioMixer;
 
         [Tooltip($"This parameter must already be exposed on {nameof(AudioMixer)}, and its value will be updated as the user updates {nameof(Slider)}.")]
         public string ExposedParameterName = "Volume";
@@ -39,7 +40,8 @@ namespace UnityEngine.UI
             $"The value of this {nameof(UI.Slider)} will be used to update the exposed parameter of {nameof(AudioMixer)}. " +
             $"Its value will be transformed according to {nameof(SliderTransformation)}."
         )]
-        public Slider Slider;
+        [Required]
+        public Slider? Slider;
 
         [Tooltip(
             $"Optional. This {nameof(AudioSource)} will be played anytime the {nameof(Slider)}'s value is changed, " +
@@ -88,9 +90,6 @@ namespace UnityEngine.UI
         }
         protected override void Awake() {
             base.Awake();
-
-            this.AssertAssociation(AudioMixer, nameof(AudioMixer));
-            this.AssertAssociation(Slider, nameof(Slider));
 
             bool paramExposed = AudioMixer.GetFloat(ExposedParameterName, out _);
             Assert.IsTrue(paramExposed, $"{nameof(AudioMixer)} must expose a parameter with the name specified by {nameof(ExposedParameterName)} ('{ExposedParameterName}')");

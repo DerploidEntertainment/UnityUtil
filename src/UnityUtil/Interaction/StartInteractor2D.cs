@@ -1,3 +1,4 @@
+using Sirenix.OdinInspector;
 using System;
 using UnityEngine.Triggers;
 
@@ -8,9 +9,10 @@ namespace UnityEngine.Inputs {
         public SimpleTrigger InteractedTrigger;
     }
 
-    public class StartInteractor2D : Updatable {
-
-        public StartStopInput Input;
+    public class StartInteractor2D : Updatable
+    {
+        [Required]
+        public StartStopInput? Input;
         public float Range;
         public LayerMask InteractLayerMask;
 

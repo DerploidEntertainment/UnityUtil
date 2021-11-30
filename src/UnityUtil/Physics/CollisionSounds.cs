@@ -1,3 +1,4 @@
+using Sirenix.OdinInspector;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
@@ -8,7 +9,8 @@ namespace UnityEngine {
     {
         private int _clip = -1;
 
-        public AudioSource AudioSource;
+        [Required]
+        public AudioSource? AudioSource;
         public bool RandomizeClips;
         public List<AudioClip> AudioClips = new();
 

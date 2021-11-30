@@ -1,4 +1,4 @@
-using UnityEngine.Logging;
+using Sirenix.OdinInspector;
 using System.Diagnostics.CodeAnalysis;
 
 namespace UnityEngine.Inventory {
@@ -6,18 +6,16 @@ namespace UnityEngine.Inventory {
     [RequireComponent(typeof(Tool))]
     public class ProjectileTool : MonoBehaviour
     {
-
         private Tool _tool;
 
-        public ProjectileToolInfo Info;
+        [Required] public ProjectileToolInfo? Info;
+
         [Tooltip("The ProjectilePrefab will be parented to this Transform after it is instantiated.")]
-        public Transform ProjectileParent;
+        [Required] public Transform? ProjectileParent;
 
         [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
         [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
         private void Awake() {
-            this.AssertAssociation(Info, nameof(ProjectileToolInfo));
-
             _tool = GetComponent<Tool>();
             _tool.Used.AddListener(spawnProjectile);
         }

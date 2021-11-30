@@ -1,3 +1,4 @@
+using Sirenix.OdinInspector;
 using System.Diagnostics.CodeAnalysis;
 using UnityEngine.DependencyInjection;
 using UnityEngine.Logging;
@@ -41,7 +42,8 @@ namespace UnityEngine
             "The actual Unity prefab to spawn. We highly recommend using a PREFAB, as opposed to " +
             "an existing GameObject in the Scene, though either will technically work."
         )]
-        public GameObject Prefab;
+        [Required]
+        public GameObject? Prefab;
 
         [Tooltip($"All spawned instances of {nameof(Spawner.Prefab)} will be parented to this Transform.")]
         public Transform SpawnParent;
@@ -83,11 +85,7 @@ namespace UnityEngine
         public void Inject(ILoggerProvider loggerProvider) => _logger = loggerProvider.GetLogger(this);
 
         [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
-        private void Awake() {
-            DependencyInjector.Instance.ResolveDependenciesOf(this);
-
-            this.AssertAssociation(Prefab, nameof(this.Prefab));
-        }
+        private void Awake() => DependencyInjector.Instance.ResolveDependenciesOf(this);
 
         public void Spawn() {
             // Destroy any previously spawned GameObjects, if requested

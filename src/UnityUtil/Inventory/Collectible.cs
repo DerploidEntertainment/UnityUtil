@@ -1,13 +1,14 @@
+using Sirenix.OdinInspector;
 using System.Diagnostics.CodeAnalysis;
 using UnityEngine.Assertions;
-using UnityEngine.Logging;
 
 namespace UnityEngine.Inventory {
 
     public class Collectible : MonoBehaviour
     {
+        [Required]
+        public GameObject? Root;
 
-        public GameObject Root;
         public float Amount = 25f;
         public CollectibleDestroyMode DestroyMode = CollectibleDestroyMode.WhenUsed;
         public CollectEvent Detected = new();
@@ -17,7 +18,6 @@ namespace UnityEngine.Inventory {
         [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
         [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
         private void Awake() {
-            this.AssertAssociation(Root, nameof(this.Root));
             Assert.IsTrue(Amount >= 0, $"{this.GetHierarchyNameWithType()} must have a positive {nameof(this.Amount)}!");
         }
 

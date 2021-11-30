@@ -1,3 +1,4 @@
+using Sirenix.OdinInspector;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -18,7 +19,8 @@ namespace UnityEngine.Inventory {
         private Tool _tool;
         private float _accuracyLerpT = 0f;
 
-        public WeaponInfo Info;
+        [Required]
+        public WeaponInfo? Info;
 
         public AttackEvent Attacked = new();
 
@@ -29,8 +31,6 @@ namespace UnityEngine.Inventory {
         [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
         [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
         private void Awake() {
-            this.AssertAssociation(Info, nameof(WeaponInfo));
-
             DependencyInjector.Instance.ResolveDependenciesOf(this);
 
             // Register Tool events

@@ -1,11 +1,13 @@
-﻿using UnityEngine.Events;
+using Sirenix.OdinInspector;
+using UnityEngine.Events;
 using UnityEngine.Inputs;
 
 namespace UnityEngine.Triggers.Input {
 
-    public class StartStopInputTrigger : Updatable {
-
-        public StartStopInput Input;
+    public class StartStopInputTrigger : Updatable
+    {
+        [Required]
+        public StartStopInput? Input;
         public UnityEvent InputStarted = new();
         public UnityEvent InputStopped = new();
 

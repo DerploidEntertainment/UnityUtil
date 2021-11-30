@@ -1,3 +1,4 @@
+using Sirenix.OdinInspector;
 using UnityEngine.Inputs;
 using UnityEngine.Logging;
 
@@ -15,7 +16,8 @@ namespace UnityEngine.Movement
         [Tooltip($"The Rigidbody that will be rotated by physics while looking around.  Only required if {nameof(UsePhysicsToLook)} is true.")]
         public Rigidbody RigidbodyToRotate;
 
-        public ValueInput LookInput;
+        [Required]
+        public ValueInput? LookInput;
 
         [Tooltip(
             "The maximum angle around the vertical that can be looked through in the positive direction. " +
@@ -55,8 +57,6 @@ namespace UnityEngine.Movement
 
         protected override void Awake() {
             base.Awake();
-
-            this.AssertAssociation(LookInput, nameof(this.LookInput));
 
             RegisterUpdatesAutomatically = true;
             BetterUpdate = doUpdate;

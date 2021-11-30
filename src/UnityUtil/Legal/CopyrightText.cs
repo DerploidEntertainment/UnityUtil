@@ -1,3 +1,4 @@
+using Sirenix.OdinInspector;
 using System;
 using UnityEngine.UI;
 
@@ -13,12 +14,12 @@ namespace UnityEngine.Legal
         )]
         [Multiline]
         public string FormatString = "© {0}, {1}";
-        public Text Text;
+
+        [Required]
+        public Text? Text;
 
         protected override void Awake() {
             base.Awake();
-
-            this.AssertAssociation(Text, nameof(Text));
 
             Text.text = string.Format(FormatString, DateTime.Now, Device.Application.companyName);
         }

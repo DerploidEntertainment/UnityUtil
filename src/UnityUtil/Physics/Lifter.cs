@@ -1,3 +1,4 @@
+using Sirenix.OdinInspector;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using UnityEngine.Assertions;
@@ -40,8 +41,8 @@ namespace UnityEngine {
         private bool _oldUseGravity;
 
         [Header("Inputs")]
-        public StartStopInput LiftInput;
-        public StartStopInput ThrowInput;
+        [Required] public StartStopInput? LiftInput;
+        [Required] public StartStopInput? ThrowInput;
 
         [Header("Options")]
         [Tooltip(

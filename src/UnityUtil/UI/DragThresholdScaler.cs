@@ -1,3 +1,4 @@
+using Sirenix.OdinInspector;
 using UnityEngine.EventSystems;
 using UnityEngine.Logging;
 
@@ -16,20 +17,17 @@ namespace UnityEngine.UI
             $"{nameof(DragThresholdFactor)} and {nameof(CanvasScaler)}'s {nameof(UI.CanvasScaler.scaleFactor)}. " +
             $"This means that the {nameof(EventSystems.EventSystem.pixelDragThreshold)} will scale as needed on screens with different pixel densities.";
 
-        [Tooltip(TOOLTIP)]
-        public EventSystem EventSystem;
+        [Tooltip(TOOLTIP), Required]
+        public EventSystem? EventSystem;
 
-        [Tooltip(TOOLTIP)]
-        public CanvasScaler CanvasScaler;
+        [Tooltip(TOOLTIP), Required]
+        public CanvasScaler? CanvasScaler;
 
         [Min(0f), Tooltip(TOOLTIP)]
         public int DragThresholdFactor = 5;
 
         protected override void Awake() {
             base.Awake();
-
-            this.AssertAssociation(EventSystem, nameof(EventSystem));
-            this.AssertAssociation(CanvasScaler, nameof(CanvasScaler));
 
             EventSystem.pixelDragThreshold = DragThresholdFactor * (int)CanvasScaler.scaleFactor;
         }

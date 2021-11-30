@@ -1,3 +1,4 @@
+using Sirenix.OdinInspector;
 using System.Collections;
 using UnityEngine.Events;
 using UnityEngine.Inputs;
@@ -11,8 +12,8 @@ namespace UnityEngine.Inventory {
         private Coroutine _refractoryRoutine;
         private uint _numUses = 0u;
 
-        public ToolInfo Info;
-        public StartStopInput UseInput;
+        [Required] public ToolInfo? Info;
+        [Required] public StartStopInput? UseInput;
 
         /// <summary>
         /// The current charge of this <see cref="Tool"/>.  0 is completely uncharged, 1 is completely charged.
@@ -24,9 +25,6 @@ namespace UnityEngine.Inventory {
 
         protected override void Awake() {
             base.Awake();
-
-            this.AssertAssociation(Info, nameof(ToolInfo));
-            this.AssertAssociation(UseInput, nameof(this.UseInput));
 
             BetterUpdate = doUpdate;
             RegisterUpdatesAutomatically = true;

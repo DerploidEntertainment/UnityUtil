@@ -1,3 +1,5 @@
+using Sirenix.OdinInspector;
+
 namespace UnityEngine.Movement {
 
     public class TargetFlyer : Updatable
@@ -8,7 +10,9 @@ namespace UnityEngine.Movement {
         private float _idleTorquePeriod = 0f;
 
         public bool Idle = false;
-        public Rigidbody FlyingRigidbody;
+
+        [Required]
+        public Rigidbody? FlyingRigidbody;
 
         [Header("Flying Settings")]
         public Vector3 Target;

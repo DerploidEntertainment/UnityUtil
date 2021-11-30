@@ -9,7 +9,8 @@ namespace UnityEngine.DependencyInjection
     public class InspectorService
     {
 #pragma warning disable CA2235 // Mark all non-serializable fields
-        public Object Instance;
+        [Required]
+        public Object? Instance;
         [Tooltip(
             "Optional. All services are associated with a System.Type. This Type can be any Type in the service's inheritance hierarchy. " +
             "For example, a service component derived from Monobehaviour could be associated with its actual declared Type, " +

@@ -1,3 +1,4 @@
+using Sirenix.OdinInspector;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using UnityEngine.Logging;
@@ -7,16 +8,14 @@ namespace UnityEngine.Inventory {
     [RequireComponent(typeof(Weapon))]
     public class QuantityWeapon : MonoBehaviour
     {
-
         private Weapon _weapon;
 
-        public QuantityWeaponInfo Info;
+        [Required]
+        public QuantityWeaponInfo? Info;
 
         [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
         [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
         private void Awake() {
-            this.AssertAssociation(Info, nameof(QuantityWeaponInfo));
-
             _weapon = GetComponent<Weapon>();
             _weapon.Attacked.AddListener(decreaseQuantity);
         }

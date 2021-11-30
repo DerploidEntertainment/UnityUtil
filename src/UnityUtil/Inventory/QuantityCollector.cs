@@ -1,4 +1,4 @@
-using UnityEngine.Logging;
+using Sirenix.OdinInspector;
 using System.Diagnostics.CodeAnalysis;
 
 namespace UnityEngine.Inventory {
@@ -6,13 +6,12 @@ namespace UnityEngine.Inventory {
     [RequireComponent(typeof(Collector))]
     public class QuantityCollector : MonoBehaviour
     {
-        public ManagedQuantity Quantity;
+        [Required]
+        public ManagedQuantity? Quantity;
 
         [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
         [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
         private void Awake() {
-            this.AssertAssociation(Quantity, nameof(this.Quantity));
-
             GetComponent<Collector>().Collected.AddListener(collect);
         }
         private void collect(Collector collector, Collectible collectible) {

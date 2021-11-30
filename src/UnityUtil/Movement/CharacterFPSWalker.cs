@@ -1,3 +1,4 @@
+using Sirenix.OdinInspector;
 using UnityEngine.Inputs;
 using UnityEngine.Logging;
 
@@ -6,14 +7,15 @@ namespace UnityEngine.Movement {
     public class CharacterFPSWalker : Updatable
     {
 
-        public CharacterController ControllerToMove;
+        [Required]
+        public CharacterController? ControllerToMove;
 
         [Header("Inputs")]
-        public StartStopInput SprintInput;
-        public StartStopInput CrouchInput;
-        public StartStopInput JumpInput;
-        public ValueInput HorizontalInput;
-        public ValueInput VerticalInput;
+        [Required] public StartStopInput? SprintInput;
+        [Required] public StartStopInput? CrouchInput;
+        [Required] public StartStopInput? JumpInput;
+        [Required] public ValueInput? HorizontalInput;
+        [Required] public ValueInput? VerticalInput;
 
         [Header("Speed")]
         public float WalkSpeed = 15f;
@@ -33,8 +35,6 @@ namespace UnityEngine.Movement {
         private float _oldHeight;
         protected override void Awake() {
             base.Awake();
-
-            this.AssertAssociation(ControllerToMove, nameof(this.ControllerToMove));
 
             _oldHeight = ControllerToMove.height;
             CrouchHeight = Mathf.Min(CrouchHeight, _oldHeight);

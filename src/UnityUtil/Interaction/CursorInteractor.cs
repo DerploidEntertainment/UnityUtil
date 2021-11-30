@@ -1,12 +1,15 @@
-﻿using UnityEngine.Triggers;
+using Sirenix.OdinInspector;
+using UnityEngine.Triggers;
 using U = UnityEngine;
 
 namespace UnityEngine.Inputs {
 
-    public class CursorInteractor : Updatable {
-
+    public class CursorInteractor : Updatable
+    {
         public LayerMask InteractLayerMask;
-        public StartStopInput Input;
+
+        [Required]
+        public StartStopInput? Input;
 
         protected override void Awake() {
             base.Awake();

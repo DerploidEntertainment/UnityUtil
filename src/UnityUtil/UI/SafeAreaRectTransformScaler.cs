@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+using Sirenix.OdinInspector;
+using System.Diagnostics.CodeAnalysis;
 using UnityEngine.DependencyInjection;
 using UnityEngine.Logging;
 
@@ -8,7 +9,8 @@ namespace UnityEngine.UI
     {
         private ILogger _logger;
 
-        public RectTransform RectTransform;
+        [Required]
+        public RectTransform? RectTransform;
 
         public void Inject(ILoggerProvider loggerProvider) => _logger = loggerProvider.GetLogger(this);
 
@@ -16,8 +18,6 @@ namespace UnityEngine.UI
         [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
         private void Awake()
         {
-            this.AssertAssociation(RectTransform, nameof(RectTransform));
-
             DependencyInjector.Instance.ResolveDependenciesOf(this);
 
             Rect safeArea = Device.Screen.safeArea;

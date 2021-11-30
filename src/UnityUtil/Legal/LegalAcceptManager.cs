@@ -22,11 +22,13 @@ namespace UnityEngine.Legal
         public LegalDocument[] Documents = Array.Empty<LegalDocument>();
 
         [Tooltip("This UI object will be activated if no version tags of the provided legal documents have been accepted yet.")]
-        public GameObject AcceptInitialUi;
+        [Required] public GameObject? AcceptInitialUi;
+
         [Tooltip("This UI object will be activated if the version tags of the provided legal documents on the web don't match those that have already been accepted.")]
-        public GameObject AcceptUpdateUi;
+        [Required] public GameObject? AcceptUpdateUi;
+
         [Tooltip("This UI object will only be activated once all documents have been checked for updates, so that players don't 'accept' before there is actually anything ready to accept.")]
-        public GameObject AcceptUi;
+        [Required] public GameObject? AcceptUi;
 
         [Tooltip("If the player has already accepted the latest versions of all legal documents, then this event will be raised instead.")]
         public UnityEvent AlreadyAccepted = new();
@@ -40,9 +42,6 @@ namespace UnityEngine.Legal
         protected override void Awake()
         {
             base.Awake();
-
-            this.AssertAssociation(AcceptInitialUi, nameof(AcceptInitialUi));
-            this.AssertAssociation(AcceptUpdateUi, nameof(AcceptUpdateUi));
 
             _latestVersionTags = new string[Documents.Length];
 

@@ -1,3 +1,4 @@
+using Sirenix.OdinInspector;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using UnityEngine.Assertions;
@@ -16,20 +17,21 @@ namespace UnityEngine.Inventory {
     [RequireComponent(typeof(Tool))]
     public class AmmoTool : MonoBehaviour
     {
-
         private Tool _tool;
 
-        public AmmoToolInfo Info;
-        public StartStopInput ReloadInput;
+        [Required] public AmmoToolInfo? Info;
+        [Required] public StartStopInput? ReloadInput;
 
         /// <summary>
         /// The amount of ammo currently in the main clip.
         /// </summary>
         public int CurrentClipAmmo { get; private set; }
+
         /// <summary>
         /// The total amount of ammo in all backup clips.
         /// </summary>
         public int CurrentBackupAmmo { get; private set; }
+
         /// <summary>
         /// Load this <see cref="AmmoTool"/> with a specified amount of ammo.
         /// </summary>
@@ -39,6 +41,7 @@ namespace UnityEngine.Inventory {
             Assert.IsTrue(ammo >= 0, $"Cannot load {this.GetHierarchyNameWithType()} with a negative amount of ammo!");
             return doLoad(ammo);
         }
+
         /// <summary>
         /// Reload this <see cref="AmmoTool"/>'s current clip from its backup ammo
         /// </summary>
@@ -51,8 +54,6 @@ namespace UnityEngine.Inventory {
         [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
         private void Awake()
         {
-            this.AssertAssociation(Info, nameof(AmmoToolInfo));
-            this.AssertAssociation(ReloadInput, nameof(this.ReloadInput));
             Assert.IsTrue(Info.StartingAmmo <= Info.MaxClipAmmo * (Info.MaxBackupClips + 1), $"{this.GetHierarchyNameWithType()} was started with {nameof(this.Info.StartingAmmo)} ammo but it can only store a max of {this.Info.MaxClipAmmo} * ({this.Info.MaxClipAmmo * (this.Info.MaxBackupClips + 1)}!");
 
             // Initialize ammo

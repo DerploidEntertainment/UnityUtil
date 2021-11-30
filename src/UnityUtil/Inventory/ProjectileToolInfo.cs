@@ -1,10 +1,12 @@
+﻿using Sirenix.OdinInspector;
+
 namespace UnityEngine.Inventory {
 
     [CreateAssetMenu(fileName = "projectile-tool", menuName = $"{nameof(UnityUtil)}/{nameof(UnityEngine.Inventory)}/{nameof(UnityEngine.Inventory.ProjectileToolInfo)}")]
     public class ProjectileToolInfo : ScriptableObject
     {
-
-        public GameObject ProjectilePrefab;
+        [Required]
+        public GameObject? ProjectilePrefab;
 
         private const string TOOLTIP_LOCAL_SPACE = $"The {nameof(ProjectilePrefab)} will be instantiated at this position in the {nameof(Tool)}'s local space.";
 

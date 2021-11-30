@@ -1,3 +1,4 @@
+using Sirenix.OdinInspector;
 using System;
 using UnityEngine.Triggers;
 
@@ -10,7 +11,8 @@ namespace UnityEngine.Inputs {
 
     public class StartInteractor : Updatable
     {
-        public StartStopInput Input;
+        [Required]
+        public StartStopInput? Input;
         public float Range;
         public LayerMask InteractLayerMask;
         public QueryTriggerInteraction QueryTriggerInteraction = QueryTriggerInteraction.UseGlobal;

@@ -1,3 +1,4 @@
+using Sirenix.OdinInspector;
 using System;
 using System.Collections;
 using UnityEngine.Assertions;
@@ -18,15 +19,16 @@ namespace UnityEngine.Inventory {
         private Tool _tool;
         private Coroutine _overheatRoutine;
 
-        public OverheatToolInfo Info;
+        [Required]
+        public OverheatToolInfo? Info;
 
         public float CurrentHeat { get; private set; } = 0f;
         public OverheatChangedEvent OverheatStateChanged = new();
 
-        protected override void Awake() {
+        protected override void Awake()
+        {
             base.Awake();
 
-            this.AssertAssociation(Info, nameof(OverheatToolInfo));
             Assert.IsTrue(Info.StartingHeat <= Info.MaxHeat, $"{this.GetHierarchyNameWithType()} was started with {nameof(this.Info.StartingHeat)} heat but it can only store a max of {this.Info.MaxHeat}!");
 
             BetterUpdate = doUpdate;
@@ -48,7 +50,8 @@ namespace UnityEngine.Inventory {
                 }
             });
         }
-        private void doUpdate(float deltaTime) {
+        private void doUpdate(float deltaTime)
+        {
             // Cool this Tool, unless it is overheated
             if (CurrentHeat > 0 && _overheatRoutine is null) {
                 float rate = Info.AbsoluteHeat ? Info.CoolRate : Info.CoolRate * Info.MaxHeat;

@@ -6,7 +6,8 @@ namespace UnityEngine.UI
 {
     public class UiBreakpointsTrigger : MonoBehaviour
     {
-        public UiBreakpoints UiBreakpoints;
+        [Required]
+        public UiBreakpoints? UiBreakpoints;
 
         [ValidateInput(nameof(isNumBreakpointsValid), ContinuousValidationCheck = true)]
         [Tooltip(
@@ -16,8 +17,6 @@ namespace UnityEngine.UI
             $"then the 2nd event from this array will be raised when {nameof(Trigger)} is called."
         )]
         public UnityEvent[] BreakpointTriggers = Array.Empty<UnityEvent>();
-
-        public void Awake() => this.AssertAssociation(UiBreakpoints, nameof(UiBreakpoints));
 
         public void Trigger()
         {

@@ -1,3 +1,5 @@
+﻿using Sirenix.OdinInspector;
+
 namespace UnityEngine.Legal {
     [CreateAssetMenu(menuName = $"{nameof(UnityUtil)}/{nameof(UnityEngine.Legal)}/{ nameof(LegalDocument)}", fileName = "policy.asset")]
     public class LegalDocument : ScriptableObject
@@ -6,7 +8,8 @@ namespace UnityEngine.Legal {
             "The URI that points at the latest version of this legal document. " +
             "For obvious reasons, the server response for this resource should not include cache headers (other than cache validation)."
         )]
-        public OpenableUri LatestVersionUri;
+        [Required]
+        public OpenableUri? LatestVersionUri;
 
         [Tooltip(
             $"The server response for the resource located at {nameof(LatestVersionUri)} must include this header, " +
