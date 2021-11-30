@@ -130,22 +130,21 @@ namespace UnityEngine
         }
 
 #if DEBUG_2D
-        private Vector2 getSpawnDirection() {
+        private Vector2 getSpawnDirection() =>
 #else
-        private Vector3 getSpawnDirection() {
+        private Vector3 getSpawnDirection() =>
 #endif
-            switch (SpawnDirection) {
-                case SpawnDirection.Straight: return transform.forward;
-                case SpawnDirection.ConeRandom:   return MoreMath.RandomConeVector(transform, ConeHalfAngle, onlyBoundary: false);
-                case SpawnDirection.ConeBoundary: return MoreMath.RandomConeVector(transform, ConeHalfAngle, onlyBoundary: true);
+            SpawnDirection switch {
+                SpawnDirection.Straight => transform.forward,
+                SpawnDirection.ConeRandom => MoreMath.RandomConeVector(transform, ConeHalfAngle, onlyBoundary: false),
+                SpawnDirection.ConeBoundary => MoreMath.RandomConeVector(transform, ConeHalfAngle, onlyBoundary: true),
 #if DEBUG_2D
-                case SpawnDirection.AnyDirection: return U.Random.insideUnitCircle.normalized;
+                SpawnDirection.AnyDirection => U.Random.insideUnitCircle.normalized,
 #else
-                case SpawnDirection.AnyDirection: return U.Random.onUnitSphere;
+                SpawnDirection.AnyDirection => U.Random.onUnitSphere,
 #endif
-                default: throw UnityObjectExtensions.SwitchDefaultException(SpawnDirection);
-            }
-        }
+                _ => throw UnityObjectExtensions.SwitchDefaultException(SpawnDirection),
+            };
     }
 
 }

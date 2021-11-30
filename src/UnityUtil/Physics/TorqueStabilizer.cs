@@ -1,5 +1,4 @@
 using System.Diagnostics.CodeAnalysis;
-using UnityEngine.Logging;
 
 namespace UnityEngine
 {
@@ -14,6 +13,7 @@ namespace UnityEngine
             $"That is, if a larger torque than this is applied to the Rigidbody, this {nameof(UnityEngine.TorqueStabilizer)} " +
             "will not be able to stabilize against it."
         )]
+        [Min(0f)]
         public float MaxStabilizingTorque = 10f;
 
         [Tooltip(

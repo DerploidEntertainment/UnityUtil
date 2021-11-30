@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using U = UnityEngine;
@@ -19,8 +19,10 @@ namespace UnityEngine {
         /// <exception cref="InvalidOperationException">The sum of <paramref name="indexWeights"/> is not 1</exception>
         /// <remarks>
         /// Picture a set of ranges between 0 and 1, with sizes determined by <paramref name="indexWeights"/>
+        /// <code>
         /// |-------|----------------------|---|--------|
         /// |------------------^------------------------|
+        /// </code>
         /// The carrot represents a random value, R, between 0 and 1 (inclusive).
         /// The probability of choosing index i (0-based), according to the specified weights,
         /// equals the probability of R falling within the (i+1)th range (where each range includes its left bound).
@@ -70,14 +72,12 @@ namespace UnityEngine {
         /// <returns>A random unit vector within a cone of the provided half-angle around the provided <see cref="Transform"/>'s forward vector (uniformly distributed).</returns>
         /// <exception cref="ArgumentNullException"><paramref name="transform"/> is <see langword="null"/>.</exception>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="halfAngle"/> is less then 0° or greater than or equal to 360°.</exception>
-        public static Vector3 RandomConeVector(Transform transform, float halfAngle, bool onlyBoundary) {
-            if (transform == null)
-                throw new ArgumentNullException(nameof(transform));
-            if (halfAngle < 0f || 360f <= halfAngle)
-                throw new ArgumentOutOfRangeException(nameof(halfAngle), halfAngle, $"Cannot generate a random unit vector within a cone of half-angle {halfAngle}°");
-
-            return randomConeVector(transform.forward, halfAngle, onlyBoundary);
-        }
+        public static Vector3 RandomConeVector(Transform transform, float halfAngle, bool onlyBoundary) =>
+            transform == null
+                ? throw new ArgumentNullException(nameof(transform))
+            : halfAngle < 0f || 360f <= halfAngle
+                ? throw new ArgumentOutOfRangeException(nameof(halfAngle), halfAngle, $"Cannot generate a random unit vector within a cone of half-angle {halfAngle}°")
+            : randomConeVector(transform.forward, halfAngle, onlyBoundary);
         /// <summary>
         /// Returns a random unit vector within a cone of the provided half-angle centered around the provided axis (uniformly distributed).
         /// </summary>
@@ -85,16 +85,13 @@ namespace UnityEngine {
         /// <param name="halfAngle">The half angle (in degrees) of the cone</param>
         /// <param name="onlyBoundary">If <see langword="true"/>, then the random unit vector will be constrained to the boundary of the cone.  If <see langword="false"/>, then the random unit vector may be anywhere within the cone.</param>
         /// <returns>A random unit vector within a cone of the provided half-angle around the provided <see cref="Transform"/>'s forward vector (uniformly distributed).</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="axis"/> is <see langword="null"/>.</exception>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="halfAngle"/> is less then 0° or greater than or equal to 360°.</exception>
-        public static Vector3 RandomConeVector(Vector3 axis, float halfAngle, bool onlyBoundary) {
-            if (axis == Vector3.zero)
-                throw new ArgumentOutOfRangeException(nameof(axis), axis, $"Cannot generate a random unit vector within a cone whose center axis is the zero vector");
-            if (halfAngle < 0f || 360f <= halfAngle)
-                throw new ArgumentOutOfRangeException(nameof(halfAngle), halfAngle, $"Cannot generate a random unit vector within a cone of half-angle {halfAngle}°");
-
-            return randomConeVector(axis, halfAngle, onlyBoundary);
-        }
+        public static Vector3 RandomConeVector(Vector3 axis, float halfAngle, bool onlyBoundary) =>
+            axis == Vector3.zero
+                ? throw new ArgumentOutOfRangeException(nameof(axis), axis, $"Cannot generate a random unit vector within a cone whose center axis is the zero vector")
+            : halfAngle < 0f || 360f <= halfAngle
+                ? throw new ArgumentOutOfRangeException(nameof(halfAngle), halfAngle, $"Cannot generate a random unit vector within a cone of half-angle {halfAngle}°")
+            : randomConeVector(axis, halfAngle, onlyBoundary);
 
         private static Vector3 randomConeVector(Vector3 axis, float halfAngle, bool onlyBoundary) {
             // Logic taken from @joriki's answer on the following StackExchange post: https://math.stackexchange.com/questions/56784/generate-a-random-direction-within-a-cone

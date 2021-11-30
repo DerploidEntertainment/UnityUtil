@@ -3,7 +3,6 @@ using System;
 using System.Collections;
 using UnityEngine.Assertions;
 using UnityEngine.Events;
-using UnityEngine.Logging;
 
 namespace UnityEngine.Inventory {
 

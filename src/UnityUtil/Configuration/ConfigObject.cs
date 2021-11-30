@@ -1,6 +1,5 @@
 using Sirenix.OdinInspector;
 using System;
-using UnityEngine.Logging;
 
 namespace UnityEngine {
 
@@ -28,8 +27,6 @@ namespace UnityEngine {
 
     [Serializable]
     public class Config {
-
-        #pragma warning disable CA2235 // Mark all non-serializable fields
 
         public string Key = "";
         public ConfigValueType Type;

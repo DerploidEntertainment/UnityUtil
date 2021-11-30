@@ -1,6 +1,5 @@
 using Sirenix.OdinInspector;
 using UnityEngine.Inputs;
-using UnityEngine.Logging;
 
 namespace UnityEngine.Movement
 {
@@ -42,10 +41,6 @@ namespace UnityEngine.Movement
         [Tooltip($"Only required if {nameof(AxisDirectionType)} is {nameof(AxisDirection.CustomWorldSpace)} or {nameof(AxisDirection.CustomLocalSpace)}.")]
         public Vector3 CustomAxisDirection = Vector3.up;
 
-        /// <summary>
-        /// Returns the unit vector in which this <see cref="HoverForce"/> will attempt to hover.
-        /// </summary>
-        /// <returns>The unit vector in which this <see cref="HoverForce"/> will attempt to hover.</returns>
         public Vector3 GetUpwardUnitVector() =>
             AxisDirectionType switch {
                 AxisDirection.WithGravity => Physics.gravity.normalized,

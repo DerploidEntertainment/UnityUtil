@@ -40,11 +40,11 @@ namespace UnityEngine {
 
             // Otherwise, destroy the GameObject of the attached Rigidbody
             Rigidbody rb = other.attachedRigidbody;
-            bool doDestroy =
-                rb == null ||
+            bool doDestroy = rb is not null && (
                 string.IsNullOrEmpty(AttachedRigidbodyTagFilter) ||
                 (FilterIsBlacklist && !rb.CompareTag(AttachedRigidbodyTagFilter)) ||
-                (!FilterIsBlacklist && rb.CompareTag(AttachedRigidbodyTagFilter));
+                (!FilterIsBlacklist && rb.CompareTag(AttachedRigidbodyTagFilter))
+            );
             if (doDestroy) {
                 Destroy(rb.gameObject);
                 SomethingDestroyed.Invoke();

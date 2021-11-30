@@ -118,11 +118,9 @@ namespace UnityEngine {
             set => spriteRef(charCode) = value;
         }
         public Sprite this[int number] {
-            get {
-                if (number < 0 || 9 < number)
-                    throw new ArgumentOutOfRangeException(nameof(number));
-                return spriteRef((char)('0' + number));
-            }
+            get => number < 0 || 9 < number
+                ? throw new ArgumentOutOfRangeException(nameof(number))
+                : spriteRef((char)('0' + number));
             set {
                 if (number < 0 || 9 < number)
                     throw new ArgumentOutOfRangeException(nameof(number));

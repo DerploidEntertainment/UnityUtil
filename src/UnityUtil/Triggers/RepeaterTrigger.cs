@@ -1,5 +1,4 @@
 using System;
-using UnityEngine.Assertions;
 using UnityEngine.Events;
 using UnityEngine.Logging;
 
@@ -86,7 +85,6 @@ namespace UnityEngine.Triggers {
             if (Running)   // May now be false if any UnityEvents manually stopped this repeater
                 DoStop();
         }
-
 
     }
 

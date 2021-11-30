@@ -57,6 +57,7 @@ namespace UnityEngine
             }
 
             // Read the config keys/values into a Dictionary
+            #pragma warning disable IDE0008 // Use explicit type
             var configGrps = config.Configs
                 .Select(cfg => (cfg.Key, Value: cfg.GetValue()))
                 .GroupBy(kv => kv.Key);
@@ -66,6 +67,7 @@ namespace UnityEngine
                     Logger.LogWarning($"Duplicate config key ('{cfgGrp.Key}') detected in ScriptableObject configuration file '{resFileName}'. Keeping the last value...", context: this);
                 LoadedConfigsHidden.Add(cfgGrp.Key, keyVals[keyVals.Length - 1].Value);
             }
+            #pragma warning restore IDE0008 // Use explicit type
 
             Logger.Log($"Successfully loaded {LoadedConfigs.Count} configs from ScriptableObject configuration file '{resFileName}'.", context: this);
         }

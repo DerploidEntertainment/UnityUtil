@@ -1,6 +1,5 @@
 using Sirenix.OdinInspector;
 using System;
-using UnityEngine.Logging;
 using UnityEngine.UI;
 
 namespace UnityEngine {

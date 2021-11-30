@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using UnityEngine.Logging;
 
 namespace UnityEngine.Inventory {
 
@@ -25,7 +24,8 @@ namespace UnityEngine.Inventory {
             _weapon = GetComponent<Weapon>();
             _weapon.Attacked.AddListener(push);
         }
-        private void push(Ray ray, RaycastHit[] hits) {
+        private void push(Ray ray, RaycastHit[] hits)
+        {
             // Determine those Rigidbodies, the attached Colliders of which cannot be pushed
             IEnumerable<Rigidbody> unpushableRbEnum = IgnoreRigidbodiesAttachedTo.Select(c => c.attachedRigidbody).Distinct();
             var unpushableRbs = new HashSet<Rigidbody>(unpushableRbEnum);

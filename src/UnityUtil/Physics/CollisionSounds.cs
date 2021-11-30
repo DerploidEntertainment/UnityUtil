@@ -27,15 +27,11 @@ namespace UnityEngine {
             AudioSource.Play();
         }
 
-        private int nextClip() {
-            // Get the next AudioClip to be played (random or in order)
-            if (RandomizeClips)
-                _clip = Random.Range(0, AudioClips.Count);
-            else
-                _clip = (_clip + 1) % AudioClips.Count;
-
-            return _clip;
-        }
+        /// <summary>
+        /// Get the next AudioClip to be played (random or in order)
+        /// </summary>
+        /// <returns></returns>
+        private int nextClip() => _clip = RandomizeClips ? Random.Range(0, AudioClips.Count) : (_clip + 1) % AudioClips.Count;
 
     }
 

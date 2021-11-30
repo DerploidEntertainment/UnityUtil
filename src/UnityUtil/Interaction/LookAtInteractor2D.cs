@@ -21,16 +21,14 @@ namespace UnityEngine.Inputs {
             ToggleTrigger trigger = hit.collider?.GetComponent<ToggleTrigger>();
             if (trigger is null)
                 _trigger?.TurnOff();
-            else {
-                if (_trigger is null) {
-                    _trigger = trigger;
-                    _trigger.TurnOn();
-                }
-                else if (trigger != _trigger) {
-                    _trigger.TurnOff();
-                    _trigger = trigger;
-                    _trigger.TurnOn();
-                }
+            else if (_trigger is null) {
+                _trigger = trigger;
+                _trigger.TurnOn();
+            }
+            else if (trigger != _trigger) {
+                _trigger.TurnOff();
+                _trigger = trigger;
+                _trigger.TurnOn();
             }
         }
 

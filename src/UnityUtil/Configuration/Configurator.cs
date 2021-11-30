@@ -252,6 +252,7 @@ namespace UnityEngine
         /// (which also requires that it return <see langword="void"/> and not have <see langword="out"/> parameters).
         /// </summary>
         /// <param name="counts">Upon return, will contain the number of times that configurations were resolved.</param>
+        [Conditional("DEBUG")]
         public void GetConfigurationCounts(ref ConfigurationCounts counts) => counts = new ConfigurationCounts(
             cachedConfigCounts: new Dictionary<(Type, string), int>(_cachedConfigCounts),
             uncachedConfigCounts: new Dictionary<(Type, string), int>(_uncachedConfigCounts)

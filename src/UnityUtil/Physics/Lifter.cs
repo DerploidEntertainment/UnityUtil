@@ -4,7 +4,6 @@ using System.Diagnostics.CodeAnalysis;
 using UnityEngine.Assertions;
 using UnityEngine.Events;
 using UnityEngine.Inputs;
-using UnityEngine.Logging;
 using UnityEngine.Triggers;
 
 namespace UnityEngine {
@@ -35,7 +34,6 @@ namespace UnityEngine {
     [DisallowMultipleComponent]
     public class Lifter : MonoBehaviour
     {
-        private Liftable _liftable;
         private Transform _oldParent;
         private bool _oldKinematic;
         private bool _oldUseGravity;
@@ -72,8 +70,11 @@ namespace UnityEngine {
 
         private void Awake() {
             Assert.IsTrue(
-                (LiftUsingPhysics && LiftingJoint is not null) || (!LiftUsingPhysics && LiftingObject is not null),
-                $"{this.GetHierarchyNameWithType()} must have a {nameof(this.LiftingJoint)} if {nameof(this.LiftUsingPhysics)} is set to true, or a {nameof(this.LiftingObject)} if {nameof(this.LiftUsingPhysics)} is set to false.");
+                (LiftUsingPhysics && LiftingJoint is not null) || 
+                (!LiftUsingPhysics && LiftingObject is not null),
+                $"{this.GetHierarchyNameWithType()} must have a {nameof(this.LiftingJoint)} if {nameof(this.LiftUsingPhysics)} is set to true, " +
+                $"or a {nameof(this.LiftingObject)} if {nameof(this.LiftUsingPhysics)} is set to false."
+            );
         }
         [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
         private void Update()
@@ -86,7 +87,7 @@ namespace UnityEngine {
 
             // If the player pressed Use, then pick up or drop a load
             if (toggleLift) {
-                if (_liftable is null)
+                if (CurrentLiftable is null)
                     pickup();
                 else {
                     LiftingJoint.Joint.connectedBody = null;
@@ -95,12 +96,12 @@ namespace UnityEngine {
             }
 
             // If the player pressed Throw and throwing is currently applicable, then do throw actions
-            if (throwing && CanThrow && _liftable is not null)
+            if (throwing && CanThrow && CurrentLiftable is not null)
                 doThrow();
         }
         private void onJointBreak(Joint joint) => release(LiftableReleaseType.Accidental);
 
-        public Liftable CurrentLiftable => _liftable;
+        public Liftable? CurrentLiftable { get; private set; }
         public LiftablePickupEvent LoadPickedUp = new();
         public LiftableReleaseEvent LoadReleased = new();
 
@@ -112,12 +113,12 @@ namespace UnityEngine {
             if (loadAhead) {
                 rb = hitInfo.collider.attachedRigidbody;
                 if (rb is not null && rb.mass <= MaxMass) {
-                    _liftable = rb.GetComponent<Liftable>();
-                    if (!_liftable?.CanLift ?? false)
-                        _liftable = null;
+                    CurrentLiftable = rb.GetComponent<Liftable>();
+                    if (!CurrentLiftable?.CanLift ?? false)
+                        CurrentLiftable = null;
                 }
             }
-            if (_liftable is null)
+            if (CurrentLiftable is null)
                 return;
 
             // Connect that Liftable using Physics, if requested
@@ -128,9 +129,9 @@ namespace UnityEngine {
             _oldUseGravity = rb.useGravity;
             rb.useGravity = false;
             if (LiftUsingPhysics) {
-                loadTrans.position = transform.TransformPoint(_liftable.LiftOffset);
-                if (_liftable.UsePreferredRotation)
-                    loadTrans.rotation = transform.rotation * Quaternion.Euler(_liftable.PreferredLiftRotation);
+                loadTrans.position = transform.TransformPoint(CurrentLiftable.LiftOffset);
+                if (CurrentLiftable.UsePreferredRotation)
+                    loadTrans.rotation = transform.rotation * Quaternion.Euler(CurrentLiftable.PreferredLiftRotation);
                 LiftingJoint.Joint.connectedBody = rb;
                 rb.isKinematic = false;
                 LiftingJoint.Broken.AddListener(onJointBreak);
@@ -140,38 +141,38 @@ namespace UnityEngine {
             else {
                 loadTrans.parent = LiftingObject;
                 rb.isKinematic = true;
-                loadTrans.localPosition = _liftable.LiftOffset;
-                if (_liftable.UsePreferredRotation)
-                    loadTrans.localRotation = Quaternion.Euler(_liftable.PreferredLiftRotation);
+                loadTrans.localPosition = CurrentLiftable.LiftOffset;
+                if (CurrentLiftable.UsePreferredRotation)
+                    loadTrans.localRotation = Quaternion.Euler(CurrentLiftable.PreferredLiftRotation);
             }
 
             // Raise the PickUp event
-            _liftable.Lifter = this;
-            LoadPickedUp.Invoke(_liftable, this);
+            CurrentLiftable.Lifter = this;
+            LoadPickedUp.Invoke(CurrentLiftable, this);
         }
         private void release(LiftableReleaseType releaseType) {
             // Disconnect the Liftable using Physics, if requested
-            Rigidbody rb = _liftable.GetComponent<Rigidbody>();
+            Rigidbody rb = CurrentLiftable.GetComponent<Rigidbody>();
             if (LiftUsingPhysics)
                 LiftingJoint.Broken.RemoveListener(onJointBreak);
 
             // Otherwise, disconnect it by unparenting
             else
-                _liftable.transform.parent = _oldParent;
+                CurrentLiftable.transform.parent = _oldParent;
 
             // Either way, adjust the Liftable's Rigidbody
             rb.isKinematic = _oldKinematic;
             rb.useGravity = _oldUseGravity;
 
             // Either way, raise the Released event
-            _liftable.Lifter = null;
-            Liftable liftable = _liftable;
-            _liftable = null;
+            CurrentLiftable.Lifter = null;
+            Liftable liftable = CurrentLiftable;
+            CurrentLiftable = null;
             LoadReleased.Invoke(liftable, this, releaseType);
         }
         private void doThrow() {
             // Disconnect the Liftable
-            Liftable liftable = _liftable;
+            Liftable liftable = CurrentLiftable;
             LiftingJoint.Joint.connectedBody = null;
             release(LiftableReleaseType.Thrown);
 

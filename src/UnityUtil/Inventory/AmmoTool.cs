@@ -4,7 +4,6 @@ using System.Diagnostics.CodeAnalysis;
 using UnityEngine.Assertions;
 using UnityEngine.Events;
 using UnityEngine.Inputs;
-using UnityEngine.Logging;
 
 namespace UnityEngine.Inventory {
 

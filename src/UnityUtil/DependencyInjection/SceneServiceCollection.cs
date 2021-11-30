@@ -4,22 +4,21 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace UnityEngine.DependencyInjection
 {
-
     [Serializable]
     public class InspectorService
     {
-#pragma warning disable CA2235 // Mark all non-serializable fields
         [Required]
         public Object? Instance;
+
         [Tooltip(
             "Optional. All services are associated with a System.Type. This Type can be any Type in the service's inheritance hierarchy. " +
             "For example, a service component derived from Monobehaviour could be associated with its actual declared Type, " +
             "with Monobehaviour, or with UnityEngine.Object. The actual declared Type is assumed if you leave this field blank."
         )]
         public string TypeName = "";
+
         [HideInInspector, NonSerialized]
         public string Tag = "";
-#pragma warning restore CA2235 // Mark all non-serializable fields
     }
 
     public class SceneServiceCollection : MonoBehaviour

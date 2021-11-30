@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using UnityEngine.Triggers;
@@ -27,6 +27,7 @@ namespace UnityEngine.Inputs {
             $"otherwise the relatively expensive Physics.RaycastAll() will be used (with only the {nameof(LookAtInteractor.MaxInteractions)} " +
             $"closest colliders actually being interacted with)."
         )]
+        [Min(1f)]
         public uint MaxInteractions = 1;
 
 

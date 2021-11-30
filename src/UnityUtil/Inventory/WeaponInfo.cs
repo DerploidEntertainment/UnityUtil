@@ -1,4 +1,4 @@
-namespace UnityEngine.Inventory {
+﻿namespace UnityEngine.Inventory {
 
     public enum PhysicsCastShape {
         Ray,
@@ -28,7 +28,8 @@ namespace UnityEngine.Inventory {
             $"If this value is 1, then Physics.Raycast() will be used to find colliders to attack, otherwise the relatively expensive " +
             $"Physics.RaycastAll() will be used (with only the {nameof(WeaponInfo.MaxAttacks)} closest colliders actually being attacked)."
         )]
-        public uint MaxAttacks = 1;
+        [Min(1f)]
+        public uint MaxAttacks = 1u;
 
         [Tooltip($"Determines the shape of the 'shot' or 'blast' created by associated {nameof(UnityEngine.Inventory.Weapon)}s.")]
         public PhysicsCastShape PhysicsCastShape = PhysicsCastShape.Ray;
@@ -75,6 +76,7 @@ namespace UnityEngine.Inventory {
         public float FinalConeHalfAngle = 0f;
 
         [Tooltip(TOOLTIP_ACCURACY)]
+        [Min(0f)]
         public float AccuracyLerpTime = 1f;
 
     }

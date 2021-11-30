@@ -1,10 +1,10 @@
-﻿using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.CodeAnalysis;
 
 namespace UnityEngine {
 
     [RequireComponent(typeof(Animator))]
-    public class AnimatorStateRestarter : MonoBehaviour {
-
+    public class AnimatorStateRestarter : MonoBehaviour
+    {
         private Animator _animator;
 
         [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]

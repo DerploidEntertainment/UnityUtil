@@ -1,7 +1,6 @@
 using Sirenix.OdinInspector;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using UnityEngine.Logging;
 
 namespace UnityEngine.Inventory {
 

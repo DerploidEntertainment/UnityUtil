@@ -1,11 +1,11 @@
 using Sirenix.OdinInspector;
 using UnityEngine.Inputs;
-using UnityEngine.Logging;
 
 namespace UnityEngine.Movement {
 
     public class CharacterFPSWalker : Updatable
     {
+        private float _oldHeight;
 
         [Required]
         public CharacterController? ControllerToMove;
@@ -32,7 +32,6 @@ namespace UnityEngine.Movement {
         public bool CanJump = true;
         public float JumpHeight = 3f;
 
-        private float _oldHeight;
         protected override void Awake() {
             base.Awake();
 

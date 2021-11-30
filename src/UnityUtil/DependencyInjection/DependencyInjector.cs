@@ -127,6 +127,7 @@ namespace UnityEngine.DependencyInjection
 
             // Register this service with the provided scene (if one was provided), so that it can be unloaded later if the scene is unloaded
             // Show an error if provided service's type/tag match those of an already registered service
+            #pragma warning disable IDE0008 // Use explicit type
             int sceneHandle = scene.HasValue ? scene.Value.handle : DEFAULT_SCENE_HANDLE;
             bool sceneAdded = _services.TryGetValue(sceneHandle, out var sceneServices);
             if (!sceneAdded) {
@@ -139,6 +140,7 @@ namespace UnityEngine.DependencyInjection
                 typedServices = new Dictionary<string, Service>();
                 sceneServices.Add(serviceType, typedServices);
             }
+            #pragma warning restore IDE0008 // Use explicit type
 
             bool tagAdded = typedServices.ContainsKey(service.Tag);
             string fromSceneMsg = scene.HasValue ? $" from scene '{scene.Value.name}'" : "";
@@ -314,18 +316,15 @@ namespace UnityEngine.DependencyInjection
         }
         internal void TryGetService(Type serviceType, string tag, string clientName, out Service service)
         {
-            bool resolved = false;
             Dictionary<string, Service> typedServices = null;
             foreach (int scene in _services.Keys) {
-                if (_services[scene].TryGetValue(serviceType, out typedServices)) {
-                    resolved = true;
+                if (_services[scene].TryGetValue(serviceType, out typedServices))
                     break;
-                }
             }
-            if (!resolved)
+            if (typedServices is null)
                 throw new KeyNotFoundException($"{clientName} has a dependency of Type '{serviceType.FullName}', but no service was registered with that Type. Did you forget to add a service to the service collection?");
 
-            resolved = typedServices.TryGetValue(tag, out service);
+            bool resolved = typedServices.TryGetValue(tag, out service);
             if (!resolved)
                 throw new KeyNotFoundException($"{clientName} has a dependency of Type '{serviceType.FullName}' with tag '{tag}', but no matching service was registered. Did you forget to tag a service?");
         }
