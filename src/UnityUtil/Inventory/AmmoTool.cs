@@ -1,6 +1,5 @@
 ﻿using Sirenix.OdinInspector;
 using System;
-using System.Diagnostics.CodeAnalysis;
 using UnityEngine.Assertions;
 using UnityEngine.Events;
 using UnityEngine.Inputs;
@@ -14,7 +13,7 @@ namespace UnityEngine.Inventory {
     public class AmmoEvent : UnityEvent<int, int, int, int> { }
 
     [RequireComponent(typeof(Tool))]
-    public class AmmoTool : MonoBehaviour
+    public class AmmoTool : Updatable
     {
         private Tool? _tool;
 
@@ -49,10 +48,10 @@ namespace UnityEngine.Inventory {
         public AmmoEvent Loaded = new();
         public AmmoEvent AmmoReduced = new();
 
-        [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
-        [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
+
             Assert.IsTrue(Info!.StartingAmmo <= Info.MaxClipAmmo * (Info.MaxBackupClips + 1), $"{this.GetHierarchyNameWithType()} was started with {nameof(this.Info.StartingAmmo)} ammo but it can only store a max of {this.Info.MaxClipAmmo} * ({this.Info.MaxClipAmmo * (this.Info.MaxBackupClips + 1)}!");
 
             // Initialize ammo
@@ -67,11 +66,12 @@ namespace UnityEngine.Inventory {
                 CurrentClipAmmo -= 1;
                 AmmoReduced.Invoke(oldClip, CurrentBackupAmmo, CurrentClipAmmo, CurrentBackupAmmo);
             });
+
+            RegisterUpdatesAutomatically = true;
+            BetterUpdate = checkForReload;
         }
 
-        [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
-        [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
-        private void Update()
+        private void checkForReload(float deltaTime)
         {
             if (ReloadInput?.Started() ?? false)
                 doReloadClip();

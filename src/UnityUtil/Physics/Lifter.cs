@@ -1,4 +1,4 @@
-using Sirenix.OdinInspector;
+﻿using Sirenix.OdinInspector;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using UnityEngine.Assertions;
@@ -32,7 +32,7 @@ namespace UnityEngine {
     public class LiftableReleaseEvent : UnityEvent<Liftable, Lifter, LiftableReleaseType> { }
 
     [DisallowMultipleComponent]
-    public class Lifter : MonoBehaviour
+    public class Lifter : Updatable
     {
         private Transform? _oldParent;
         private bool _oldKinematic;
@@ -68,16 +68,22 @@ namespace UnityEngine {
         public bool CanThrow = true;
         public float ThrowForce = 10f;
 
-        private void Awake() {
+        protected override void Awake()
+        {
+            base.Awake();
+
             Assert.IsTrue(
                 (LiftUsingPhysics && LiftingJoint is not null) || 
                 (!LiftUsingPhysics && LiftingObject is not null),
                 $"{this.GetHierarchyNameWithType()} must have a {nameof(this.LiftingJoint)} if {nameof(this.LiftUsingPhysics)} is set to true, " +
                 $"or a {nameof(this.LiftingObject)} if {nameof(this.LiftUsingPhysics)} is set to false."
             );
+
+            RegisterUpdatesAutomatically = true;
+            BetterUpdate = doUpdate;
         }
-        [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
-        private void Update()
+
+        private void doUpdate(float deltaTime)
         {
             // Get user input
             bool toggleLift = LiftInput!.Started();
