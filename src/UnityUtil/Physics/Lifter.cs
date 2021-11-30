@@ -34,7 +34,7 @@ namespace UnityEngine {
     [DisallowMultipleComponent]
     public class Lifter : MonoBehaviour
     {
-        private Transform _oldParent;
+        private Transform? _oldParent;
         private bool _oldKinematic;
         private bool _oldUseGravity;
 
@@ -53,13 +53,13 @@ namespace UnityEngine {
             $"If {nameof(LiftUsingPhysics)} is true, then {nameof(Liftable)}s will be attached to this {nameof(Lifter)} via the Joint on this GameObject. " +
             $"Ignored if {nameof(LiftUsingPhysics)} is false."
         )]
-        public JointBreakTrigger LiftingJoint;
+        public JointBreakTrigger? LiftingJoint;
 
         [Tooltip(
             $"If {nameof(LiftUsingPhysics)} is false, then {nameof(Liftable)}s will be attached to this Transform via parenting. " +
             $"Ignored if {nameof(LiftUsingPhysics)} is true."
         )]
-        public Transform LiftingObject;
+        public Transform? LiftingObject;
         public LayerMask LiftableLayerMask;
         public float Reach = 4f;
         public float MaxMass = 10f;
@@ -80,8 +80,8 @@ namespace UnityEngine {
         private void Update()
         {
             // Get user input
-            bool toggleLift = LiftInput.Started();
-            bool throwing = ThrowInput.Started();
+            bool toggleLift = LiftInput!.Started();
+            bool throwing = ThrowInput!.Started();
             if (toggleLift && throwing)
                 return;
 
@@ -90,7 +90,7 @@ namespace UnityEngine {
                 if (CurrentLiftable is null)
                     pickup();
                 else {
-                    LiftingJoint.Joint.connectedBody = null;
+                    LiftingJoint!.Joint!.connectedBody = null;
                     release(LiftableReleaseType.Purposeful);
                 }
             }
@@ -108,7 +108,7 @@ namespace UnityEngine {
         private void pickup() {
             // Check if a physical object that's not too heavy is within range
             // If not, then just return
-            Rigidbody rb = null;
+            Rigidbody? rb = null;
             bool loadAhead = Physics.Raycast(transform.position, transform.forward, out RaycastHit hitInfo, Reach, LiftableLayerMask);
             if (loadAhead) {
                 rb = hitInfo.collider.attachedRigidbody;
@@ -123,7 +123,7 @@ namespace UnityEngine {
 
             // Connect that Liftable using Physics, if requested
             // Cant use Rigidbody.position/rotation b/c we're about to add it to a Joint
-            Transform loadTrans = rb.transform;
+            Transform loadTrans = rb!.transform;
             _oldParent = loadTrans.parent;
             _oldKinematic = rb.isKinematic;
             _oldUseGravity = rb.useGravity;
@@ -132,7 +132,7 @@ namespace UnityEngine {
                 loadTrans.position = transform.TransformPoint(CurrentLiftable.LiftOffset);
                 if (CurrentLiftable.UsePreferredRotation)
                     loadTrans.rotation = transform.rotation * Quaternion.Euler(CurrentLiftable.PreferredLiftRotation);
-                LiftingJoint.Joint.connectedBody = rb;
+                LiftingJoint!.Joint!.connectedBody = rb;
                 rb.isKinematic = false;
                 LiftingJoint.Broken.AddListener(onJointBreak);
             }
@@ -152,9 +152,9 @@ namespace UnityEngine {
         }
         private void release(LiftableReleaseType releaseType) {
             // Disconnect the Liftable using Physics, if requested
-            Rigidbody rb = CurrentLiftable.GetComponent<Rigidbody>();
+            Rigidbody rb = CurrentLiftable!.GetComponent<Rigidbody>();
             if (LiftUsingPhysics)
-                LiftingJoint.Broken.RemoveListener(onJointBreak);
+                LiftingJoint!.Broken.RemoveListener(onJointBreak);
 
             // Otherwise, disconnect it by unparenting
             else
@@ -172,12 +172,12 @@ namespace UnityEngine {
         }
         private void doThrow() {
             // Disconnect the Liftable
-            Liftable liftable = CurrentLiftable;
-            LiftingJoint.Joint.connectedBody = null;
+            Liftable? liftable = CurrentLiftable;
+            LiftingJoint!.Joint!.connectedBody = null;
             release(LiftableReleaseType.Thrown);
 
             // Apply the throw force
-            Rigidbody rb = liftable.GetComponent<Rigidbody>();
+            Rigidbody rb = liftable!.GetComponent<Rigidbody>();
             rb.AddForce(transform.forward * ThrowForce, ForceMode.Impulse);
         }
 

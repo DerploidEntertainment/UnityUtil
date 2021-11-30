@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using UnityEngine;
 
 namespace UnityUtil.Test.EditMode.Logging
@@ -6,7 +6,7 @@ namespace UnityUtil.Test.EditMode.Logging
     internal class TestLogger : ILogger
     {
 
-        public ILogHandler logHandler { get; set; }
+        public ILogHandler logHandler { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public bool logEnabled { get; set; }
         public LogType filterLogType { get; set; }
 

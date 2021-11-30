@@ -1,4 +1,4 @@
-using Sirenix.OdinInspector;
+﻿using Sirenix.OdinInspector;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
@@ -22,8 +22,9 @@ namespace UnityEngine.Inventory {
                 return;
 
             // Try to find a Weapon with a matching name in the Inventory and adjust its ammo
-            AmmoTool tool = Inventory.GetComponentsInChildren<AmmoTool>(true)
-                                     .SingleOrDefault(t => t.Info.AmmoTypeName == ac.AmmoTypeName);
+            AmmoTool tool = Inventory!
+                .GetComponentsInChildren<AmmoTool>(true)
+                .SingleOrDefault(t => t.Info!.AmmoTypeName == ac.AmmoTypeName);
             if (tool is not null) {
                 int leftover = tool.Load((int)collectible.Amount);
                 collectible.Collect(collector, leftover);

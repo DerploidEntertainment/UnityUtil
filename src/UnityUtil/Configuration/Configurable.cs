@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using UnityEngine.DependencyInjection;
 using UnityEngine.Logging;
 
@@ -6,8 +6,8 @@ namespace UnityEngine
 {
     public abstract class Configurable : MonoBehaviour
     {
-        protected IConfigurator Configurator;
-        protected ILogger Logger;
+        protected IConfigurator? Configurator;
+        protected ILogger? Logger;
 
         public const string ConfigKeyTooltip =
             "The key by which to look up configuration for this Component. " +
@@ -26,7 +26,7 @@ namespace UnityEngine
             DependencyInjector.Instance.ResolveDependenciesOf(this);
 
             ConfigKey = string.IsNullOrWhiteSpace(ConfigKey) ? DefaultConfigKey(GetType()) : ConfigKey;
-            Configurator.Configure(this, ConfigKey);
+            Configurator!.Configure(this, ConfigKey);
         }
 
         public void Inject(IConfigurator configurator, ILoggerProvider loggerProvider) {

@@ -1,4 +1,4 @@
-using Sirenix.OdinInspector;
+﻿using Sirenix.OdinInspector;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
@@ -7,7 +7,7 @@ namespace UnityEngine.Inventory {
     [RequireComponent(typeof(Weapon))]
     public class QuantityWeapon : MonoBehaviour
     {
-        private Weapon _weapon;
+        private Weapon? _weapon;
 
         [Required]
         public QuantityWeaponInfo? Info;
@@ -24,8 +24,8 @@ namespace UnityEngine.Inventory {
             // Otherwise, damage the Quantities on all Colliders that are not ignored with one of the specified tags
             for (int h = 0; h < hits.Length; ++h) {
                 RaycastHit hit = hits[h];
-                if (!Info.IgnoreColliderTags.Contains(hit.collider.tag)) {
-                    ManagedQuantity quantity = hit.collider.attachedRigidbody?.GetComponent<ManagedQuantity>();
+                if (!Info!.IgnoreColliderTags.Contains(hit.collider.tag)) {
+                    ManagedQuantity? quantity = hit.collider.attachedRigidbody?.GetComponent<ManagedQuantity>();
                     if (quantity is not null) {
                         quantity.Change(Info.Amount, Info.ChangeMode);
                         if (Info.OnlyAffectClosest && hits.Length > 0)

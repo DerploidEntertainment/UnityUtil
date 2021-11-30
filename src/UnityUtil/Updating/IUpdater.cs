@@ -9,7 +9,6 @@ namespace UnityEngine {
         /// </summary>
         /// <param name="instanceId">The instance ID of the component that will be updated every frame. Must be unique among all registered instances.</param>
         /// <param name="updateAction">The <see cref="Action"/> to be called every frame.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="updateAction"/> is <see langword="null"/></exception>
         /// <exception cref="InvalidOperationException">An Update <see cref="Action"/> has already been registered for <paramref name="instanceId"/>.</exception>
         void RegisterUpdate(int instanceId, Action<float> updateAction);
         /// <summary>
@@ -27,7 +26,6 @@ namespace UnityEngine {
         /// </summary>
         /// <param name="instanceId">The instance ID of the component that will be updated every physics frame. Must be unique among all registered instances.</param>
         /// <param name="fixedUpdateAction">The <see cref="Action"/> to be called every physics frame.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="fixedUpdateAction"/> is <see langword="null"/></exception>
         /// <exception cref="InvalidOperationException">A FixedUpdate <see cref="Action"/> has already been registered for <paramref name="instanceId"/>.</exception>
         void RegisterFixedUpdate(int instanceId, Action<float> fixedUpdateAction);
         /// <summary>
@@ -45,7 +43,6 @@ namespace UnityEngine {
         /// </summary>
         /// <param name="instanceId">The instance ID of the component that will be updated at the end of every frame. Must be unique among all registered instances.</param>
         /// <param name="lateUpdateAction">The <see cref="Action"/> to be called at the end of every frame.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="lateUpdateAction"/> is <see langword="null"/></exception>
         /// <exception cref="InvalidOperationException">A LateUpdate <see cref="Action"/> has already been registered for <paramref name="instanceId"/>.</exception>
         void RegisterLateUpdate(int instanceId, Action<float> lateUpdateAction);
         /// <summary>

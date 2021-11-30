@@ -13,7 +13,7 @@ namespace UnityUtil.Editor
 
         public BuildGameObjectRemover(ILoggerProvider loggerProvider) => _logger = loggerProvider.GetLogger(this);
 
-        public void RemoveGameObjectsFromScene(Scene scene, List<RemoveFromBuild> removeTargetBuffer = null)
+        public void RemoveGameObjectsFromScene(Scene scene, List<RemoveFromBuild>? removeTargetBuffer = null)
         {
             RuntimePlatform platform = Application.platform;
             BuildContext buildContext =

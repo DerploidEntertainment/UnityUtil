@@ -11,8 +11,8 @@ namespace UnityEngine.Legal
 {
     public class LegalAcceptManager : Configurable
     {
-        private ILogger _logger;
-        private ILocalCache _localCache;
+        private ILogger? _logger;
+        private ILocalCache? _localCache;
 
         private string[] _latestVersionTags = Array.Empty<string>();
         private bool _acceptRequired = false;
@@ -45,32 +45,32 @@ namespace UnityEngine.Legal
 
             _latestVersionTags = new string[Documents.Length];
 
-            AcceptInitialUi.SetActive(false);
-            AcceptUpdateUi.SetActive(false);
-            AcceptUi.SetActive(false);
+            AcceptInitialUi!.SetActive(false);
+            AcceptUpdateUi!.SetActive(false);
+            AcceptUi!.SetActive(false);
 
             for (int d = 0; d < Documents.Length; ++d)
                 CheckForUpdate(Documents[d], d);
         }
-        internal void CheckForUpdate(LegalDocument doc, int index, DownloadHandler downloadHandler = null, UploadHandler uploadHandler = null)
+        internal void CheckForUpdate(LegalDocument doc, int index, DownloadHandler? downloadHandler = null, UploadHandler? uploadHandler = null)
         {
             if (downloadHandler is null ^ uploadHandler is null)
                 throw new InvalidOperationException();
 
             // Get the last accepted tag from the cache (will be empty if none stored yet)
-            string acceptedTag = _localCache.GetString(doc.CacheKey);
+            string acceptedTag = _localCache!.GetString(doc.CacheKey);
             bool firstTime = string.IsNullOrEmpty(acceptedTag);
 
             // Get the latest tag from the web
             UnityWebRequest req = downloadHandler is null
-                ? new UnityWebRequest(doc.LatestVersionUri.Uri, UnityWebRequest.kHttpVerbHEAD)
-                : new UnityWebRequest(doc.LatestVersionUri.Uri, UnityWebRequest.kHttpVerbHEAD, downloadHandler, uploadHandler);
+                ? new UnityWebRequest(doc.LatestVersionUri!.Uri, UnityWebRequest.kHttpVerbHEAD)
+                : new UnityWebRequest(doc.LatestVersionUri!.Uri, UnityWebRequest.kHttpVerbHEAD, downloadHandler, uploadHandler);
             UnityWebRequestAsyncOperation reqOp = req.SendWebRequest();
             reqOp.completed += op => {
                 // Parse the tag from the response
-                string webTag = null;
+                string? webTag = null;
                 if (req.result != UnityWebRequest.Result.Success)
-                    _logger.LogWarning($"Unable to fetch latest version of legal document with URI '{doc.LatestVersionUri.Uri}'. Error received: {req.error}", context: this);
+                    _logger!.LogWarning($"Unable to fetch latest version of legal document with URI '{doc.LatestVersionUri.Uri}'. Error received: {req.error}", context: this);
                 else
                     webTag = req.GetResponseHeader(doc.TagHeader);
 
@@ -78,11 +78,11 @@ namespace UnityEngine.Legal
                 // Use a random GUID as the tag (shouldn't collide with an existing accepted tag), unless user has already accepted this document once before
                 if (string.IsNullOrEmpty(webTag)) {
                     if (firstTime) {
-                        _logger.LogWarning($"Document tag from '{doc.TagHeader}' header was empty or could not be parsed. Using random GUID '{webTag}' instead.", context: this);
+                        _logger!.LogWarning($"Document tag from '{doc.TagHeader}' header was empty or could not be parsed. Using random GUID '{webTag}' instead.", context: this);
                         webTag = Guid.NewGuid().ToString();
                     }
                     else {
-                        _logger.LogWarning($"Document tag from '{doc.TagHeader}' header was empty or could not be parsed. User has already accepted a previous version, so acceptance won't be required again.", context: this);
+                        _logger!.LogWarning($"Document tag from '{doc.TagHeader}' header was empty or could not be parsed. User has already accepted a previous version, so acceptance won't be required again.", context: this);
                         webTag = acceptedTag;
                     }
                 }
@@ -96,13 +96,13 @@ namespace UnityEngine.Legal
                 _acceptUpdate = _acceptUpdate || (_acceptRequired && !firstTime);
                 if (_numTagsFetched == Documents.Length) {
                     if (_acceptRequired) {
-                        AcceptInitialUi.SetActive(!_acceptUpdate);
-                        AcceptUpdateUi.SetActive(_acceptUpdate);
-                        AcceptUi.SetActive(true);
-                        _logger.Log($"User must accept latest versions of all legal documents {(_acceptUpdate ? "because the versions that they last accepted are out of date" : "for the first time")}.", context: this);
+                        AcceptInitialUi!.SetActive(!_acceptUpdate);
+                        AcceptUpdateUi!.SetActive(_acceptUpdate);
+                        AcceptUi!.SetActive(true);
+                        _logger!.Log($"User must accept latest versions of all legal documents {(_acceptUpdate ? "because the versions that they last accepted are out of date" : "for the first time")}.", context: this);
                     }
                     else {
-                        _logger.Log($"User already accepted latest versions of all legal documents.", context: this);
+                        _logger!.Log($"User already accepted latest versions of all legal documents.", context: this);
                         AlreadyAccepted.Invoke();
                     }
                 }
@@ -113,11 +113,11 @@ namespace UnityEngine.Legal
         public void Accept()
         {
             for (int v = 0; v < _latestVersionTags.Length; ++v)
-                _localCache.SetString(Documents[v].CacheKey, _latestVersionTags[v].ToString());
+                _localCache!.SetString(Documents[v].CacheKey, _latestVersionTags[v].ToString());
 
             HasAccepted = true;
 
-            _logger.Log($"User has accepted latest versions all legal documents.", context: this);
+            _logger!.Log($"User has accepted latest versions all legal documents.", context: this);
         }
 
         [Button, Conditional("DEBUG")]

@@ -1,4 +1,4 @@
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using UnityEngine.Events;
 
 namespace UnityEngine {
@@ -16,7 +16,7 @@ namespace UnityEngine {
             "If non-null, this value will be used to filter OnTriggerEnter events to only those where the attached Rigidbody of " +
             $"the enterring Collider MATCHES or DOES NOT MATCH this Tag, depending on the value of {nameof(DestroyZone.FilterIsBlacklist)}."
         )]
-        public string AttachedRigidbodyTagFilter;
+        public string? AttachedRigidbodyTagFilter = null;
 
         [Tooltip(
             $"If true, then the {nameof(DestroyZone.AttachedRigidbodyTagFilter)} will be used as a blacklist " +
@@ -46,7 +46,7 @@ namespace UnityEngine {
                 (!FilterIsBlacklist && rb.CompareTag(AttachedRigidbodyTagFilter))
             );
             if (doDestroy) {
-                Destroy(rb.gameObject);
+                Destroy(rb!.gameObject);
                 SomethingDestroyed.Invoke();
             }
         }

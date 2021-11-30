@@ -1,4 +1,4 @@
-using Sirenix.OdinInspector;
+﻿using Sirenix.OdinInspector;
 using System.Diagnostics.CodeAnalysis;
 
 namespace UnityEngine.Movement {
@@ -18,7 +18,7 @@ namespace UnityEngine.Movement {
 
         [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
         [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
-        private void Update() => TransformToMove.position = Target.position + Offset;
+        private void Update() => TransformToMove!.position = Target!.position + Offset;
 
     }
 

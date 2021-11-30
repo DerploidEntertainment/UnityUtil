@@ -1,4 +1,4 @@
-using Sirenix.OdinInspector;
+﻿using Sirenix.OdinInspector;
 using System.Diagnostics.CodeAnalysis;
 using UnityEngine.DependencyInjection;
 using UnityEngine.Logging;
@@ -7,7 +7,7 @@ namespace UnityEngine.UI
 {
     public class SafeAreaRectTransformScaler : MonoBehaviour
     {
-        private ILogger _logger;
+        private ILogger? _logger;
 
         [Required]
         public RectTransform? RectTransform;
@@ -21,8 +21,8 @@ namespace UnityEngine.UI
             DependencyInjector.Instance.ResolveDependenciesOf(this);
 
             Rect safeArea = Device.Screen.safeArea;
-            _logger.Log(
-                $"Current anchors of {RectTransform.GetHierarchyNameWithType()} (min, max): ({RectTransform.anchorMin}, {RectTransform.anchorMax}). " +
+            _logger!.Log(
+                $"Current anchors of {RectTransform!.GetHierarchyNameWithType()} (min, max): ({RectTransform!.anchorMin}, {RectTransform.anchorMax}). " +
                 $"Updating for current screen (width x height) = ({Device.Screen.width} x {Device.Screen.height}) and safe area (width x height) = ({safeArea.width} x {safeArea.height})"
             , context: this);
 
@@ -31,7 +31,7 @@ namespace UnityEngine.UI
             RectTransform.anchorMin = safeArea.position * scaleVect;
             RectTransform.anchorMax = (safeArea.position + safeArea.size) * scaleVect;
 
-            _logger.Log($"New anchors of {RectTransform.GetHierarchyNameWithType()} (min, max): ({RectTransform.anchorMin}, {RectTransform.anchorMax})");
+            _logger!.Log($"New anchors of {RectTransform.GetHierarchyNameWithType()} (min, max): ({RectTransform.anchorMin}, {RectTransform.anchorMax})");
         }
     }
 }

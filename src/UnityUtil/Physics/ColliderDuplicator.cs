@@ -24,7 +24,8 @@ namespace UnityEngine {
         private List<Transform> _duplicates = new();
 
         [Tooltip("Each Collider selected for duplication will be duplicated under each of these GameObjects.")]
-        public Transform NewParentOfDuplicates;
+        public Transform? NewParentOfDuplicates;
+
         [Tooltip("Select the behavior for automatically duplicating child Colliders.")]
         public ChildColliderDuplicateMode ChildColliderDuplication = ChildColliderDuplicateMode.None;
 
@@ -41,7 +42,7 @@ namespace UnityEngine {
         public string DuplicateLayerName = "";
 
         [Tooltip("If set, all duplicate Colliders will have a PhysTarget component attached that targets this value.")]
-        public MonoBehaviour PhysicsTarget;
+        public MonoBehaviour? PhysicsTarget;
 
         [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
         [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
@@ -59,7 +60,7 @@ namespace UnityEngine {
             }
         }
 
-        private List<Transform> createDuplicates(Transform newParent) {
+        private List<Transform> createDuplicates(Transform? newParent) {
             List<Transform> dupls = ChildColliderDuplication switch {
                 ChildColliderDuplicateMode.ImmediateChildCollidersOnly => duplicateImmediateChildren(),
                 ChildColliderDuplicateMode.AllChildCollidersFlattened => duplicateAllChildrenFlat(),
@@ -137,8 +138,9 @@ namespace UnityEngine {
 
             return new();
         }
+
         private void duplicateCollider(Collider collider, GameObject newParent) {
-            Collider newColl = null;
+            Collider? newColl = null;
 
             // Copy BoxCollider properties
             if (collider is BoxCollider origBox) {

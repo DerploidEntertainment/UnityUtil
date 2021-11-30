@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using UnityEngine.Events;
 
@@ -12,7 +12,7 @@ namespace UnityEngine.Inventory {
 
     public class Collector : MonoBehaviour {
 
-        private SphereCollider _sphere;
+        private SphereCollider? _sphere;
 
         public float Radius = 1f;
         public CollectEvent Collected = new();

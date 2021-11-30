@@ -1,4 +1,4 @@
-using Sirenix.OdinInspector;
+﻿using Sirenix.OdinInspector;
 using System.Collections;
 using UnityEngine.Events;
 using UnityEngine.Inputs;
@@ -7,8 +7,8 @@ namespace UnityEngine.Inventory {
 
     public class Tool : Updatable
     {
-        private Coroutine _usingRoutine;
-        private Coroutine _refractoryRoutine;
+        private Coroutine? _usingRoutine;
+        private Coroutine? _refractoryRoutine;
         private uint _numUses = 0u;
 
         [Required] public ToolInfo? Info;
@@ -30,7 +30,7 @@ namespace UnityEngine.Inventory {
         }
         private void doUpdate(float deltaTime) {
             // Start using when the use input starts
-            if (UseInput.Started() && _usingRoutine is null && _refractoryRoutine is null)
+            if (UseInput!.Started() && _usingRoutine is null && _refractoryRoutine is null)
                 _usingRoutine = StartCoroutine(startUsing());
 
             // Stop using when the use input stops
@@ -66,7 +66,7 @@ namespace UnityEngine.Inventory {
 
                 // Otherwise, recharge the Tool (if necessary) then use it
                 else {
-                    if ((_numUses == 0 || Info.RechargeEveryUse) && Info.TimeToCharge > 0f) {
+                    if ((_numUses == 0 || Info!.RechargeEveryUse) && Info!.TimeToCharge > 0f) {
                         CurrentCharge = 0f;
                         while (CurrentCharge < 1f) {
                             CurrentCharge += Time.deltaTime / Info.TimeToCharge;
@@ -79,7 +79,7 @@ namespace UnityEngine.Inventory {
                 }
 
                 // Pause to account for the firing rate, if necessary
-                if (Info.AutomaticMode != AutomaticMode.SingleAction && !Info.RechargeEveryUse)
+                if (Info!.AutomaticMode != AutomaticMode.SingleAction && !Info.RechargeEveryUse)
                     yield return new WaitForSeconds(1f / Info.AutomaticUseRate);
 
             // Continue using if the Tool is fully automatic or has not performed all of its semi-automatic uses
@@ -96,7 +96,7 @@ namespace UnityEngine.Inventory {
             _usingRoutine = null;
         }
         private IEnumerator startRefractoryPeriod() {
-            yield return new WaitForSeconds(Info.RefactoryPeriod);
+            yield return new WaitForSeconds(Info!.RefactoryPeriod);
             _refractoryRoutine = null;
         }
 

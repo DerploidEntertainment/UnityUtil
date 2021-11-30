@@ -1,4 +1,4 @@
-using Sirenix.OdinInspector;
+﻿using Sirenix.OdinInspector;
 using UnityEngine.Events;
 using UnityEngine.Inputs;
 
@@ -19,7 +19,7 @@ namespace UnityEngine.Triggers.Input {
         }
 
         private void checkInputs(float deltaTime) {
-            if (Input.Started())
+            if (Input!.Started())
                 InputStarted.Invoke();
             else if (Input.Stopped())
                 InputStopped.Invoke();

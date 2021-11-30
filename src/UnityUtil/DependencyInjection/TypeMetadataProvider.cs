@@ -21,7 +21,7 @@ namespace UnityEngine.DependencyInjection
             ).Compile();
         }
 
-        public T GetCustomAttribute<T>(ParameterInfo parameter) where T : Attribute => parameter.GetCustomAttribute<T>();
+        public T? GetCustomAttribute<T>(ParameterInfo parameter) where T : Attribute => parameter.GetCustomAttribute<T>();
 
         public MethodInfo GetMethod(Type classType, string name, BindingFlags bindingFlags) => classType.GetMethod(name, bindingFlags);
 

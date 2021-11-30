@@ -30,9 +30,9 @@ namespace UnityEngine
         {
             yield return base.LoadAsync();
 
-            Logger.Log($"Loading configs asynchronously from Remote Config environment '{Environment}'...", context: this);
+            Logger!.Log($"Loading configs asynchronously from Remote Config environment '{Environment}'...", context: this);
             if (++s_numLoads > 1)
-                Logger.LogError($"Attempt to load configs from {s_numLoads} Remote Config environments. Only one environment should ever be loaded.", context: this);
+                Logger!.LogError($"Attempt to load configs from {s_numLoads} Remote Config environments. Only one environment should ever be loaded.", context: this);
 
             _fetchComplete = false;
 
@@ -49,25 +49,25 @@ namespace UnityEngine
             _fetchComplete = true;
 
             if (res.status == ConfigRequestStatus.Failed) {
-                Logger.LogWarning("Something went wrong while loading configuration settings from Remote Config. Using default values.", context: this);
+                Logger!.LogWarning("Something went wrong while loading configuration settings from Remote Config. Using default values.", context: this);
                 return;
             }
 
             switch (res.requestOrigin) {
                 case ConfigOrigin.Default:
-                    Logger.Log($"No configuration settings loaded from Remote Config environment '{Environment}'. Using default values.", context: this);
+                    Logger!.Log($"No configuration settings loaded from Remote Config environment '{Environment}'. Using default values.", context: this);
                     break;
 
                 case ConfigOrigin.Cached:
                     string[] cachedKeys = ConfigManager.appConfig.GetKeys();
-                    Logger.Log($"No configuration settings loaded from Remote Config environment '{Environment}'. Using {cachedKeys.Length} cached values from a previous session.", context: this);
+                    Logger!.Log($"No configuration settings loaded from Remote Config environment '{Environment}'. Using {cachedKeys.Length} cached values from a previous session.", context: this);
                     for (int x = 0; x < cachedKeys.Length; ++x)
                         LoadedConfigsHidden.Add(cachedKeys[x], ConfigManager.appConfig.GetString(cachedKeys[x]));
                     break;
 
                 case ConfigOrigin.Remote:
                     string[] keys = ConfigManager.appConfig.GetKeys();
-                    Logger.Log($"Successfully loaded {keys.Length} configuration settings from Remote Config environment '{Environment}'.", context: this);
+                    Logger!.Log($"Successfully loaded {keys.Length} configuration settings from Remote Config environment '{Environment}'.", context: this);
                     for (int x = 0; x < keys.Length; ++x)
                         LoadedConfigsHidden.Add(keys[x], ConfigManager.appConfig.GetString(keys[x]));
                     break;

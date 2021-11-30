@@ -1,10 +1,10 @@
-using Sirenix.OdinInspector;
+﻿using Sirenix.OdinInspector;
 
 namespace UnityEngine.UI
 {
     public class VersionText : Configurable
     {
-        private IAppVersion _appVersion;
+        private IAppVersion? _appVersion;
 
         [Tooltip(
             $"This string is used to populate {nameof(Text)}. " +
@@ -27,7 +27,7 @@ namespace UnityEngine.UI
         protected override void Awake() {
             base.Awake();
 
-            Text.text = string.Format(FormatString, _appVersion.Version, _appVersion.Description, _appVersion.BuildNumber);
+            Text!.text = string.Format(FormatString, _appVersion!.Version, _appVersion.Description, _appVersion.BuildNumber);
         }
     }
 }

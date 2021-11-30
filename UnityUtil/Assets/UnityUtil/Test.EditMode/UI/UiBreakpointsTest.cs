@@ -1,4 +1,4 @@
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using NUnit.Framework.Constraints;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -631,7 +631,7 @@ namespace UnityUtil.Test.EditMode.UI {
         private static UiBreakpoints getUiBreakpoints(
             BreakpointMode mode = BreakpointMode.SafeAreaAspectRatio,
             BreakpointMatchMode matchMode = BreakpointMatchMode.MaxEqualOrLess,
-            UnityAction noMatchAction = null,
+            UnityAction? noMatchAction = null,
             params UiBreakpoint[] breakpoints
         ) {
             // Create the instance

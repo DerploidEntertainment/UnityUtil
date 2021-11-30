@@ -43,7 +43,7 @@ namespace UnityEngine.DependencyInjection
         public static readonly DependencyInjector Instance = new(Array.Empty<Type>()) { RecordingResolutions = Device.Application.isEditor };
 
         private ILogger _logger = Debug.unityLogger;
-        private ITypeMetadataProvider _typeMetadataProvider;
+        private ITypeMetadataProvider? _typeMetadataProvider;
 
         private readonly Dictionary<int, Dictionary<Type, Dictionary<string, Service>>> _services = new();
 
@@ -216,8 +216,8 @@ namespace UnityEngine.DependencyInjection
             // then use/compile those as necessary so that injection is faster for future clients with these types.
             Type serviceType = client.GetType();
             Type objectType = typeof(object);
-            Type cachedParentType = null;
-            List<Action<object>> compiledInjectList = null;     // Will only be initialized if this client's type or one of its parent types is cached, to save heap allocations
+            Type? cachedParentType = null;
+            List<Action<object>>? compiledInjectList = null;     // Will only be initialized if this client's type or one of its parent types is cached, to save heap allocations
             do {
                 // Use compiled inject methods, if they exist
                 if (_compiledInject.TryGetValue(serviceType, out List<Action<object>> compiledInjectMethods)) {
@@ -229,7 +229,7 @@ namespace UnityEngine.DependencyInjection
                 }
 
                 // Get the inject method on this type (will throw if more than one method matches)
-                MethodInfo injectMethod = _typeMetadataProvider.GetMethod(serviceType, InjectMethodName, BINDING_FLAGS);
+                MethodInfo injectMethod = _typeMetadataProvider!.GetMethod(serviceType, InjectMethodName, BINDING_FLAGS);
                 if (injectMethod is null)
                     goto Loop;
 
@@ -264,7 +264,7 @@ namespace UnityEngine.DependencyInjection
             } while (serviceType != objectType && serviceType is not null);
 
             if (cachedParentType is not null)
-                _compiledInject.Add(cachedParentType, compiledInjectList);
+                _compiledInject.Add(cachedParentType, compiledInjectList!);
         }
 
         public void UnregisterSceneServices(Scene scene)
@@ -291,7 +291,7 @@ namespace UnityEngine.DependencyInjection
         private object[] getDependeciesOfInjectMethod(string clientName, MethodInfo injectMethod)
         {
             _injectedTypes.Clear();
-            ParameterInfo[] parameters = _typeMetadataProvider.GetMethodParameters(injectMethod);
+            ParameterInfo[] parameters = _typeMetadataProvider!.GetMethodParameters(injectMethod);
             object[] dependencies = new object[parameters.Length];
             for (int p = 0; p < parameters.Length; ++p) {
                 Type paramType = parameters[p].ParameterType;
@@ -302,9 +302,9 @@ namespace UnityEngine.DependencyInjection
                     _logger.LogWarning($"{clientName} has multiple dependencies of Type '{paramType.FullName}'.");
 
                 // If this dependency can't be resolved, then skip it with an error message and clear the field
-                InjectTagAttribute injAttr = _typeMetadataProvider.GetCustomAttribute<InjectTagAttribute>(parameters[p]);
+                InjectTagAttribute? injAttr = _typeMetadataProvider.GetCustomAttribute<InjectTagAttribute>(parameters[p]);
                 bool untagged = string.IsNullOrEmpty(injAttr?.Tag);
-                string tag = untagged ? DefaultTag : injAttr.Tag;
+                string tag = untagged ? DefaultTag : injAttr!.Tag;
                 TryGetService(paramType, tag, clientName, out Service service);
 
                 // Log that this dependency has been resolved
@@ -316,7 +316,7 @@ namespace UnityEngine.DependencyInjection
         }
         internal void TryGetService(Type serviceType, string tag, string clientName, out Service service)
         {
-            Dictionary<string, Service> typedServices = null;
+            Dictionary<string, Service>? typedServices = null;
             foreach (int scene in _services.Keys) {
                 if (_services[scene].TryGetValue(serviceType, out typedServices))
                     break;

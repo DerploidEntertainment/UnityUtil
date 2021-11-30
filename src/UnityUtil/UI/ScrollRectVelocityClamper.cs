@@ -1,4 +1,4 @@
-using Sirenix.OdinInspector;
+﻿using Sirenix.OdinInspector;
 using System.Diagnostics.CodeAnalysis;
 
 namespace UnityEngine.UI
@@ -30,7 +30,7 @@ namespace UnityEngine.UI
             RegisterUpdatesAutomatically = true;
             BetterUpdate = deltaTime =>
             {
-                if (ScrollRect.inertia)
+                if (ScrollRect!.inertia)
                     ScrollRect.velocity = GetClampedVelocity(ScrollRect.velocity);
             };
         }

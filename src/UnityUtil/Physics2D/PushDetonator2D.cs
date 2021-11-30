@@ -1,4 +1,4 @@
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace UnityEngine {
@@ -6,7 +6,7 @@ namespace UnityEngine {
     [RequireComponent(typeof(Detonator2D))]
     public class PushDetonator2D : MonoBehaviour
     {
-        private Detonator2D _detonator;
+        private Detonator2D? _detonator;
 
         public float ExplosionForce = 10f;
         public float ExplosionUpwardsModifier = 2f;
@@ -15,7 +15,7 @@ namespace UnityEngine {
             "This rigidbody is 'safe' from pushing. " +
             "Useful if this detonator has a relationship with a rigidbody such that the rigidbody should not be pushed."
         )]
-        public Rigidbody2D SafeRigidbody;
+        public Rigidbody2D? SafeRigidbody;
 
         [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
         [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
@@ -34,7 +34,7 @@ namespace UnityEngine {
                 .ToArray();
             for (int rb = 0; rb < rigidbodies.Length; ++rb) {
                 Rigidbody2D rigidbody = rigidbodies[rb];
-                Vector2 explosionPos = (Vector2)_detonator.transform.position + ExplosionUpwardsModifier * Physics2D.gravity.normalized;
+                Vector2 explosionPos = (Vector2)_detonator!.transform.position + ExplosionUpwardsModifier * Physics2D.gravity.normalized;
                 rigidbody.AddExplosionForce(ExplosionForce, explosionPos, _detonator.ExplosionRadius, 0f, ForceMode2D.Impulse);
             }
         }

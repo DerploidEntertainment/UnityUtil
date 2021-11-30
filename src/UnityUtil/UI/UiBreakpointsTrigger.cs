@@ -1,4 +1,4 @@
-using Sirenix.OdinInspector;
+﻿using Sirenix.OdinInspector;
 using System;
 using UnityEngine.Events;
 
@@ -20,7 +20,7 @@ namespace UnityEngine.UI
 
         public void Trigger()
         {
-            for (int x = 0; x < UiBreakpoints.Breakpoints.Length; ++x) {
+            for (int x = 0; x < UiBreakpoints!.Breakpoints.Length; ++x) {
                 if (UiBreakpoints.Breakpoints[x].IsMatched)
                     BreakpointTriggers[x].Invoke();
             }
@@ -30,7 +30,7 @@ namespace UnityEngine.UI
         {
             bool valid = UiBreakpoints is null || triggers.Length == UiBreakpoints.Breakpoints.Length;
             if (!valid) {
-                message = $"The associated {nameof(UI.UiBreakpoints)} object has {UiBreakpoints.Breakpoints.Length} {nameof(UiBreakpoints.Breakpoints)}, " +
+                message = $"The associated {nameof(UI.UiBreakpoints)} object has {UiBreakpoints!.Breakpoints.Length} {nameof(UiBreakpoints.Breakpoints)}, " +
                     $"but you have defined matching {nameof(BreakpointTriggers)} for {(BreakpointTriggers.Length < UiBreakpoints.Breakpoints.Length ? "only" : "")} {BreakpointTriggers.Length}.";
             }
 

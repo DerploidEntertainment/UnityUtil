@@ -1,4 +1,4 @@
-using Sirenix.OdinInspector;
+﻿using Sirenix.OdinInspector;
 using System.Diagnostics.CodeAnalysis;
 using UnityEngine.DependencyInjection;
 using UnityEngine.Logging;
@@ -34,8 +34,8 @@ namespace UnityEngine
 
     public class Spawner : MonoBehaviour
     {
-        private ILogger _logger;
-        private GameObject _previous;
+        private ILogger? _logger;
+        private GameObject? _previous;
         private long _count = 0;
 
         [Tooltip(
@@ -46,7 +46,7 @@ namespace UnityEngine
         public GameObject? Prefab;
 
         [Tooltip($"All spawned instances of {nameof(Spawner.Prefab)} will be parented to this Transform.")]
-        public Transform SpawnParent;
+        public Transform? SpawnParent;
 
         [Tooltip(
             $"All spawned {nameof(Spawner.Prefab)} instances will be given this name, along with a numeric suffix. " +
@@ -93,12 +93,12 @@ namespace UnityEngine
                 Destroy(_previous);
 
             string newName = $"{BaseName}{(DestroyPrevious ? "" : "_" + _count)}";
-            _logger.Log($"Spawning {newName}", context: this);
+            _logger!.Log($"Spawning {newName}", context: this);
 
             // Instantiating a Prefab can sometimes give a GameObject or a Transform...we want the GameObject
             GameObject obj = (SpawnParent is null) ?
-                Instantiate(Prefab, transform.position, transform.rotation) :
-                Instantiate(Prefab, transform.position, transform.rotation, SpawnParent);
+                Instantiate(Prefab!, transform.position, transform.rotation) :
+                Instantiate(Prefab!, transform.position, transform.rotation, SpawnParent);
             obj.name = newName;
             if (!DestroyPrevious)
                 ++_count;

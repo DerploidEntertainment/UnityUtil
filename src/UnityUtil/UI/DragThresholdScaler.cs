@@ -1,4 +1,4 @@
-using Sirenix.OdinInspector;
+﻿using Sirenix.OdinInspector;
 using UnityEngine.EventSystems;
 
 namespace UnityEngine.UI
@@ -28,7 +28,7 @@ namespace UnityEngine.UI
         protected override void Awake() {
             base.Awake();
 
-            EventSystem.pixelDragThreshold = DragThresholdFactor * (int)CanvasScaler.scaleFactor;
+            EventSystem!.pixelDragThreshold = DragThresholdFactor * (int)CanvasScaler!.scaleFactor;
         }
 
     }

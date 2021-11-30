@@ -25,7 +25,7 @@ namespace UnityEngine
             base.Load();
 
             string resFileName = $"{ResourceName}.csv";
-            Logger.Log($"Loading configs synchronously from CSV configuration file '{resFileName}'...", context: this);
+            Logger!.Log($"Loading configs synchronously from CSV configuration file '{resFileName}'...", context: this);
 
             TextAsset txt = Resources.Load<TextAsset>(ResourceName);
             finishLoading(txt, resFileName);
@@ -36,7 +36,7 @@ namespace UnityEngine
             yield return base.LoadAsync();
 
             string resFileName = $"{ResourceName}.csv";
-            Logger.Log($"Loading configs asynchronously from CSV configuration file '{resFileName}'...", context: this);
+            Logger!.Log($"Loading configs asynchronously from CSV configuration file '{resFileName}'...", context: this);
 
             ResourceRequest req = Resources.LoadAsync<TextAsset>(ResourceName);
             while (!req.isDone)
@@ -52,7 +52,7 @@ namespace UnityEngine
                 string notFoundMsg = $"CSV configuration file ('{resFileName}') could not be found. If this was not expected, make sure that the file exists and is not locked by another application.";
                 if (Required)
                     throw new FileNotFoundException(notFoundMsg, ResourceName);
-                Logger.Log(notFoundMsg, context: this);
+                Logger!.Log(notFoundMsg, context: this);
                 return;
             }
 
@@ -71,12 +71,12 @@ namespace UnityEngine
             foreach (var cfgGrp in configGrps) {
                 var keyVals = cfgGrp.ToArray();
                 if (keyVals.Length > 1)
-                    Logger.LogWarning($"Duplicate config key ('{cfgGrp.Key}') detected in CSV configuration file '{resFileName}'. Keeping the last value...", context: this);
-                LoadedConfigsHidden.Add(cfgGrp.Key, keyVals[keyVals.Length - 1].Value);
+                    Logger!.LogWarning($"Duplicate config key ('{cfgGrp.Key}') detected in CSV configuration file '{resFileName}'. Keeping the last value...", context: this);
+                LoadedConfigsHidden.Add(cfgGrp.Key, keyVals[^1].Value);
             }
             #pragma warning restore IDE0008 // Use explicit type
 
-            Logger.Log($"Successfully loaded {LoadedConfigs.Count} configs from CSV configuration file '{resFileName}'.", context: this);
+            Logger!.Log($"Successfully loaded {LoadedConfigs.Count} configs from CSV configuration file '{resFileName}'.", context: this);
         }
     }
 

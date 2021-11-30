@@ -1,4 +1,4 @@
-using Sirenix.OdinInspector;
+﻿using Sirenix.OdinInspector;
 using System.Diagnostics.CodeAnalysis;
 
 namespace UnityEngine.Inventory {
@@ -21,7 +21,7 @@ namespace UnityEngine.Inventory {
                 return;
 
             // If one was found, then adjust its current health as necessary
-            float leftover = Quantity.Increase(collectible.Amount, qc.ChangeMode);
+            float leftover = Quantity!.Increase(collectible.Amount, qc.ChangeMode);
             collectible.Collect(collector, leftover);
         }
     }

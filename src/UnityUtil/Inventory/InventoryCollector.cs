@@ -1,11 +1,11 @@
-using Sirenix.OdinInspector;
+﻿using Sirenix.OdinInspector;
 using System.Diagnostics.CodeAnalysis;
 
 namespace UnityEngine.Inventory {
 
     public class InventoryCollector : MonoBehaviour
     {
-        private SphereCollider _sphere;
+        private SphereCollider? _sphere;
 
         [Required]
         public Inventory? Inventory;
@@ -28,7 +28,7 @@ namespace UnityEngine.Inventory {
         private void OnTriggerEnter(Collider other) {
             InventoryCollectible c = other.attachedRigidbody.GetComponent<InventoryCollectible>();
             if (c is not null)
-                Inventory.Collect(c);
+                Inventory!.Collect(c);
         }
 
     }

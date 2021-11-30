@@ -47,7 +47,7 @@ namespace UnityEngine {
         public Color ColorValue;
 
         [ShowIf(nameof(Config.Type), ConfigValueType.ObjectReference)]
-        public Object ObjectValue;
+        public Object? ObjectValue;
 
         [ShowIf(nameof(Config.Type), ConfigValueType.LayerMask)]
         public LayerMask LayerMaskValue;
@@ -65,13 +65,13 @@ namespace UnityEngine {
         public Rect RectValue;
 
         [ShowIf(nameof(Config.Type), ConfigValueType.AnimationCurve)]
-        public AnimationCurve AnimationCurveValue;
+        public AnimationCurve? AnimationCurveValue;
 
         [ShowIf(nameof(Config.Type), ConfigValueType.Bounds)]
         public Bounds BoundsValue;
 
         [ShowIf(nameof(Config.Type), ConfigValueType.Gradient)]
-        public Gradient GradientValue;
+        public Gradient? GradientValue;
 
         [ShowIf(nameof(Config.Type), ConfigValueType.Quaternion)]
         public Quaternion QuaternionValue;
@@ -90,8 +90,9 @@ namespace UnityEngine {
 
         #pragma warning restore CA2235 // Mark all non-serializable fields
 
-        public object GetValue() =>
-            Type switch {
+        public object GetValue()
+        {
+            object? val = Type switch {
                 ConfigValueType.Integer => IntValue,
                 ConfigValueType.Boolean => BoolValue,
                 ConfigValueType.Float => FloatValue,
@@ -113,6 +114,9 @@ namespace UnityEngine {
                 ConfigValueType.BoundsInt => BoundsIntValue,
                 _ => throw UnityObjectExtensions.SwitchDefaultException(Type),
             };
+
+            return val ?? throw new InvalidOperationException($"{nameof(Type)} was set to '{Type}' but no value was provided");
+        }
     }
 
     [CreateAssetMenu(menuName = $"{nameof(UnityUtil)}/Configuration/{nameof(ConfigObject)}", fileName = "appsettings.asset")]

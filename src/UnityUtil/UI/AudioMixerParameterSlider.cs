@@ -1,4 +1,4 @@
-using Sirenix.OdinInspector;
+﻿using Sirenix.OdinInspector;
 using System.Diagnostics.CodeAnalysis;
 using UnityEngine.Assertions;
 using UnityEngine.Audio;
@@ -27,8 +27,8 @@ namespace UnityEngine.UI
     )]
     public class AudioMixerParameterSlider : Configurable {
 
-        private ILogger _logger;
-        private ILocalCache _localCache;
+        private ILogger? _logger;
+        private ILocalCache? _localCache;
 
         [Required]
         public AudioMixer? AudioMixer;
@@ -48,7 +48,7 @@ namespace UnityEngine.UI
             $"so that the user can hear the difference. Make sure that its output {nameof(AudioMixerGroup)} is set correctly. " +
             $"The {nameof(AudioClip)} played should not be long (like music), so as not to annoy the user."
         )]
-        public AudioSource TestAudio;
+        public AudioSource? TestAudio;
 
         [Tooltip(
             $"If true, then {nameof(Slider)}'s value (after transformation) will be saved to a cache, " +
@@ -91,11 +91,11 @@ namespace UnityEngine.UI
         protected override void Awake() {
             base.Awake();
 
-            bool paramExposed = AudioMixer.GetFloat(ExposedParameterName, out _);
+            bool paramExposed = AudioMixer!.GetFloat(ExposedParameterName, out _);
             Assert.IsTrue(paramExposed, $"{nameof(AudioMixer)} must expose a parameter with the name specified by {nameof(ExposedParameterName)} ('{ExposedParameterName}')");
 
             // Update AudioMixer and cache (if requested) whenever slider changes
-            Slider.onValueChanged.AddListener(sliderValue => {
+            Slider!.onValueChanged.AddListener(sliderValue => {
                 float newVal = transformValue(sliderValue);
                 AudioMixer.SetFloat(ExposedParameterName, newVal);
             });
@@ -107,8 +107,8 @@ namespace UnityEngine.UI
             pointerUpEvent.callback.AddListener(e => {
                 if (StoreParameterInCache) {
                     float newVal = transformValue(Slider.value);
-                    _localCache.SetFloat(FinalCacheKey, newVal);
-                    _logger.Log($"Saved new value ({newVal}) of exposed parameter '{ExposedParameterName}' of {nameof(Audio.AudioMixer)} '{AudioMixer.name}' to cache", context: this);
+                    _localCache!.SetFloat(FinalCacheKey, newVal);
+                    _logger!.Log($"Saved new value ({newVal}) of exposed parameter '{ExposedParameterName}' of {nameof(Audio.AudioMixer)} '{AudioMixer.name}' to cache", context: this);
                 }
                 if (TestAudio is not null)
                     TestAudio.Play();   // Don't know why the F*CK a null-coalescing operator isn't working here...
@@ -123,17 +123,17 @@ namespace UnityEngine.UI
             string logMsg;
 
             string cacheKey = FinalCacheKey;
-            if (StoreParameterInCache && _localCache.HasKey(cacheKey)) {
+            if (StoreParameterInCache && _localCache!.HasKey(cacheKey)) {
                 val = _localCache.GetFloat(cacheKey);
-                logMsg = $"Loaded value ({val}) of exposed parameter '{ExposedParameterName}' of {nameof(Audio.AudioMixer)} '{AudioMixer.name}' from cache";
+                logMsg = $"Loaded value ({val}) of exposed parameter '{ExposedParameterName}' of {nameof(Audio.AudioMixer)} '{AudioMixer!.name}' from cache";
             }
             else {
-                AudioMixer.GetFloat(ExposedParameterName, out val);
+                AudioMixer!.GetFloat(ExposedParameterName, out val);
                 logMsg = $"Not using cache or key '{cacheKey}' could not be found. Loaded value of exposed parameter '{ExposedParameterName}' from {nameof(Audio.AudioMixer)} '{AudioMixer.name}' instead";
             }
 
-            Slider.value = untransformValue(val);   // This will trigger onValueChanged and thus initialize the AudioMixer as well
-            _logger.Log(logMsg, context: this);
+            Slider!.value = untransformValue(val);   // This will trigger onValueChanged and thus initialize the AudioMixer as well
+            _logger!.Log(logMsg, context: this);
         }
 
         private float untransformValue(float transformedValue) =>

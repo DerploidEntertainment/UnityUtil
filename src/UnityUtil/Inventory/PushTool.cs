@@ -1,4 +1,4 @@
-using Sirenix.OdinInspector;
+﻿using Sirenix.OdinInspector;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -9,7 +9,7 @@ namespace UnityEngine.Inventory {
     [RequireComponent(typeof(Weapon))]
     public class PushTool : MonoBehaviour
     {
-        private Weapon _weapon;
+        private Weapon? _weapon;
         private readonly HashSet<Rigidbody> _pushedRigidbodies = new();
 
         [Required]
@@ -39,12 +39,12 @@ namespace UnityEngine.Inventory {
                 Rigidbody rb = hit.collider.attachedRigidbody;
                 bool push =
                     rb is not null &&
-                    !Info.IgnoreColliderTags.Contains(hit.collider.tag) &&
+                    !Info!.IgnoreColliderTags.Contains(hit.collider.tag) &&
                     !unpushableRbs.Contains(rb) &&
                     !_pushedRigidbodies.Contains(rb);
                 if (push) {
-                    _pushedRigidbodies.Add(rb);
-                    rb.AddForceAtPosition(Info.PushForce * ray.direction, hit.point, ForceMode.Impulse);
+                    _pushedRigidbodies.Add(rb!);
+                    rb!.AddForceAtPosition(Info!.PushForce * ray.direction, hit.point, ForceMode.Impulse);
                     if (Info.OnlyPushClosest && hits.Length > 0)
                         break;
                 }

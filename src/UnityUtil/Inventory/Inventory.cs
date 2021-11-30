@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -15,7 +15,7 @@ namespace UnityEngine.Inventory {
 
     public class Inventory : MonoBehaviour {
 
-        private ILogger _logger;
+        private ILogger? _logger;
         private readonly HashSet<InventoryCollectible> _collectibles = new();
 
         public int MaxItems = 10;
@@ -34,7 +34,7 @@ namespace UnityEngine.Inventory {
         private void Awake() => DependencyInjector.Instance.ResolveDependenciesOf(this);
 
         public InventoryCollectible[] GetCollectibles() => _collectibles.ToArray();
-        public GameObject[] GetItems() => _collectibles.Select(c => c.ItemRoot).ToArray();
+        public GameObject[] GetItems() => _collectibles.Select(c => c.ItemRoot!).ToArray();
         public bool Collect(InventoryCollectible collectible) {
             // Make sure an actual Collectible was provided, and that there is room for it
             Assert.IsNotNull(collectible, $"{this.GetHierarchyNameWithType()} cannot collect null!");
@@ -42,21 +42,21 @@ namespace UnityEngine.Inventory {
             // If there is no room for the item, then just return that it wasn't collected
             if (_collectibles.Count == MaxItems)
                 return false;
-            if (!AllowMultiple && _collectibles.Select(c => c.ItemRoot.name).Contains(collectible.ItemRoot.name))
+            if (!AllowMultiple && _collectibles.Select(c => c.ItemRoot!.name).Contains(collectible.ItemRoot!.name))
                 return false;
 
             // Otherwise, do collect actions
-            Transform itemTrans = collectible.ItemRoot.transform;
+            Transform itemTrans = collectible.ItemRoot!.transform;
             itemTrans.parent = transform;
             itemTrans.localPosition = new Vector3(0f, 0f, 0f);
             itemTrans.localRotation = Quaternion.identity;
-            collectible.Root.SetActive(false);
+            collectible.Root!.SetActive(false);
 
             // Place the collectible in the Inventory
             _collectibles.Add(collectible);
 
             // Raise the item collected event
-            _logger.Log($"Collected {collectible.ItemRoot?.GetHierarchyName()}", context: this);
+            _logger!.Log($"Collected {collectible.ItemRoot?.GetHierarchyName()}", context: this);
             ItemCollected.Invoke(collectible);
 
             return true;
@@ -76,16 +76,16 @@ namespace UnityEngine.Inventory {
 
         private IEnumerator doDrop(InventoryCollectible collectible) {
             // Drop it as a new Collectible
-            collectible.Root.SetActive(true);
+            collectible.Root!.SetActive(true);
             collectible.transform.position = transform.TransformPoint(LocalDropOffset);
-            Transform itemTrans = collectible.ItemRoot.transform;
+            Transform itemTrans = collectible.ItemRoot!.transform;
             itemTrans.parent = transform;
 
             // Remove the provided collectible from the Inventory
             _collectibles.Remove(collectible);
 
             // Raise the item dropped event
-            _logger.Log($"Dropped {collectible.ItemRoot.GetHierarchyName()}", context: this);
+            _logger!.Log($"Dropped {collectible.ItemRoot.GetHierarchyName()}", context: this);
             ItemDropped.Invoke(collectible);
 
             // Prevent its re-collection for the requested duration

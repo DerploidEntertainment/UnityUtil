@@ -1,4 +1,4 @@
-using Sirenix.OdinInspector;
+﻿using Sirenix.OdinInspector;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -15,8 +15,8 @@ namespace UnityEngine.Inventory {
     [RequireComponent(typeof(Tool))]
     public class Weapon : MonoBehaviour
     {
-        private ILogger _logger;
-        private Tool _tool;
+        private ILogger? _logger;
+        private Tool? _tool;
         private float _accuracyLerpT = 0f;
 
         [Required]
@@ -24,7 +24,7 @@ namespace UnityEngine.Inventory {
 
         public AttackEvent Attacked = new();
 
-        public float AccuracyConeHalfAngle => Mathf.LerpAngle(Info.InitialConeHalfAngle, Info.FinalConeHalfAngle, _accuracyLerpT);
+        public float AccuracyConeHalfAngle => Mathf.LerpAngle(Info!.InitialConeHalfAngle, Info.FinalConeHalfAngle, _accuracyLerpT);
 
         public void Inject(ILoggerProvider loggerProvider) => _logger = loggerProvider.GetLogger(this);
 
@@ -41,7 +41,7 @@ namespace UnityEngine.Inventory {
         [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
         [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
         private void OnDrawGizmos() {
-            switch (Info.PhysicsCastShape) {
+            switch (Info!.PhysicsCastShape) {
                 case PhysicsCastShape.Ray:
                 case PhysicsCastShape.Capsule:  // No Gizmos.DrawCapsule method unfortunately :/
                     Gizmos.DrawLine(transform.position, transform.position + Info.Range * transform.forward);
@@ -55,7 +55,7 @@ namespace UnityEngine.Inventory {
                     Gizmos.DrawWireSphere(transform.position + Info.Range * transform.forward, Info.Radius);
                     break;
 
-                default: _logger.LogWarning("Could not draw Gizmos. " + UnityObjectExtensions.SwitchDefaultException(Info.PhysicsCastShape).Message, context: this); break;
+                default: _logger!.LogWarning("Could not draw Gizmos. " + UnityObjectExtensions.SwitchDefaultException(Info.PhysicsCastShape).Message, context: this); break;
             }
         }
 
@@ -69,7 +69,7 @@ namespace UnityEngine.Inventory {
             var ray = new Ray(transform.position, transform.TransformDirection(dir));
 
             // Cast into the scene for hits along this ray, using the specified cast shape
-            RaycastHit[] hits = Info.PhysicsCastShape switch {
+            RaycastHit[] hits = Info!.PhysicsCastShape switch {
                 PhysicsCastShape.Ray => rayAttackHits(),
                 PhysicsCastShape.Box => boxAttackHits(),
                 PhysicsCastShape.Sphere => sphereAttackHits(),
@@ -85,7 +85,7 @@ namespace UnityEngine.Inventory {
             Attacked.Invoke(ray, hits);
 
             // Adjust accuracy for the next attack, assuming the base Tool is automatic
-            _accuracyLerpT = (Info.AccuracyLerpTime == 0 ? 1f : _accuracyLerpT + (1f / _tool.Info.AutomaticUseRate) / Info.AccuracyLerpTime);
+            _accuracyLerpT = (Info.AccuracyLerpTime == 0 ? 1f : _accuracyLerpT + (1f / _tool!.Info!.AutomaticUseRate) / Info.AccuracyLerpTime);
             RaycastHit[] rayAttackHits() {
                 RaycastHit[] rayHits = Array.Empty<RaycastHit>();
 

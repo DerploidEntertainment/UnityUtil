@@ -1,4 +1,4 @@
-using Sirenix.OdinInspector;
+﻿using Sirenix.OdinInspector;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
@@ -10,7 +10,7 @@ namespace UnityEngine.Triggers {
 
     public class SequenceTrigger : MonoBehaviour {
 
-        private ILogger _logger;
+        private ILogger? _logger;
 
         [Tooltip($"The current step; i.e., the index (0-based) of {nameof(StepTriggers)} that will be invoked the next time {nameof(Trigger)} is called.")]
         public int CurrentStep = 0;
@@ -47,7 +47,7 @@ namespace UnityEngine.Triggers {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Trigger() {
             if (StepTriggers[CurrentStep] is null)
-                _logger.LogWarning($"Triggered at step {CurrentStep}, but the trigger was null!", context: this);
+                _logger!.LogWarning($"Triggered at step {CurrentStep}, but the trigger was null!", context: this);
             else
                 StepTriggers[CurrentStep]?.Invoke();
         }

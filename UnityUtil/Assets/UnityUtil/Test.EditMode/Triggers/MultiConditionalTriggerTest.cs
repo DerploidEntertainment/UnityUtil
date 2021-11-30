@@ -1,4 +1,4 @@
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using System;
 using UnityEngine;
 using UnityEngine.Triggers;
@@ -13,25 +13,6 @@ namespace UnityUtil.Test.EditMode.Triggers {
             protected override void ConditionBecameTrueListener(ConditionalTrigger condition) => BecameTrue.Invoke();
             protected override void ConditionStillFalseListener(ConditionalTrigger condition) => StillFalse.Invoke();
             protected override void ConditionStillTrueListener(ConditionalTrigger condition) => StillTrue.Invoke();
-        }
-
-        [Test]
-        public void CanResetEventListeners_NullConditions()
-        {
-            MultiConditionalTrigger trigger = getMultiTrigger();
-            trigger.Conditions = null;
-
-            Assert.DoesNotThrow(trigger.ResetEventListeners);
-        }
-
-        [Test]
-        public void CanResetEventListeners_NullConditionElements()
-        {
-            MockConditionalTrigger condition = getTrigger();
-            MockConditionalTrigger nullCondition = null;
-            MultiConditionalTrigger trigger = getMultiTrigger(conditions: new[] { condition, nullCondition });
-
-            Assert.DoesNotThrow(trigger.ResetEventListeners);
         }
 
         [Test]

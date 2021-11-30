@@ -30,7 +30,7 @@ namespace UnityEngine
     {
         public static readonly IReadOnlyDictionary<string, object> EmptyConfigs = new Dictionary<string, object>();
 
-        protected ILogger Logger;
+        protected ILogger? Logger;
 
         protected readonly Dictionary<string, object> LoadedConfigsHidden = new();
 

@@ -6,7 +6,7 @@ namespace UnityEngine.Triggers
 {
     public class ApplicationLifecycleTriggers : Configurable
     {
-        private ILogger _logger;
+        private ILogger? _logger;
 
         public UnityEvent Focused = new();
         public UnityEvent Unfocused = new();
@@ -20,7 +20,7 @@ namespace UnityEngine.Triggers
         [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
         private void OnApplicationFocus(bool hasFocus)
         {
-            _logger.Log($"Application {(hasFocus ? "focused" : "blurred")}", context: this);
+            _logger!.Log($"Application {(hasFocus ? "focused" : "blurred")}", context: this);
             (hasFocus ? Focused : Unfocused).Invoke();
         }
 
@@ -28,7 +28,7 @@ namespace UnityEngine.Triggers
         [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
         private void OnApplicationPause(bool pauseStatus)
         {
-            _logger.Log($"Application {(pauseStatus ? "" : "un")}paused", context: this);
+            _logger!.Log($"Application {(pauseStatus ? "" : "un")}paused", context: this);
             (pauseStatus ? Paused : Unpaused).Invoke();
         }
 
@@ -36,7 +36,7 @@ namespace UnityEngine.Triggers
         [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
         private void OnApplicationQuit()
         {
-            _logger.Log($"Application quitting...", context: this);
+            _logger!.Log($"Application quitting...", context: this);
             Quitting.Invoke();
         }
     }

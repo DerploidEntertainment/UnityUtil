@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Diagnostics.CodeAnalysis;
 
 namespace UnityEngine {
@@ -11,8 +11,6 @@ namespace UnityEngine {
         private readonly MultiCollection<int, Action<float>> _late = new();
 
         public void RegisterUpdate(int instanceID, Action<float> action) {
-            if (action == null)
-                throw new ArgumentNullException(nameof(instanceID));
             if (_updates.ContainsKey(instanceID))
                 throw new InvalidOperationException($"{this.GetHierarchyNameWithType()} has already registered an object with {nameof(instanceID)} {instanceID} for updates!");
 
@@ -24,8 +22,6 @@ namespace UnityEngine {
         }
 
         public void RegisterFixedUpdate(int instanceID, Action<float> action) {
-            if (action == null)
-                throw new ArgumentNullException(nameof(instanceID));
             if (_fixed.ContainsKey(instanceID))
                 throw new InvalidOperationException($"{this.GetHierarchyNameWithType()} has already registered an object with {nameof(instanceID)} {instanceID} for FixedUpdate!");
 
@@ -37,8 +33,6 @@ namespace UnityEngine {
         }
 
         public void RegisterLateUpdate(int instanceID, Action<float> action) {
-            if (action == null)
-                throw new ArgumentNullException(nameof(instanceID));
             if (_late.ContainsKey(instanceID))
                 throw new InvalidOperationException($"{this.GetHierarchyNameWithType()} has already registered an object with {nameof(instanceID)} {instanceID} for LateUpdate!");
 

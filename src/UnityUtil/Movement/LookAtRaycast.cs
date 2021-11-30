@@ -9,7 +9,7 @@ namespace UnityEngine {
             $"This Transform will always rotate to look at whatever the {nameof(RaycastingTransform)} is looking at. " +
             $"This point is at most {nameof(Range)} units ahead, but will be closer if an object matching {nameof(LayerMask)} is closer."
         )]
-        public Transform TransformToRotate;
+        public Transform? TransformToRotate;
 
         private const string TOOLTIP_TRANSFORM_ROTATE =
             $"The {nameof(LookAtRaycast.TransformToRotate)} will always rotate to look at whatever the {nameof(RaycastingTransform)} is looking at. " +
@@ -18,7 +18,7 @@ namespace UnityEngine {
 
 
         [Tooltip(TOOLTIP_TRANSFORM_ROTATE)]
-        public Transform RaycastingTransform;
+        public Transform? RaycastingTransform;
 
         [Tooltip($"{TOOLTIP_TRANSFORM_ROTATE} {TOOLTIP_WEAPONINFO}")]
         public float Range;
@@ -31,7 +31,7 @@ namespace UnityEngine {
             $"then providing its {nameof(UnityEngine.Inventory.WeaponInfo)} here will override {nameof(Range)} and {nameof(LayerMask)}, " +
             $"which might be less error-prone during development."
         )]
-        public WeaponInfo WeaponInfo;
+        public WeaponInfo? WeaponInfo;
 
         [Tooltip(
             $"This upward direction will be used by the {nameof(LookAtRaycast.TransformToRotate)} to rotate toward " +
@@ -51,7 +51,7 @@ namespace UnityEngine {
                 AxisDirection.WithGravity => Physics.gravity.normalized,
                 AxisDirection.OppositeGravity => -Physics.gravity.normalized,
                 AxisDirection.CustomWorldSpace => CustomUpwardDirection.normalized,
-                AxisDirection.CustomLocalSpace => TransformToRotate.TransformDirection(CustomUpwardDirection.normalized),
+                AxisDirection.CustomLocalSpace => TransformToRotate!.TransformDirection(CustomUpwardDirection.normalized),
                 _ => throw UnityObjectExtensions.SwitchDefaultException(UpwardDirectionType),
             };
 
@@ -63,6 +63,9 @@ namespace UnityEngine {
         }
         [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
         private void OnDrawGizmos() {
+            if (TransformToRotate is null)
+                return;
+
             float range = WeaponInfo?.Range ?? Range;
             Gizmos.DrawLine(TransformToRotate.position, TransformToRotate.TransformPoint(range * Vector3.forward));
         }

@@ -1,4 +1,4 @@
-using Sirenix.OdinInspector;
+﻿using Sirenix.OdinInspector;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -17,7 +17,7 @@ namespace UnityEngine.UI
     )]
     public class UiBreakpoints : MonoBehaviour
     {
-        private ILogger _logger;
+        private ILogger? _logger;
 
         private bool _noMatch;
 
@@ -47,7 +47,7 @@ namespace UnityEngine.UI
 
         [ShowIf(nameof(IsCameraMode))]
         [Tooltip("This is the Camera whose height, width, or aspect ratio will be matched against the provided breakpoints.")]
-        public Camera Camera;
+        public Camera? Camera;
 
         [Tooltip(
             "If true, then breakpoint matches will be checked again every time the game's window is resized. " +
@@ -92,9 +92,6 @@ namespace UnityEngine.UI
         {
             // Using Start rather than Awake cause we don't want to mess with breakpoints being raised by Awake during Edit Mode tests
             // Awake is called by AddComponent since we've added the ExecuteAlwaysAttribute to this class
-
-            if (IsCameraMode)
-                this.AssertAssociation(Camera, nameof(Camera));
 
             _currentValue = getModeValue(Mode);
             InvokeMatchingBreakpoints(_currentValue);
@@ -145,8 +142,9 @@ namespace UnityEngine.UI
             return true;
         }
 
-        private float getModeValue(BreakpointMode mode) =>
-            mode switch {
+        private float getModeValue(BreakpointMode mode)
+        {
+            return mode switch {
                 BreakpointMode.ScreenWidth => Device.Screen.width,
                 BreakpointMode.ScreenHeight => Device.Screen.height,
                 BreakpointMode.ScreenAspectRatio => (float)Device.Screen.width / Device.Screen.height,
@@ -155,12 +153,19 @@ namespace UnityEngine.UI
                 BreakpointMode.SafeAreaHeight => Device.Screen.safeArea.height,
                 BreakpointMode.SafeAreaAspectRatio => Device.Screen.safeArea.width / Device.Screen.safeArea.height,
 
-                BreakpointMode.CameraWidth => Camera.pixelWidth,
-                BreakpointMode.CameraHeight => Camera.pixelHeight,
-                BreakpointMode.CameraAspectRatio => Camera.aspect,
+                BreakpointMode.CameraWidth => Camera?.pixelWidth ?? throw getNullCameraException(),
+                BreakpointMode.CameraHeight => Camera?.pixelHeight ?? throw getNullCameraException(),
+                BreakpointMode.CameraAspectRatio => Camera?.aspect ?? throw getNullCameraException(),
 
                 _ => throw UnityObjectExtensions.SwitchDefaultException(Mode),
             };
+
+            static Exception getNullCameraException() =>
+                new InvalidOperationException(
+                    $"{nameof(Camera)} must be provided when {nameof(Mode)} is " +
+                    $"{nameof(BreakpointMode.CameraWidth)}, {nameof(BreakpointMode.CameraHeight)}, or {nameof(BreakpointMode.CameraAspectRatio)}."
+                );
+        }
 
         internal const string MsgNegativeModeValue = "UI breakpoints can only be matched against non-negative values. You can ignore this warning if you just restarted the Editor.";
 

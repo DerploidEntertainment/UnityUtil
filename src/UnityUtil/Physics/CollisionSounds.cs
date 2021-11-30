@@ -1,4 +1,4 @@
-using Sirenix.OdinInspector;
+﻿using Sirenix.OdinInspector;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
@@ -23,7 +23,7 @@ namespace UnityEngine {
 
             // Play the next clip
             int clip = nextClip();
-            AudioSource.clip=AudioClips[clip];
+            AudioSource!.clip = AudioClips[clip];
             AudioSource.Play();
         }
 

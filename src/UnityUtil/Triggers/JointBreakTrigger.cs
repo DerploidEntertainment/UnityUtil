@@ -20,7 +20,7 @@ namespace UnityEngine.Triggers {
         [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
         [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
         [SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "Unity message")]
-        private void OnJointBreak(float breakForce) => Broken.Invoke(Joint);
+        private void OnJointBreak(float breakForce) => Broken.Invoke(Joint!);
 
     }
 

@@ -1,4 +1,4 @@
-using Sirenix.OdinInspector;
+﻿using Sirenix.OdinInspector;
 using UnityEngine.Events;
 
 namespace UnityEngine.Triggers
@@ -28,13 +28,13 @@ namespace UnityEngine.Triggers
             base.OnEnable();
 
             if (_tRefactory > -1f)
-                Updater.RegisterUpdate(InstanceID, updateRefactory);
+                Updater!.RegisterUpdate(InstanceID, updateRefactory);
         }
         protected override void OnDisable() {
             base.OnDisable();
 
             if (_tRefactory > -1f)
-                Updater.UnregisterUpdate(InstanceID);
+                Updater!.UnregisterUpdate(InstanceID);
         }
 
         [Button, EnableIf(nameof(CanPress))]
@@ -47,7 +47,7 @@ namespace UnityEngine.Triggers
             Triggered.Invoke();
             CanPress = false;
             _tRefactory = 0f;
-            Updater.RegisterUpdate(InstanceID, updateRefactory);
+            Updater!.RegisterUpdate(InstanceID, updateRefactory);
         }
 
         private void updateRefactory(float deltaTime) {
@@ -57,7 +57,7 @@ namespace UnityEngine.Triggers
             }
 
             _tRefactory = 0f;
-            Updater.UnregisterUpdate(InstanceID);
+            Updater!.UnregisterUpdate(InstanceID);
 
             CanPress = true;
         }

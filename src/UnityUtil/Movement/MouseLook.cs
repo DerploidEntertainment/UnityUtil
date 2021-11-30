@@ -1,4 +1,4 @@
-using Sirenix.OdinInspector;
+﻿using Sirenix.OdinInspector;
 using UnityEngine.Inputs;
 
 namespace UnityEngine.Movement
@@ -10,10 +10,10 @@ namespace UnityEngine.Movement
         private float _deltaSinceLast = 0f;
 
         [Tooltip($"The Transform that will be kinematically rotated while looking around.  Only required if {nameof(UsePhysicsToLook)} is false.")]
-        public Transform TransformToRotate;
+        public Transform? TransformToRotate;
 
         [Tooltip($"The Rigidbody that will be rotated by physics while looking around.  Only required if {nameof(UsePhysicsToLook)} is true.")]
-        public Rigidbody RigidbodyToRotate;
+        public Rigidbody? RigidbodyToRotate;
 
         [Required]
         public ValueInput? LookInput;
@@ -41,12 +41,12 @@ namespace UnityEngine.Movement
         [Tooltip($"Only required if {nameof(AxisDirectionType)} is {nameof(AxisDirection.CustomWorldSpace)} or {nameof(AxisDirection.CustomLocalSpace)}.")]
         public Vector3 CustomAxisDirection = Vector3.up;
 
-        public Vector3 GetUpwardUnitVector() =>
+        public Vector3 GetUpwardUnitVector(Transform relativeTransform) =>
             AxisDirectionType switch {
                 AxisDirection.WithGravity => Physics.gravity.normalized,
                 AxisDirection.OppositeGravity => -Physics.gravity.normalized,
                 AxisDirection.CustomWorldSpace => CustomAxisDirection.normalized,
-                AxisDirection.CustomLocalSpace => (UsePhysicsToLook ? RigidbodyToRotate.transform : TransformToRotate).TransformDirection(CustomAxisDirection.normalized),
+                AxisDirection.CustomLocalSpace => relativeTransform.TransformDirection(CustomAxisDirection.normalized),
                 _ => throw UnityObjectExtensions.SwitchDefaultException(AxisDirectionType),
             };
 
@@ -58,7 +58,7 @@ namespace UnityEngine.Movement
             BetterFixedUpdate = doFixedUpdate;
         }
         private void doUpdate(float deltaTime) {
-            _deltaSinceLast += LookInput.Value();
+            _deltaSinceLast += LookInput!.Value();
 
             if (!UsePhysicsToLook && TransformToRotate is not null) {
                 doLookRotation();
@@ -74,15 +74,16 @@ namespace UnityEngine.Movement
 
         private void doLookRotation()
         {
-            // Determine the upward direction
-            Vector3 up = GetUpwardUnitVector();
-
             // Rotate the requested number of degrees around the upward axis, using the desired method
             float deltaAngle = (_deltaSinceLast > 0) ? Mathf.Min(MaxPositiveAngle - _angle, _deltaSinceLast) : Mathf.Max(MaxNegativeAngle - _angle, _deltaSinceLast);
-            if (UsePhysicsToLook)
+            if (UsePhysicsToLook && RigidbodyToRotate is not null) {
+                Vector3 up = GetUpwardUnitVector(RigidbodyToRotate.transform);
                 RigidbodyToRotate.MoveRotation(RigidbodyToRotate.rotation * Quaternion.AngleAxis(deltaAngle, up));
-            else
+            }
+            else if (!UsePhysicsToLook && TransformToRotate is not null) {
+                Vector3 up = GetUpwardUnitVector(TransformToRotate);
                 TransformToRotate.Rotate(up, deltaAngle, Space.World);
+            }
 
             // Adjust the internal angle counter
             _angle += deltaAngle;

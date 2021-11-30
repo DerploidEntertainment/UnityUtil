@@ -175,7 +175,7 @@ namespace UnityUtil.Test.EditMode.Logging {
         }
 
         private static GameObject getGameObject(string name, int numParents = 1, string parentNameFormatString = "parent{0}") {
-            Transform lastParentTrans = null;
+            Transform? lastParentTrans = null;
             for (int p = 0; p < numParents; ++p) {
                 Transform t = new GameObject(string.Format(parentNameFormatString, p)).transform;
                 t.parent = lastParentTrans;

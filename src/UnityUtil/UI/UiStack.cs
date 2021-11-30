@@ -8,7 +8,7 @@ namespace UnityEngine.UI {
 
     public class UiStack : MonoBehaviour {
 
-        private ILogger _logger;
+        private ILogger? _logger;
         private readonly Stack<SimpleTrigger> _popTriggers = new();
 
         [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
@@ -19,7 +19,7 @@ namespace UnityEngine.UI {
 
         public void PushUi(SimpleTrigger popTrigger) {
             if (popTrigger is null) {
-                _logger.LogError($"A {nameof(popTrigger)} must be provided when pushing to the UI stack, so that the correct actions can be triggered when this UI is later popped.", context: this);
+                _logger!.LogError($"A {nameof(popTrigger)} must be provided when pushing to the UI stack, so that the correct actions can be triggered when this UI is later popped.", context: this);
                 return;
             }
 
@@ -27,7 +27,7 @@ namespace UnityEngine.UI {
         }
         public void PopUi() {
             if (_popTriggers.Count == 0) {
-                _logger.LogWarning("No more UI to pop from stack", context: this);
+                _logger!.LogWarning("No more UI to pop from stack", context: this);
                 return;
             }
 

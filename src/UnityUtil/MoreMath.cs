@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using U = UnityEngine;
@@ -70,14 +70,11 @@ namespace UnityEngine {
         /// <param name="halfAngle">The half angle (in degrees) of the cone</param>
         /// <param name="onlyBoundary">If <see langword="true"/>, then the random unit vector will be constrained to the boundary of the cone.  If <see langword="false"/>, then the random unit vector may be anywhere within the cone.</param>
         /// <returns>A random unit vector within a cone of the provided half-angle around the provided <see cref="Transform"/>'s forward vector (uniformly distributed).</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="transform"/> is <see langword="null"/>.</exception>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="halfAngle"/> is less then 0° or greater than or equal to 360°.</exception>
         public static Vector3 RandomConeVector(Transform transform, float halfAngle, bool onlyBoundary) =>
-            transform == null
-                ? throw new ArgumentNullException(nameof(transform))
-            : halfAngle < 0f || 360f <= halfAngle
+            halfAngle < 0f || 360f <= halfAngle
                 ? throw new ArgumentOutOfRangeException(nameof(halfAngle), halfAngle, $"Cannot generate a random unit vector within a cone of half-angle {halfAngle}°")
-            : randomConeVector(transform.forward, halfAngle, onlyBoundary);
+                : randomConeVector(transform.forward, halfAngle, onlyBoundary);
         /// <summary>
         /// Returns a random unit vector within a cone of the provided half-angle centered around the provided axis (uniformly distributed).
         /// </summary>

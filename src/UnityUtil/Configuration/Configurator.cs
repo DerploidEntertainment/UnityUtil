@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -60,7 +61,7 @@ namespace UnityEngine
 
         #region Loading configuration sources
 
-        public event EventHandler<IReadOnlyDictionary<string, object>> LoadingComplete;
+        public event EventHandler<IReadOnlyDictionary<string, object>>? LoadingComplete;
 
         public void LoadConfigs(IEnumerable<ConfigurationSource> configurationSources)
         {
@@ -174,20 +175,20 @@ namespace UnityEngine
             bool cache = CachedConfigurations.Any(x =>
                 clientType == x.Item1 &&
                 (x.ConfigKey == key || (x.ConfigKey.Length == 0 && key.Contains(x.Item1.FullName))));
-            IList<Expression> memberAssigns = cache ? new List<Expression>() : null;
-            ParameterExpression clientObjParam = cache ? Expression.Parameter(typeof(object), nameof(client)) : null;
-            Expression clientParam = cache ? Expression.Convert(clientObjParam, clientType) : null;
+            IList<Expression>? memberAssigns = cache ? new List<Expression>() : null;
+            ParameterExpression? clientObjParam = cache ? Expression.Parameter(typeof(object), nameof(client)) : null;
+            Expression? clientParam = cache ? Expression.Convert(clientObjParam, clientType) : null;
 
             // Set all fields on this client for which there is a config value
-            string clientName = (client is not Object clientObj) ? null : (client is Component component ? component.GetHierarchyName() : clientObj.name);
-            string quotedClientName = clientName is null ? null : $"'{clientName}' ";
+            string? clientName = (client is not Object clientObj) ? null : (client is Component component ? component.GetHierarchyName() : clientObj.name);
+            string? quotedClientName = clientName is null ? null : $"'{clientName}' ";
             FieldInfo[] fields = clientType.GetFields(BINDING_FLAGS);
             for (int f = 0; f < fields.Length; ++f) {
                 FieldInfo field = fields[f];
                 string fieldKey = $"{key}.{field.Name}";
-                if (tryGetTypedValue(fieldKey, field.FieldType, out object val)) {
+                if (tryGetTypedValue(fieldKey, field.FieldType, out object? val)) {
                     if (cache)
-                        memberAssigns.Add(Expression.Assign(Expression.MakeMemberAccess(clientParam, field), Expression.Constant(val, field.FieldType)));
+                        memberAssigns!.Add(Expression.Assign(Expression.MakeMemberAccess(clientParam, field), Expression.Constant(val, field.FieldType)));
                     else
                         field.SetValue(client, val);
                     
@@ -200,9 +201,9 @@ namespace UnityEngine
             for (int p = 0; p < props.Length; ++p) {
                 PropertyInfo prop = props[p];
                 string propKey = $"{key}.{prop.Name}";
-                if (tryGetTypedValue(propKey, prop.PropertyType, out object val)) {
+                if (tryGetTypedValue(propKey, prop.PropertyType, out object? val)) {
                     if (cache)
-                        memberAssigns.Add(Expression.Assign(Expression.MakeMemberAccess(clientParam, prop), Expression.Constant(val, prop.PropertyType)));
+                        memberAssigns!.Add(Expression.Assign(Expression.MakeMemberAccess(clientParam, prop), Expression.Constant(val, prop.PropertyType)));
                     else
                         prop.SetValue(client, val);
                     _logger.Log($"Property '{prop.Name}' of {clientType.Name} client {quotedClientName}with config key '{key}' will be configured with value '{val}'");
@@ -253,12 +254,12 @@ namespace UnityEngine
         /// </summary>
         /// <param name="counts">Upon return, will contain the number of times that configurations were resolved.</param>
         [Conditional("DEBUG")]
-        public void GetConfigurationCounts(ref ConfigurationCounts counts) => counts = new ConfigurationCounts(
+        public void GetConfigurationCounts([NotNull] ref ConfigurationCounts? counts) => counts = new ConfigurationCounts(
             cachedConfigCounts: new Dictionary<(Type, string), int>(_cachedConfigCounts),
             uncachedConfigCounts: new Dictionary<(Type, string), int>(_uncachedConfigCounts)
         );
 
-        private bool tryGetTypedValue(string memberKey, Type memberType, out object typedValue)
+        private bool tryGetTypedValue(string memberKey, Type memberType, out object? typedValue)
         {
             typedValue = null;
 
@@ -266,7 +267,7 @@ namespace UnityEngine
             if (!hasValue)
                 return false;
 
-            string errMsg = null;
+            string? errMsg = null;
             try { typedValue = Convert.ChangeType(configVal, memberType); }
             catch (InvalidCastException ex) { errMsg = ex.Message; }
             catch (FormatException ex) { errMsg = ex.Message; }

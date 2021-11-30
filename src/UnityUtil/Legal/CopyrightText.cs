@@ -1,4 +1,4 @@
-using Sirenix.OdinInspector;
+﻿using Sirenix.OdinInspector;
 using System;
 using UnityEngine.UI;
 
@@ -21,7 +21,7 @@ namespace UnityEngine.Legal
         protected override void Awake() {
             base.Awake();
 
-            Text.text = string.Format(FormatString, DateTime.Now, Device.Application.companyName);
+            Text!.text = string.Format(FormatString, DateTime.Now, Device.Application.companyName);
         }
     }
 }

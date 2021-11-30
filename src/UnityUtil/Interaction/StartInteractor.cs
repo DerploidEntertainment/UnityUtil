@@ -1,4 +1,4 @@
-using Sirenix.OdinInspector;
+﻿using Sirenix.OdinInspector;
 using System;
 using UnityEngine.Triggers;
 
@@ -6,7 +6,7 @@ namespace UnityEngine.Inputs {
 
     public class InteractionEventArgs : EventArgs {
         public RaycastHit HitInfo;
-        public SimpleTrigger InteractedTrigger;
+        public SimpleTrigger? InteractedTrigger;
     }
 
     public class StartInteractor : Updatable
@@ -17,7 +17,7 @@ namespace UnityEngine.Inputs {
         public LayerMask InteractLayerMask;
         public QueryTriggerInteraction QueryTriggerInteraction = QueryTriggerInteraction.UseGlobal;
 
-        public event EventHandler<InteractionEventArgs> Interacted;
+        public event EventHandler<InteractionEventArgs>? Interacted;
 
         protected override void Awake() {
             base.Awake();
@@ -27,10 +27,10 @@ namespace UnityEngine.Inputs {
         }
 
         private void raycast(float deltaTime) {
-            if (Input.Started()) {
+            if (Input!.Started()) {
                 bool somethingHit = Physics.Raycast(transform.position, transform.forward, out RaycastHit hitInfo, Range, InteractLayerMask, QueryTriggerInteraction);
                 if (somethingHit) {
-                    SimpleTrigger st = hitInfo.collider.GetComponent<SimpleTrigger>();
+                    SimpleTrigger? st = hitInfo.collider.GetComponent<SimpleTrigger>();
                     st?.Trigger();
                     Interacted?.Invoke(this, new InteractionEventArgs() { HitInfo = hitInfo, InteractedTrigger = st });
                 }

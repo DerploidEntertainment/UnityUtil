@@ -1,4 +1,4 @@
-using Sirenix.OdinInspector;
+﻿using Sirenix.OdinInspector;
 
 namespace UnityEngine.Movement {
 
@@ -64,7 +64,7 @@ namespace UnityEngine.Movement {
 
             // Add a Force to move towards the target position at constant velocity
             Vector3 toward = (targetPosition - transform.position).normalized;
-            var vToward = Vector3.Project(FlyingRigidbody.velocity, toward);
+            var vToward = Vector3.Project(FlyingRigidbody!.velocity, toward);
             float factor = (vToward.normalized == toward) ? Mathf.Sign(MoveSpeed * MoveSpeed - vToward.sqrMagnitude) : 1;
             netForce += factor * MoveAccel * toward;
 
@@ -81,7 +81,7 @@ namespace UnityEngine.Movement {
 
             // Add a Force to rotate around the target direction at constant angular velocity
             Vector3 toward = (targetPosition - transform.position).normalized;
-            var wToward = Vector3.Project(FlyingRigidbody.angularVelocity, toward);
+            var wToward = Vector3.Project(FlyingRigidbody!.angularVelocity, toward);
             float factor = (wToward.normalized == toward) ? Mathf.Sign(RotateSpeed * RotateSpeed - wToward.sqrMagnitude) : 1;
             factor *= (RotateClockWise ? 1 : -1);
             netTorque += factor * RotateAccel * toward;

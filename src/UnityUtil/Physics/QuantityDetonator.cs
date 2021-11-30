@@ -1,4 +1,4 @@
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace UnityEngine {
@@ -6,7 +6,7 @@ namespace UnityEngine {
     [RequireComponent(typeof(Detonator))]
     public class HurtDetonator : MonoBehaviour
     {
-        private Detonator _detonator;
+        private Detonator? _detonator;
 
         [Tooltip(
             $"Nearby {nameof(UnityEngine.ManagedQuantity)}s will be changed by this amount, at most. " +
@@ -29,12 +29,13 @@ namespace UnityEngine {
             ManagedQuantity[] quantities = colliders
                 .Select(x => x.attachedRigidbody?.GetComponent<ManagedQuantity>())
                 .Where(x => x is not null)
+                .Select(x => x!)
                 .Distinct()
                 .ToArray();
             for (int h = 0; h < quantities.Length; ++h) {
                 ManagedQuantity health = quantities[h];
                 float dist = Vector3.Distance(health.transform.position, transform.position);
-                float factor = 1f - Mathf.Min(1f, dist / _detonator.ExplosionRadius);
+                float factor = 1f - Mathf.Min(1f, dist / _detonator!.ExplosionRadius);
                 health.Change(factor * MaxAmount, ChangeMode);
             }
         }

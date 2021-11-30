@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using UnityEditor;
@@ -10,7 +10,7 @@ namespace UnityUtil.Editor {
 
     public static class EditModeTestHelpers {
 
-        private static MethodInfo s_clearConsoleMethod;
+        private static MethodInfo? s_clearConsoleMethod;
         private static uint s_numLogs = 0u;
 
         public static void ResetScene() {

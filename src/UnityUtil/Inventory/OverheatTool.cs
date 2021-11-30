@@ -1,4 +1,4 @@
-using Sirenix.OdinInspector;
+﻿using Sirenix.OdinInspector;
 using System;
 using System.Collections;
 using UnityEngine.Assertions;
@@ -15,8 +15,8 @@ namespace UnityEngine.Inventory {
     [RequireComponent(typeof(Tool))]
     public class OverheatTool : Updatable
     {
-        private Tool _tool;
-        private Coroutine _overheatRoutine;
+        private Tool? _tool;
+        private Coroutine? _overheatRoutine;
 
         [Required]
         public OverheatToolInfo? Info;
@@ -28,7 +28,7 @@ namespace UnityEngine.Inventory {
         {
             base.Awake();
 
-            Assert.IsTrue(Info.StartingHeat <= Info.MaxHeat, $"{this.GetHierarchyNameWithType()} was started with {nameof(this.Info.StartingHeat)} heat but it can only store a max of {this.Info.MaxHeat}!");
+            Assert.IsTrue(Info!.StartingHeat <= Info.MaxHeat, $"{this.GetHierarchyNameWithType()} was started with {nameof(this.Info.StartingHeat)} heat but it can only store a max of {this.Info.MaxHeat}!");
 
             BetterUpdate = doUpdate;
             RegisterUpdatesAutomatically = true;
@@ -53,13 +53,14 @@ namespace UnityEngine.Inventory {
         {
             // Cool this Tool, unless it is overheated
             if (CurrentHeat > 0 && _overheatRoutine is null) {
-                float rate = Info.AbsoluteHeat ? Info.CoolRate : Info.CoolRate * Info.MaxHeat;
+                float rate = Info!.AbsoluteHeat ? Info.CoolRate : Info.CoolRate * Info.MaxHeat;
                 CurrentHeat = Mathf.Max(0, CurrentHeat - deltaTime * rate);
             }
         }
 
-        private IEnumerator doOverheatDuration() {
-            yield return new WaitForSeconds(Info.OverheatDuration);
+        private IEnumerator doOverheatDuration()
+        {
+            yield return new WaitForSeconds(Info!.OverheatDuration);
             OverheatStateChanged.Invoke(false);
 
             _overheatRoutine = null;

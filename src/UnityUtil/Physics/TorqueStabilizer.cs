@@ -1,4 +1,4 @@
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 
 namespace UnityEngine
 {
@@ -6,7 +6,7 @@ namespace UnityEngine
     public class TorqueStabilizer : MonoBehaviour
     {
         [Tooltip("The Rigidbody to which the stabilizing torque will be applied.")]
-        public Rigidbody RigidbodyToStabilize;
+        public Rigidbody? RigidbodyToStabilize;
 
         [Tooltip(
             "The maximum torque that can be applied to stabilize the associated Rigidbody about the upward direction. " +
@@ -41,7 +41,7 @@ namespace UnityEngine
                 AxisDirection.WithGravity => Physics.gravity.normalized,
                 AxisDirection.OppositeGravity => -Physics.gravity.normalized,
                 AxisDirection.CustomWorldSpace => CustomUpwardDirection.normalized,
-                AxisDirection.CustomLocalSpace => RigidbodyToStabilize.transform.TransformDirection(CustomUpwardDirection.normalized),
+                AxisDirection.CustomLocalSpace => RigidbodyToStabilize!.transform.TransformDirection(CustomUpwardDirection.normalized),
                 _ => throw UnityObjectExtensions.SwitchDefaultException(UpwardDirectionType),
             };
 

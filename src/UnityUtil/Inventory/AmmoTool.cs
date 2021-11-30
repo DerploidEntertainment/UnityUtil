@@ -1,4 +1,4 @@
-using Sirenix.OdinInspector;
+﻿using Sirenix.OdinInspector;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using UnityEngine.Assertions;
@@ -16,7 +16,7 @@ namespace UnityEngine.Inventory {
     [RequireComponent(typeof(Tool))]
     public class AmmoTool : MonoBehaviour
     {
-        private Tool _tool;
+        private Tool? _tool;
 
         [Required] public AmmoToolInfo? Info;
         [Required] public StartStopInput? ReloadInput;
@@ -53,7 +53,7 @@ namespace UnityEngine.Inventory {
         [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
         private void Awake()
         {
-            Assert.IsTrue(Info.StartingAmmo <= Info.MaxClipAmmo * (Info.MaxBackupClips + 1), $"{this.GetHierarchyNameWithType()} was started with {nameof(this.Info.StartingAmmo)} ammo but it can only store a max of {this.Info.MaxClipAmmo} * ({this.Info.MaxClipAmmo * (this.Info.MaxBackupClips + 1)}!");
+            Assert.IsTrue(Info!.StartingAmmo <= Info.MaxClipAmmo * (Info.MaxBackupClips + 1), $"{this.GetHierarchyNameWithType()} was started with {nameof(this.Info.StartingAmmo)} ammo but it can only store a max of {this.Info.MaxClipAmmo} * ({this.Info.MaxClipAmmo * (this.Info.MaxBackupClips + 1)}!");
 
             // Initialize ammo
             doLoad(Info.StartingAmmo);
@@ -80,7 +80,7 @@ namespace UnityEngine.Inventory {
         private void doReloadClip() {
             // Fill the current clip as much as possible from backup ammo
             int oldClip = CurrentClipAmmo;
-            int neededAmmo = Mathf.Clamp(Info.MaxClipAmmo - CurrentClipAmmo, 0, CurrentBackupAmmo);
+            int neededAmmo = Mathf.Clamp(Info!.MaxClipAmmo - CurrentClipAmmo, 0, CurrentBackupAmmo);
             CurrentClipAmmo += neededAmmo;
             CurrentBackupAmmo -= neededAmmo;
 
@@ -94,7 +94,7 @@ namespace UnityEngine.Inventory {
             int oldBackup = CurrentBackupAmmo;
 
             // Fill the current clip as much as possible
-            if (CurrentClipAmmo < Info.MaxClipAmmo) {
+            if (CurrentClipAmmo < Info!.MaxClipAmmo) {
                 int usableAmmo = Mathf.Min(Info.MaxClipAmmo - CurrentClipAmmo, ammo);
                 CurrentClipAmmo += usableAmmo;
                 ammo -= usableAmmo;

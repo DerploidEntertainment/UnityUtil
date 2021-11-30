@@ -1,4 +1,4 @@
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 
 namespace UnityEngine
 {
@@ -8,7 +8,7 @@ namespace UnityEngine
         private RaycastHit _lastGroundHit;
 
         [Tooltip("The Rigidbody to which the hover force will be applied.")]
-        public Rigidbody HoveringRigidbody;
+        public Rigidbody? HoveringRigidbody;
 
         [Tooltip(
             $"The current height at which the {nameof(HoverForce.HoveringRigidbody)} can be kept aloft. " +
@@ -92,20 +92,20 @@ namespace UnityEngine
             if (surfaceBelow) {
                 float angle = Vector3.Angle(up, _lastGroundHit.normal);
                 if (angle <= MaxAngleToSurface)
-                    applyHoverForce(up);
+                    applyHoverForce(HoveringRigidbody, up);
             }
         }
 
-        private void applyHoverForce(Vector3 up) {
-            float massToLift = Mathf.Min(HoveringRigidbody.mass, MaxHoverableMass);
+        private void applyHoverForce(Rigidbody rigidbody, Vector3 up) {
+            float massToLift = Mathf.Min(rigidbody.mass, MaxHoverableMass);
             float weightToLift = massToLift * Physics.gravity.magnitude;
             AppliedFractionOfMaxForce = Mathf.Max(1f - _lastGroundHit.distance / HoverHeight, 0f);
             Vector3 pushForce = weightToLift * (1 + AppliedFractionOfMaxForce) * up;
 
             if (AddForceAtPosition)
-                HoveringRigidbody.AddForceAtPosition(pushForce, transform.position);
+                rigidbody.AddForceAtPosition(pushForce, transform.position);
             else
-                HoveringRigidbody.AddForce(pushForce);
+                rigidbody.AddForce(pushForce);
         }
 
     }

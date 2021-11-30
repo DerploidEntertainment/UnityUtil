@@ -1,4 +1,4 @@
-using Sirenix.OdinInspector;
+﻿using Sirenix.OdinInspector;
 using System;
 using UnityEngine.Triggers;
 
@@ -6,7 +6,7 @@ namespace UnityEngine.Inputs {
 
     public class Interaction2DEventArgs : EventArgs {
         public RaycastHit2D HitInfo;
-        public SimpleTrigger InteractedTrigger;
+        public SimpleTrigger? InteractedTrigger;
     }
 
     public class StartInteractor2D : Updatable
@@ -16,7 +16,7 @@ namespace UnityEngine.Inputs {
         public float Range;
         public LayerMask InteractLayerMask;
 
-        public event EventHandler<Interaction2DEventArgs> Interacted;
+        public event EventHandler<Interaction2DEventArgs>? Interacted;
 
         protected override void Awake() {
             base.Awake();
@@ -26,7 +26,7 @@ namespace UnityEngine.Inputs {
         }
 
         private void raycast(float deltaTime) {
-            if (Input.Started()) {
+            if (Input!.Started()) {
                 RaycastHit2D hit = Physics2D.Raycast(transform.position, transform.forward, Range, InteractLayerMask);
                 if (hit.collider is not null) {
                     SimpleTrigger st = hit.collider.GetComponent<SimpleTrigger>();

@@ -1,4 +1,4 @@
-using Sirenix.OdinInspector;
+﻿using Sirenix.OdinInspector;
 using System;
 using UnityEngine.Logging;
 using S = System;
@@ -17,16 +17,16 @@ namespace UnityEngine {
             (int seed, bool generated) = GetOrGenerateSeed(Seed);
             if (generated) {
                 Seed = seed.ToString();
-                Logger.Log($"Generated time-dependent seed {seed}", context: this);
+                Logger!.Log($"Generated time-dependent seed {seed}", context: this);
             }
             else
-                Logger.Log($"Using configured seed {seed}", context: this);
+                Logger!.Log($"Using configured seed {seed}", context: this);
 
             Random.InitState(seed);
             SystemRand = new S.Random(seed);
         }
 
-        public S.Random SystemRand { get; private set; }
+        public S.Random? SystemRand { get; private set; }
 
         internal (int seed, bool generated) GetOrGenerateSeed(string configSeed) {
             int seed;
