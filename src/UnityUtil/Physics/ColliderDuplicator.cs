@@ -1,8 +1,9 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using UnityEngine;
+using UnityEngine.DependencyInjection;
+using UnityEngine.Logging;
 
 namespace UnityEngine {
 
@@ -20,6 +21,7 @@ namespace UnityEngine {
 
     public class ColliderDuplicator : MonoBehaviour
     {
+        private ILogger? _logger;
 
         private List<Transform> _duplicates = new();
 
@@ -43,6 +45,13 @@ namespace UnityEngine {
 
         [Tooltip("If set, all duplicate Colliders will have a PhysTarget component attached that targets this value.")]
         public MonoBehaviour? PhysicsTarget;
+
+
+        [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
+        [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
+        private void Awake() => DependencyInjector.Instance.ResolveDependenciesOf(this);
+
+        public void Inject(ILoggerProvider loggerProvider) => _logger = loggerProvider.GetLogger(this);
 
         [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
         [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
@@ -169,6 +178,7 @@ namespace UnityEngine {
             }
 
             else {
+                _logger!.LogWarning($"Collider {collider.GetHierarchyName()} is not a BoxCollider, SphereCollider, or CapsuleCollider, so it will not be duplicated.", context: this);
                 return;
             }
 
