@@ -195,7 +195,7 @@ namespace UnityEngine.DependencyInjection
         /// Get the number of times that each service <see cref="Type"/> has been resolved at runtime.
         /// </summary>
         /// <param name="counts">Upon return, will contain the number of times that services were resolved.</param>
-        public void GetServiceResolutionCounts(ref DependencyResolutionCounts counts) => counts = new DependencyResolutionCounts(
+        public DependencyResolutionCounts GetServiceResolutionCounts() => new(
             cachedResolutionCounts: new Dictionary<Type, int>(_cachedResolutionCounts),
             uncachedResolutionCounts: new Dictionary<Type, int>(_uncachedResolutionCounts)
         );

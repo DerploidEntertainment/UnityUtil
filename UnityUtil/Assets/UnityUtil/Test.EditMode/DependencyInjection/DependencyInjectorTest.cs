@@ -1,4 +1,4 @@
-using Moq;
+﻿using Moq;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -407,7 +407,7 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
             Type clientType = typeof(TestClient);
             Type baseType = typeof(TestClientBase);
             Mock<ITypeMetadataProvider> mockTypeMetadataProvider = getTypeMetadataProvider();
-            DependencyResolutionCounts counts = null;
+            DependencyResolutionCounts counts;
             DependencyInjector dependencyInjector = getDependencyInjector(
                 cachedResolutionTypes: new[] { typeof(TestClientBase) },
                 typeMetadataProvider: mockTypeMetadataProvider.Object
@@ -420,7 +420,7 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
             // Initial, uncached resolution
             var uncacheClient = new TestClient();
             dependencyInjector.ResolveDependenciesOf(uncacheClient);
-            dependencyInjector.GetServiceResolutionCounts(ref counts);
+            counts = dependencyInjector.GetServiceResolutionCounts();
             Assert.That(counts.Uncached.Count, Is.EqualTo(1));
             Assert.That(counts.Uncached[clientType], Is.EqualTo(1));
             Assert.That(counts.Cached.Count, Is.EqualTo(1));
@@ -429,7 +429,7 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
             // Second, base type resolution cached
             var cacheClient = new TestClient();
             dependencyInjector.ResolveDependenciesOf(cacheClient);
-            dependencyInjector.GetServiceResolutionCounts(ref counts);
+            counts = dependencyInjector.GetServiceResolutionCounts();
             Assert.That(counts.Uncached.Count, Is.EqualTo(1));
             Assert.That(counts.Uncached[clientType], Is.EqualTo(2));
             Assert.That(counts.Cached.Count, Is.EqualTo(1));
@@ -437,7 +437,7 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
 
             // Clears cached resolutions
             dependencyInjector.RecordingResolutions = false;
-            dependencyInjector.GetServiceResolutionCounts(ref counts);
+            counts = dependencyInjector.GetServiceResolutionCounts();
             Assert.That(counts.Uncached.Count, Is.Zero);
             Assert.That(counts.Cached.Count, Is.Zero);
         }
@@ -458,8 +458,7 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
             dependencyInjector.RecordingResolutions = false;
 
             // ASSERT
-            DependencyResolutionCounts counts = null;
-            dependencyInjector.GetServiceResolutionCounts(ref counts);
+            DependencyResolutionCounts counts = dependencyInjector.GetServiceResolutionCounts();
             Assert.That(counts.Uncached.Count, Is.Zero);
             Assert.That(counts.Cached.Count, Is.Zero);
         }
@@ -473,11 +472,10 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
             dependencyInjector.RegisterService(getComponentService<TestComponent>());
 
             dependencyInjector.RecordingResolutions = false;
-            DependencyResolutionCounts counts = null;
             dependencyInjector.ResolveDependenciesOf(new TestClientBase());
             dependencyInjector.ResolveDependenciesOf(new TestClientBase());
             dependencyInjector.ResolveDependenciesOf(new TestClientBase());
-            dependencyInjector.GetServiceResolutionCounts(ref counts);
+            DependencyResolutionCounts counts = dependencyInjector.GetServiceResolutionCounts();
 
             Assert.That(counts.Cached, Is.Empty);
             Assert.That(counts.Uncached, Is.Empty);

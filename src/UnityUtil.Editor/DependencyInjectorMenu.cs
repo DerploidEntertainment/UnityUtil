@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
@@ -14,8 +14,7 @@ namespace UnityUtil.Editor
         [MenuItem(ItemName)]
         private static void toggleRecording()
         {
-            DependencyResolutionCounts counts = null;
-            DependencyInjector.Instance.GetServiceResolutionCounts(ref counts);
+            DependencyResolutionCounts counts = DependencyInjector.Instance.GetServiceResolutionCounts();
             DependencyInjector.Instance.RecordingResolutions = !DependencyInjector.Instance.RecordingResolutions;
             if (DependencyInjector.Instance.RecordingResolutions)
                 return;
