@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using UnityEngine.Events;
 
 namespace UnityEngine {
@@ -26,7 +27,10 @@ namespace UnityEngine {
         public bool FilterIsBlacklist = false;
         public UnityEvent SomethingDestroyed = new();
 
-        private void OnTriggerEnter(Collider other) {
+        [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
+        [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
+        private void OnTriggerEnter(Collider other)
+        {
             // Destroy the triggering Collider's GameObject, if requested
             if (!DestroyAttachedRigidbody) {
                 Destroy(other.gameObject);

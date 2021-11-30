@@ -1,4 +1,5 @@
 using UnityEngine.Logging;
+using System.Diagnostics.CodeAnalysis;
 
 namespace UnityEngine.Inventory {
 
@@ -12,6 +13,8 @@ namespace UnityEngine.Inventory {
         [Tooltip("The ProjectilePrefab will be parented to this Transform after it is instantiated.")]
         public Transform ProjectileParent;
 
+        [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
+        [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
         private void Awake() {
             this.AssertAssociation(Info, nameof(ProjectileToolInfo));
 

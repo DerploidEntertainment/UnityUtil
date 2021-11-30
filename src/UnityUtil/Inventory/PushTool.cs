@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using UnityEngine.Logging;
 
@@ -15,6 +16,8 @@ namespace UnityEngine.Inventory {
         [Tooltip("If true, then any colliders attached to the same Rigidbodies as one of these colldiers will NOT be affected.  You might use this field to prevent pushing of any of the colliders that make up a player's vehicle, for example.")]
         public Collider[] IgnoreRigidbodiesAttachedTo = Array.Empty<Collider>();
 
+        [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
+        [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
         private void Awake() {
             this.AssertAssociation(Info, nameof(PushToolInfo));
 

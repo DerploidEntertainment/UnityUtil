@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using UnityEngine.Logging;
 
@@ -11,6 +12,8 @@ namespace UnityEngine.Inventory {
 
         public QuantityWeaponInfo Info;
 
+        [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
+        [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
         private void Awake() {
             this.AssertAssociation(Info, nameof(QuantityWeaponInfo));
 

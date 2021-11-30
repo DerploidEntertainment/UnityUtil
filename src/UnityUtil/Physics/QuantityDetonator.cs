@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace UnityEngine {
@@ -16,6 +17,7 @@ namespace UnityEngine {
         [Tooltip($"Determines how the value of {nameof(MaxAmount)} is used to change nearby {nameof(UnityEngine.ManagedQuantity)}s.")]
         public ManagedQuantity.ChangeMode ChangeMode = ManagedQuantity.ChangeMode.Absolute;
 
+        [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
         private void Awake() {
             _detonator = GetComponent<Detonator>();
             _detonator.Detonated.AddListener(changeAll);

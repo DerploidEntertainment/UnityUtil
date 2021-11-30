@@ -1,12 +1,15 @@
 using UnityEngine.Logging;
+using System.Diagnostics.CodeAnalysis;
 
 namespace UnityEngine.Inventory {
 
     [RequireComponent(typeof(Collector))]
-    public class QuantityCollector : MonoBehaviour {
-
+    public class QuantityCollector : MonoBehaviour
+    {
         public ManagedQuantity Quantity;
 
+        [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
+        [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
         private void Awake() {
             this.AssertAssociation(Quantity, nameof(this.Quantity));
 

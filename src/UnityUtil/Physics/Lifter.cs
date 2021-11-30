@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using UnityEngine.Assertions;
 using UnityEngine.Events;
 using UnityEngine.Inputs;
@@ -73,7 +74,9 @@ namespace UnityEngine {
                 (LiftUsingPhysics && LiftingJoint is not null) || (!LiftUsingPhysics && LiftingObject is not null),
                 $"{this.GetHierarchyNameWithType()} must have a {nameof(this.LiftingJoint)} if {nameof(this.LiftUsingPhysics)} is set to true, or a {nameof(this.LiftingObject)} if {nameof(this.LiftUsingPhysics)} is set to false.");
         }
-        private void Update() {
+        [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
+        private void Update()
+        {
             // Get user input
             bool toggleLift = LiftInput.Started();
             bool throwing = ThrowInput.Started();

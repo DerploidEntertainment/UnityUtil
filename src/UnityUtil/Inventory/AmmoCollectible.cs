@@ -1,5 +1,5 @@
+﻿using System.Diagnostics.CodeAnalysis;
 using UnityEngine.Assertions;
-using UnityEngine.Logging;
 
 namespace UnityEngine.Inventory {
 
@@ -8,6 +8,8 @@ namespace UnityEngine.Inventory {
     {
         public string AmmoTypeName = "";
 
+        [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
+        [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
         private void Awake() =>
             Assert.IsFalse(string.IsNullOrEmpty(AmmoTypeName), $"{this.GetHierarchyNameWithType()} must specify a value for {nameof(this.AmmoTypeName)}!");
 

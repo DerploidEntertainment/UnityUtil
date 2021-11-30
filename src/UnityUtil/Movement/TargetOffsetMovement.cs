@@ -1,4 +1,5 @@
 using UnityEngine.Logging;
+using System.Diagnostics.CodeAnalysis;
 
 namespace UnityEngine.Movement {
 
@@ -17,6 +18,8 @@ namespace UnityEngine.Movement {
             this.AssertAssociation(TransformToMove, nameof(this.TransformToMove));
             this.AssertAssociation(Target, nameof(this.Target));
         }
+        [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
+        [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
         private void Update() => TransformToMove.position = Target.position + Offset;
 
     }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using UnityEngine.Assertions;
 using UnityEngine.DependencyInjection;
@@ -28,6 +29,8 @@ namespace UnityEngine.Inventory {
 
         public void Inject(ILoggerProvider loggerProvider) => _logger = loggerProvider.GetLogger(this);
 
+        [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
+        [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
         private void Awake() => DependencyInjector.Instance.ResolveDependenciesOf(this);
 
         public InventoryCollectible[] GetCollectibles() => _collectibles.ToArray();

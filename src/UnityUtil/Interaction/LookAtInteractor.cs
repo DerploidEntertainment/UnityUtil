@@ -55,6 +55,7 @@ namespace UnityEngine.Inputs {
         }
 
         [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
+        [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
         private void OnDrawGizmos() {
             if (DrawRay) {
                 Gizmos.color = RayColor;

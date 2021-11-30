@@ -27,6 +27,7 @@ namespace UnityEngine.Inventory {
         public void Inject(ILoggerProvider loggerProvider) => _logger = loggerProvider.GetLogger(this);
 
         [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
+        [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
         private void Awake() {
             this.AssertAssociation(Info, nameof(WeaponInfo));
 
@@ -38,6 +39,7 @@ namespace UnityEngine.Inventory {
             _tool.Used.AddListener(attack);
         }
         [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
+        [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
         private void OnDrawGizmos() {
             switch (Info.PhysicsCastShape) {
                 case PhysicsCastShape.Ray:

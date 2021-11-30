@@ -1,5 +1,6 @@
 using Sirenix.OdinInspector;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using UnityEngine.DependencyInjection;
 using UnityEngine.Events;
@@ -26,6 +27,8 @@ namespace UnityEngine.Triggers {
 
         public void Inject(ILoggerProvider loggerProvider) => _logger = loggerProvider.GetLogger(this);
 
+        [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
+        [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
         private void Awake() => DependencyInjector.Instance.ResolveDependenciesOf(this);
 
         [Button]

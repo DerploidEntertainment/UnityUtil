@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using UnityEngine.Assertions;
 using UnityEngine.Events;
 using UnityEngine.Inputs;
@@ -13,7 +14,8 @@ namespace UnityEngine.Inventory {
     public class AmmoEvent : UnityEvent<int, int, int, int> { }
 
     [RequireComponent(typeof(Tool))]
-    public class AmmoTool : MonoBehaviour {
+    public class AmmoTool : MonoBehaviour
+    {
 
         private Tool _tool;
 
@@ -45,7 +47,10 @@ namespace UnityEngine.Inventory {
         public AmmoEvent Loaded = new();
         public AmmoEvent AmmoReduced = new();
 
-        private void Awake() {
+        [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
+        [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
+        private void Awake()
+        {
             this.AssertAssociation(Info, nameof(AmmoToolInfo));
             this.AssertAssociation(ReloadInput, nameof(this.ReloadInput));
             Assert.IsTrue(Info.StartingAmmo <= Info.MaxClipAmmo * (Info.MaxBackupClips + 1), $"{this.GetHierarchyNameWithType()} was started with {nameof(this.Info.StartingAmmo)} ammo but it can only store a max of {this.Info.MaxClipAmmo} * ({this.Info.MaxClipAmmo * (this.Info.MaxBackupClips + 1)}!");
@@ -63,7 +68,11 @@ namespace UnityEngine.Inventory {
                 AmmoReduced.Invoke(oldClip, CurrentBackupAmmo, CurrentClipAmmo, CurrentBackupAmmo);
             });
         }
-        private void Update() {
+
+        [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
+        [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
+        private void Update()
+        {
             if (ReloadInput?.Started() ?? false)
                 doReloadClip();
         }
@@ -79,6 +88,7 @@ namespace UnityEngine.Inventory {
             if (CurrentClipAmmo != oldClip)
                 Loaded.Invoke(oldClip, CurrentBackupAmmo, CurrentClipAmmo, CurrentBackupAmmo);
         }
+
         private int doLoad(int ammo) {
             int oldClip = CurrentClipAmmo;
             int oldBackup = CurrentBackupAmmo;

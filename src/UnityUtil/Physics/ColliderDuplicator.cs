@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using UnityEngine;
 
@@ -41,6 +42,8 @@ namespace UnityEngine {
         [Tooltip("If set, all duplicate Colliders will have a PhysTarget component attached that targets this value.")]
         public MonoBehaviour PhysicsTarget;
 
+        [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
+        [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
         private void Start() {
             // Create duplicate Colliders
             _duplicates = createDuplicates(NewParentOfDuplicates);
