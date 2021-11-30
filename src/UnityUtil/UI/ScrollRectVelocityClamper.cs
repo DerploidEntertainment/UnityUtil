@@ -5,15 +5,9 @@ namespace UnityEngine.UI
     public class ScrollRectVelocityClamper : Updatable
     {
         public ScrollRect ScrollRect;
+
         [Tooltip("If the components of " + nameof(ScrollRect) + "'s velocity have absolute values less than the components of this vector, then that component of the velocity will be set to zero. For example, if the y-value of this vector is 10, and " + nameof(ScrollRect) + "'s y-velocity is less than 10 pixels/sec up or down, then its y-velocity will be zeroed out.")]
-        public Vector2Int MinVelocityMagnitude;
-
-        protected override void Reset()
-        {
-            base.Reset();
-
-            MinVelocityMagnitude = new Vector2Int(40, 40);
-        }
+        public Vector2Int MinVelocityMagnitude = new(40, 40);
 
         [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
         [SuppressMessage("Code Quality", "IDE0051:Remove unused private members", Justification = "Unity message")]

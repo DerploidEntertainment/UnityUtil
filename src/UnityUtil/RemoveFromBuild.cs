@@ -21,8 +21,6 @@ namespace UnityEngine
     }
     public class RemoveFromBuild : MonoBehaviour
     {
-        public const DestroyBehavior DefaultDestroyBehavior = DestroyBehavior.SelfAndChildren;
-
         private const string MSG_PRESERVE_CONTEXT =
             "This GameObject (and/or its children) will be removed from the build unless the build context matches " +
             nameof(PreserveBuildContexts) + " AND the platform matches " + nameof(PreservePlatforms) + ".";
@@ -35,15 +33,12 @@ namespace UnityEngine
         )]
 
         [Tooltip("What should be destroyed during builds?")]
-        public DestroyBehavior DestroyBehavior = DefaultDestroyBehavior;
+        public DestroyBehavior DestroyBehavior = DestroyBehavior.SelfAndChildren;
 
         [Tooltip(MSG_PRESERVE_CONTEXT)]
         public BuildContext PreserveBuildContexts;
 
         [Tooltip(MSG_PRESERVE_CONTEXT + " Order does not matter.")]
         public List<RuntimePlatform> PreservePlatforms;
-
-        [Conditional("UNITY_EDITOR")]
-        public void Reset() => DestroyBehavior = DefaultDestroyBehavior;
     }
 }

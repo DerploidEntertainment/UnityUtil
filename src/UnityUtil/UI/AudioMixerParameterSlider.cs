@@ -25,41 +25,28 @@ namespace UnityEngine.UI
 
         public AudioMixer AudioMixer;
         [Tooltip("This parameter must already be exposed on " + nameof(AudioMixer) + ", and its value will be updated as the user updates " + nameof(Slider) + ".")]
-        public string ExposedParameterName;
+        public string ExposedParameterName = "Volume";
         [Tooltip("The value of this " + nameof(UI.Slider) + " will be used to update the exposed parameter of " + nameof(AudioMixer) + ". Its value will be transformed according to " + nameof(SliderTransformation) + ".")]
         public Slider Slider;
         [Tooltip("Optional. This " + nameof(AudioSource) + " will be played anytime the " + nameof(Slider) + "'s value is changed, so that the user can hear the difference. Make sure that its output " + nameof(AudioMixerGroup) + " is set correctly. The " + nameof(AudioClip) + " played should not be long (like music), so as not to annoy the user.")]
         public AudioSource TestAudio;
         [Tooltip("If true, then " + nameof(Slider) + "'s value (after transformation) will be saved to a cache, so that it is 'saved' between sessions, and can theoretically be edited by the user.")]
-        public bool StoreParameterInCache;
+        public bool StoreParameterInCache = true;
         [ShowIf(nameof(StoreParameterInCache))]
         [Tooltip("If empty, the value of " + nameof(ExposedParameterName) + " will be used as key.")]
-        public string CacheKey;
+        public string CacheKey = "";
 
         [Header("Slider to Volume Conversion")]
         [Tooltip("How " + nameof(Slider) + "'s value is transformed to the new value of the exposed parameter of " + nameof(AudioMixer) + ".\nIf " + nameof(AudioSliderTransformation.Linear) + ", then the parameter's new value will equal " + nameof(Coefficient) + " * (" + nameof(Slider) + " value).\nIf " + nameof(AudioSliderTransformation.Logarithmic) + ", then the parameter's new value will equal " + nameof(Coefficient) + " * Log (base " + nameof(LogBase) + ") of (" + nameof(Slider) + " value). Usually, for " + nameof(AudioSliderTransformation.Linear) + " transformations, you will want a " + nameof(Coefficient) + " of 1. When transforming volumes, you will want to use " + nameof(AudioSliderTransformation.Logarithmic) + " with a " + nameof(LogBase) + " of 10 and a " + nameof(Coefficient) + " of 20 (and your slider should have a " + nameof(UI.Slider.minValue) + " and " + nameof(UI.Slider.maxValue) + " of 0.0001 and 1, respectively).")]
-        public AudioSliderTransformation SliderTransformation;
+        public AudioSliderTransformation SliderTransformation = AudioSliderTransformation.Linear;
         [ShowIf(nameof(SliderTransformation), AudioSliderTransformation.Logarithmic)]
         [Tooltip("See " + nameof(SliderTransformation) + " for the purpose of this field.")]
-        public float LogBase;
+        public float LogBase = 10f;
         [Tooltip("See " + nameof(SliderTransformation) + " for the purpose of this field.")]
-        public float Coefficient;
+        public float Coefficient = 1f;
 
         public string FinalCacheKey => string.IsNullOrEmpty(CacheKey) ? ExposedParameterName : CacheKey;
 
-        protected override void Reset()
-        {
-            base.Reset();
-
-            ExposedParameterName = "Volume";
-
-            StoreParameterInCache = true;
-            CacheKey = "";
-
-            SliderTransformation = AudioSliderTransformation.Linear;
-            LogBase = 10f;
-            Coefficient = 1f;
-        }
         public void Inject(ILoggerProvider loggerProvider, ILocalCache localCache) {
             _logger = loggerProvider.GetLogger(this);
             _localCache = localCache;

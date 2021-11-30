@@ -1,5 +1,4 @@
-using System;
-using System.Diagnostics.CodeAnalysis;
+﻿using System;
 
 namespace UnityEngine
 {
@@ -10,9 +9,6 @@ namespace UnityEngine
             "Sources must be provided in reverse order of importance (i.e., configs in source 0 will override configs in source 1, " +
             "which will override configs in source 2, etc.)"
         )]
-        public ConfigurationSource[] ConfigurationSources;
-
-        [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
-        private void Reset() => ConfigurationSources = Array.Empty<ConfigurationSource>();
+        public ConfigurationSource[] ConfigurationSources = Array.Empty<ConfigurationSource>();
     }
 }

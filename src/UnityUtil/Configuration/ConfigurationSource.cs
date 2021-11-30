@@ -35,7 +35,7 @@ namespace UnityEngine
         protected readonly Dictionary<string, object> LoadedConfigsHidden = new();
 
         [field: ShowInInspector, SerializeField]
-        public bool Required { get; private set; }
+        public bool Required { get; private set; } = true;
 
         [field: Tooltip(
             "In what contexts should we attempt to load this " + nameof(ConfigurationSource) + "? " +
@@ -45,16 +45,9 @@ namespace UnityEngine
             "and then the configuration system won't attempt to load them or warn that they are missing."
         )]
         [field: ShowInInspector, SerializeField]
-        public ConfigurationLoadContext LoadContext { get; private set; }
+        public ConfigurationLoadContext LoadContext { get; private set; } = ConfigurationLoadContext.Always;
 
         public abstract ConfigurationSourceLoadBehavior LoadBehavior { get; }
-
-        [Conditional("UNITY_EDITOR")]
-        [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
-        private void Reset() {
-            Required = true;
-            LoadContext = ConfigurationLoadContext.Always;
-        }
 
         public void Inject(ILoggerProvider loggerProvider) => Logger = loggerProvider.GetLogger(this);
 

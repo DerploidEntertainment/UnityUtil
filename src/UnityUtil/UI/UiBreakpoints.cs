@@ -17,12 +17,6 @@ namespace UnityEngine.UI
     )]
     public class UiBreakpoints : MonoBehaviour
     {
-        public const BreakpointMode DefaultMode = BreakpointMode.SafeAreaAspectRatio;
-        public const BreakpointMatchMode DefaultMatchMode = BreakpointMatchMode.MinEqualOrGreater;
-        public const bool DefaultRecheckMatchesOnResize = true;
-        public const bool DefaultLogDimensionsInEditor = true;
-        public const bool DefaultLogDimensionsInPlayer = false;
-
         private ILogger _logger;
 
         private bool _noMatch;
@@ -37,7 +31,7 @@ namespace UnityEngine.UI
             "What value will breakpoints be matched against? Can be the width, height, or aspect ratio of the physical device screen, " +
             "the device's 'safe area', or a particular Camera."
         )]
-        public BreakpointMode Mode = DefaultMode;
+        public BreakpointMode Mode = BreakpointMode.SafeAreaAspectRatio;
 
         [Tooltip(
             "How will breakpoints be matched against the value specified by " + nameof(Mode) + "? " +
@@ -49,7 +43,7 @@ namespace UnityEngine.UI
             "if " + nameof(MatchMode) + " is " + nameof(BreakpointMatchMode.MaxEqualOrLess) + ", then only the 576 breakpoint will match (or the 768 breakpoint on a device that's exactly 768 pixels wide); and " +
             "if " + nameof(MatchMode) + " is " + nameof(BreakpointMatchMode.MinEqualOrGreater) + ", then only the 768 breakpoint will match."
             )]
-        public BreakpointMatchMode MatchMode = DefaultMatchMode;
+        public BreakpointMatchMode MatchMode = BreakpointMatchMode.MinEqualOrGreater;
 
         [ShowIf(nameof(IsCameraMode))]
         [Tooltip("This is the Camera whose height, width, or aspect ratio will be matched against the provided breakpoints.")]
@@ -62,13 +56,13 @@ namespace UnityEngine.UI
             "Note that, if this value is true, then handlers for the breakpoint match events will run in the Editor " +
             "if they are set to run in 'Editor and Runtime', and then they will run even if this component is disabled."
         )]
-        public bool RecheckMatchesOnResize = DefaultRecheckMatchesOnResize;
+        public bool RecheckMatchesOnResize = true;
 
         [Tooltip("Should the dimensions of the screen and safe area be logged in the Editor? Useful for debugging, but makes the Console quite noisy.")]
-        public bool LogDimensionsInEditor = DefaultLogDimensionsInEditor;
+        public bool LogDimensionsInEditor = true;
 
         [Tooltip("Should the dimensions of the screen and safe area be logged in a built player? Useful for troubleshooting in Development builds.")]
-        public bool LogDimensionsInPlayer = DefaultLogDimensionsInPlayer;
+        public bool LogDimensionsInPlayer = false;
 
         [InfoBox("No matching breakpoints. Raising " + nameof(NoBreakpointMatched) + " event instead", nameof(_noMatch))]
         [TableList(AlwaysExpanded = true), ValidateInput(nameof(AreBreakpointsValid), "Breakpoint values must be provided in ascending order with no duplicates")]
@@ -83,16 +77,6 @@ namespace UnityEngine.UI
             "will be raised, so this event will be raised instead."
         )]
         public UnityEvent NoBreakpointMatched = new();
-
-        [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
-        private void Reset()
-        {
-            Mode = DefaultMode;
-            MatchMode = DefaultMatchMode;
-            RecheckMatchesOnResize = DefaultRecheckMatchesOnResize;
-            LogDimensionsInEditor = DefaultLogDimensionsInEditor;
-            LogDimensionsInPlayer = DefaultLogDimensionsInPlayer;
-        }
 
         [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
         private void Awake()

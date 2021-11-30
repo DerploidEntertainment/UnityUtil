@@ -1,4 +1,4 @@
-﻿using UnityEngine.EventSystems;
+using UnityEngine.EventSystems;
 using UnityEngine.Logging;
 
 namespace UnityEngine.UI
@@ -20,14 +20,7 @@ namespace UnityEngine.UI
         public CanvasScaler CanvasScaler;
 
         [Min(0f), Tooltip(TOOLTIP)]
-        public int DragThresholdFactor;
-
-        protected override void Reset()
-        {
-            base.Reset();
-
-            DragThresholdFactor = 5;
-        }
+        public int DragThresholdFactor = 5;
 
         protected override void Awake() {
             base.Awake();

@@ -18,9 +18,9 @@ namespace UnityEngine {
         [Tooltip("If the " + nameof(LookAtRaycast.RaycastingTransform) + " is associated with a " + nameof(UnityEngine.Inventory.Weapon) + ", then providing its " + nameof(UnityEngine.Inventory.WeaponInfo) + " here will override " + nameof(Range) + " and " + nameof(LayerMask) + ", which might be less error-prone during development.")]
         public WeaponInfo WeaponInfo;
         [Tooltip("This upward direction will be used by the " + nameof(LookAtRaycast.TransformToRotate) + " to rotate toward whatever the " + nameof(RaycastingTransform) + " is looking at.")]
-        public AxisDirection UpwardDirectionType;
+        public AxisDirection UpwardDirectionType = AxisDirection.OppositeGravity;
         [Tooltip("Only required if " + nameof(UpwardDirectionType) + " is " + nameof(AxisDirection.CustomWorldSpace) + " or " + nameof(AxisDirection.CustomLocalSpace) + ".")]
-        public Vector3 CustomUpwardDirection;
+        public Vector3 CustomUpwardDirection = Vector3.up;
 
         /// <summary>
         /// Returns the unit vector that this <see cref="FollowVisionModule"/> will use to rotate towards what its associated <see cref="FollowVisionModule.VisionModule"/> is looking at.

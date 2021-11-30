@@ -17,16 +17,16 @@ namespace UnityEngine.Movement
         public ValueInput LookInput;
         [Tooltip("The maximum angle around the vertical that can be looked through in the positive direction.  For best results, use values less than 180° to limit the view, or exactly 360° to allow full rotation.")]
         [Range(0f, 360f)]
-        public float MaxPositiveAngle;
+        public float MaxPositiveAngle = 360f;
         [Tooltip("The maximum angle around the vertical that can be looked through in the negative direction.  For best results, use values greater than -180° to limit the view, or exactly -360° to allow full rotation.")]
         [Range(-360f, 0f)]
-        public float MaxNegativeAngle;
+        public float MaxNegativeAngle = -360f;
         [Tooltip("If true, then the look rotation is applied using physics, otherwise it is applied using kinematic Transform rotation.")]
-        public bool UsePhysicsToLook;
+        public bool UsePhysicsToLook = true;
         [Tooltip("Around what axis will the look rotation be applied?")]
-        public AxisDirection AxisDirectionType;
+        public AxisDirection AxisDirectionType = AxisDirection.OppositeGravity;
         [Tooltip("Only required if " + nameof(AxisDirectionType) + " is " + nameof(AxisDirection.CustomWorldSpace) + " or " + nameof(AxisDirection.CustomLocalSpace) + ".")]
-        public Vector3 CustomAxisDirection;
+        public Vector3 CustomAxisDirection = Vector3.up;
 
         /// <summary>
         /// Returns the unit vector in which this <see cref="HoverForce"/> will attempt to hover.
@@ -42,14 +42,6 @@ namespace UnityEngine.Movement
             };
 
         // EVENT HANDLERS
-        protected override void Reset() {
-            base.Reset();
-
-            MaxPositiveAngle = 360f;
-            MaxNegativeAngle = -360f;
-            UsePhysicsToLook = true;
-            CustomAxisDirection = Vector3.up;
-        }
         protected override void Awake() {
             base.Awake();
 
