@@ -32,26 +32,6 @@ namespace UnityEngine {
             string formatString = DefaultHierarchyNameWithTypeFormatString
         ) => string.Format(formatString, component.GetType().Name, getName(component.transform, numParents, separator, formatString: "{0}"));
 
-        [Conditional("UNITY_ASSERTIONS")]
-        public static void AssertDependency(this Component component, [NotNull] object? member, string memberName)
-        {
-            Assert.IsNotNull(member, $"{component.GetHierarchyNameWithType()}'s {memberName} dependency was not satisfied!");
-
-            // Convince compiler that this param will be non-null upon return, since
-            // Unity hasn't tagged its Assert methods with nullability attributes
-            member ??= "";
-        }
-
-        [Conditional("UNITY_ASSERTIONS")]
-        public static void AssertAssociation(this Component component, [NotNull] object? member, string memberName)
-        {
-            Assert.IsNotNull(member, $"{component.GetHierarchyNameWithType()} was not associated with any {memberName}!");
-
-            // Convince compiler that this param will be non-null upon return, since
-            // Unity hasn't tagged its Assert methods with nullability attributes
-            member ??= "";
-        }
-
         /// <summary>
         /// Assert that this component is both active and enabled.
         /// </summary>
