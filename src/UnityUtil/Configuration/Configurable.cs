@@ -20,7 +20,9 @@ namespace UnityEngine
         [Tooltip(ConfigKeyTooltip)]
         public string ConfigKey = "";
 
+        #if UNITY_EDITOR
         protected virtual void Reset() => ConfigKey = DefaultConfigKey(GetType());
+        #endif
 
         protected virtual void Awake() {
             DependencyInjector.Instance.ResolveDependenciesOf(this);
