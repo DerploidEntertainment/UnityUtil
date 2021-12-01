@@ -1,4 +1,4 @@
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.Triggers;
 
@@ -14,10 +14,10 @@ namespace UnityUtil.Test.EditMode.Triggers {
             OrTrigger orTrigger = getOrTrigger(condition);
 
             condition.State = false;
-            Assert.IsFalse(orTrigger.IsConditionMet());
+            Assert.That(orTrigger.IsConditionMet(), Is.False);
 
             condition.State = true;
-            Assert.IsTrue(orTrigger.IsConditionMet());
+            Assert.That(orTrigger.IsConditionMet(), Is.True);
         }
 
         [Test]
@@ -28,19 +28,19 @@ namespace UnityUtil.Test.EditMode.Triggers {
 
             condition0.State = false;
             condition1.State = false;
-            Assert.IsFalse(orTrigger.IsConditionMet());
+            Assert.That(orTrigger.IsConditionMet(), Is.False);
 
             condition0.State = true;
             condition1.State = false;
-            Assert.IsTrue(orTrigger.IsConditionMet());
+            Assert.That(orTrigger.IsConditionMet(), Is.True);
 
             condition0.State = false;
             condition1.State = true;
-            Assert.IsTrue(orTrigger.IsConditionMet());
+            Assert.That(orTrigger.IsConditionMet(), Is.True);
 
             condition0.State = true;
             condition1.State = true;
-            Assert.IsTrue(orTrigger.IsConditionMet());
+            Assert.That(orTrigger.IsConditionMet(), Is.True);
         }
 
         [Test]

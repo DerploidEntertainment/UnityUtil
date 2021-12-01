@@ -1,4 +1,4 @@
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.Triggers;
 
@@ -10,13 +10,13 @@ namespace UnityUtil.Test.EditMode.Triggers {
             ToggleTrigger trigger = getToggleTrigger();
 
             trigger.TurnOn();
-            Assert.IsTrue(trigger.IsConditionMet());
+            Assert.That(trigger.IsConditionMet(), Is.True);
 
             trigger.TurnOff();
-            Assert.IsFalse(trigger.IsConditionMet());
+            Assert.That(trigger.IsConditionMet(), Is.False);
 
             trigger.TurnOn();
-            Assert.IsTrue(trigger.IsConditionMet());
+            Assert.That(trigger.IsConditionMet(), Is.True);
         }
 
         [Test]

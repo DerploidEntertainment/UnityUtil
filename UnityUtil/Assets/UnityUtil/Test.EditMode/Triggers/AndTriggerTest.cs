@@ -1,4 +1,4 @@
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.Triggers;
 
@@ -13,10 +13,10 @@ namespace UnityUtil.Test.EditMode.Triggers {
             AndTrigger andTrigger = getAndTrigger(condition);
 
             condition.State = false;
-            Assert.IsFalse(andTrigger.IsConditionMet());
+            Assert.That(andTrigger.IsConditionMet(), Is.False);
 
             condition.State = true;
-            Assert.IsTrue(andTrigger.IsConditionMet());
+            Assert.That(andTrigger.IsConditionMet(), Is.True);
         }
 
         [Test]
@@ -28,19 +28,19 @@ namespace UnityUtil.Test.EditMode.Triggers {
 
             condition0.State = false;
             condition1.State = false;
-            Assert.IsFalse(andTrigger.IsConditionMet());
+            Assert.That(andTrigger.IsConditionMet(), Is.False);
 
             condition0.State = true;
             condition1.State = false;
-            Assert.IsFalse(andTrigger.IsConditionMet());
+            Assert.That(andTrigger.IsConditionMet(), Is.False);
 
             condition0.State = false;
             condition1.State = true;
-            Assert.IsFalse(andTrigger.IsConditionMet());
+            Assert.That(andTrigger.IsConditionMet(), Is.False);
 
             condition0.State = true;
             condition1.State = true;
-            Assert.IsTrue(andTrigger.IsConditionMet());
+            Assert.That(andTrigger.IsConditionMet(), Is.True);
         }
 
         [Test]
