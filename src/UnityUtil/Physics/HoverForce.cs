@@ -78,7 +78,7 @@ namespace UnityEngine
 
         [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
         private void FixedUpdate() {
-            if (HoveringRigidbody is null)
+            if (HoveringRigidbody == null)
                 return;
 
             // Determine the upward direction

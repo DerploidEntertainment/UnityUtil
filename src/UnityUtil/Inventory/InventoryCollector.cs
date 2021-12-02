@@ -27,7 +27,7 @@ namespace UnityEngine.Inventory {
         [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
         private void OnTriggerEnter(Collider other) {
             InventoryCollectible c = other.attachedRigidbody.GetComponent<InventoryCollectible>();
-            if (c is not null)
+            if (c != null)
                 Inventory!.Collect(c);
         }
 

@@ -110,7 +110,7 @@ namespace UnityEngine.UI
                     _localCache!.SetFloat(FinalCacheKey, newVal);
                     _logger!.Log($"Saved new value ({newVal}) of exposed parameter '{ExposedParameterName}' of {nameof(Audio.AudioMixer)} '{AudioMixer.name}' to cache", context: this);
                 }
-                if (TestAudio is not null)
+                if (TestAudio != null)
                     TestAudio.Play();   // Don't know why the F*CK a null-coalescing operator isn't working here...
             });
             eventTrigger.triggers.Add(pointerUpEvent);
@@ -152,7 +152,7 @@ namespace UnityEngine.UI
         [Button]
         public void ClearCachedState() {
             string cacheKey = FinalCacheKey;
-            if (_localCache is null)
+            if (_localCache == null)
                 PlayerPrefs.DeleteKey(cacheKey);
             else
                 _localCache.DeleteKey(cacheKey);

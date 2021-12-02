@@ -38,7 +38,7 @@ namespace UnityEngine.Inventory {
                 RaycastHit hit = hits[h];
                 Rigidbody rb = hit.collider.attachedRigidbody;
                 bool push =
-                    rb is not null &&
+                    rb != null &&
                     !Info!.IgnoreColliderTags.Contains(hit.collider.tag) &&
                     !unpushableRbs.Contains(rb) &&
                     !_pushedRigidbodies.Contains(rb);

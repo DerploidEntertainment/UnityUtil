@@ -27,7 +27,7 @@ namespace UnityEngine.Triggers
         {
             if (Conditions is not null) {
                 foreach (ConditionalTrigger condition in Conditions) {
-                    if (condition is not null)
+                    if (condition != null)
                         addEventListeners(condition);
                 }
             }
@@ -50,7 +50,7 @@ namespace UnityEngine.Triggers
                 return;
 
             foreach (ConditionalTrigger condition in Conditions) {
-                if (condition is null)
+                if (condition == null)
                     continue;
 
                 condition.BecameTrue.RemoveAllListeners();

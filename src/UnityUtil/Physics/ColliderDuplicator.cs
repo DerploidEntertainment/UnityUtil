@@ -73,7 +73,7 @@ namespace UnityEngine {
             List<Transform> dupls = ChildColliderDuplication switch {
                 ChildColliderDuplicateMode.ImmediateChildCollidersOnly => duplicateImmediateChildren(),
                 ChildColliderDuplicateMode.AllChildCollidersFlattened => duplicateAllChildrenFlat(),
-                ChildColliderDuplicateMode.AllChildCollidersHierarchy => newParent is null ? new() : duplicateAllChildrenHierarchy(newParent),
+                ChildColliderDuplicateMode.AllChildCollidersHierarchy => newParent == null ? new() : duplicateAllChildrenHierarchy(newParent),
                 _ => new(),
             };
 
@@ -200,9 +200,9 @@ namespace UnityEngine {
             }
 
             // Attach a physics target component, if requested
-            if (PhysicsTarget is not null) {
+            if (PhysicsTarget != null) {
                 PhysTarget target = newParent.AddComponent<PhysTarget>();
-                if (target is not null)
+                if (target != null)
                     target.TargetComponent = PhysicsTarget;
             }
         }

@@ -29,11 +29,11 @@
             BetterUpdate = look;
         }
         private void look(float deltaTime) {
-            if (TransformToRotate is null || (TransformToLookAt is null && TagToLookAt is null))
+            if (TransformToRotate == null || (TransformToLookAt == null && TagToLookAt is null))
                 return;
 
             Transform? target = (TagToLookAt is null) ? TransformToLookAt : GameObject.FindWithTag(TagToLookAt)?.transform;
-            if (target is not null) {
+            if (target != null) {
                 TransformToRotate.LookAt(target, -Physics.gravity);
                 if (FlipOnLocalY)
                     TransformToRotate.localRotation *= Quaternion.Euler(180f * Vector3.up);

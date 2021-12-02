@@ -28,7 +28,7 @@ namespace UnityEngine.UI
 
         private bool isNumBreakpointsValid(UnityEvent[] triggers, ref string message)
         {
-            bool valid = UiBreakpoints is null || triggers.Length == UiBreakpoints.Breakpoints.Length;
+            bool valid = UiBreakpoints == null || triggers.Length == UiBreakpoints.Breakpoints.Length;
             if (!valid) {
                 message = $"The associated {nameof(UI.UiBreakpoints)} object has {UiBreakpoints!.Breakpoints.Length} {nameof(UiBreakpoints.Breakpoints)}, " +
                     $"but you have defined matching {nameof(BreakpointTriggers)} for {(BreakpointTriggers.Length < UiBreakpoints.Breakpoints.Length ? "only" : "")} {BreakpointTriggers.Length}.";

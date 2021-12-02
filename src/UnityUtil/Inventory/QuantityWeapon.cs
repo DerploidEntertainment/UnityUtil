@@ -26,7 +26,7 @@ namespace UnityEngine.Inventory {
                 RaycastHit hit = hits[h];
                 if (!Info!.IgnoreColliderTags.Contains(hit.collider.tag)) {
                     ManagedQuantity? quantity = hit.collider.attachedRigidbody?.GetComponent<ManagedQuantity>();
-                    if (quantity is not null) {
+                    if (quantity != null) {
                         quantity.Change(Info.Amount, Info.ChangeMode);
                         if (Info.OnlyAffectClosest && hits.Length > 0)
                             break;

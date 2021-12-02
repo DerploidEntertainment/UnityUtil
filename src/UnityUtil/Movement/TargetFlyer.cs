@@ -43,7 +43,7 @@ namespace UnityEngine.Movement {
             BetterFixedUpdate = flyOrIdle;
         }
         private void flyOrIdle(float deltaTime) {
-            if (FlyingRigidbody is null)
+            if (FlyingRigidbody == null)
                 return;
 
             // If idling, then just apply an occasional, random force

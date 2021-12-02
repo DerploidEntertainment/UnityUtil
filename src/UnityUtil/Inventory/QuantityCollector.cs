@@ -17,7 +17,7 @@ namespace UnityEngine.Inventory {
         private void collect(Collector collector, Collectible collectible) {
             // If no Quantity Collectible was found then just return
             QuantityCollectible qc = collectible.GetComponent<QuantityCollectible>();
-            if (qc is null)
+            if (qc == null)
                 return;
 
             // If one was found, then adjust its current health as necessary

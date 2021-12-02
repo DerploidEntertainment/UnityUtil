@@ -33,7 +33,7 @@
 
         private bool hasRect()
         {
-            if (RectTransform is null) {
+            if (RectTransform == null) {
                 Debug.LogWarning($"Could not get the {nameof(RectTransform)} of this {nameof(ModifiableRectTransform)}. No values will be changed. Try enterring Play Mode once to correct this.");
                 return false;
             }

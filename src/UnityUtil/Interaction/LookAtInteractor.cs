@@ -82,7 +82,7 @@ namespace UnityEngine.Inputs {
             _triggerBuffer.Clear();
             for (int h = 0; h < hits.Length; ++h) {
                 ToggleTrigger trigger = hits[h].collider.GetComponent<ToggleTrigger>();
-                if (trigger is not null)
+                if (trigger != null)
                     _triggerBuffer.Add(trigger);
             }
 

@@ -28,7 +28,7 @@ namespace UnityEngine {
             // Change amount decreases linearly with distance from the explosion
             ManagedQuantity[] quantities = colliders
                 .Select(x => x.attachedRigidbody?.GetComponent<ManagedQuantity>())
-                .Where(x => x is not null)
+                .Where(x => x != null)
                 .Select(x => x!)
                 .Distinct()
                 .ToArray();

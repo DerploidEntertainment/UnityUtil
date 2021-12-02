@@ -47,13 +47,13 @@ namespace UnityEngine
 
         [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
         private void OnDrawGizmos() {
-            if (RigidbodyToStabilize is not null)
+            if (RigidbodyToStabilize != null)
                 Gizmos.DrawLine(RigidbodyToStabilize.position, RigidbodyToStabilize.position + CustomUpwardDirection);
         }
 
         [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
         private void FixedUpdate() {
-            if (RigidbodyToStabilize is null)
+            if (RigidbodyToStabilize == null)
                 return;
 
             // Determine the upward direction

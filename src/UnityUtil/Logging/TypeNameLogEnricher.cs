@@ -10,7 +10,7 @@
         public string FormatString = "Type {0}";
 
         public override string GetEnrichedLog(object source) =>
-            source is null ? "" : string.Format(FormatString, source.GetType().Name);
+            source == null ? "" : string.Format(FormatString, source.GetType().Name);
     }
 
 }

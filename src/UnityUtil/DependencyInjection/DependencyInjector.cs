@@ -119,9 +119,9 @@ namespace UnityEngine.DependencyInjection
             var service = new Service(serviceType, (instance as Component)?.tag ?? DefaultTag, instance);
 
             // Check if the provided service is for logging
-            if (serviceType == typeof(ILoggerProvider) && _logger is null)
+            if (serviceType == typeof(ILoggerProvider) && _logger == null)
                 _logger = ((ILoggerProvider)instance).GetLogger(this);
-            else if (serviceType == typeof(ILogger) && _logger is null)
+            else if (serviceType == typeof(ILogger) && _logger == null)
                 _logger = (ILogger)instance;
 
 

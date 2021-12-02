@@ -52,7 +52,7 @@ namespace UnityEngine.Triggers {
 
         protected void TryTrigger(Rigidbody2D? rb) {
             bool matches =
-                rb is null
+                rb == null
                 || string.IsNullOrEmpty(AttachedRigidbodyTagFilter)
                 || (FilterIsBlacklist && !rb.CompareTag(AttachedRigidbodyTagFilter))
                 || (!FilterIsBlacklist && rb.CompareTag(AttachedRigidbodyTagFilter));

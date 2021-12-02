@@ -89,14 +89,14 @@ namespace UnityEngine
 
         public void Spawn() {
             // Destroy any previously spawned GameObjects, if requested
-            if (_previous is not null && DestroyPrevious)
+            if (_previous != null && DestroyPrevious)
                 Destroy(_previous);
 
             string newName = $"{BaseName}{(DestroyPrevious ? "" : "_" + _count)}";
             _logger!.Log($"Spawning {newName}", context: this);
 
             // Instantiating a Prefab can sometimes give a GameObject or a Transform...we want the GameObject
-            GameObject obj = (SpawnParent is null) ?
+            GameObject obj = (SpawnParent == null) ?
                 Instantiate(Prefab!, transform.position, transform.rotation) :
                 Instantiate(Prefab!, transform.position, transform.rotation, SpawnParent);
             obj.name = newName;
@@ -109,7 +109,7 @@ namespace UnityEngine
 #else
             Rigidbody rb = obj.GetComponent<Rigidbody>();
 #endif
-            if (rb is not null) {
+            if (rb != null) {
 #if DEBUG_2D
                 Vector2 dir = getSpawnDirection();
 #else

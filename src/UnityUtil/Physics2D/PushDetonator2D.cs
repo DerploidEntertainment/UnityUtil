@@ -29,7 +29,7 @@ namespace UnityEngine {
             // Upwards modifier adjusts to gravity
             Rigidbody2D[] rigidbodies = colliders
                 .Select(c => c.attachedRigidbody)
-                .Where(rb => rb is not null && rb != SafeRigidbody)
+                .Where(rb => rb != null && rb != SafeRigidbody)
                 .Distinct()
                 .ToArray();
             for (int rb = 0; rb < rigidbodies.Length; ++rb) {

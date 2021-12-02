@@ -48,7 +48,7 @@ namespace UnityEngine
         }
 
         private void finishLoading(ConfigObject config, string resFileName) {
-            if (config is null) {
+            if (config == null) {
                 string notFoundMsg = $"ScriptableObject configuration file ('{resFileName}') could not be found. If this was not expected, make sure that the file exists and is not locked by another application.";
                 if (Required)
                     throw new FileNotFoundException(notFoundMsg, ResourceName);

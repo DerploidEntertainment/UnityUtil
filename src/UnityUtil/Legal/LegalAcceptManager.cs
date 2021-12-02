@@ -123,7 +123,7 @@ namespace UnityEngine.Legal
         [Button, Conditional("DEBUG")]
         public void ClearAcceptance()
         {
-            if (_localCache is null) {
+            if (_localCache == null) {
                 for (int d = 0; d < Documents.Length; ++d)
                     PlayerPrefs.DeleteKey(Documents[d].CacheKey);
             }

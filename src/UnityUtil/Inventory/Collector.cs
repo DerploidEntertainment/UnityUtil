@@ -32,7 +32,7 @@ namespace UnityEngine.Inventory {
         private void OnTriggerEnter(Collider other) {
             // If no collectible was found then just return
             Collectible c = other.attachedRigidbody.GetComponent<Collectible>();
-            if (c is not null)
+            if (c != null)
                 Collected.Invoke(this, c);
         }
 

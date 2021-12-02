@@ -53,7 +53,7 @@ namespace UnityEngine {
             var nameBuilder = new StringBuilder(trans.name);
             for (int p = 0; p < numParents; ++p) {
                 trans = trans.parent;
-                if (trans is null)
+                if (trans == null)
                     break;
                 nameBuilder.Insert(0, trans.name + separator);
             }

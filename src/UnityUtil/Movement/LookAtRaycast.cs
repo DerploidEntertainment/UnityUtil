@@ -63,14 +63,14 @@ namespace UnityEngine {
         }
         [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
         private void OnDrawGizmos() {
-            if (TransformToRotate is null)
+            if (TransformToRotate == null)
                 return;
 
             float range = WeaponInfo?.Range ?? Range;
             Gizmos.DrawLine(TransformToRotate.position, TransformToRotate.TransformPoint(range * Vector3.forward));
         }
         private void doUpdate(float deltaTime) {
-            if (RaycastingTransform is null || TransformToRotate is null)
+            if (RaycastingTransform == null || TransformToRotate == null)
                 return;
 
             // Determine the point that the raycasting transform is looking at.

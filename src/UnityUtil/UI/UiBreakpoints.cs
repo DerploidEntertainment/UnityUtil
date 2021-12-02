@@ -111,7 +111,7 @@ namespace UnityEngine.UI
                 _currentDimensions =
                     IsScreenMode ? new Vector2(Device.Screen.width, Device.Screen.height) :
                     IsSafeAreaMode ? new Vector2(Device.Screen.safeArea.width, Device.Screen.safeArea.height) :
-                    Camera is not null ? new Vector2(Camera.pixelWidth, Camera.pixelHeight) :
+                    Camera != null ? new Vector2(Camera.pixelWidth, Camera.pixelHeight) :
                     Vector2.zero;
             }
             _currentValue = getModeValue(Mode);

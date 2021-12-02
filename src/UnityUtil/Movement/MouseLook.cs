@@ -60,13 +60,13 @@ namespace UnityEngine.Movement
         private void doUpdate(float deltaTime) {
             _deltaSinceLast += LookInput!.Value();
 
-            if (!UsePhysicsToLook && TransformToRotate is not null) {
+            if (!UsePhysicsToLook && TransformToRotate != null) {
                 doLookRotation();
                 _deltaSinceLast = 0f;
             }
         }
         private void doFixedUpdate(float fixedDeltaTime) {
-            if (UsePhysicsToLook && RigidbodyToRotate is not null) {
+            if (UsePhysicsToLook && RigidbodyToRotate != null) {
                 doLookRotation();
                 _deltaSinceLast = 0f;
             }
@@ -76,11 +76,11 @@ namespace UnityEngine.Movement
         {
             // Rotate the requested number of degrees around the upward axis, using the desired method
             float deltaAngle = (_deltaSinceLast > 0) ? Mathf.Min(MaxPositiveAngle - _angle, _deltaSinceLast) : Mathf.Max(MaxNegativeAngle - _angle, _deltaSinceLast);
-            if (UsePhysicsToLook && RigidbodyToRotate is not null) {
+            if (UsePhysicsToLook && RigidbodyToRotate != null) {
                 Vector3 up = GetUpwardUnitVector(RigidbodyToRotate.transform);
                 RigidbodyToRotate.MoveRotation(RigidbodyToRotate.rotation * Quaternion.AngleAxis(deltaAngle, up));
             }
-            else if (!UsePhysicsToLook && TransformToRotate is not null) {
+            else if (!UsePhysicsToLook && TransformToRotate != null) {
                 Vector3 up = GetUpwardUnitVector(TransformToRotate);
                 TransformToRotate.Rotate(up, deltaAngle, Space.World);
             }
