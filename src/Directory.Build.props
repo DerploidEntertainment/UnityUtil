@@ -28,7 +28,20 @@
     </Otherwise>
   </Choose>
 
-  <ItemGroup>
+  <ItemGroup Label="CLS compliance">
+    <!-- Test assemblies will never be referenced by 3rd parties, so they don't need CLS-compliance -->
+    <!--
+    For our other game assemblies, we'll just mark them as entirely not CLS-compliant also. After all,
+    the Unity assemblies are not CLS-compliant, so any type that inherits from one of their types (e.g., MonoBehaviour)
+    or uses one of their types in a public API is also not CLS-compliant. We don't wanna play whack-a-mole to mark every new type/member
+    with [CLSCompliant(false)] as necessary...
+    -->
+    <AssemblyAttribute Include="System.CLSCompliantAttribute">
+      <_Parameter1 Condition="!$(MSBuildProjectName.Contains('Test'))">false</_Parameter1>
+      <_Parameter1 Condition="$(MSBuildProjectName.Contains('Test'))">false</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+
   <ItemGroup Label="Dependencies">
     <PackageReference Include="Unity3D" Version="1.7.0" />
 
