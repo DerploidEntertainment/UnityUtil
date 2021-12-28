@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Text;
 using UnityEngine.Assertions;
 
@@ -30,7 +31,7 @@ namespace UnityEngine {
             uint numParents = DefaultNumParents,
             string separator = DefaultAncestorSeparator,
             string formatString = DefaultHierarchyNameWithTypeFormatString
-        ) => string.Format(formatString, component.GetType().Name, getName(component.transform, numParents, separator, formatString: "{0}"));
+        ) => string.Format(CultureInfo.InvariantCulture, formatString, component.GetType().Name, getName(component.transform, numParents, separator, formatString: "{0}"));
 
         /// <summary>
         /// Assert that this component is both active and enabled.
@@ -58,7 +59,7 @@ namespace UnityEngine {
                 nameBuilder.Insert(0, trans.name + separator);
             }
 
-            return string.Format(formatString, nameBuilder);
+            return string.Format(CultureInfo.InvariantCulture, formatString, nameBuilder);
         }
     }
 }

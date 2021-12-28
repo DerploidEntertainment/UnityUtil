@@ -1,4 +1,6 @@
-﻿namespace UnityEngine.Logging {
+﻿using System.Globalization;
+
+namespace UnityEngine.Logging {
 
     [CreateAssetMenu(menuName = $"{nameof(UnityUtil)}/{nameof(UnityEngine.Logging)}/{nameof(FrameCountLogEnricher)}", fileName = "frame-count-log-enricher")]
     public class FrameCountLogEnricher : LogEnricher
@@ -9,7 +11,7 @@
         )]
         public string FormatString = "Frame {0}";
 
-        public override string GetEnrichedLog(object source) => string.Format(FormatString, Time.frameCount);
+        public override string GetEnrichedLog(object source) => string.Format(CultureInfo.InvariantCulture, FormatString, Time.frameCount);
     }
 
 }

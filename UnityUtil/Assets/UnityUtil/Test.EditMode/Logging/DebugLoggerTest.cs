@@ -3,6 +3,7 @@ using System;
 using UnityEngine;
 using UnityEngine.Logging;
 using UnityUtil.Editor;
+using static System.Globalization.CultureInfo;
 
 namespace UnityUtil.Test.EditMode.Logging {
 
@@ -57,11 +58,11 @@ namespace UnityUtil.Test.EditMode.Logging {
                 // LogFormat methods
                 string format = EditModeTestHelpers.GetUniqueLog("Log {0} {1}");
                 logger.LogFormat(LogType.Log, format, "A", 5);
-                EditModeTestHelpers.ExpectLog(LogType.Log, $"{enrichTxt} | {string.Format(format, "A", 5)}");
+                EditModeTestHelpers.ExpectLog(LogType.Log, $"{enrichTxt} | {string.Format(InvariantCulture, format, "A", 5)}");
 
                 format = EditModeTestHelpers.GetUniqueLog("Log {0} {1} {2}");
                 logger.LogFormat(LogType.Log, context: testObj, format, "A", 5, "Context");
-                EditModeTestHelpers.ExpectLog(LogType.Log, $"{enrichTxt} | {string.Format(format, "A", 5, "Context")}");
+                EditModeTestHelpers.ExpectLog(LogType.Log, $"{enrichTxt} | {string.Format(InvariantCulture, format, "A", 5, "Context")}");
 
                 // LogError methods
                 msg = EditModeTestHelpers.GetUniqueLog("Error");
@@ -202,19 +203,19 @@ namespace UnityUtil.Test.EditMode.Logging {
 
             format = EditModeTestHelpers.GetUniqueLog("Log {0} {1}");
             logger.LogFormat(LogType.Log, format, "A", 5);
-            EditModeTestHelpers.ExpectLog(LogType.Log, string.Format(format, "A", 5));
+            EditModeTestHelpers.ExpectLog(LogType.Log, string.Format(InvariantCulture, format, "A", 5));
 
             format = EditModeTestHelpers.GetUniqueLog("Warning {0} {1}");
             logger.LogFormat(LogType.Warning, format, "A", 5);
-            EditModeTestHelpers.ExpectLog(LogType.Warning, string.Format(format, "A", 5));
+            EditModeTestHelpers.ExpectLog(LogType.Warning, string.Format(InvariantCulture, format, "A", 5));
 
             format = EditModeTestHelpers.GetUniqueLog("Log {0} {1}");
             logger.LogFormat(LogType.Log, context: testObj, format, "A", 5, "Context");
-            EditModeTestHelpers.ExpectLog(LogType.Log, string.Format(format, "A", 5, "Context"));
+            EditModeTestHelpers.ExpectLog(LogType.Log, string.Format(InvariantCulture, format, "A", 5, "Context"));
 
             format = EditModeTestHelpers.GetUniqueLog("Warning {0} {1}");
             logger.LogFormat(LogType.Warning, context: testObj, format, "A", 5, "Context");
-            EditModeTestHelpers.ExpectLog(LogType.Warning, string.Format(format, "A", 5, "Context"));
+            EditModeTestHelpers.ExpectLog(LogType.Warning, string.Format(InvariantCulture, format, "A", 5, "Context"));
         }
 
         [Test]

@@ -1,5 +1,6 @@
 ﻿using Sirenix.OdinInspector;
 using System;
+using System.Globalization;
 using UnityEngine.Logging;
 using S = System;
 
@@ -16,7 +17,7 @@ namespace UnityEngine {
 
             (int seed, bool generated) = GetOrGenerateSeed(Seed);
             if (generated) {
-                Seed = seed.ToString();
+                Seed = seed.ToString(CultureInfo.InvariantCulture);
                 Logger!.Log($"Generated time-dependent seed {seed}", context: this);
             }
             else
@@ -39,7 +40,7 @@ namespace UnityEngine {
             else {
                 bool isInt = int.TryParse(Seed, out seed);
                 if (!isInt)
-                    seed = Seed.GetHashCode();
+                    seed = Seed.GetHashCode(StringComparison.Ordinal);
                 generated = false;
             }
 

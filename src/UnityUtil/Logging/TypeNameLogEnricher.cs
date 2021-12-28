@@ -1,4 +1,6 @@
-﻿namespace UnityEngine.Logging {
+﻿using System.Globalization;
+
+namespace UnityEngine.Logging {
 
     [CreateAssetMenu(menuName = $"{nameof(UnityUtil)}/{nameof(UnityEngine.Logging)}/{nameof(TypeNameLogEnricher)}", fileName = "type-name-log-enricher")]
     public class TypeNameLogEnricher : LogEnricher
@@ -10,7 +12,7 @@
         public string FormatString = "Type {0}";
 
         public override string GetEnrichedLog(object source) =>
-            source == null ? "" : string.Format(FormatString, source.GetType().Name);
+            source == null ? "" : string.Format(CultureInfo.InvariantCulture, FormatString, source.GetType().Name);
     }
 
 }

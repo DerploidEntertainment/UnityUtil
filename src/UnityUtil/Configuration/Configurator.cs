@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -174,7 +175,7 @@ namespace UnityEngine
             // If so, we will build up the cached configuration while it is resolved via reflection
             bool cache = CachedConfigurations.Any(x =>
                 clientType == x.Item1 &&
-                (x.ConfigKey == key || (x.ConfigKey.Length == 0 && key.Contains(x.Item1.FullName))));
+                (x.ConfigKey == key || (x.ConfigKey.Length == 0 && key.Contains(x.Item1.FullName, StringComparison.Ordinal))));
             IList<Expression>? memberAssigns = cache ? new List<Expression>() : null;
             ParameterExpression? clientObjParam = cache ? Expression.Parameter(typeof(object), nameof(client)) : null;
             Expression? clientParam = cache ? Expression.Convert(clientObjParam, clientType) : null;
@@ -268,7 +269,7 @@ namespace UnityEngine
                 return false;
 
             string? errMsg = null;
-            try { typedValue = Convert.ChangeType(configVal, memberType); }
+            try { typedValue = Convert.ChangeType(configVal, memberType, CultureInfo.InvariantCulture); }   // So configured values (e.g., dates/numbers) must be in the invariant culture (en-US)'s format
             catch (InvalidCastException ex) { errMsg = ex.Message; }
             catch (FormatException ex) { errMsg = ex.Message; }
             catch (OverflowException ex) { errMsg = ex.Message; }

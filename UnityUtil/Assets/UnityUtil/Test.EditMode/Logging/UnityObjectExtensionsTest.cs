@@ -1,5 +1,5 @@
 ﻿using NUnit.Framework;
-using System.Text.RegularExpressions;
+using System.Globalization;
 using UnityEngine;
 using UA = UnityEngine.Assertions;
 using UnityEngine.Logging;
@@ -177,7 +177,7 @@ namespace UnityUtil.Test.EditMode.Logging {
         private static GameObject getGameObject(string name, int numParents = 1, string parentNameFormatString = "parent{0}") {
             Transform? lastParentTrans = null;
             for (int p = 0; p < numParents; ++p) {
-                Transform t = new GameObject(string.Format(parentNameFormatString, p)).transform;
+                Transform t = new GameObject(string.Format(CultureInfo.InvariantCulture, parentNameFormatString, p)).transform;
                 t.parent = lastParentTrans;
                 lastParentTrans = t;
             }

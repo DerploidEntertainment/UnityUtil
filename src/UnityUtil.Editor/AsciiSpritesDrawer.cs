@@ -143,7 +143,7 @@ namespace UnityUtil.Editor {
 
             if (string.IsNullOrEmpty(_pathProp!.stringValue))
                 throw new InvalidOperationException($"Cannot auto-load sprites if {nameof(AsciiSprites.AutoLoadSpritePath)} is null or empty");
-            if (_pathProp.stringValue.Contains('\\'))
+            if (_pathProp.stringValue.Contains('\\', StringComparison.Ordinal))
                 throw new InvalidOperationException($"{nameof(AsciiSprites.AutoLoadSpritePath)} must not contain backslashes ('\\'), even on Windows; use forward slash ('/') instead");
 
             // Attempt to load requested character Sprites
