@@ -1,8 +1,8 @@
 ﻿using Sirenix.OdinInspector;
 
-namespace UnityEngine.Inventory {
+namespace UnityEngine.Inventories {
 
-    [CreateAssetMenu(fileName = "projectile-tool", menuName = $"{nameof(UnityUtil)}/{nameof(UnityEngine.Inventory)}/{nameof(UnityEngine.Inventory.ProjectileToolInfo)}")]
+    [CreateAssetMenu(fileName = "projectile-tool", menuName = $"{nameof(UnityUtil)}/{nameof(UnityEngine.Inventories)}/{nameof(UnityEngine.Inventories.ProjectileToolInfo)}")]
     public class ProjectileToolInfo : ScriptableObject
     {
         [Required]

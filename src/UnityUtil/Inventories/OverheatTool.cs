@@ -4,7 +4,7 @@ using System.Collections;
 using UnityEngine.Assertions;
 using UnityEngine.Events;
 
-namespace UnityEngine.Inventory {
+namespace UnityEngine.Inventories {
 
     /// <summary>
     /// Type arguments are (bool isOverheated)

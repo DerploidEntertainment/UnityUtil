@@ -1,4 +1,4 @@
-﻿namespace UnityEngine.Inventory {
+﻿namespace UnityEngine.Inventories {
 
     public enum PhysicsCastShape {
         Ray,
@@ -7,7 +7,7 @@
         Capsule
     }
 
-    [CreateAssetMenu(fileName = "weapon", menuName = $"{nameof(UnityUtil)}/{nameof(UnityEngine.Inventory)}/{nameof(UnityEngine.Inventory.WeaponInfo)}")]
+    [CreateAssetMenu(fileName = "weapon", menuName = $"{nameof(UnityUtil)}/{nameof(UnityEngine.Inventories)}/{nameof(UnityEngine.Inventories.WeaponInfo)}")]
     public class WeaponInfo : ScriptableObject {
 
         [Tooltip("Only colliders matching this layer mask will be attacked.")]
@@ -31,7 +31,7 @@
         [Min(1f)]
         public uint MaxAttacks = 1u;
 
-        [Tooltip($"Determines the shape of the 'shot' or 'blast' created by associated {nameof(UnityEngine.Inventory.Weapon)}s.")]
+        [Tooltip($"Determines the shape of the 'shot' or 'blast' created by associated {nameof(UnityEngine.Inventories.Weapon)}s.")]
         public PhysicsCastShape PhysicsCastShape = PhysicsCastShape.Ray;
 
 
@@ -63,7 +63,7 @@
         [Header("Accuracy")]
 
         private const string TOOLTIP_ACCURACY =
-            $"For automatic {nameof(UnityEngine.Inventory.Weapon)}s, the accuracy cone's half angle will interpolate linearly " +
+            $"For automatic {nameof(UnityEngine.Inventories.Weapon)}s, the accuracy cone's half angle will interpolate linearly " +
             $"from {nameof(WeaponInfo.InitialConeHalfAngle)} to {nameof(WeaponInfo.FinalConeHalfAngle)} in {nameof(WeaponInfo.AccuracyLerpTime)} seconds. " +
             $"Casts of all {nameof(WeaponInfo.PhysicsCastShape)}s will be performed along a random direction in this cone.";
 

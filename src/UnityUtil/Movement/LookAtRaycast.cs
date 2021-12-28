@@ -1,5 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
-using UnityEngine.Inventory;
+using UnityEngine.Inventories;
 
 namespace UnityEngine {
 
@@ -27,8 +27,8 @@ namespace UnityEngine {
         public LayerMask LayerMask;
 
         [Tooltip(
-            $"If the {nameof(LookAtRaycast.RaycastingTransform)} is associated with a {nameof(UnityEngine.Inventory.Weapon)}, " +
-            $"then providing its {nameof(UnityEngine.Inventory.WeaponInfo)} here will override {nameof(Range)} and {nameof(LayerMask)}, " +
+            $"If the {nameof(LookAtRaycast.RaycastingTransform)} is associated with a {nameof(UnityEngine.Inventories.Weapon)}, " +
+            $"then providing its {nameof(UnityEngine.Inventories.WeaponInfo)} here will override {nameof(Range)} and {nameof(LayerMask)}, " +
             $"which might be less error-prone during development."
         )]
         public WeaponInfo? WeaponInfo;

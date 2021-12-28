@@ -1,6 +1,6 @@
-﻿namespace UnityEngine.Inventory {
+﻿namespace UnityEngine.Inventories {
 
-    [CreateAssetMenu(fileName = "ammo-tool", menuName = $"{nameof(UnityUtil)}/{nameof(UnityEngine.Inventory)}/{nameof(UnityEngine.Inventory.AmmoToolInfo)}")]
+    [CreateAssetMenu(fileName = "ammo-tool", menuName = $"{nameof(UnityUtil)}/{nameof(UnityEngine.Inventories)}/{nameof(UnityEngine.Inventories.AmmoToolInfo)}")]
     public class AmmoToolInfo : ScriptableObject {
 
         [Tooltip("A case-insensitive string to identify different types of ammo for collecting (e.g., 'Pistol').")]
@@ -13,7 +13,7 @@
         public int MaxBackupClips;
 
         [Tooltip(
-            $"The amount of ammo that this {nameof(UnityEngine.Inventory.Tool)} has when instantiated. " +
+            $"The amount of ammo that this {nameof(UnityEngine.Inventories.Tool)} has when instantiated. " +
             $"Must be <= {nameof(AmmoToolInfo.MaxClipAmmo)} * ({nameof(AmmoToolInfo.MaxBackupClips)} + 1)."
         )]
         public int StartingAmmo;

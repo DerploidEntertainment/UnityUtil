@@ -8,13 +8,13 @@ using UnityEngine.DependencyInjection;
 using UnityEngine.Events;
 using UnityEngine.Logging;
 
-namespace UnityEngine.Inventory {
+namespace UnityEngine.Inventories {
 
     [Serializable]
     public class InventoryItemEvent : UnityEvent<InventoryCollectible> { }
 
-    public class Inventory : MonoBehaviour {
-
+    public class Inventory : MonoBehaviour
+    {
         private ILogger? _logger;
         private readonly HashSet<InventoryCollectible> _collectibles = new();
 

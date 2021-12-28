@@ -7,7 +7,7 @@ using UnityEngine.DependencyInjection;
 using UnityEngine.Events;
 using UnityEngine.Logging;
 
-namespace UnityEngine.Inventory {
+namespace UnityEngine.Inventories {
 
     [Serializable]
     public class AttackEvent : UnityEvent<Ray, RaycastHit[]> { }

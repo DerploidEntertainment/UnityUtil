@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace UnityEngine.Inventory {
+namespace UnityEngine.Inventories {
 
-    [CreateAssetMenu(fileName = "quantity-weapon", menuName = $"{nameof(UnityUtil)}/{nameof(UnityEngine.Inventory)}/{nameof(UnityEngine.Inventory.QuantityWeaponInfo)}")]
+    [CreateAssetMenu(fileName = "quantity-weapon", menuName = $"{nameof(UnityUtil)}/{nameof(UnityEngine.Inventories)}/{nameof(UnityEngine.Inventories.QuantityWeaponInfo)}")]
     public class QuantityWeaponInfo : ScriptableObject
     {
         [Tooltip(
@@ -15,7 +15,7 @@ namespace UnityEngine.Inventory {
         public ManagedQuantity.ChangeMode ChangeMode = ManagedQuantity.ChangeMode.Absolute;
 
         [Tooltip(
-            $"If true, then only the closest {nameof(UnityEngine.ManagedQuantity)} attacked by this {nameof(UnityEngine.Inventory.QuantityWeapon)} will be changed. " +
+            $"If true, then only the closest {nameof(UnityEngine.ManagedQuantity)} attacked by this {nameof(UnityEngine.Inventories.QuantityWeapon)} will be changed. " +
             $"If false, then all attacked {nameof(UnityEngine.ManagedQuantity)}s will be changed."
         )]
         public bool OnlyAffectClosest = true;

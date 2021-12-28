@@ -2,7 +2,7 @@ using Sirenix.OdinInspector;
 using System.Diagnostics.CodeAnalysis;
 using UnityEngine.Assertions;
 
-namespace UnityEngine.Inventory {
+namespace UnityEngine.Inventories {
 
     public class Collectible : MonoBehaviour
     {

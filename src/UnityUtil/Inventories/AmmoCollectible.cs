@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using UnityEngine.Assertions;
 
-namespace UnityEngine.Inventory {
+namespace UnityEngine.Inventories {
 
     [RequireComponent(typeof(Collectible))]
     public class AmmoCollectible : MonoBehaviour

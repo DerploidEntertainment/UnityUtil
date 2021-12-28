@@ -3,7 +3,7 @@ using System.Collections;
 using UnityEngine.Events;
 using UnityEngine.Inputs;
 
-namespace UnityEngine.Inventory {
+namespace UnityEngine.Inventories {
 
     public class Tool : Updatable
     {

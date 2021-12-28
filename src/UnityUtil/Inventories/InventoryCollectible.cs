@@ -1,7 +1,7 @@
 ﻿using Sirenix.OdinInspector;
 using System;
 
-namespace UnityEngine.Inventory
+namespace UnityEngine.Inventories
 {
 
     public class InventoryCollectible : MonoBehaviour

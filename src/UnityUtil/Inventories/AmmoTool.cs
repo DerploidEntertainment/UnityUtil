@@ -4,7 +4,7 @@ using UnityEngine.Assertions;
 using UnityEngine.Events;
 using UnityEngine.Inputs;
 
-namespace UnityEngine.Inventory {
+namespace UnityEngine.Inventories {
 
     /// <summary>
     /// Type arguments are (int oldClipAmmo, int oldBackupAmmo, int newClipAmmo, int newBackupAmmo)
