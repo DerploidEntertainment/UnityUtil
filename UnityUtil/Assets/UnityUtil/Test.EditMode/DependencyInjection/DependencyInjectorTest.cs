@@ -420,7 +420,7 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
             // Initial, uncached resolution
             var uncacheClient = new TestClient();
             dependencyInjector.ResolveDependenciesOf(uncacheClient);
-            counts = dependencyInjector.GetServiceResolutionCounts();
+            counts = dependencyInjector.ServiceResolutionCounts;
             Assert.That(counts.Uncached.Count, Is.EqualTo(1));
             Assert.That(counts.Uncached[clientType], Is.EqualTo(1));
             Assert.That(counts.Cached.Count, Is.EqualTo(1));
@@ -429,7 +429,7 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
             // Second, base type resolution cached
             var cacheClient = new TestClient();
             dependencyInjector.ResolveDependenciesOf(cacheClient);
-            counts = dependencyInjector.GetServiceResolutionCounts();
+            counts = dependencyInjector.ServiceResolutionCounts;
             Assert.That(counts.Uncached.Count, Is.EqualTo(1));
             Assert.That(counts.Uncached[clientType], Is.EqualTo(2));
             Assert.That(counts.Cached.Count, Is.EqualTo(1));
@@ -437,7 +437,7 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
 
             // Clears cached resolutions
             dependencyInjector.RecordingResolutions = false;
-            counts = dependencyInjector.GetServiceResolutionCounts();
+            counts = dependencyInjector.ServiceResolutionCounts;
             Assert.That(counts.Uncached.Count, Is.Zero);
             Assert.That(counts.Cached.Count, Is.Zero);
         }
@@ -458,7 +458,7 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
             dependencyInjector.RecordingResolutions = false;
 
             // ASSERT
-            DependencyResolutionCounts counts = dependencyInjector.GetServiceResolutionCounts();
+            DependencyResolutionCounts counts = dependencyInjector.ServiceResolutionCounts;
             Assert.That(counts.Uncached.Count, Is.Zero);
             Assert.That(counts.Cached.Count, Is.Zero);
         }
@@ -475,7 +475,7 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
             dependencyInjector.ResolveDependenciesOf(new TestClientBase());
             dependencyInjector.ResolveDependenciesOf(new TestClientBase());
             dependencyInjector.ResolveDependenciesOf(new TestClientBase());
-            DependencyResolutionCounts counts = dependencyInjector.GetServiceResolutionCounts();
+            DependencyResolutionCounts counts = dependencyInjector.ServiceResolutionCounts;
 
             Assert.That(counts.Cached, Is.Empty);
             Assert.That(counts.Uncached, Is.Empty);

@@ -154,15 +154,15 @@ namespace UnityEngine
 
         public void CacheConfiguration(Type clientType, string configKey) => _cachedConfigurations.Add((clientType, configKey));
 
-        public void Configure(object client, string configKey)
+        public void Configure(object client, string cacheKey)
         {
-            if (string.IsNullOrWhiteSpace(configKey))
-                throw new ArgumentException($"'{nameof(configKey)}' cannot be null or whitespace", nameof(configKey));
+            if (string.IsNullOrWhiteSpace(cacheKey))
+                throw new ArgumentException($"'{nameof(cacheKey)}' cannot be null or whitespace", nameof(cacheKey));
 
             // If there's a cached configuration for this type/configKey, then use that
             // The config key is either the provided key (trimmed), or the full name of the client's Type
             Type clientType = client.GetType();
-            string key = configKey.Trim();
+            string key = cacheKey.Trim();
             if (_compiledConfigs.TryGetValue((clientType, key), out Action<object> compiledConfig)) {
                 compiledConfig(client);
                 if (_recording)

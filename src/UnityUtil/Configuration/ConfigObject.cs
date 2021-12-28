@@ -1,8 +1,10 @@
 using Sirenix.OdinInspector;
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace UnityEngine {
 
+    [SuppressMessage("Naming", "CA1720:Identifier contains type name", Justification = "The point of these members is to be type names...")]
     public enum ConfigValueType {
         Integer,
         Boolean,

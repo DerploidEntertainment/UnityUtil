@@ -14,7 +14,7 @@ namespace UnityUtil.Editor
         [MenuItem(ItemName)]
         private static void toggleRecording()
         {
-            DependencyResolutionCounts counts = DependencyInjector.Instance.GetServiceResolutionCounts();
+            DependencyResolutionCounts counts = DependencyInjector.Instance.ServiceResolutionCounts;
             DependencyInjector.Instance.RecordingResolutions = !DependencyInjector.Instance.RecordingResolutions;
             if (DependencyInjector.Instance.RecordingResolutions)
                 return;

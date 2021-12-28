@@ -6,8 +6,9 @@ using UnityEngine.Triggers;
 
 namespace UnityEngine.UI {
 
-    public class UiStack : MonoBehaviour {
-
+    [SuppressMessage("Naming", "CA1711:Identifiers should not have incorrect suffix", Justification = "This is pretty familiar terminology")]
+    public class UiStack : MonoBehaviour
+    {
         private ILogger? _logger;
         private readonly Stack<SimpleTrigger> _popTriggers = new();
 

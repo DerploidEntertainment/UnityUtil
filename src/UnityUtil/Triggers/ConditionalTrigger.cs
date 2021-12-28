@@ -7,7 +7,7 @@ namespace UnityEngine.Triggers {
 
         public abstract bool IsConditionMet();
 
-        protected const string BUTTON_GROUP = "Buttons";
+        protected const string ButtonGroup = "Buttons";
         private const string TRUE_MSG =
             $"{nameof(BecameTrue)} is raised if the trigger's condition WAS false and BECAME true. " +
             $"{nameof(StillTrue)} is raised if the trigger's condition WAS true and STILL IS true (e.g., during a call to {nameof(TriggerState)}.";
@@ -15,7 +15,7 @@ namespace UnityEngine.Triggers {
             $"{nameof(BecameFalse)} is raised if the trigger's condition WAS true and BECAME false. " +
             $"{nameof(StillFalse)} is raised if the trigger's condition WAS false and STILL IS false (e.g., during a call to {nameof(TriggerState)}.";
 
-        [Button, HorizontalGroup(BUTTON_GROUP)]
+        [Button, HorizontalGroup(ButtonGroup)]
         public void TriggerState() {
             if (RaiseStillEvents)
                 (IsConditionMet() ? StillTrue : StillFalse).Invoke();

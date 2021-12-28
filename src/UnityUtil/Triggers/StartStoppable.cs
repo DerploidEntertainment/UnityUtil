@@ -120,7 +120,7 @@ namespace UnityEngine.Triggers {
         }
 
         protected virtual void DoRestart() {
-            Updater!.RegisterUpdate(InstanceID, DoUpdate);
+            Updater!.RegisterUpdate(InstanceId, DoUpdate);
             Running = true;
         }
         protected virtual void DoStop() {
@@ -128,21 +128,21 @@ namespace UnityEngine.Triggers {
                 return;
 
             Running = false;
-            Updater!.UnregisterUpdate(InstanceID);
+            Updater!.UnregisterUpdate(InstanceId);
         }
         protected virtual void DoPause() {
             if (!Running)
                 return;
 
             Running = false;
-            Updater!.UnregisterUpdate(InstanceID);
+            Updater!.UnregisterUpdate(InstanceId);
         }
         protected virtual void DoResume() {
             if (Running)
                 return;
 
             Running = true;
-            Updater!.RegisterUpdate(InstanceID, DoUpdate);
+            Updater!.RegisterUpdate(InstanceId, DoUpdate);
         }
         protected abstract void DoUpdate(float deltaTime);
 

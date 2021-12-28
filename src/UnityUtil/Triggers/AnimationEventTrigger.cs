@@ -32,7 +32,7 @@ namespace UnityEngine.Triggers
         /// Instead, create an <see cref="AnimationClip"/> with an <see cref="AnimationEvent"/> that calls this method.
         /// </summary>
         /// <param name="eventName">Name of the event that was raised by the <see cref="UnityEngine.Animator"/></param>
-        public void RaiseEvent(string eventName) {
+        public void Trigger(string eventName) {
             if (!_triggerDict.TryGetValue(eventName, out UnityEvent trigger)) {
                 Debug.LogWarning($"No trigger associate with named AnimationEvent '{eventName}'");
                 return;

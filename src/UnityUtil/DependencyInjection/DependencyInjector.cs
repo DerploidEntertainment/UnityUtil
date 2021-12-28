@@ -36,7 +36,7 @@ namespace UnityEngine.DependencyInjection
         public const string DefaultTag = "Untagged";
         public const string InjectMethodName = "Inject";
         public const string DefaultLoggerProviderName = "default-logger-provider";
-        public const BindingFlags BINDING_FLAGS = BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance;
+        public const BindingFlags InjectMethodBindingFlags = BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance;
 
         private const int DEFAULT_SCENE_HANDLE = -1;
 
@@ -194,12 +194,11 @@ namespace UnityEngine.DependencyInjection
         public void CacheResolution(Type clientType) => _cachedResolutionTypes.Add(clientType);
 
         /// <summary>
-        /// Get the number of times that each service <see cref="Type"/> has been resolved at runtime.
+        /// Gets/sets the number of times that each service <see cref="Type"/> has been resolved at runtime.
         /// </summary>
-        /// <param name="counts">Upon return, will contain the number of times that services were resolved.</param>
-        public DependencyResolutionCounts GetServiceResolutionCounts() => new(
-            cachedResolutionCounts: new Dictionary<Type, int>(_cachedResolutionCounts),
-            uncachedResolutionCounts: new Dictionary<Type, int>(_uncachedResolutionCounts)
+        public DependencyResolutionCounts ServiceResolutionCounts => new(
+            cachedResolutionCounts: _cachedResolutionCounts,
+            uncachedResolutionCounts: _uncachedResolutionCounts
         );
 
         /// <summary>
@@ -229,7 +228,7 @@ namespace UnityEngine.DependencyInjection
                 }
 
                 // Get the inject method on this type (will throw if more than one method matches)
-                MethodInfo injectMethod = _typeMetadataProvider!.GetMethod(serviceType, InjectMethodName, BINDING_FLAGS);
+                MethodInfo injectMethod = _typeMetadataProvider!.GetMethod(serviceType, InjectMethodName, InjectMethodBindingFlags);
                 if (injectMethod is null)
                     goto Loop;
 

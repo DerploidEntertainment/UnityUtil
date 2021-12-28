@@ -8,7 +8,7 @@ namespace UnityEngine
         protected IUpdater? Updater;
         private IRuntimeIdProvider? _runtimeIdProvider;
 
-        public int InstanceID { get; private set; }
+        public int InstanceId { get; private set; }
 
         /// <summary>
         /// If <see langword="true"/>, then this <see cref="UnityEngine.Updatable"/> will have its Update actions registered/unregistered automatically when it is enabled/disabled.
@@ -29,26 +29,26 @@ namespace UnityEngine
         protected override void Awake() {
             base.Awake();
 
-            InstanceID = _runtimeIdProvider!.GetId();
+            InstanceId = _runtimeIdProvider!.GetId();
         }
         protected virtual void OnEnable() {
             if (RegisterUpdatesAutomatically) {
                 if (BetterUpdate is not null)
-                    Updater!.RegisterUpdate(InstanceID, BetterUpdate);
+                    Updater!.RegisterUpdate(InstanceId, BetterUpdate);
                 if (BetterFixedUpdate is not null)
-                    Updater!.RegisterFixedUpdate(InstanceID, BetterFixedUpdate);
+                    Updater!.RegisterFixedUpdate(InstanceId, BetterFixedUpdate);
                 if (BetterLateUpdate is not null)
-                    Updater!.RegisterLateUpdate(InstanceID, BetterLateUpdate);
+                    Updater!.RegisterLateUpdate(InstanceId, BetterLateUpdate);
             }
         }
         protected virtual void OnDisable() {
             if (RegisterUpdatesAutomatically) {
                 if (BetterUpdate is not null)
-                    Updater!.UnregisterUpdate(InstanceID);
+                    Updater!.UnregisterUpdate(InstanceId);
                 if (BetterFixedUpdate is not null)
-                    Updater!.UnregisterFixedUpdate(InstanceID);
+                    Updater!.UnregisterFixedUpdate(InstanceId);
                 if (BetterLateUpdate is not null)
-                    Updater!.UnregisterLateUpdate(InstanceID);
+                    Updater!.UnregisterLateUpdate(InstanceId);
             }
         }
 
