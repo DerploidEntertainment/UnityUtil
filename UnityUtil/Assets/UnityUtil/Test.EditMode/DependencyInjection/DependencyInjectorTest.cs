@@ -217,7 +217,7 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
             EditModeTestHelpers.ResetScene();
 
             DependencyInjector dependencyInjector = getDependencyInjector();
-            var serviceInstance = new ApplicationException();
+            var serviceInstance = new InvalidOperationException();
             dependencyInjector.RegisterService<Exception>(serviceInstance);
 
             dependencyInjector.TryGetService(typeof(Exception), tag: DependencyInjector.DefaultTag, clientName: "Unit test", out Service service);
@@ -493,7 +493,7 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
             DependencyInjector dependencyInjector = getDependencyInjector();
             Scene activeScene = SceneManager.GetActiveScene();
             dependencyInjector.RegisterService(new object(), SceneManager.GetActiveScene());
-            dependencyInjector.RegisterService(new Exception(), SceneManager.GetActiveScene());
+            dependencyInjector.RegisterService(new InvalidOperationException(), SceneManager.GetActiveScene());
 
             dependencyInjector.UnregisterSceneServices(activeScene);
 

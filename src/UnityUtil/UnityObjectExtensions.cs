@@ -46,7 +46,7 @@ namespace UnityEngine {
             Assert.IsTrue(behaviour.enabled, $"Cannot {verbMessage} {behaviour.GetHierarchyNameWithType()} because it is disabled!");
         }
 
-        public static NotImplementedException SwitchDefaultException<T>(T value) where T : Enum =>
+        public static InvalidOperationException SwitchDefaultException<T>(T value) where T : Enum =>
             new($"Gah! We haven't accounted for {typeof(T).Name} {value} yet!");
 
         private static string getName(Transform transform, uint numParents, string separator, string formatString) {

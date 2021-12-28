@@ -11,7 +11,7 @@ namespace UnityEngine
         public void UncaughtExceptionClr()
         {
             Debug.Log("Attempting crash via uncaught CLR exception...");
-            throw new Exception("AAHHH, MANAGED EXCEPTION!!!! JK, everything is fine.");
+            throw new InvalidOperationException("AAHHH, MANAGED EXCEPTION!!!! JK, everything is fine.");
         }
 
         [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "UnityEvents can't call static methods")]

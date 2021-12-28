@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
 using UnityEngine.Logging;
 using UnityUtil.Editor;
@@ -7,6 +8,7 @@ using static System.Globalization.CultureInfo;
 
 namespace UnityUtil.Test.EditMode.Logging {
 
+    [SuppressMessage("Usage", "CA2201:Do not raise reserved exception types", Justification = "They're just for testing...")]
     public class DebugLoggerTest {
 
         [Test]
