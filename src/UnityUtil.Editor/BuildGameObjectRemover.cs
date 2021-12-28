@@ -13,27 +13,25 @@ namespace UnityUtil.Editor
 
         public BuildGameObjectRemover(ILoggerProvider loggerProvider) => _logger = loggerProvider.GetLogger(this);
 
-        public void RemoveGameObjectsFromScene(Scene scene, List<RemoveFromBuild>? removeTargetBuffer = null)
+        public void RemoveGameObjectsFromScene(Scene scene)
         {
             RuntimePlatform platform = Application.platform;
             BuildContext buildContext =
-                Application.isPlaying ? BuildContext.PlayMode :
-                Debug.isDebugBuild ? BuildContext.DebugBuilds :
-                BuildContext.ReleaseBuilds;
+                Application.isPlaying ? BuildContext.PlayMode
+                : Debug.isDebugBuild ? BuildContext.DebugBuild
+                : BuildContext.ReleaseBuild;
 
             int numRemoveTargets = 0;
-            removeTargetBuffer ??= new List<RemoveFromBuild>(100);  // This is just a wild-a$$ guess. If consumers want a reasonably sized buffer, they should pass in their own
             GameObject[] roots = scene.GetRootGameObjects();
             for (int r = 0; r < roots.Length; ++r) {
                 GameObject root = roots[r];
 
-                root.GetComponentsInChildren(includeInactive: true, removeTargetBuffer);
-                int removeTargetsUnderRoot = removeTargetBuffer.Count;
-                numRemoveTargets += removeTargetsUnderRoot;
+                RemoveFromBuild[] removableTargets = root.GetComponentsInChildren<RemoveFromBuild>(includeInactive: true);
+                numRemoveTargets += removableTargets.Length;
 
                 // Determine which GameObjects should actually be removed
-                RemoveFromBuild[] targetsToRemove = removeTargetBuffer
-                    .Where(x => !x.PreservePlatforms.Contains(platform) || (x.PreserveBuildContexts & buildContext) == 0)
+                RemoveFromBuild[] targetsToRemove = removableTargets
+                    .Where(x => !(x.PreservePlatforms.Contains(platform) && (x.PreserveBuildContexts & buildContext) != 0))
                     .ToArray();
 
                 // Remove them (and/or their children)!
@@ -48,10 +46,9 @@ namespace UnityUtil.Editor
                         Object.DestroyImmediate(removeTrans.gameObject);
                 }
 
-                if (removeTargetsUnderRoot > 0)
-                    _logger.Log($"Removed {targetsToRemove.Length} GameObjects under root object '{root.name}' in scene '{scene.name}', out of {removeTargetsUnderRoot} marked for contextual removal.");
+                if (removableTargets.Length > 0)
+                    _logger.Log($"Removed {targetsToRemove.Length} GameObjects out of {removableTargets.Length} marked for contextual removal under root object '{root.name}' in scene '{scene.name}'.");
             }
-
 
             if (numRemoveTargets == 0)
                 _logger.Log($"No GameObjects marked for contextual removal in scene '{scene.name}'.");
