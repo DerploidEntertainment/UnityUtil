@@ -5,7 +5,7 @@ namespace UnityEngine.Triggers
 
     public class AndTrigger : MultiConditionalTrigger {
 
-        private int _numTrue = 0;
+        private int _numTrue;
 
         protected override void Awake() {
             base.Awake();

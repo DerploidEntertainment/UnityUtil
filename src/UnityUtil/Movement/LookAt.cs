@@ -20,7 +20,7 @@
         )]
         public string? TagToLookAt = null;
 
-        public bool FlipOnLocalY = false;
+        public bool FlipOnLocalY;
 
         protected override void Awake() {
             base.Awake();

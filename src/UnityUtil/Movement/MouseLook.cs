@@ -6,8 +6,8 @@ namespace UnityEngine.Movement
 
     public class MouseLook : Updatable
     {
-        private float _angle = 0f;
-        private float _deltaSinceLast = 0f;
+        private float _angle;
+        private float _deltaSinceLast;
 
         [Tooltip($"The Transform that will be kinematically rotated while looking around.  Only required if {nameof(UsePhysicsToLook)} is false.")]
         public Transform? TransformToRotate;

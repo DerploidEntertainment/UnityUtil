@@ -10,11 +10,11 @@ namespace UnityUtil.Test.EditMode.Logging
         public bool logEnabled { get; set; }
         public LogType filterLogType { get; set; }
 
-        public int NumLogs { get; private set; } = 0;
-        public int NumAsserts { get; private set; } = 0;
-        public int NumWarnings { get; private set; } = 0;
-        public int NumErrors { get; private set; } = 0;
-        public int NumExceptions { get; private set; } = 0;
+        public int NumLogs { get; private set; }
+        public int NumAsserts { get; private set; }
+        public int NumWarnings { get; private set; }
+        public int NumErrors { get; private set; }
+        public int NumExceptions { get; private set; }
 
         public bool IsLogTypeAllowed(LogType logType) => true;
 

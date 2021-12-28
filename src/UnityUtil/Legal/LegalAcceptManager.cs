@@ -15,9 +15,9 @@ namespace UnityEngine.Legal
         private ILocalCache? _localCache;
 
         private string[] _latestVersionTags = Array.Empty<string>();
-        private bool _acceptRequired = false;
-        private bool _acceptUpdate = false;
-        private int _numTagsFetched = 0;
+        private bool _acceptRequired;
+        private bool _acceptUpdate;
+        private int _numTagsFetched;
 
         public LegalDocument[] Documents = Array.Empty<LegalDocument>();
 

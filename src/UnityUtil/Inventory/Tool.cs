@@ -9,7 +9,7 @@ namespace UnityEngine.Inventory {
     {
         private Coroutine? _usingRoutine;
         private Coroutine? _refractoryRoutine;
-        private uint _numUses = 0u;
+        private uint _numUses;
 
         [Required] public ToolInfo? Info;
         [Required] public StartStopInput? UseInput;
@@ -17,7 +17,7 @@ namespace UnityEngine.Inventory {
         /// <summary>
         /// The current charge of this <see cref="Tool"/>.  0 is completely uncharged, 1 is completely charged.
         /// </summary>
-        public float CurrentCharge { get; private set; } = 0f;
+        public float CurrentCharge { get; private set; }
         public CancellableUnityEvent Using = new();
         public UnityEvent Used = new();
         public UnityEvent UseFailed = new();

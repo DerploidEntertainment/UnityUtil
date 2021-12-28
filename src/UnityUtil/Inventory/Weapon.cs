@@ -17,7 +17,7 @@ namespace UnityEngine.Inventory {
     {
         private ILogger? _logger;
         private Tool? _tool;
-        private float _accuracyLerpT = 0f;
+        private float _accuracyLerpT;
 
         [Required]
         public WeaponInfo? Info;

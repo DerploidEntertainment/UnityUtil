@@ -27,7 +27,7 @@ namespace UnityEngine.Triggers {
         [Tooltip($"Number of {nameof(RepeaterTrigger.Tick)} events that have already been raised.")]
         public uint NumPassedTicks = 0u;
 
-        public bool Logging = false;
+        public bool Logging;
 
         public CountEvent Tick = new();
         public UnityEvent Stopped = new();

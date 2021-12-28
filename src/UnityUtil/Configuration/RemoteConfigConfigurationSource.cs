@@ -12,8 +12,8 @@ namespace UnityEngine
         private struct UserAttributes { }
         private struct AppAttributes { }
 
-        private static int s_numLoads = 0;
-        private bool _fetchComplete = false;
+        private static int s_numLoads;
+        private bool _fetchComplete;
 
         public const string DefaultEnvironment = "Release";
 

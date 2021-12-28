@@ -11,7 +11,7 @@ namespace UnityEngine.Triggers {
     public abstract class StartStoppable : Updatable
     {
         private bool _starting = true;
-        private bool _wasRunningB4Disable = false;
+        private bool _wasRunningB4Disable;
 
         [Tooltip(
             "What should happen when this component is enabled/disabled? " +
@@ -81,7 +81,7 @@ namespace UnityEngine.Triggers {
             }
         }
 
-        public bool Running { get; private set; } = false;
+        public bool Running { get; private set; }
 
         private const string GRP_BUTTONS = "Buttons";
 

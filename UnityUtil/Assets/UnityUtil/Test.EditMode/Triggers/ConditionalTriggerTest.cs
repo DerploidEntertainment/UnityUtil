@@ -2,10 +2,12 @@
 using UnityEngine;
 using UnityEngine.Triggers;
 
-namespace UnityUtil.Test.EditMode.Triggers {
-
-    internal class MockConditionalTrigger : ConditionalTrigger {
-        public bool State = false;
+namespace UnityUtil.Test.EditMode.Triggers
+{
+    [SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses", Justification = "Instantiated when added to test Game Objects")]
+    internal class MockConditionalTrigger : ConditionalTrigger
+    {
+        public bool State;
         public override bool IsConditionMet() => State;
     }
 

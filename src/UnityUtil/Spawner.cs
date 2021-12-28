@@ -36,7 +36,7 @@ namespace UnityEngine
     {
         private ILogger? _logger;
         private GameObject? _previous;
-        private long _count = 0;
+        private long _count;
 
         [Tooltip(
             "The actual Unity prefab to spawn. We highly recommend using a PREFAB, as opposed to " +

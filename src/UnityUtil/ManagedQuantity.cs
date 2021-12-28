@@ -18,7 +18,7 @@ namespace UnityEngine {
         }
 
         public float Value = 100f;
-        public float MinValue = 0f;
+        public float MinValue;
         public float MaxValue = 100f;
         public QuantityEvent FullyFilled = new();
         public QuantityEvent Changed = new();

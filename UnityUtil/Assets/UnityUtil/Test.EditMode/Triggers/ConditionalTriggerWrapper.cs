@@ -16,10 +16,10 @@ namespace UnityUtil.Test.EditMode.Triggers {
             Trigger.StillFalse.AddListener(() => ++StillFalseCount);
         }
 
-        public int BecameTrueCount { get; private set; } = 0;
-        public int BecameFalseCount { get; private set; } = 0;
-        public int StillTrueCount { get; private set; } = 0;
-        public int StillFalseCount { get; private set; } = 0;
+        public int BecameTrueCount { get; private set; }
+        public int BecameFalseCount { get; private set; }
+        public int StillTrueCount { get; private set; }
+        public int StillFalseCount { get; private set; }
 
         public void AssertTriggerCounts(int expectedBecameTrue, int expectedBecameFalse, int expectedStillTrue, int expectedStillFalse)
         {

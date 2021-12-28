@@ -11,7 +11,7 @@ namespace UnityUtil.Editor {
     public static class EditModeTestHelpers {
 
         private static MethodInfo? s_clearConsoleMethod;
-        private static uint s_numLogs = 0u;
+        private static uint s_numLogs;
 
         public static void ResetScene() {
             EditorSceneManager.NewScene(NewSceneSetup.EmptyScene);

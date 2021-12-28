@@ -31,8 +31,8 @@ namespace UnityEngine
 
         private readonly ILogger _logger;
 
-        private bool _loading = false;
-        private bool _recording = false;
+        private bool _loading;
+        private bool _recording;
         private readonly HashSet<ConfigurationSource> _loadedCfgSources = new();
         private readonly Dictionary<string, object> _configs = new();
         private readonly HashSet<(Type, string)> _cachedConfigurations = new();

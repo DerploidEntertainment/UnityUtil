@@ -4,12 +4,12 @@ namespace UnityEngine.Movement {
 
     public class TargetFlyer : Updatable
     {
-        private float _tSinceIdleMove = 0f;
-        private float _tSinceIdleTorque = 0f;
-        private float _idleMovePeriod = 0f;
-        private float _idleTorquePeriod = 0f;
+        private float _tSinceIdleMove;
+        private float _tSinceIdleTorque;
+        private float _idleMovePeriod;
+        private float _idleTorquePeriod;
 
-        public bool Idle = false;
+        public bool Idle;
 
         [Required]
         public Rigidbody? FlyingRigidbody;

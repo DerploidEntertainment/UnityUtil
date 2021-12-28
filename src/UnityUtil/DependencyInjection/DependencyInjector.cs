@@ -52,7 +52,7 @@ namespace UnityEngine.DependencyInjection
         /// </summary>
         private readonly HashSet<Type> _injectedTypes = new();
 
-        private bool _recording = false;
+        private bool _recording;
         private readonly HashSet<Type> _cachedResolutionTypes;
         private readonly IDictionary<Type, List<Action<object>>> _compiledInject = new Dictionary<Type, List<Action<object>>>();
         private readonly Dictionary<Type, int> _uncachedResolutionCounts = new();
@@ -68,7 +68,7 @@ namespace UnityEngine.DependencyInjection
             _cachedResolutionTypes = new HashSet<Type>(cachedResolutionTypes);
         }
 
-        public bool Initialized { get; private set; } = false;
+        public bool Initialized { get; private set; }
         public void Initialize(ILoggerProvider loggerProvider) => Initialize(loggerProvider, new TypeMetadataProvider());
         internal void Initialize(ILoggerProvider loggerProvider, ITypeMetadataProvider typeMetadataProvider)
         {

@@ -21,7 +21,7 @@ namespace UnityEngine.Inventory {
         [Required]
         public OverheatToolInfo? Info;
 
-        public float CurrentHeat { get; private set; } = 0f;
+        public float CurrentHeat { get; private set; }
         public OverheatChangedEvent OverheatStateChanged = new();
 
         protected override void Awake()

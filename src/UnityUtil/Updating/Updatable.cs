@@ -14,7 +14,7 @@ namespace UnityEngine
         /// If <see langword="true"/>, then this <see cref="UnityEngine.Updatable"/> will have its Update actions registered/unregistered automatically when it is enabled/disabled.
         /// If <see langword="false"/>, then the Update actions must be registered/unregistered manually (best for when updates are only meant to be registered under specific/rare circumstances).
         /// <summary>
-        protected bool RegisterUpdatesAutomatically = false;
+        protected bool RegisterUpdatesAutomatically;
 
         protected Action<float>? BetterUpdate;
         protected Action<float>? BetterFixedUpdate;

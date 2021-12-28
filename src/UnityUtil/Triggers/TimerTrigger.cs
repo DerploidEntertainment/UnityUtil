@@ -9,7 +9,7 @@ namespace UnityEngine.Triggers {
         public float Duration = 1f;
         [Tooltip("The time, in seconds, that has passed since the timer started.")]
         public float TimePassed = 0f;
-        public bool Logging = false;
+        public bool Logging;
 
         public UnityEvent Timeout = new();
         public UnityEvent Stopped = new();

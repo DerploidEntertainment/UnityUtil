@@ -23,7 +23,7 @@ namespace UnityEngine.Triggers {
     public class IntTrigger : MonoBehaviour {
 
         private int _number;
-        private int _lastTriggerVal = 0;
+        private int _lastTriggerVal;
 
         [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
         [SuppressMessage("Code Quality", "IDE0051:Remove unused private members", Justification = "Unity message")]
