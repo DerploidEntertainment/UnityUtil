@@ -7,20 +7,11 @@
     <MoqPath Condition="!Exists('$(MoqPath)')">$(UnityUtilProjectPath)\Assets\Editor\Moq\Moq.dll</MoqPath>
   </PropertyGroup>
   
-  <ItemGroup>
+  <ItemGroup Label="Dependencies">
     <Reference Include="$(UnityProjectPath)\$(UnityPackageCache)\$(NunitPath)" Private="false" />
     <Reference Include="$(MoqPath)" Private="false" />
-  </ItemGroup>
-  
-  <ItemGroup>
     <PackageReference Include="NUnit.Analyzers" Version="3.2.0" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\UnityUtil\UnityUtil.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Reference Include="$(UnityProjectPath)\$(UnityScriptAssembliesPath)\UnityEngine.TestRunner.dll" Private="false" />
   </ItemGroup>
 

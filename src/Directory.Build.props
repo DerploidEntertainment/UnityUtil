@@ -29,10 +29,9 @@
   </Choose>
 
   <ItemGroup>
+  <ItemGroup Label="Dependencies">
     <PackageReference Include="Unity3D" Version="1.7.0" />
-  </ItemGroup>
 
-  <ItemGroup>
     <Reference Include="$(SirenixAssembliesDir)\Sirenix.OdinInspector.Attributes.dll" Private="false"/>
     <Reference Include="$(UnityProjectPath)\$(UnityScriptAssembliesPath)\UnityEngine.UI.dll" Private="false" />
   </ItemGroup>

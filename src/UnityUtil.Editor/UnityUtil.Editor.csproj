@@ -2,9 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\UnityUtil\UnityUtil.csproj" />
-  </ItemGroup>
 
-  <ItemGroup>
     <Reference Include="$(SirenixAssembliesDir)\Sirenix.OdinInspector.Editor.dll" Private="false" />
     <Reference Include="$(UnityInstallRoot)\$(UnityVersion)\$(UnityEditorPath)" Private="false" />
     <Reference Include="$(UnityProjectPath)\$(UnityScriptAssembliesPath)\UnityEngine.TestRunner.dll" Private="false" />

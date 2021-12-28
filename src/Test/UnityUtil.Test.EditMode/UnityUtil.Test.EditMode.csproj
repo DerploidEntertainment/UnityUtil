@@ -6,9 +6,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\UnityUtil.Editor\UnityUtil.Editor.csproj" />
-  </ItemGroup>
 
-  <ItemGroup>
     <Reference Include="$(UnityInstallRoot)\$(UnityVersion)\$(UnityEditorPath)" Private="false" />
     <Reference Include="$(SirenixAssembliesDir)\Sirenix.OdinInspector.Editor.dll" Private="false" />
 
