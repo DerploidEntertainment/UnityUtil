@@ -1,5 +1,7 @@
 ﻿using Sirenix.OdinInspector;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 namespace UnityEngine.DependencyInjection
@@ -21,7 +23,7 @@ namespace UnityEngine.DependencyInjection
         public string Tag = "";
     }
 
-    public class SceneServiceCollection : MonoBehaviour
+    public class SceneServiceCollection : MonoBehaviour, IEnumerable<InspectorService>
     {
         [Tooltip(
             "The service collection from which dependencies will be resolved. Order does not matter. " +
@@ -45,6 +47,9 @@ namespace UnityEngine.DependencyInjection
                 DependencyInjector.Instance.RegisterService(service.TypeName, service.Instance!, gameObject.scene);
             }
         }
+
+        public IEnumerator<InspectorService> GetEnumerator() => ((IEnumerable<InspectorService>)Services).GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => Services.GetEnumerator();
 
         /// <summary>
         /// Unregisters all services from this collection and any others in the scene.
