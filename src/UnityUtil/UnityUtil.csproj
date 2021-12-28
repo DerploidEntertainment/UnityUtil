@@ -10,12 +10,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-      <_Parameter1>UnityUtil.Test.EditMode</_Parameter1>
-    </AssemblyAttribute>
-    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-      <_Parameter1>UnityUtil.Test.PlayMode</_Parameter1>
-    </AssemblyAttribute>
+    <InternalsVisibleTo Include="UnityUtil.Test.EditMode" />
+    <InternalsVisibleTo Include="UnityUtil.Test.PlayMode" />
   </ItemGroup>
 
   <ItemGroup>
