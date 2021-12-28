@@ -62,6 +62,7 @@ namespace UnityEngine
 
         #region Loading configuration sources
 
+        [SuppressMessage("Design", "CA1003:Use generic event handler instances", Justification = "Shouldn't even need suppressed, see https://github.com/dotnet/roslyn-analyzers/issues/3862")]
         public event EventHandler<IReadOnlyDictionary<string, object>>? LoadingComplete;
 
         public void LoadConfigs(IEnumerable<ConfigurationSource> configurationSources)

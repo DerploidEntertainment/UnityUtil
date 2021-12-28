@@ -1,13 +1,16 @@
 ﻿using NUnit.Framework;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
 using UnityEngine.Triggers;
 
-namespace UnityUtil.Test.EditMode.Triggers {
+namespace UnityUtil.Test.EditMode.Triggers
+{
     public class MultiConditionalTriggerTest
     {
-
-        private class MockMultiConditionalTrigger : MultiConditionalTrigger {
+        [SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses", Justification = "Instantiated when added to test Game Objects")]
+        private class MockMultiConditionalTrigger : MultiConditionalTrigger
+        {
             public override bool IsConditionMet() => throw new NotImplementedException();
             protected override void ConditionBecameFalseListener(ConditionalTrigger condition) => BecameFalse.Invoke();
             protected override void ConditionBecameTrueListener(ConditionalTrigger condition) => BecameTrue.Invoke();
@@ -16,7 +19,8 @@ namespace UnityUtil.Test.EditMode.Triggers {
         }
 
         [Test]
-        public void DoesNotListenFor_Changed_IfNotRequested() {
+        public void DoesNotListenFor_Changed_IfNotRequested()
+        {
             MockConditionalTrigger condition0 = getTrigger();
             MockConditionalTrigger condition1 = getTrigger();
             MultiConditionalTrigger trigger = getMultiTrigger(triggerWhenConditionsChanged: false, conditions: new[] { condition0, condition1 });
@@ -42,7 +46,8 @@ namespace UnityUtil.Test.EditMode.Triggers {
         }
 
         [Test]
-        public void DoesNotListenFor_Maintained_IfNotRequested() {
+        public void DoesNotListenFor_Maintained_IfNotRequested()
+        {
             MockConditionalTrigger condition0 = getTrigger();
             MockConditionalTrigger condition1 = getTrigger();
             MultiConditionalTrigger trigger = getMultiTrigger(triggerWhenConditionsMaintained: false, conditions: new[] { condition0, condition1 });
@@ -68,7 +73,8 @@ namespace UnityUtil.Test.EditMode.Triggers {
         }
 
         [Test]
-        public void ListensFor_Changed_IfRequested() {
+        public void ListensFor_Changed_IfRequested()
+        {
             MockConditionalTrigger condition0 = getTrigger();
             MockConditionalTrigger condition1 = getTrigger();
             MultiConditionalTrigger trigger = getMultiTrigger(triggerWhenConditionsChanged: true, conditions: new[] { condition0, condition1 });
@@ -94,7 +100,8 @@ namespace UnityUtil.Test.EditMode.Triggers {
         }
 
         [Test]
-        public void ListensFor_Maintained_IfRequested() {
+        public void ListensFor_Maintained_IfRequested()
+        {
             MockConditionalTrigger condition0 = getTrigger();
             MockConditionalTrigger condition1 = getTrigger();
             MultiConditionalTrigger trigger = getMultiTrigger(triggerWhenConditionsMaintained: true, conditions: new[] { condition0, condition1 });

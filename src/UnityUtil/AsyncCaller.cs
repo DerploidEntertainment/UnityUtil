@@ -16,7 +16,7 @@ namespace UnityEngine {
             _logger = loggerProvider.GetLogger(this);
         }
 
-        public async void CallAsync(AsyncAction action) => await action.Invoke(_cts.Token);
+        public async void CallAsync(AsyncAction action) => await action.Invoke(_cts.Token).ConfigureAwait(false);
 
         public void Dispose() {
             try { _cts.Cancel(); }

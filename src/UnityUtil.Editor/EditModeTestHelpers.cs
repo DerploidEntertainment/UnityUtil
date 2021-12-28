@@ -34,7 +34,7 @@ namespace UnityUtil.Editor {
             // See here: https://answers.unity.com/questions/578393/clear-console-through-code-in-development-build.html
 
             if (s_clearConsoleMethod is null) {
-                Assembly assembly = Assembly.GetAssembly(typeof(SceneView));
+                var assembly = Assembly.GetAssembly(typeof(SceneView));
                 Type logEntries = assembly.GetType("UnityEditor.LogEntries");
                 s_clearConsoleMethod = logEntries.GetMethod("Clear");
             }

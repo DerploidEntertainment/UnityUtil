@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
 using UnityEngine.Triggers;
 
@@ -11,10 +12,12 @@ namespace UnityUtil.Test.EditMode.Triggers
         public override bool IsConditionMet() => State;
     }
 
-    public class ConditionalTriggerTest {
+    public class ConditionalTriggerTest
+    {
 
         [Test]
-        public void TriggersStateCorrectly() {
+        public void TriggersStateCorrectly()
+        {
             MockConditionalTrigger trigger = getConditionalTrigger();
             int falseTriggerCount = 0, trueTriggerCount = 0;
             trigger.StillFalse.AddListener(() => ++falseTriggerCount);
@@ -32,7 +35,8 @@ namespace UnityUtil.Test.EditMode.Triggers
         }
 
         [Test]
-        public void TriggersStateDoesNothingIfTurnedOff() {
+        public void TriggersStateDoesNothingIfTurnedOff()
+        {
             MockConditionalTrigger trigger = getConditionalTrigger();
             int falseTriggerCount = 0, trueTriggerCount = 0;
             trigger.StillFalse.AddListener(() => ++falseTriggerCount);

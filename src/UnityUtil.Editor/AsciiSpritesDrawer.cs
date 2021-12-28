@@ -30,8 +30,7 @@ namespace UnityUtil.Editor {
 
             // Find serialized properties corresponding to these card value/suit pairs
             for (char ch = ' '; ch <= '~'; ++ch) {
-                string propPath = ch switch
-                {
+                string propPath = ch switch {
                     ' ' => nameof(AsciiSprites.Space),
                     '!' => nameof(AsciiSprites.Exclamation),
                     '"' => nameof(AsciiSprites.DoubleQuote),
@@ -49,7 +48,7 @@ namespace UnityUtil.Editor {
                     '.' => nameof(AsciiSprites.Period),
                     '/' => nameof(AsciiSprites.Slash),
 
-                    char ch2 when ('0' <= ch2 && ch2 <= '9') => "Num" + ch2,
+                    (>= '0' and <= '9') => "Num" + ch,
 
                     ':' => nameof(AsciiSprites.Colon),
                     ';' => nameof(AsciiSprites.Semicolon),
@@ -59,7 +58,7 @@ namespace UnityUtil.Editor {
                     '?' => nameof(AsciiSprites.Question),
                     '@' => nameof(AsciiSprites.AtSign),
 
-                    char ch2 when ('A' <= ch2 && ch2 <= 'Z') => "Upper" + ch2.ToString().ToUpperInvariant(),
+                    (>= 'A' and <= 'Z') => "Upper" + ch,
 
                     '[' => nameof(AsciiSprites.BracketOpen),
                     '\\' => nameof(AsciiSprites.Backslash),
@@ -68,7 +67,7 @@ namespace UnityUtil.Editor {
                     '_' => nameof(AsciiSprites.Underscore),
                     '`' => nameof(AsciiSprites.GraveAccent),
 
-                    char ch2 when ('a' <= ch2 && ch2 <= 'z') => "Lower" + ch2.ToString().ToLowerInvariant(),
+                    (>= 'a' and <= 'z') => "Lower" + ch.ToString().ToUpperInvariant(),
 
                     '{' => nameof(AsciiSprites.CurlyBraceOpen),
                     '|' => nameof(AsciiSprites.Pipe),

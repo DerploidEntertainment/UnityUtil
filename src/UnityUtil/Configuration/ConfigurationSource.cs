@@ -2,14 +2,13 @@ using Sirenix.OdinInspector;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using UnityEngine.Logging;
 
 namespace UnityEngine
 {
 
     [Flags]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1008:Enums should have zero value", Justification = "I think 'Never' sounds better here than 'None'. Suppression may not be necessary in future, see https://github.com/dotnet/roslyn-analyzers/issues/5777")]
     public enum ConfigurationLoadContext {
         Never = 0b0000,
         BuildScript = 0b0001,

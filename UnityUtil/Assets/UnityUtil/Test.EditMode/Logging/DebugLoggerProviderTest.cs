@@ -1,25 +1,35 @@
 ﻿using Moq;
 using NUnit.Framework;
+using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
 using UnityEngine.Logging;
 using UnityUtil.Editor;
 
-namespace UnityUtil.Test.EditMode.Logging {
-
-    public class DebugLoggerProviderTest {
-
-        private class HerpLogEnricher : LogEnricher {
+namespace UnityUtil.Test.EditMode.Logging
+{
+    public class DebugLoggerProviderTest
+    {
+        [SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses", Justification = "Instantiated when added to test Game Objects")]
+        private class HerpLogEnricher : LogEnricher
+        {
             public override string GetEnrichedLog(object source) => "Herp";
         }
-        private class DerpLogEnricher : LogEnricher {
+
+        [SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses", Justification = "Instantiated when added to test Game Objects")]
+        private class DerpLogEnricher : LogEnricher
+        {
             public override string GetEnrichedLog(object source) => "Derp";
         }
-        private class SourceNameLogEnricher : LogEnricher {
+
+        [SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses", Justification = "Instantiated when added to test Game Objects")]
+        private class SourceNameLogEnricher : LogEnricher
+        {
             public override string GetEnrichedLog(object source) => (source as GameObject)?.name ?? "";
         }
 
         [Test]
-        public void CanEnrichLogs_DiffEnrichers() {
+        public void CanEnrichLogs_DiffEnrichers()
+        {
             EditModeTestHelpers.ResetScene();
 
             HerpLogEnricher herpEnricher = ScriptableObject.CreateInstance<HerpLogEnricher>();
@@ -49,7 +59,8 @@ namespace UnityUtil.Test.EditMode.Logging {
         }
 
         [Test]
-        public void CanEnrichLogs_DiffSeparators() {
+        public void CanEnrichLogs_DiffSeparators()
+        {
             EditModeTestHelpers.ResetScene();
 
             HerpLogEnricher herpEnricher = ScriptableObject.CreateInstance<HerpLogEnricher>();
@@ -79,7 +90,8 @@ namespace UnityUtil.Test.EditMode.Logging {
         }
 
         [Test]
-        public void CanEnrichLogs_DiffSourceObjects() {
+        public void CanEnrichLogs_DiffSourceObjects()
+        {
             EditModeTestHelpers.ResetScene();
 
             SourceNameLogEnricher sourceNameEnricher = ScriptableObject.CreateInstance<SourceNameLogEnricher>();
@@ -108,7 +120,8 @@ namespace UnityUtil.Test.EditMode.Logging {
         }
 
         [Test]
-        public void LogEnricherOrderPreserved() {
+        public void LogEnricherOrderPreserved()
+        {
             EditModeTestHelpers.ResetScene();
 
             HerpLogEnricher herpEnricher = ScriptableObject.CreateInstance<HerpLogEnricher>();
@@ -131,7 +144,8 @@ namespace UnityUtil.Test.EditMode.Logging {
             EditModeTestHelpers.ExpectLog(LogType.Log, $"Derp | Herp | {msg}");
         }
 
-        private static DebugLoggerProvider getDebugLoggerProvider(string separator = " | ", params LogEnricher[] logEnrichers) {
+        private static DebugLoggerProvider getDebugLoggerProvider(string separator = " | ", params LogEnricher[] logEnrichers)
+        {
             var obj = new GameObject();
             DebugLoggerProvider loggerProvider = obj.AddComponent<DebugLoggerProvider>();
             loggerProvider.Inject(Mock.Of<IConfigurator>(), loggerProvider);

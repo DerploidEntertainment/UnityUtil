@@ -308,7 +308,9 @@ namespace UnityUtil.Test.EditMode.Logging {
         public void CanFilterLogType() {
             EditModeTestHelpers.ResetScene();
 
+            #pragma warning disable IDE0017 // Simplify object initialization
             var logger = new DebugLogger(() => string.Empty);
+            #pragma warning restore IDE0017 // Simplify object initialization
 
             logger.filterLogType = LogType.Log;
             Assert.That(logger.filterLogType, Is.EqualTo(Debug.unityLogger.filterLogType));

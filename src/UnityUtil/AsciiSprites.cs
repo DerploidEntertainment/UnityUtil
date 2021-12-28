@@ -81,38 +81,39 @@ namespace UnityEngine {
         public Sprite? Underscore;
         public Sprite? GraveAccent;
 
-        [LabelText(nameof(LowerA))] public Sprite? LowerA;
-        [LabelText(nameof(LowerB))] public Sprite? LowerB;
-        [LabelText(nameof(LowerC))] public Sprite? LowerC;
-        [LabelText(nameof(LowerD))] public Sprite? LowerD;
-        [LabelText(nameof(LowerE))] public Sprite? LowerE;
-        [LabelText(nameof(LowerF))] public Sprite? LowerF;
-        [LabelText(nameof(LowerG))] public Sprite? LowerG;
-        [LabelText(nameof(LowerH))] public Sprite? LowerH;
-        [LabelText(nameof(LowerI))] public Sprite? LowerI;
-        [LabelText(nameof(LowerJ))] public Sprite? LowerJ;
-        [LabelText(nameof(LowerK))] public Sprite? LowerK;
-        [LabelText(nameof(LowerL))] public Sprite? LowerL;
-        [LabelText(nameof(LowerM))] public Sprite? LowerM;
-        [LabelText(nameof(LowerN))] public Sprite? LowerN;
-        [LabelText(nameof(LowerO))] public Sprite? LowerO;
-        [LabelText(nameof(LowerP))] public Sprite? LowerP;
-        [LabelText(nameof(LowerQ))] public Sprite? LowerQ;
-        [LabelText(nameof(LowerR))] public Sprite? LowerR;
-        [LabelText(nameof(LowerS))] public Sprite? LowerS;
-        [LabelText(nameof(LowerT))] public Sprite? LowerT;
-        [LabelText(nameof(LowerU))] public Sprite? LowerU;
-        [LabelText(nameof(LowerV))] public Sprite? LowerV;
-        [LabelText(nameof(LowerW))] public Sprite? LowerW;
-        [LabelText(nameof(LowerX))] public Sprite? LowerX;
-        [LabelText(nameof(LowerY))] public Sprite? LowerY;
-        [LabelText(nameof(LowerZ))] public Sprite? LowerZ;
+        public Sprite? LowerA;
+        public Sprite? LowerB;
+        public Sprite? LowerC;
+        public Sprite? LowerD;
+        public Sprite? LowerE;
+        public Sprite? LowerF;
+        public Sprite? LowerG;
+        public Sprite? LowerH;
+        public Sprite? LowerI;
+        public Sprite? LowerJ;
+        public Sprite? LowerK;
+        public Sprite? LowerL;
+        public Sprite? LowerM;
+        public Sprite? LowerN;
+        public Sprite? LowerO;
+        public Sprite? LowerP;
+        public Sprite? LowerQ;
+        public Sprite? LowerR;
+        public Sprite? LowerS;
+        public Sprite? LowerT;
+        public Sprite? LowerU;
+        public Sprite? LowerV;
+        public Sprite? LowerW;
+        public Sprite? LowerX;
+        public Sprite? LowerY;
+        public Sprite? LowerZ;
 
         public Sprite? CurlyBraceOpen;
         public Sprite? Pipe;
         public Sprite? CurlyBraceClose;
         public Sprite? Tilde;
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1043:Use Integral Or String Argument For Indexers", Justification = "Shouldn't even need suppressed, see https://github.com/dotnet/roslyn-analyzers/issues/5778")]
         public Sprite? this[char charCode] {
             get => spriteRef(charCode);
             set => spriteRef(charCode) = value;

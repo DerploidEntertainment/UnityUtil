@@ -65,8 +65,14 @@ namespace UnityEngine.Legal
             UnityWebRequest req = downloadHandler is null
                 ? new UnityWebRequest(doc.LatestVersionUri!.Uri, UnityWebRequest.kHttpVerbHEAD)
                 : new UnityWebRequest(doc.LatestVersionUri!.Uri, UnityWebRequest.kHttpVerbHEAD, downloadHandler, uploadHandler);
-            UnityWebRequestAsyncOperation reqOp = req.SendWebRequest();
-            reqOp.completed += op => {
+            using (req) {
+                UnityWebRequestAsyncOperation reqOp = req.SendWebRequest();
+                reqOp.completed += handleWebResponse;
+            }
+
+
+            void handleWebResponse(AsyncOperation op)
+            {
                 // Parse the tag from the response
                 string? webTag = null;
                 if (req.result != UnityWebRequest.Result.Success)
@@ -106,7 +112,7 @@ namespace UnityEngine.Legal
                         AlreadyAccepted.Invoke();
                     }
                 }
-            };
+            }
         }
         public bool HasAccepted { get; private set; }
 

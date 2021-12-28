@@ -6,9 +6,10 @@ namespace UnityEngine
     [Flags]
     public enum BuildContext
     {
+        None = 0b000,
         PlayMode = 0b001,
-        DebugBuilds = 0b010,
-        ReleaseBuilds = 0b100,
+        DebugBuild = 0b010,
+        ReleaseBuild = 0b100,
         AllBuilds = 0b111,
     }
 

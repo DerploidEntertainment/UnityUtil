@@ -1,17 +1,18 @@
 ﻿using NUnit.Framework;
 using System.Globalization;
 using UnityEngine;
-using UA = UnityEngine.Assertions;
-using UnityEngine.Logging;
-using UnityEngine.TestTools;
 using UnityUtil.Editor;
+using UA = UnityEngine.Assertions;
 
-namespace UnityUtil.Test.EditMode.Logging {
+namespace UnityUtil.Test.EditMode.Logging
+{
 
-    public class UnityObjectExtensionsTest {
+    public class UnityObjectExtensionsTest
+    {
 
         [Test]
-        public void CanGetHierarchyName_DiffNumParents() {
+        public void CanGetHierarchyName_DiffNumParents()
+        {
             EditModeTestHelpers.ResetScene();
 
             GameObject obj = getGameObject("test", numParents: 5);
@@ -28,7 +29,8 @@ namespace UnityUtil.Test.EditMode.Logging {
         }
 
         [Test]
-        public void CanGetHierarchyName_DiffSeparators() {
+        public void CanGetHierarchyName_DiffSeparators()
+        {
             EditModeTestHelpers.ResetScene();
 
             GameObject obj = getGameObject("test", numParents: 1);
@@ -45,7 +47,8 @@ namespace UnityUtil.Test.EditMode.Logging {
         }
 
         [Test]
-        public void CanGetHierarchyName_DiffFormatStrings() {
+        public void CanGetHierarchyName_DiffFormatStrings()
+        {
             EditModeTestHelpers.ResetScene();
 
             GameObject obj = getGameObject("test", numParents: 1);
@@ -65,7 +68,8 @@ namespace UnityUtil.Test.EditMode.Logging {
         }
 
         [Test]
-        public void CanGetHierarchyName_IncludesOnlyNumParentsThatExist() {
+        public void CanGetHierarchyName_IncludesOnlyNumParentsThatExist()
+        {
             EditModeTestHelpers.ResetScene();
 
             GameObject obj = getGameObject("test", numParents: 2);
@@ -82,7 +86,8 @@ namespace UnityUtil.Test.EditMode.Logging {
         }
 
         [Test]
-        public void CanGetHierarchyName_SameForAllAttachedComponents() {
+        public void CanGetHierarchyName_SameForAllAttachedComponents()
+        {
             EditModeTestHelpers.ResetScene();
 
             GameObject obj = getGameObject("test", numParents: 1);
@@ -103,7 +108,8 @@ namespace UnityUtil.Test.EditMode.Logging {
         }
 
         [Test]
-        public void CanGetHierarchyNameWithType_DiffComponents() {
+        public void CanGetHierarchyNameWithType_DiffComponents()
+        {
             EditModeTestHelpers.ResetScene();
 
             GameObject obj = getGameObject("test", numParents: 1);
@@ -124,7 +130,8 @@ namespace UnityUtil.Test.EditMode.Logging {
         }
 
         [Test]
-        public void CanGetHierarchyNameWithType_DiffFormatString() {
+        public void CanGetHierarchyNameWithType_DiffFormatString()
+        {
             EditModeTestHelpers.ResetScene();
 
             GameObject obj = getGameObject("test", numParents: 1);
@@ -147,7 +154,8 @@ namespace UnityUtil.Test.EditMode.Logging {
         }
 
         [Test]
-        public void CanAssertActiveAndEnabled() {
+        public void CanAssertActiveAndEnabled()
+        {
             EditModeTestHelpers.ResetScene();
 
             GameObject obj = getGameObject("test", numParents: 0);
@@ -174,7 +182,8 @@ namespace UnityUtil.Test.EditMode.Logging {
             Assert.Throws<UA.AssertionException>(() => behaviour.AssertActiveAndEnabled());
         }
 
-        private static GameObject getGameObject(string name, int numParents = 1, string parentNameFormatString = "parent{0}") {
+        private static GameObject getGameObject(string name, int numParents = 1, string parentNameFormatString = "parent{0}")
+        {
             Transform? lastParentTrans = null;
             for (int p = 0; p < numParents; ++p) {
                 Transform t = new GameObject(string.Format(CultureInfo.InvariantCulture, parentNameFormatString, p)).transform;

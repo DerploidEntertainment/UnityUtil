@@ -1,8 +1,8 @@
 ﻿using NUnit.Framework;
-using UnityEngine;
 using UnityEngine.Triggers;
 
-namespace UnityUtil.Test.EditMode.Triggers {
+namespace UnityUtil.Test.EditMode.Triggers
+{
 
     internal class ConditionalTriggerWrapper<T> where T : ConditionalTrigger
     {
