@@ -1,19 +1,21 @@
-﻿using UnityEngine.Inputs;
-using UnityEngine.Logging;
+﻿using Sirenix.OdinInspector;
+using UnityEngine.Inputs;
 
 namespace UnityEngine.Movement {
 
-    public class CharacterFPSWalker : Updatable {
+    public class CharacterFPSWalker : Updatable
+    {
+        private float _oldHeight;
 
-        // INSPECTOR FIELDS
-        public CharacterController ControllerToMove;
+        [Required]
+        public CharacterController? ControllerToMove;
 
         [Header("Inputs")]
-        public StartStopInput SprintInput;
-        public StartStopInput CrouchInput;
-        public StartStopInput JumpInput;
-        public ValueInput HorizontalInput;
-        public ValueInput VerticalInput;
+        [Required] public StartStopInput? SprintInput;
+        [Required] public StartStopInput? CrouchInput;
+        [Required] public StartStopInput? JumpInput;
+        [Required] public ValueInput? HorizontalInput;
+        [Required] public ValueInput? VerticalInput;
 
         [Header("Speed")]
         public float WalkSpeed = 15f;
@@ -30,17 +32,10 @@ namespace UnityEngine.Movement {
         public bool CanJump = true;
         public float JumpHeight = 3f;
 
-
-        // HIDDEN FIELDS
-        private float _oldHeight;
-
-        // EVENT HANDLERS
         protected override void Awake() {
             base.Awake();
 
-            this.AssertAssociation(ControllerToMove, nameof(this.ControllerToMove));
-
-            _oldHeight = ControllerToMove.height;
+            _oldHeight = ControllerToMove!.height;
             CrouchHeight = Mathf.Min(CrouchHeight, _oldHeight);
 
             BetterUpdate = doUpdate;
@@ -51,40 +46,38 @@ namespace UnityEngine.Movement {
 
             // Adjust target velocity for jumping, if its allowed
             if (CanJump) {
-                bool jumped = JumpInput.Started();
+                bool jumped = JumpInput!.Started();
                 targetV += jumpComponent(deltaTime, jumped);
             }
 
             // Adjust target velocity for movement, if its allowed
-            bool sprinting = SprintInput.Happening();
-            bool crouching = CrouchInput.Happening();
-            float inputHorz = HorizontalInput.DiscreteValue();   // raw means only returns one of: { -1, 0, 1 }
-            float inputVert = VerticalInput.DiscreteValue();     // raw means only returns one of: { -1, 0, 1 }
+            bool sprinting = SprintInput!.Happening();
+            bool crouching = CrouchInput!.Happening();
+            float inputHorz = HorizontalInput!.DiscreteValue();   // raw means only returns one of: { -1, 0, 1 }
+            float inputVert = VerticalInput!.DiscreteValue();     // raw means only returns one of: { -1, 0, 1 }
             targetV += moveComponent(inputHorz, inputVert, CanSprint && sprinting, CanCrouch && crouching);
 
             // Do crouching if its allowed
             crouch(CanCrouch && crouching);
 
             // Move the rigidbody to the target velocity
-            ControllerToMove.Move(targetV * deltaTime);
+            ControllerToMove!.Move(targetV * deltaTime);
         }
 
-        // HELPER FUNCTIONS
         private Vector3 jumpComponent(float deltaTime, bool jumping) {
             // Account for gravity
             Vector3 jumpV = Vector3.zero;
             float g = Physics.gravity.magnitude * Mass;
 
             // Account for jumping (if it is allowed and the button was pressed)
-            if (jumping && ControllerToMove.isGrounded)
+            if (jumping && ControllerToMove!.isGrounded)
                 jumpV.y += Mathf.Sqrt(2f * g * JumpHeight);
             else
                 jumpV.y -= g * deltaTime;
 
             return jumpV;
         }
-        private void crouch(bool crouching) =>
-            ControllerToMove.height = (crouching ? CrouchHeight : _oldHeight);
+        private void crouch(bool crouching) => ControllerToMove!.height = (crouching ? CrouchHeight : _oldHeight);
         private Vector3 moveComponent(float horz, float vert, bool sprinting, bool crouching) {
             // Determine the slope of the ground
             bool hitGround = Physics.Raycast(transform.position, Vector3.down, out RaycastHit hitInfo, float.PositiveInfinity);
@@ -116,7 +109,7 @@ namespace UnityEngine.Movement {
 
             // Account for slopes
             // If speed decreases with slope, then speed = 0 when slope = slopeLimit
-            float slopeRatio = 1f - slopeAngle / ControllerToMove.slopeLimit;
+            float slopeRatio = 1f - slopeAngle / ControllerToMove!.slopeLimit;
             speed *= slopeRatio;
 
             return speed;

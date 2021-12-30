@@ -1,16 +1,18 @@
-﻿namespace UnityEngine.Movement {
+﻿using Sirenix.OdinInspector;
 
-    public class TargetFlyer : Updatable {
+namespace UnityEngine.Movement {
 
-        // HIDDEN FIELDS
-        private float _tSinceIdleMove = 0f;
-        private float _tSinceIdleTorque = 0f;
-        private float _idleMovePeriod = 0f;
-        private float _idleTorquePeriod = 0f;
+    public class TargetFlyer : Updatable
+    {
+        private float _tSinceIdleMove;
+        private float _tSinceIdleTorque;
+        private float _idleMovePeriod;
+        private float _idleTorquePeriod;
 
-        // INSPECTOR FIELDS
-        public bool Idle = false;
-        public Rigidbody FlyingRigidbody;
+        public bool Idle;
+
+        [Required]
+        public Rigidbody? FlyingRigidbody;
 
         [Header("Flying Settings")]
         public Vector3 Target;
@@ -30,7 +32,6 @@
         public float MinTorqueSpeed = 0.5f;
         public float MaxTorqueSpeed = 2f;
 
-        // EVENT HANDLERS
         protected override void Awake() {
             base.Awake();
 
@@ -58,13 +59,12 @@
             }
         }
 
-        // HELPERS
         private Vector3 getFlyingForce(Vector3 targetPosition) {
             Vector3 netForce = Vector3.zero;
 
             // Add a Force to move towards the target position at constant velocity
             Vector3 toward = (targetPosition - transform.position).normalized;
-            var vToward = Vector3.Project(FlyingRigidbody.velocity, toward);
+            var vToward = Vector3.Project(FlyingRigidbody!.velocity, toward);
             float factor = (vToward.normalized == toward) ? Mathf.Sign(MoveSpeed * MoveSpeed - vToward.sqrMagnitude) : 1;
             netForce += factor * MoveAccel * toward;
 
@@ -81,7 +81,7 @@
 
             // Add a Force to rotate around the target direction at constant angular velocity
             Vector3 toward = (targetPosition - transform.position).normalized;
-            var wToward = Vector3.Project(FlyingRigidbody.angularVelocity, toward);
+            var wToward = Vector3.Project(FlyingRigidbody!.angularVelocity, toward);
             float factor = (wToward.normalized == toward) ? Mathf.Sign(RotateSpeed * RotateSpeed - wToward.sqrMagnitude) : 1;
             factor *= (RotateClockWise ? 1 : -1);
             netTorque += factor * RotateAccel * toward;

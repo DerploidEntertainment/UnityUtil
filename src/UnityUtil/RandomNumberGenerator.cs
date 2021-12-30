@@ -1,5 +1,6 @@
 ﻿using Sirenix.OdinInspector;
 using System;
+using System.Globalization;
 using UnityEngine.Logging;
 using S = System;
 
@@ -9,24 +10,24 @@ namespace UnityEngine {
 
         [field: Tooltip("Type any string to seed the random number generator, or leave this field blank to use a time-dependent default seed value.")]
         [field: SerializeField, LabelText(nameof(Seed))]
-        public string Seed { get; private set; }
+        public string Seed { get; private set; } = "";
 
         protected override void Awake() {
             base.Awake();
 
             (int seed, bool generated) = GetOrGenerateSeed(Seed);
             if (generated) {
-                Seed = seed.ToString();
-                Logger.Log($"Generated time-dependent seed {seed}", context: this);
+                Seed = seed.ToString(CultureInfo.InvariantCulture);
+                Logger!.Log($"Generated time-dependent seed {seed}", context: this);
             }
             else
-                Logger.Log($"Using configured seed {seed}", context: this);
+                Logger!.Log($"Using configured seed {seed}", context: this);
 
             Random.InitState(seed);
             SystemRand = new S.Random(seed);
         }
 
-        public S.Random SystemRand { get; private set; }
+        public S.Random? SystemRand { get; private set; }
 
         internal (int seed, bool generated) GetOrGenerateSeed(string configSeed) {
             int seed;
@@ -39,7 +40,7 @@ namespace UnityEngine {
             else {
                 bool isInt = int.TryParse(Seed, out seed);
                 if (!isInt)
-                    seed = Seed.GetHashCode();
+                    seed = Seed.GetHashCode(StringComparison.Ordinal);
                 generated = false;
             }
 

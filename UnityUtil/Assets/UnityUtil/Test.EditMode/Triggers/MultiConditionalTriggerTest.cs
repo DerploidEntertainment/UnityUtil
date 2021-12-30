@@ -1,13 +1,16 @@
 ﻿using NUnit.Framework;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
 using UnityEngine.Triggers;
 
-namespace UnityUtil.Test.EditMode.Triggers {
+namespace UnityUtil.Test.EditMode.Triggers
+{
     public class MultiConditionalTriggerTest
     {
-
-        private class MockMultiConditionalTrigger : MultiConditionalTrigger {
+        [SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses", Justification = "Instantiated when added to test Game Objects")]
+        private class MockMultiConditionalTrigger : MultiConditionalTrigger
+        {
             public override bool IsConditionMet() => throw new NotImplementedException();
             protected override void ConditionBecameFalseListener(ConditionalTrigger condition) => BecameFalse.Invoke();
             protected override void ConditionBecameTrueListener(ConditionalTrigger condition) => BecameTrue.Invoke();
@@ -16,26 +19,8 @@ namespace UnityUtil.Test.EditMode.Triggers {
         }
 
         [Test]
-        public void CanResetEventListeners_NullConditions()
+        public void DoesNotListenFor_Changed_IfNotRequested()
         {
-            MultiConditionalTrigger trigger = getMultiTrigger();
-            trigger.Conditions = null;
-
-            Assert.DoesNotThrow(trigger.ResetEventListeners);
-        }
-
-        [Test]
-        public void CanResetEventListeners_NullConditionElements()
-        {
-            MockConditionalTrigger condition = getTrigger();
-            MockConditionalTrigger nullCondition = null;
-            MultiConditionalTrigger trigger = getMultiTrigger(conditions: new[] { condition, nullCondition });
-
-            Assert.DoesNotThrow(trigger.ResetEventListeners);
-        }
-
-        [Test]
-        public void DoesNotListenFor_Changed_IfNotRequested() {
             MockConditionalTrigger condition0 = getTrigger();
             MockConditionalTrigger condition1 = getTrigger();
             MultiConditionalTrigger trigger = getMultiTrigger(triggerWhenConditionsChanged: false, conditions: new[] { condition0, condition1 });
@@ -61,7 +46,8 @@ namespace UnityUtil.Test.EditMode.Triggers {
         }
 
         [Test]
-        public void DoesNotListenFor_Maintained_IfNotRequested() {
+        public void DoesNotListenFor_Maintained_IfNotRequested()
+        {
             MockConditionalTrigger condition0 = getTrigger();
             MockConditionalTrigger condition1 = getTrigger();
             MultiConditionalTrigger trigger = getMultiTrigger(triggerWhenConditionsMaintained: false, conditions: new[] { condition0, condition1 });
@@ -87,7 +73,8 @@ namespace UnityUtil.Test.EditMode.Triggers {
         }
 
         [Test]
-        public void ListensFor_Changed_IfRequested() {
+        public void ListensFor_Changed_IfRequested()
+        {
             MockConditionalTrigger condition0 = getTrigger();
             MockConditionalTrigger condition1 = getTrigger();
             MultiConditionalTrigger trigger = getMultiTrigger(triggerWhenConditionsChanged: true, conditions: new[] { condition0, condition1 });
@@ -113,7 +100,8 @@ namespace UnityUtil.Test.EditMode.Triggers {
         }
 
         [Test]
-        public void ListensFor_Maintained_IfRequested() {
+        public void ListensFor_Maintained_IfRequested()
+        {
             MockConditionalTrigger condition0 = getTrigger();
             MockConditionalTrigger condition1 = getTrigger();
             MultiConditionalTrigger trigger = getMultiTrigger(triggerWhenConditionsMaintained: true, conditions: new[] { condition0, condition1 });
@@ -138,8 +126,12 @@ namespace UnityUtil.Test.EditMode.Triggers {
             Assert.That(numFalseTriggered, Is.EqualTo(2));
         }
 
-        private MockConditionalTrigger getTrigger() => new GameObject().AddComponent<MockConditionalTrigger>();
-        private MockMultiConditionalTrigger getMultiTrigger(bool triggerWhenConditionsChanged = true, bool triggerWhenConditionsMaintained = false, ConditionalTrigger[] conditions = null) {
+        private static MockConditionalTrigger getTrigger() => new GameObject().AddComponent<MockConditionalTrigger>();
+        private static MockMultiConditionalTrigger getMultiTrigger(
+            bool triggerWhenConditionsChanged = true,
+            bool triggerWhenConditionsMaintained = false,
+            ConditionalTrigger[]? conditions = null
+        ) {
             MockMultiConditionalTrigger trigger = new GameObject().AddComponent<MockMultiConditionalTrigger>();
             trigger.Conditions = conditions ?? Array.Empty<ConditionalTrigger>();
             trigger.TriggerWhenConditionsChanged = triggerWhenConditionsChanged;

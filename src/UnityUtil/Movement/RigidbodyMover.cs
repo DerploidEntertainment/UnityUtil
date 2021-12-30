@@ -1,17 +1,16 @@
-﻿using UnityEngine;
-using UnityEngine.Assertions;
-using UnityEngine.Logging;
+﻿using Sirenix.OdinInspector;
+using System.Diagnostics.CodeAnalysis;
 
 namespace UnityEngine.Movement {
 
     public class RigidbodyMover : MonoBehaviour {
 
-        public Rigidbody RigidbodyToMove;
-        public RigidbodyMovement MovementData;
+        [Required] public Rigidbody? RigidbodyToMove;
+        [Required] public RigidbodyMovement? MovementData;
 
-        private void Awake() => this.AssertAssociation(MovementData, nameof(this.MovementData));
-
-        private void FixedUpdate() => MovementData.Move(RigidbodyToMove);
+        [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
+        [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
+        private void FixedUpdate() => MovementData!.Move(RigidbodyToMove!);
 
     }
 

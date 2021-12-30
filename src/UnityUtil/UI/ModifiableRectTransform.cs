@@ -3,7 +3,7 @@
     [RequireComponent(typeof(RectTransform))]
     public class ModifiableRectTransform : MonoBehaviour {
 
-        private RectTransform _rectTransform;
+        private RectTransform? _rectTransform;
         private RectTransform RectTransform => _rectTransform ??= GetComponent<RectTransform>();
 
         public void SetAnchoredPositionX(float value) { if (!hasRect()) return; Vector2 curr = RectTransform.anchoredPosition; curr.x = value; RectTransform.anchoredPosition = curr; }

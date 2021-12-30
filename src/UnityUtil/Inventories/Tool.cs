@@ -1,48 +1,42 @@
-﻿using System.Collections;
+﻿using Sirenix.OdinInspector;
+using System.Collections;
 using UnityEngine.Events;
 using UnityEngine.Inputs;
-using UnityEngine.Logging;
 
-namespace UnityEngine.Inventory {
+namespace UnityEngine.Inventories {
 
-    public class Tool : Updatable {
-        // HIDDEN FIELDS
-        private Coroutine _usingRoutine;
-        private Coroutine _refractoryRoutine;
-        private uint _numUses = 0u;
+    public class Tool : Updatable
+    {
+        private Coroutine? _usingRoutine;
+        private Coroutine? _refractoryRoutine;
+        private uint _numUses;
 
-        // INSPECTOR FIELDS
-        public ToolInfo Info;
-        public StartStopInput UseInput;
+        [Required] public ToolInfo? Info;
+        [Required] public StartStopInput? UseInput;
 
-        // API INTERFACE
         /// <summary>
         /// The current charge of this <see cref="Tool"/>.  0 is completely uncharged, 1 is completely charged.
         /// </summary>
-        public float CurrentCharge { get; private set; } = 0f;
+        public float CurrentCharge { get; private set; }
         public CancellableUnityEvent Using = new();
         public UnityEvent Used = new();
         public UnityEvent UseFailed = new();
 
-        // EVENT HANDLERS
         protected override void Awake() {
             base.Awake();
-
-            this.AssertAssociation(Info, nameof(ToolInfo));
-            this.AssertAssociation(UseInput, nameof(this.UseInput));
 
             BetterUpdate = doUpdate;
             RegisterUpdatesAutomatically = true;
         }
         private void doUpdate(float deltaTime) {
             // Start using when the use input starts
-            if (UseInput.Started() && _usingRoutine == null && _refractoryRoutine == null)
+            if (UseInput!.Started() && _usingRoutine is null && _refractoryRoutine is null)
                 _usingRoutine = StartCoroutine(startUsing());
 
             // Stop using when the use input stops
             // If the Tool is automatic and the player got a use in before stopping the UseInput,
             // then start the refractory period still
-            else if (UseInput.Stopped() && _usingRoutine != null) {
+            else if (UseInput.Stopped() && _usingRoutine is not null) {
                 StopCoroutine(_usingRoutine);
                 _usingRoutine = null;
                 CurrentCharge = 0f;
@@ -53,14 +47,13 @@ namespace UnityEngine.Inventory {
         protected override void OnDisable() {
             base.OnDisable();
 
-            if (_usingRoutine != null) {
+            if (_usingRoutine is not null) {
                 StopCoroutine(_usingRoutine);
                 _usingRoutine = null;
                 CurrentCharge = 0f;
             }
         }
 
-        // HELPERS
         private IEnumerator startUsing() {
             _numUses = 0;
             do {
@@ -73,7 +66,7 @@ namespace UnityEngine.Inventory {
 
                 // Otherwise, recharge the Tool (if necessary) then use it
                 else {
-                    if ((_numUses == 0 || Info.RechargeEveryUse) && Info.TimeToCharge > 0f) {
+                    if ((_numUses == 0 || Info!.RechargeEveryUse) && Info!.TimeToCharge > 0f) {
                         CurrentCharge = 0f;
                         while (CurrentCharge < 1f) {
                             CurrentCharge += Time.deltaTime / Info.TimeToCharge;
@@ -86,7 +79,7 @@ namespace UnityEngine.Inventory {
                 }
 
                 // Pause to account for the firing rate, if necessary
-                if (Info.AutomaticMode != AutomaticMode.SingleAction && !Info.RechargeEveryUse)
+                if (Info!.AutomaticMode != AutomaticMode.SingleAction && !Info.RechargeEveryUse)
                     yield return new WaitForSeconds(1f / Info.AutomaticUseRate);
 
             // Continue using if the Tool is fully automatic or has not performed all of its semi-automatic uses
@@ -103,7 +96,7 @@ namespace UnityEngine.Inventory {
             _usingRoutine = null;
         }
         private IEnumerator startRefractoryPeriod() {
-            yield return new WaitForSeconds(Info.RefactoryPeriod);
+            yield return new WaitForSeconds(Info!.RefactoryPeriod);
             _refractoryRoutine = null;
         }
 

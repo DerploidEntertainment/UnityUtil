@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using Sirenix.OdinInspector;
+using System.Diagnostics.CodeAnalysis;
 using UnityEngine.DependencyInjection;
 using UnityEngine.Logging;
 using U = UnityEngine;
@@ -31,53 +32,73 @@ namespace UnityEngine
         AnyDirection,
     }
 
-    public class Spawner : MonoBehaviour {
+    public class Spawner : MonoBehaviour
+    {
+        private ILogger? _logger;
+        private GameObject? _previous;
+        private long _count;
 
-        private ILogger _logger;
-        private GameObject _previous;
-        private long _count = 0;
+        [Tooltip(
+            "The actual Unity prefab to spawn. We highly recommend using a PREFAB, as opposed to " +
+            "an existing GameObject in the Scene, though either will technically work."
+        )]
+        [Required]
+        public GameObject? Prefab;
 
-        // INSPECTOR FIELDS
-        [Tooltip("The actual Unity prefab to spawn.  We highly recommend using a PREFAB, as opposed to an existing GameObject in the Scene, though either will technically work.")]
-        public GameObject Prefab;
-        [Tooltip("All spawned instances of " + nameof(Spawner.Prefab) + " will be parented to this Transform.")]
-        public Transform SpawnParent;
-        [Tooltip("All spawned " + nameof(Spawner.Prefab) + " instances will be given this name, along with a numeric suffix.  If " + nameof(Spawner.DestroyPrevious) + " is true, then the numeric suffix will not be added.")]
+        [Tooltip($"All spawned instances of {nameof(Spawner.Prefab)} will be parented to this Transform.")]
+        public Transform? SpawnParent;
+
+        [Tooltip(
+            $"All spawned {nameof(Spawner.Prefab)} instances will be given this name, along with a numeric suffix. " +
+            $"If {nameof(Spawner.DestroyPrevious)} is true, then the numeric suffix will not be added."
+        )]
         public string BaseName = "Object";
-        [Tooltip("If true, then previously spawned " + nameof(Spawner.Prefab) + " instances will be destroyed before the next instance is spawned, so there will only ever be one spawned instance in existence.  If false, then multiple instances may be spawned.")]
+
+        [Tooltip(
+            $"If true, then previously spawned {nameof(Spawner.Prefab)} instances will be destroyed before " +
+            "the next instance is spawned, so there will only ever be one spawned instance in existence. " +
+            "If false, then multiple instances may be spawned."
+        )]
         public bool DestroyPrevious;
-        [Tooltip("All spawned " + nameof(Spawner.Prefab) + " instances will be launched in the " + nameof(Spawner.SpawnDirection) + ", with at least this speed.  Setting both " + nameof(Spawner.MinSpeed) + " and " + nameof(Spawner.MaxSpeed) + " to zero will spawn instances right at this " + nameof(UnityEngine.Spawner) + "'s position, without any launching.")]
+
+        private const string TOOLTIP_LAUNCH_SPEED =
+            $"All spawned {nameof(Spawner.Prefab)} instances will be launched in the {nameof(Spawner.SpawnDirection)}, " +
+            $"with at least this speed. Setting both {nameof(Spawner.MinSpeed)} and {nameof(Spawner.MaxSpeed)} to zero will " +
+            $"spawn instances right at this {nameof(UnityEngine.Spawner)}'s position, without any launching.";
+
+        [Tooltip(TOOLTIP_LAUNCH_SPEED)]
         public float MinSpeed = 0f;
-        [Tooltip("All spawned " + nameof(Spawner.Prefab) + " instances will be launched in the " + nameof(Spawner.SpawnDirection) + ", with at most this speed.  Setting both " + nameof(Spawner.MinSpeed) + " and " + nameof(Spawner.MaxSpeed) + " to zero will spawn instances right at this " + nameof(UnityEngine.Spawner) + "'s position, without any launching.")]
+
+        [Tooltip(TOOLTIP_LAUNCH_SPEED)]
         public float MaxSpeed = 10f;
-        [Tooltip("This property defines the direction in which spawned " + nameof(Spawner.Prefab) + " instances will be  launched.")]
+
+        [Tooltip($"Defines the direction in which spawned {nameof(Spawner.Prefab)} instances will be launched.")]
         public SpawnDirection SpawnDirection = SpawnDirection.Straight;
-        [Tooltip("If " + nameof(Spawner.SpawnDirection) + " is set to " + nameof(SpawnDirection.ConeRandom) + " or " + nameof(SpawnDirection.ConeBoundary) + ", then this value determines the half-angle of that cone.  Otherwise, this value is ignored.")]
+
+        [Tooltip(
+            $"If {nameof(Spawner.SpawnDirection)} is set to {nameof(SpawnDirection.ConeRandom)} or {nameof(SpawnDirection.ConeBoundary)}, " +
+            "then this value determines the half-angle of that cone. Otherwise, this value is ignored."
+        )]
         [Range(0f, 90f)]
         public float ConeHalfAngle = 30f;
 
         public void Inject(ILoggerProvider loggerProvider) => _logger = loggerProvider.GetLogger(this);
 
         [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
-        private void Awake() {
-            DependencyInjector.Instance.ResolveDependenciesOf(this);
+        private void Awake() => DependencyInjector.Instance.ResolveDependenciesOf(this);
 
-            this.AssertAssociation(Prefab, nameof(this.Prefab));
-        }
-
-        // API INTERFACE
         public void Spawn() {
             // Destroy any previously spawned GameObjects, if requested
             if (_previous != null && DestroyPrevious)
                 Destroy(_previous);
 
             string newName = $"{BaseName}{(DestroyPrevious ? "" : "_" + _count)}";
-            _logger.Log($"Spawning {newName}", context: this);
+            _logger!.Log($"Spawning {newName}", context: this);
 
             // Instantiating a Prefab can sometimes give a GameObject or a Transform...we want the GameObject
             GameObject obj = (SpawnParent == null) ?
-                Instantiate(Prefab, transform.position, transform.rotation) :
-                Instantiate(Prefab, transform.position, transform.rotation, SpawnParent);
+                Instantiate(Prefab!, transform.position, transform.rotation) :
+                Instantiate(Prefab!, transform.position, transform.rotation, SpawnParent);
             obj.name = newName;
             if (!DestroyPrevious)
                 ++_count;
@@ -108,24 +129,22 @@ namespace UnityEngine
             _previous = obj;
         }
 
-        // HELPER FUNCTIONS
 #if DEBUG_2D
-        private Vector2 getSpawnDirection() {
+        private Vector2 getSpawnDirection() =>
 #else
-        private Vector3 getSpawnDirection() {
+        private Vector3 getSpawnDirection() =>
 #endif
-            switch (SpawnDirection) {
-                case SpawnDirection.Straight: return transform.forward;
-                case SpawnDirection.ConeRandom:   return MoreMath.RandomConeVector(transform, ConeHalfAngle, onlyBoundary: false);
-                case SpawnDirection.ConeBoundary: return MoreMath.RandomConeVector(transform, ConeHalfAngle, onlyBoundary: true);
+            SpawnDirection switch {
+                SpawnDirection.Straight => transform.forward,
+                SpawnDirection.ConeRandom => MoreMath.RandomConeVector(transform, ConeHalfAngle, onlyBoundary: false),
+                SpawnDirection.ConeBoundary => MoreMath.RandomConeVector(transform, ConeHalfAngle, onlyBoundary: true),
 #if DEBUG_2D
-                case SpawnDirection.AnyDirection: return U.Random.insideUnitCircle.normalized;
+                SpawnDirection.AnyDirection => U.Random.insideUnitCircle.normalized,
 #else
-                case SpawnDirection.AnyDirection: return U.Random.onUnitSphere;
+                SpawnDirection.AnyDirection => U.Random.onUnitSphere,
 #endif
-                default: throw UnityObjectExtensions.SwitchDefaultException(SpawnDirection);
-            }
-        }
+                _ => throw UnityObjectExtensions.SwitchDefaultException(SpawnDirection),
+            };
     }
 
 }

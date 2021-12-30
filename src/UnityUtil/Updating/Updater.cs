@@ -10,44 +10,37 @@ namespace UnityEngine {
         private readonly MultiCollection<int, Action<float>> _fixed = new();
         private readonly MultiCollection<int, Action<float>> _late = new();
 
-        // API INTERFACE
-        public void RegisterUpdate(int instanceID, Action<float> action) {
-            if (action == null)
-                throw new ArgumentNullException(nameof(instanceID));
-            if (_updates.ContainsKey(instanceID))
-                throw new InvalidOperationException($"{this.GetHierarchyNameWithType()} has already registered an object with {nameof(instanceID)} {instanceID} for updates!");
+        public void RegisterUpdate(int instanceId, Action<float> updateAction) {
+            if (_updates.ContainsKey(instanceId))
+                throw new InvalidOperationException($"{this.GetHierarchyNameWithType()} has already registered an object with {nameof(instanceId)} {instanceId} for updates!");
 
-            _updates.Add(instanceID, action);
+            _updates.Add(instanceId, updateAction);
         }
-        public void UnregisterUpdate(int instanceID) {
-            if (!_updates.Remove(instanceID))
-                throw new InvalidOperationException($"{this.GetHierarchyNameWithType()} could not unregister the update Action for the object with {nameof(instanceID)} {instanceID} because no such Action was ever registered!");
+        public void UnregisterUpdate(int instanceId) {
+            if (!_updates.Remove(instanceId))
+                throw new InvalidOperationException($"{this.GetHierarchyNameWithType()} could not unregister the update Action for the object with {nameof(instanceId)} {instanceId} because no such Action was ever registered!");
         }
 
-        public void RegisterFixedUpdate(int instanceID, Action<float> action) {
-            if (action == null)
-                throw new ArgumentNullException(nameof(instanceID));
-            if (_fixed.ContainsKey(instanceID))
-                throw new InvalidOperationException($"{this.GetHierarchyNameWithType()} has already registered an object with {nameof(instanceID)} {instanceID} for FixedUpdate!");
+        public void RegisterFixedUpdate(int instanceId, Action<float> fixedUpdateAction) {
+            if (_fixed.ContainsKey(instanceId))
+                throw new InvalidOperationException($"{this.GetHierarchyNameWithType()} has already registered an object with {nameof(instanceId)} {instanceId} for FixedUpdate!");
 
-            _fixed.Add(instanceID, action);
+            _fixed.Add(instanceId, fixedUpdateAction);
         }
-        public void UnregisterFixedUpdate(int instanceID) {
-            if (!_fixed.Remove(instanceID))
-                throw new InvalidOperationException($"{this.GetHierarchyNameWithType()} could not unregister the FixedUpdate action for the object with {nameof(instanceID)} {instanceID} because no such action was ever registered!");
+        public void UnregisterFixedUpdate(int instanceId) {
+            if (!_fixed.Remove(instanceId))
+                throw new InvalidOperationException($"{this.GetHierarchyNameWithType()} could not unregister the FixedUpdate action for the object with {nameof(instanceId)} {instanceId} because no such action was ever registered!");
         }
 
-        public void RegisterLateUpdate(int instanceID, Action<float> action) {
-            if (action == null)
-                throw new ArgumentNullException(nameof(instanceID));
-            if (_late.ContainsKey(instanceID))
-                throw new InvalidOperationException($"{this.GetHierarchyNameWithType()} has already registered an object with {nameof(instanceID)} {instanceID} for LateUpdate!");
+        public void RegisterLateUpdate(int instanceId, Action<float> lateUpdateAction) {
+            if (_late.ContainsKey(instanceId))
+                throw new InvalidOperationException($"{this.GetHierarchyNameWithType()} has already registered an object with {nameof(instanceId)} {instanceId} for LateUpdate!");
 
-            _late.Add(instanceID, action);
+            _late.Add(instanceId, lateUpdateAction);
         }
-        public void UnregisterLateUpdate(int instanceID) {
-            if (!_late.Remove(instanceID))
-                throw new InvalidOperationException($"{this.GetHierarchyNameWithType()} could not unregister the LateUpdate action for the object with {nameof(instanceID)} {instanceID} because no such action was ever registered!");
+        public void UnregisterLateUpdate(int instanceId) {
+            if (!_late.Remove(instanceId))
+                throw new InvalidOperationException($"{this.GetHierarchyNameWithType()} could not unregister the LateUpdate action for the object with {nameof(instanceId)} {instanceId} because no such action was ever registered!");
         }
 
         [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]

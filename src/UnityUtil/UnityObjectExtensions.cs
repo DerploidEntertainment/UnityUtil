@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Text;
 using UnityEngine.Assertions;
 
 namespace UnityEngine {
 
-    public static class UnityObjectExtensions {
-
+    public static class UnityObjectExtensions
+    {
         public const uint DefaultNumParents = 1u;
         public const string DefaultAncestorSeparator = ">";
         public const string DefaultHierarchyNameFormatString = "'{0}'";
@@ -29,14 +31,8 @@ namespace UnityEngine {
             uint numParents = DefaultNumParents,
             string separator = DefaultAncestorSeparator,
             string formatString = DefaultHierarchyNameWithTypeFormatString
-        ) => string.Format(formatString, component.GetType().Name, getName(component.transform, numParents, separator, formatString: "{0}"));
+        ) => string.Format(CultureInfo.InvariantCulture, formatString, component.GetType().Name, getName(component.transform, numParents, separator, formatString: "{0}"));
 
-        [Conditional("UNITY_ASSERTIONS")]
-        public static void AssertDependency(this Component component, object member, string memberName) =>
-            Assert.IsNotNull(member, $"{component.GetHierarchyNameWithType()}'s {memberName} dependency was not satisfied!");
-        [Conditional("UNITY_ASSERTIONS")]
-        public static void AssertAssociation(this Component component, object member, string memberName) =>
-            Assert.IsNotNull(member, $"{component.GetHierarchyNameWithType()} was not associated with any {memberName}!");
         /// <summary>
         /// Assert that this component is both active and enabled.
         /// </summary>
@@ -50,10 +46,9 @@ namespace UnityEngine {
             Assert.IsTrue(behaviour.enabled, $"Cannot {verbMessage} {behaviour.GetHierarchyNameWithType()} because it is disabled!");
         }
 
-        public static NotImplementedException SwitchDefaultException<T>(T value) where T : Enum =>
+        public static InvalidOperationException SwitchDefaultException<T>(T value) where T : Enum =>
             new($"Gah! We haven't accounted for {typeof(T).Name} {value} yet!");
 
-        // HELPERS
         private static string getName(Transform transform, uint numParents, string separator, string formatString) {
             Transform trans = transform;
             var nameBuilder = new StringBuilder(trans.name);
@@ -64,7 +59,7 @@ namespace UnityEngine {
                 nameBuilder.Insert(0, trans.name + separator);
             }
 
-            return string.Format(formatString, nameBuilder);
+            return string.Format(CultureInfo.InvariantCulture, formatString, nameBuilder);
         }
     }
 }

@@ -24,7 +24,7 @@ namespace UnityUtil.Test.PlayMode {
             Assert.That(numTriggers, Is.Zero);
 
             // Move test object into trigger
-            collidingRb.position = trigger.AttachedCollider.attachedRigidbody.position;
+            collidingRb.position = trigger.AttachedCollider!.attachedRigidbody.position;
             yield return new WaitForFixedUpdate();
             Assert.That(numTriggers, Is.EqualTo(1));
         }
@@ -62,7 +62,7 @@ namespace UnityUtil.Test.PlayMode {
             Rigidbody collidingRb = testCollider.GetComponent<Rigidbody>();
 
             // Position test object inside trigger
-            collidingRb.position = trigger.AttachedCollider.attachedRigidbody.position;
+            collidingRb.position = trigger.AttachedCollider!.attachedRigidbody.position;
             yield return new WaitForFixedUpdate();
             Assert.That(numTriggers, Is.Zero);
 
@@ -111,7 +111,7 @@ namespace UnityUtil.Test.PlayMode {
             Assert.That(numTriggers, Is.Zero);
 
             // Move test object into trigger
-            collidingRb.position = trigger.AttachedCollider.attachedRigidbody.position;
+            collidingRb.position = trigger.AttachedCollider!.attachedRigidbody.position;
             yield return new WaitForFixedUpdate();
             Assert.That(numTriggers, Is.Zero);
 
@@ -141,7 +141,7 @@ namespace UnityUtil.Test.PlayMode {
             Assert.That(numTriggers, Is.Zero);
 
             // Move test object into trigger
-            collidingRb.position = trigger.AttachedCollider.attachedRigidbody.position;
+            collidingRb.position = trigger.AttachedCollider!.attachedRigidbody.position;
             yield return new WaitForFixedUpdate();
             Assert.That(numTriggers, Is.EqualTo(1));
 
@@ -169,7 +169,7 @@ namespace UnityUtil.Test.PlayMode {
             Assert.That(numTriggers, Is.Zero);
 
             // Move test object into trigger
-            testCollider.transform.position = trigger.AttachedCollider.attachedRigidbody.position;
+            testCollider.transform.position = trigger.AttachedCollider!.attachedRigidbody.position;
             yield return new WaitForFixedUpdate();
             Assert.That(numTriggers, Is.EqualTo(1));
         }
@@ -211,22 +211,22 @@ namespace UnityUtil.Test.PlayMode {
             Assert.That(numTriggers, Is.Zero);
 
             // Move test object into trigger
-            testCollider.transform.position = trigger.AttachedCollider.attachedRigidbody.position;
+            testCollider.transform.position = trigger.AttachedCollider!.attachedRigidbody.position;
             yield return new WaitForFixedUpdate();
             Assert.That(numTriggers, Is.EqualTo(1));
         }
 
-        private Collider getCollidingObject(bool hasRigidbody = true) {
+        private static Collider getCollidingObject(bool hasRigidbody = true) {
             var obj = new GameObject($"test-collider");
             Collider collider = obj.AddComponent<SphereCollider>();
             if (hasRigidbody)
                 obj.AddComponent<Rigidbody>();
             return collider;
         }
-        private T getTriggerObject<T>(
+        private static T getTriggerObject<T>(
             bool isTrigger,
-            UnityAction listener = null,
-            string tagFilter = null,
+            UnityAction? listener = null,
+            string? tagFilter = null,
             bool filterIsBlacklist = false,
             bool useGravity = false
         ) where T : ColliderTriggerBase {
@@ -242,7 +242,7 @@ namespace UnityUtil.Test.PlayMode {
             T trigger = obj.AddComponent<T>();
             trigger.AttachedRigidbodyTagFilter = tagFilter;
             trigger.FilterIsBlacklist = filterIsBlacklist;
-            if (listener != null)
+            if (listener is not null)
                 trigger.Triggered.AddListener(listener);
 
             return trigger;

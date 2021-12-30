@@ -10,13 +10,13 @@ namespace UnityUtil.Test.EditMode.Triggers {
             ToggleTrigger trigger = getToggleTrigger();
 
             trigger.TurnOn();
-            Assert.IsTrue(trigger.IsConditionMet());
+            Assert.That(trigger.IsConditionMet(), Is.True);
 
             trigger.TurnOff();
-            Assert.IsFalse(trigger.IsConditionMet());
+            Assert.That(trigger.IsConditionMet(), Is.False);
 
             trigger.TurnOn();
-            Assert.IsTrue(trigger.IsConditionMet());
+            Assert.That(trigger.IsConditionMet(), Is.True);
         }
 
         [Test]
@@ -91,6 +91,6 @@ namespace UnityUtil.Test.EditMode.Triggers {
             Assert.That(numTrueTriggers, Is.EqualTo(1));
         }
 
-        private ToggleTrigger getToggleTrigger() => new GameObject().AddComponent<ToggleTrigger>();
+        private static ToggleTrigger getToggleTrigger() => new GameObject().AddComponent<ToggleTrigger>();
     }
 }

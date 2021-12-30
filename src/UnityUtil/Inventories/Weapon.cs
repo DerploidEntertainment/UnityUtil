@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Sirenix.OdinInspector;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -6,30 +7,30 @@ using UnityEngine.DependencyInjection;
 using UnityEngine.Events;
 using UnityEngine.Logging;
 
-namespace UnityEngine.Inventory {
+namespace UnityEngine.Inventories {
 
     [Serializable]
     public class AttackEvent : UnityEvent<Ray, RaycastHit[]> { }
 
     [RequireComponent(typeof(Tool))]
-    public class Weapon : MonoBehaviour {
+    public class Weapon : MonoBehaviour
+    {
+        private ILogger? _logger;
+        private Tool? _tool;
+        private float _accuracyLerpT;
 
-        private ILogger _logger;
-        private Tool _tool;
-        private float _accuracyLerpT = 0f;
-
-        public WeaponInfo Info;
+        [Required]
+        public WeaponInfo? Info;
 
         public AttackEvent Attacked = new();
 
-        public float AccuracyConeHalfAngle => Mathf.LerpAngle(Info.InitialConeHalfAngle, Info.FinalConeHalfAngle, _accuracyLerpT);
+        public float AccuracyConeHalfAngle => Mathf.LerpAngle(Info!.InitialConeHalfAngle, Info.FinalConeHalfAngle, _accuracyLerpT);
 
         public void Inject(ILoggerProvider loggerProvider) => _logger = loggerProvider.GetLogger(this);
 
         [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
+        [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
         private void Awake() {
-            this.AssertAssociation(Info, nameof(WeaponInfo));
-
             DependencyInjector.Instance.ResolveDependenciesOf(this);
 
             // Register Tool events
@@ -38,8 +39,9 @@ namespace UnityEngine.Inventory {
             _tool.Used.AddListener(attack);
         }
         [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
+        [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
         private void OnDrawGizmos() {
-            switch (Info.PhysicsCastShape) {
+            switch (Info!.PhysicsCastShape) {
                 case PhysicsCastShape.Ray:
                 case PhysicsCastShape.Capsule:  // No Gizmos.DrawCapsule method unfortunately :/
                     Gizmos.DrawLine(transform.position, transform.position + Info.Range * transform.forward);
@@ -53,11 +55,10 @@ namespace UnityEngine.Inventory {
                     Gizmos.DrawWireSphere(transform.position + Info.Range * transform.forward, Info.Radius);
                     break;
 
-                default: _logger.LogWarning("Could not draw Gizmos. " + UnityObjectExtensions.SwitchDefaultException(Info.PhysicsCastShape).Message, context: this); break;
+                default: _logger!.LogWarning("Could not draw Gizmos. " + UnityObjectExtensions.SwitchDefaultException(Info.PhysicsCastShape).Message, context: this); break;
             }
         }
 
-        // HELPERS
         private void attack() {
 
             // Get a random Ray within the accuracy cone
@@ -68,7 +69,7 @@ namespace UnityEngine.Inventory {
             var ray = new Ray(transform.position, transform.TransformDirection(dir));
 
             // Cast into the scene for hits along this ray, using the specified cast shape
-            RaycastHit[] hits = Info.PhysicsCastShape switch {
+            RaycastHit[] hits = Info!.PhysicsCastShape switch {
                 PhysicsCastShape.Ray => rayAttackHits(),
                 PhysicsCastShape.Box => boxAttackHits(),
                 PhysicsCastShape.Sphere => sphereAttackHits(),
@@ -84,7 +85,7 @@ namespace UnityEngine.Inventory {
             Attacked.Invoke(ray, hits);
 
             // Adjust accuracy for the next attack, assuming the base Tool is automatic
-            _accuracyLerpT = (Info.AccuracyLerpTime == 0 ? 1f : _accuracyLerpT + (1f / _tool.Info.AutomaticUseRate) / Info.AccuracyLerpTime);
+            _accuracyLerpT = (Info.AccuracyLerpTime == 0 ? 1f : _accuracyLerpT + (1f / _tool!.Info!.AutomaticUseRate) / Info.AccuracyLerpTime);
             RaycastHit[] rayAttackHits() {
                 RaycastHit[] rayHits = Array.Empty<RaycastHit>();
 

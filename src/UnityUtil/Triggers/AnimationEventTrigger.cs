@@ -10,7 +10,7 @@ namespace UnityEngine.Triggers
     [Serializable]
     public class NamedAnimationEvent
     {
-        public string Name;
+        public string Name = "";
         public UnityEvent Trigger = new();
     }
 
@@ -21,7 +21,7 @@ namespace UnityEngine.Triggers
 
         [SerializeField, LabelText("Triggers")]
         [SuppressMessage("Style", "IDE0044:Add readonly modifier", Justification = "Unity doesn't serialize readonly fields")]
-        private NamedAnimationEvent[] _triggers;
+        private NamedAnimationEvent[] _triggers = Array.Empty<NamedAnimationEvent>();
 
         [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
         [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
@@ -32,13 +32,13 @@ namespace UnityEngine.Triggers
         /// Instead, create an <see cref="AnimationClip"/> with an <see cref="AnimationEvent"/> that calls this method.
         /// </summary>
         /// <param name="eventName">Name of the event that was raised by the <see cref="UnityEngine.Animator"/></param>
-        public void RaiseEvent(string eventName) {
+        public void Trigger(string eventName) {
             if (!_triggerDict.TryGetValue(eventName, out UnityEvent trigger)) {
                 Debug.LogWarning($"No trigger associate with named AnimationEvent '{eventName}'");
                 return;
             }
 
-            if (trigger == null) {
+            if (trigger is null) {
                 Debug.LogWarning($"Trigger associated with named AnimationEvent '{eventName}' cannot be null");
                 return;
             }

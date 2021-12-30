@@ -5,28 +5,40 @@ using UnityEngine.Triggers;
 
 namespace UnityEngine.Inputs {
 
-    public class LookAtInteractor : Updatable {
-
-        // HIDDEN FIELDS
+    public class LookAtInteractor : Updatable
+    {
         private readonly IList<ToggleTrigger> _toggled = new List<ToggleTrigger>();
         private readonly HashSet<ToggleTrigger> _triggerBuffer = new();
 
-        // INSPECTOR FIELDS
         [Header("Raycasting")]
         public float Range;
         public LayerMask InteractLayerMask;
-        [Tooltip("If true, then all colliders within " + nameof(LookAtInteractor.Range) + " and on the " + nameof(LookAtInteractor.InteractLayerMask) + " will be interacted with (using the relatively expensive Physics.RaycastAll() method)  If false, then only " + nameof(LookAtInteractor.MaxInteractions) + " colliders will be interacted with.")]
+
+        [Tooltip(
+            $"If true, then all colliders within {nameof(LookAtInteractor.Range)} and on the {nameof(LookAtInteractor.InteractLayerMask)} will be " +
+            $"interacted with (using the relatively expensive Physics.RaycastAll() method)." +
+            $"If false, then only {nameof(LookAtInteractor.MaxInteractions)} colliders will be interacted with."
+        )]
         public bool InteractWithAllInRange = false;
-        [Tooltip("The maximum number of colliders within " + nameof(LookAtInteractor.Range) + " and on the " + nameof(LookAtInteractor.InteractLayerMask) + " to interacted with.  If this value is 1, then Physics.Raycast() will be used to find colliders to interact with, otherwise the relatively expensive Physics.RaycastAll() will be used (with only the " + nameof(LookAtInteractor.MaxInteractions) + " closest colliders actually being interacted with).  This value can theoretically be zero, but that would make this " + nameof(Inputs.LookAtInteractor) + " kind of pointless!")]
+
+        [Tooltip(
+            $"The maximum number of colliders within {nameof(LookAtInteractor.Range)} and on the {nameof(LookAtInteractor.InteractLayerMask)} to " +
+            $"interact with. If this value is 1, then Physics.Raycast() will be used to find colliders to interact with, " +
+            $"otherwise the relatively expensive Physics.RaycastAll() will be used (with only the {nameof(LookAtInteractor.MaxInteractions)} " +
+            $"closest colliders actually being interacted with)."
+        )]
+        [Min(1f)]
         public uint MaxInteractions = 1;
 
+
         [Header("Gizmos")]
+
         [Tooltip("Should a ray Gizmo be drawn to indicate where this Component is looking?")]
         public bool DrawRay = true;
-        [Tooltip("What color should the ray Gizmo be that indicates where this Component is looking?  Ignored if " + nameof(LookAtInteractor.DrawRay) + " is false.")]
+
+        [Tooltip($"What color should the ray Gizmo be that indicates where this Component is looking? Ignored if {nameof(LookAtInteractor.DrawRay)} is false.")]
         public Color RayColor = Color.black;
 
-        // EVENT HANDLERS
         protected override void Awake() {
             base.Awake();
 
@@ -44,6 +56,7 @@ namespace UnityEngine.Inputs {
         }
 
         [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
+        [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
         private void OnDrawGizmos() {
             if (DrawRay) {
                 Gizmos.color = RayColor;
@@ -52,7 +65,6 @@ namespace UnityEngine.Inputs {
             }
         }
 
-        // HELPERS
         private void look(float deltaTime) {
             // Raycast for Colliders to look at
             RaycastHit[] hits = Array.Empty<RaycastHit>();

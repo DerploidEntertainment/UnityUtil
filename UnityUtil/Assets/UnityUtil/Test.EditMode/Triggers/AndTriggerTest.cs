@@ -13,10 +13,10 @@ namespace UnityUtil.Test.EditMode.Triggers {
             AndTrigger andTrigger = getAndTrigger(condition);
 
             condition.State = false;
-            Assert.IsFalse(andTrigger.IsConditionMet());
+            Assert.That(andTrigger.IsConditionMet(), Is.False);
 
             condition.State = true;
-            Assert.IsTrue(andTrigger.IsConditionMet());
+            Assert.That(andTrigger.IsConditionMet(), Is.True);
         }
 
         [Test]
@@ -28,19 +28,19 @@ namespace UnityUtil.Test.EditMode.Triggers {
 
             condition0.State = false;
             condition1.State = false;
-            Assert.IsFalse(andTrigger.IsConditionMet());
+            Assert.That(andTrigger.IsConditionMet(), Is.False);
 
             condition0.State = true;
             condition1.State = false;
-            Assert.IsFalse(andTrigger.IsConditionMet());
+            Assert.That(andTrigger.IsConditionMet(), Is.False);
 
             condition0.State = false;
             condition1.State = true;
-            Assert.IsFalse(andTrigger.IsConditionMet());
+            Assert.That(andTrigger.IsConditionMet(), Is.False);
 
             condition0.State = true;
             condition1.State = true;
-            Assert.IsTrue(andTrigger.IsConditionMet());
+            Assert.That(andTrigger.IsConditionMet(), Is.True);
         }
 
         [Test]
@@ -283,14 +283,14 @@ namespace UnityUtil.Test.EditMode.Triggers {
             orTriggerWrapper.AssertTriggerCounts(2, 2, 2, 8);
         }
 
-        private MockConditionalTrigger getTrigger(bool state = false)
+        private static MockConditionalTrigger getTrigger(bool state = false)
         {
             MockConditionalTrigger trigger = new GameObject().AddComponent<MockConditionalTrigger>();
             trigger.State = state;
 
             return trigger;
         }
-        private AndTrigger getAndTrigger(params ConditionalTrigger[] conditions)
+        private static AndTrigger getAndTrigger(params ConditionalTrigger[] conditions)
         {
             AndTrigger trigger = new GameObject().AddComponent<AndTrigger>();
             trigger.TriggerWhenConditionsChanged = true;

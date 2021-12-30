@@ -1,12 +1,11 @@
-﻿using System;
+﻿using Sirenix.OdinInspector;
+using System;
 using System.Collections;
 using UnityEngine.Assertions;
 using UnityEngine.Events;
-using UnityEngine.Logging;
 
-namespace UnityEngine.Inventory {
+namespace UnityEngine.Inventories {
 
-    // ABSTRACT DATA TYPES
     /// <summary>
     /// Type arguments are (bool isOverheated)
     /// </summary>
@@ -14,25 +13,22 @@ namespace UnityEngine.Inventory {
     public class OverheatChangedEvent : UnityEvent<bool> { }
 
     [RequireComponent(typeof(Tool))]
-    public class OverheatTool : Updatable {
+    public class OverheatTool : Updatable
+    {
+        private Tool? _tool;
+        private Coroutine? _overheatRoutine;
 
-        // HIDDEN FIELDS
-        private Tool _tool;
-        private Coroutine _overheatRoutine;
+        [Required]
+        public OverheatToolInfo? Info;
 
-        // INSPECTOR FIELDS
-        public OverheatToolInfo Info;
-
-        // API INTERFACE
-        public float CurrentHeat { get; private set; } = 0f;
+        public float CurrentHeat { get; private set; }
         public OverheatChangedEvent OverheatStateChanged = new();
 
-        // EVENT HANDLERS
-        protected override void Awake() {
+        protected override void Awake()
+        {
             base.Awake();
 
-            this.AssertAssociation(Info, nameof(OverheatToolInfo));
-            Assert.IsTrue(Info.StartingHeat <= Info.MaxHeat, $"{this.GetHierarchyNameWithType()} was started with {nameof(this.Info.StartingHeat)} heat but it can only store a max of {this.Info.MaxHeat}!");
+            Assert.IsTrue(Info!.StartingHeat <= Info.MaxHeat, $"{this.GetHierarchyNameWithType()} was started with {nameof(this.Info.StartingHeat)} heat but it can only store a max of {this.Info.MaxHeat}!");
 
             BetterUpdate = doUpdate;
             RegisterUpdatesAutomatically = true;
@@ -53,17 +49,18 @@ namespace UnityEngine.Inventory {
                 }
             });
         }
-        private void doUpdate(float deltaTime) {
+        private void doUpdate(float deltaTime)
+        {
             // Cool this Tool, unless it is overheated
-            if (CurrentHeat > 0 && _overheatRoutine == null) {
-                float rate = Info.AbsoluteHeat ? Info.CoolRate : Info.CoolRate * Info.MaxHeat;
+            if (CurrentHeat > 0 && _overheatRoutine is null) {
+                float rate = Info!.AbsoluteHeat ? Info.CoolRate : Info.CoolRate * Info.MaxHeat;
                 CurrentHeat = Mathf.Max(0, CurrentHeat - deltaTime * rate);
             }
         }
 
-        // HELPERS
-        private IEnumerator doOverheatDuration() {
-            yield return new WaitForSeconds(Info.OverheatDuration);
+        private IEnumerator doOverheatDuration()
+        {
+            yield return new WaitForSeconds(Info!.OverheatDuration);
             OverheatStateChanged.Invoke(false);
 
             _overheatRoutine = null;

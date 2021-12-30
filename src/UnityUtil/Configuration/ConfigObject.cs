@@ -1,9 +1,10 @@
 using Sirenix.OdinInspector;
 using System;
-using UnityEngine.Logging;
+using System.Diagnostics.CodeAnalysis;
 
 namespace UnityEngine {
 
+    [SuppressMessage("Naming", "CA1720:Identifier contains type name", Justification = "The point of these members is to be type names...")]
     public enum ConfigValueType {
         Integer,
         Boolean,
@@ -29,72 +30,71 @@ namespace UnityEngine {
     [Serializable]
     public class Config {
 
-        #pragma warning disable CA2235 // Mark all non-serializable fields
-
-        public string Key;
+        public string Key = "";
         public ConfigValueType Type;
 
-        [ShowIf(nameof(Config.Type), ConfigValueType.Integer)]
+        [ShowIf(nameof(Type), ConfigValueType.Integer)]
         public int IntValue;
 
-        [ShowIf(nameof(Config.Type), ConfigValueType.Boolean)]
+        [ShowIf(nameof(Type), ConfigValueType.Boolean)]
         public bool BoolValue;
 
-        [ShowIf(nameof(Config.Type), ConfigValueType.Float)]
+        [ShowIf(nameof(Type), ConfigValueType.Float)]
         public float FloatValue;
 
-        [ShowIf(nameof(Config.Type), ConfigValueType.String)]
-        public string StringValue;
+        [ShowIf(nameof(Type), ConfigValueType.String)]
+        public string StringValue = "";
 
-        [ShowIf(nameof(Config.Type), ConfigValueType.Color)]
+        [ShowIf(nameof(Type), ConfigValueType.Color)]
         public Color ColorValue;
 
-        [ShowIf(nameof(Config.Type), ConfigValueType.ObjectReference)]
-        public Object ObjectValue;
+        [ShowIf(nameof(Type), ConfigValueType.ObjectReference)]
+        public Object? ObjectValue;
 
-        [ShowIf(nameof(Config.Type), ConfigValueType.LayerMask)]
+        [ShowIf(nameof(Type), ConfigValueType.LayerMask)]
         public LayerMask LayerMaskValue;
 
-        [ShowIf(nameof(Config.Type), ConfigValueType.Vector2)]
+        [ShowIf(nameof(Type), ConfigValueType.Vector2)]
         public Vector2 Vector2Value;
 
-        [ShowIf(nameof(Config.Type), ConfigValueType.Vector3)]
+        [ShowIf(nameof(Type), ConfigValueType.Vector3)]
         public Vector3 Vector3Value;
 
-        [ShowIf(nameof(Config.Type), ConfigValueType.Vector4)]
+        [ShowIf(nameof(Type), ConfigValueType.Vector4)]
         public Vector4 Vector4Value;
 
-        [ShowIf(nameof(Config.Type), ConfigValueType.Rect)]
+        [ShowIf(nameof(Type), ConfigValueType.Rect)]
         public Rect RectValue;
 
-        [ShowIf(nameof(Config.Type), ConfigValueType.AnimationCurve)]
-        public AnimationCurve AnimationCurveValue;
+        [ShowIf(nameof(Type), ConfigValueType.AnimationCurve)]
+        public AnimationCurve? AnimationCurveValue;
 
-        [ShowIf(nameof(Config.Type), ConfigValueType.Bounds)]
+        [ShowIf(nameof(Type), ConfigValueType.Bounds)]
         public Bounds BoundsValue;
 
-        [ShowIf(nameof(Config.Type), ConfigValueType.Gradient)]
-        public Gradient GradientValue;
+        [ShowIf(nameof(Type), ConfigValueType.Gradient)]
+        public Gradient? GradientValue;
 
-        [ShowIf(nameof(Config.Type), ConfigValueType.Quaternion)]
+        [ShowIf(nameof(Type), ConfigValueType.Quaternion)]
         public Quaternion QuaternionValue;
 
-        [ShowIf(nameof(Config.Type), ConfigValueType.Vector2Int)]
+        [ShowIf(nameof(Type), ConfigValueType.Vector2Int)]
         public Vector2Int Vector2IntValue;
 
-        [ShowIf(nameof(Config.Type), ConfigValueType.Vector3Int)]
+        [ShowIf(nameof(Type), ConfigValueType.Vector3Int)]
         public Vector3Int Vector3IntValue;
 
-        [ShowIf(nameof(Config.Type), ConfigValueType.RectInt)]
+        [ShowIf(nameof(Type), ConfigValueType.RectInt)]
         public RectInt RectIntValue;
 
-        [ShowIf(nameof(Config.Type), ConfigValueType.BoundsInt)]
+        [ShowIf(nameof(Type), ConfigValueType.BoundsInt)]
         public BoundsInt BoundsIntValue;
 
         #pragma warning restore CA2235 // Mark all non-serializable fields
 
-        public object GetValue() =>
-            Type switch {
+        public object GetValue()
+        {
+            object? val = Type switch {
                 ConfigValueType.Integer => IntValue,
                 ConfigValueType.Boolean => BoolValue,
                 ConfigValueType.Float => FloatValue,
@@ -116,11 +116,14 @@ namespace UnityEngine {
                 ConfigValueType.BoundsInt => BoundsIntValue,
                 _ => throw UnityObjectExtensions.SwitchDefaultException(Type),
             };
+
+            return val ?? throw new InvalidOperationException($"{nameof(Type)} was set to '{Type}' but no value was provided");
+        }
     }
 
-    [CreateAssetMenu(menuName = nameof(UnityUtil) + "/" + "Configuration" + "/" + nameof(ConfigObject), fileName = "appsettings.asset")]
+    [CreateAssetMenu(menuName = $"{nameof(UnityUtil)}/Configuration/{nameof(ConfigObject)}", fileName = "appsettings.asset")]
     public class ConfigObject : ScriptableObject {
-        public Config[] Configs;
+        public Config[] Configs = Array.Empty<Config>();
     }
 
 }

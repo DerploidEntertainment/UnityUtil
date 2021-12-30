@@ -1,10 +1,10 @@
-﻿using System;
+﻿using Sirenix.OdinInspector;
+using System;
 using UnityEngine.Assertions;
 using UnityEngine.Events;
 using UnityEngine.Inputs;
-using UnityEngine.Logging;
 
-namespace UnityEngine.Inventory {
+namespace UnityEngine.Inventories {
 
     /// <summary>
     /// Type arguments are (int oldClipAmmo, int oldBackupAmmo, int newClipAmmo, int newBackupAmmo)
@@ -13,23 +13,23 @@ namespace UnityEngine.Inventory {
     public class AmmoEvent : UnityEvent<int, int, int, int> { }
 
     [RequireComponent(typeof(Tool))]
-    public class AmmoTool : MonoBehaviour {
+    public class AmmoTool : Updatable
+    {
+        private Tool? _tool;
 
-        private Tool _tool;
+        [Required] public AmmoToolInfo? Info;
+        [Required] public StartStopInput? ReloadInput;
 
-        // INSPECTOR FIELDS
-        public AmmoToolInfo Info;
-        public StartStopInput ReloadInput;
-
-        // API INTERFACE
         /// <summary>
         /// The amount of ammo currently in the main clip.
         /// </summary>
         public int CurrentClipAmmo { get; private set; }
+
         /// <summary>
         /// The total amount of ammo in all backup clips.
         /// </summary>
         public int CurrentBackupAmmo { get; private set; }
+
         /// <summary>
         /// Load this <see cref="AmmoTool"/> with a specified amount of ammo.
         /// </summary>
@@ -39,6 +39,7 @@ namespace UnityEngine.Inventory {
             Assert.IsTrue(ammo >= 0, $"Cannot load {this.GetHierarchyNameWithType()} with a negative amount of ammo!");
             return doLoad(ammo);
         }
+
         /// <summary>
         /// Reload this <see cref="AmmoTool"/>'s current clip from its backup ammo
         /// </summary>
@@ -47,11 +48,11 @@ namespace UnityEngine.Inventory {
         public AmmoEvent Loaded = new();
         public AmmoEvent AmmoReduced = new();
 
-        // EVENT HANDLERS
-        private void Awake() {
-            this.AssertAssociation(Info, nameof(AmmoToolInfo));
-            this.AssertAssociation(ReloadInput, nameof(this.ReloadInput));
-            Assert.IsTrue(Info.StartingAmmo <= Info.MaxClipAmmo * (Info.MaxBackupClips + 1), $"{this.GetHierarchyNameWithType()} was started with {nameof(this.Info.StartingAmmo)} ammo but it can only store a max of {this.Info.MaxClipAmmo} * ({this.Info.MaxClipAmmo * (this.Info.MaxBackupClips + 1)}!");
+        protected override void Awake()
+        {
+            base.Awake();
+
+            Assert.IsTrue(Info!.StartingAmmo <= Info.MaxClipAmmo * (Info.MaxBackupClips + 1), $"{this.GetHierarchyNameWithType()} was started with {nameof(this.Info.StartingAmmo)} ammo but it can only store a max of {this.Info.MaxClipAmmo} * ({this.Info.MaxClipAmmo * (this.Info.MaxBackupClips + 1)}!");
 
             // Initialize ammo
             doLoad(Info.StartingAmmo);
@@ -65,17 +66,21 @@ namespace UnityEngine.Inventory {
                 CurrentClipAmmo -= 1;
                 AmmoReduced.Invoke(oldClip, CurrentBackupAmmo, CurrentClipAmmo, CurrentBackupAmmo);
             });
+
+            RegisterUpdatesAutomatically = true;
+            BetterUpdate = checkForReload;
         }
-        private void Update() {
+
+        private void checkForReload(float deltaTime)
+        {
             if (ReloadInput?.Started() ?? false)
                 doReloadClip();
         }
 
-        // HELPERS
         private void doReloadClip() {
             // Fill the current clip as much as possible from backup ammo
             int oldClip = CurrentClipAmmo;
-            int neededAmmo = Mathf.Clamp(Info.MaxClipAmmo - CurrentClipAmmo, 0, CurrentBackupAmmo);
+            int neededAmmo = Mathf.Clamp(Info!.MaxClipAmmo - CurrentClipAmmo, 0, CurrentBackupAmmo);
             CurrentClipAmmo += neededAmmo;
             CurrentBackupAmmo -= neededAmmo;
 
@@ -83,12 +88,13 @@ namespace UnityEngine.Inventory {
             if (CurrentClipAmmo != oldClip)
                 Loaded.Invoke(oldClip, CurrentBackupAmmo, CurrentClipAmmo, CurrentBackupAmmo);
         }
+
         private int doLoad(int ammo) {
             int oldClip = CurrentClipAmmo;
             int oldBackup = CurrentBackupAmmo;
 
             // Fill the current clip as much as possible
-            if (CurrentClipAmmo < Info.MaxClipAmmo) {
+            if (CurrentClipAmmo < Info!.MaxClipAmmo) {
                 int usableAmmo = Mathf.Min(Info.MaxClipAmmo - CurrentClipAmmo, ammo);
                 CurrentClipAmmo += usableAmmo;
                 ammo -= usableAmmo;

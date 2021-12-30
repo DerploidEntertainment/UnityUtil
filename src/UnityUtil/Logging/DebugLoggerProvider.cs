@@ -10,7 +10,7 @@ namespace UnityEngine.Logging
 
         public ILogger GetLogger(object source)
         {
-            return (source == null) ? throw new ArgumentNullException(nameof(source)) : new DebugLogger(enrich);
+            return new DebugLogger(enrich);
 
 
             string enrich() {

@@ -17,13 +17,7 @@ namespace UnityEngine.UI
     )]
     public class UiBreakpoints : MonoBehaviour
     {
-        public const BreakpointMode DefaultMode = BreakpointMode.SafeAreaAspectRatio;
-        public const BreakpointMatchMode DefaultMatchMode = BreakpointMatchMode.MinEqualOrGreater;
-        public const bool DefaultRecheckMatchesOnResize = true;
-        public const bool DefaultLogDimensionsInEditor = true;
-        public const bool DefaultLogDimensionsInPlayer = false;
-
-        private ILogger _logger;
+        private ILogger? _logger;
 
         private bool _noMatch;
 
@@ -37,23 +31,23 @@ namespace UnityEngine.UI
             "What value will breakpoints be matched against? Can be the width, height, or aspect ratio of the physical device screen, " +
             "the device's 'safe area', or a particular Camera."
         )]
-        public BreakpointMode Mode = DefaultMode;
+        public BreakpointMode Mode = BreakpointMode.SafeAreaAspectRatio;
 
         [Tooltip(
-            "How will breakpoints be matched against the value specified by " + nameof(Mode) + "? " +
+            $"How will breakpoints be matched against the value specified by {nameof(Mode)}? " +
             "You can use this to specify UI that applies at only a specific value, or across a range of values. " +
-            "For example, suppose that " + nameof(Mode) + " is " + nameof(BreakpointMode.ScreenWidth) + ", " +
-            "and you provide breakpoints at values of 576, 768, and 1200 on a screen that is 700 pixels wide. " +
-            "If " + nameof(MatchMode) + " is " + nameof(BreakpointMatchMode.AnyEqualOrGreater) + ", then the 768 and 1200 breakpoints will match and have their " + nameof(UiBreakpoint.Matched) + " event raised; " +
-            "if " + nameof(MatchMode) + " is " + nameof(BreakpointMatchMode.AnyEqualOrLess) + ", then only the 576 breakpoint will match; " +
-            "if " + nameof(MatchMode) + " is " + nameof(BreakpointMatchMode.MaxEqualOrLess) + ", then only the 576 breakpoint will match (or the 768 breakpoint on a device that's exactly 768 pixels wide); and " +
-            "if " + nameof(MatchMode) + " is " + nameof(BreakpointMatchMode.MinEqualOrGreater) + ", then only the 768 breakpoint will match."
-            )]
-        public BreakpointMatchMode MatchMode = DefaultMatchMode;
+            $"For example, suppose that {nameof(Mode)} is {nameof(BreakpointMode.ScreenWidth)}, " +
+            "and you provide breakpoints at values of 576, 768, and 1200 on a screen that is 700 pixels wide. Then:" +
+            $"\n\t- If {nameof(MatchMode)} is {nameof(BreakpointMatchMode.AnyEqualOrGreater)}, then the 768 and 1200 breakpoints will match and have their {nameof(UiBreakpoint.Matched)} event raised" +
+            $"\n\t- If {nameof(MatchMode)} is {nameof(BreakpointMatchMode.AnyEqualOrLess)}, then only the 576 breakpoint will match" +
+            $"\n\t- If {nameof(MatchMode)} is {nameof(BreakpointMatchMode.MaxEqualOrLess)}, then only the 576 breakpoint will match (or the 768 breakpoint on a device that's exactly 768 pixels wide)" +
+            $"\n\t- If {nameof(MatchMode)} is {nameof(BreakpointMatchMode.MinEqualOrGreater)}, then only the 768 breakpoint will match"
+        )]
+        public BreakpointMatchMode MatchMode = BreakpointMatchMode.MinEqualOrGreater;
 
         [ShowIf(nameof(IsCameraMode))]
         [Tooltip("This is the Camera whose height, width, or aspect ratio will be matched against the provided breakpoints.")]
-        public Camera Camera;
+        public Camera? Camera;
 
         [Tooltip(
             "If true, then breakpoint matches will be checked again every time the game's window is resized. " +
@@ -62,37 +56,27 @@ namespace UnityEngine.UI
             "Note that, if this value is true, then handlers for the breakpoint match events will run in the Editor " +
             "if they are set to run in 'Editor and Runtime', and then they will run even if this component is disabled."
         )]
-        public bool RecheckMatchesOnResize = DefaultRecheckMatchesOnResize;
+        public bool RecheckMatchesOnResize = true;
 
         [Tooltip("Should the dimensions of the screen and safe area be logged in the Editor? Useful for debugging, but makes the Console quite noisy.")]
-        public bool LogDimensionsInEditor = DefaultLogDimensionsInEditor;
+        public bool LogDimensionsInEditor = true;
 
         [Tooltip("Should the dimensions of the screen and safe area be logged in a built player? Useful for troubleshooting in Development builds.")]
-        public bool LogDimensionsInPlayer = DefaultLogDimensionsInPlayer;
+        public bool LogDimensionsInPlayer = false;
 
-        [InfoBox("No matching breakpoints. Raising " + nameof(NoBreakpointMatched) + " event instead", nameof(_noMatch))]
+        [InfoBox($"No matching breakpoints. Raising {nameof(NoBreakpointMatched)} event instead", nameof(_noMatch))]
         [TableList(AlwaysExpanded = true), ValidateInput(nameof(AreBreakpointsValid), "Breakpoint values must be provided in ascending order with no duplicates")]
         public UiBreakpoint[] Breakpoints = Array.Empty<UiBreakpoint>();
 
         [Tooltip(
             "If no breakpoints are matched, then this UnityEvent will be raised instead, e.g., " +
             "to set any UI defaults that are not already set in the Inspector. " +
-            "For example, when breakpoints are being matched in " + nameof(Mode) + " '" + nameof(BreakpointMode.ScreenWidth) +
-            "' and " + nameof(MatchMode) + " '" + nameof(BreakpointMatchMode.AnyEqualOrLess) + "' against a 700px-wide device, " +
-            "but the only breakpoint provided is for a value of 1200, then no breakpoint " + nameof(UiBreakpoint.Matched) + " events " +
+            $"For example, when breakpoints are being matched in {nameof(Mode)} '{nameof(BreakpointMode.ScreenWidth)}' " +
+            $"and {nameof(MatchMode)} '{nameof(BreakpointMatchMode.AnyEqualOrLess)}' against a 700px-wide device, " +
+            $"but the only breakpoint provided is for a value of 1200, then no breakpoint {nameof(UiBreakpoint.Matched)} events " +
             "will be raised, so this event will be raised instead."
         )]
         public UnityEvent NoBreakpointMatched = new();
-
-        [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
-        private void Reset()
-        {
-            Mode = DefaultMode;
-            MatchMode = DefaultMatchMode;
-            RecheckMatchesOnResize = DefaultRecheckMatchesOnResize;
-            LogDimensionsInEditor = DefaultLogDimensionsInEditor;
-            LogDimensionsInPlayer = DefaultLogDimensionsInPlayer;
-        }
 
         [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
         private void Awake()
@@ -108,9 +92,6 @@ namespace UnityEngine.UI
         {
             // Using Start rather than Awake cause we don't want to mess with breakpoints being raised by Awake during Edit Mode tests
             // Awake is called by AddComponent since we've added the ExecuteAlwaysAttribute to this class
-
-            if (IsCameraMode)
-                this.AssertAssociation(Camera, nameof(Camera));
 
             _currentValue = getModeValue(Mode);
             InvokeMatchingBreakpoints(_currentValue);
@@ -161,8 +142,9 @@ namespace UnityEngine.UI
             return true;
         }
 
-        private float getModeValue(BreakpointMode mode) =>
-            mode switch {
+        private float getModeValue(BreakpointMode mode)
+        {
+            return mode switch {
                 BreakpointMode.ScreenWidth => Device.Screen.width,
                 BreakpointMode.ScreenHeight => Device.Screen.height,
                 BreakpointMode.ScreenAspectRatio => (float)Device.Screen.width / Device.Screen.height,
@@ -171,12 +153,19 @@ namespace UnityEngine.UI
                 BreakpointMode.SafeAreaHeight => Device.Screen.safeArea.height,
                 BreakpointMode.SafeAreaAspectRatio => Device.Screen.safeArea.width / Device.Screen.safeArea.height,
 
-                BreakpointMode.CameraWidth => Camera.pixelWidth,
-                BreakpointMode.CameraHeight => Camera.pixelHeight,
-                BreakpointMode.CameraAspectRatio => Camera.aspect,
+                BreakpointMode.CameraWidth => Camera?.pixelWidth ?? throw getNullCameraException(),
+                BreakpointMode.CameraHeight => Camera?.pixelHeight ?? throw getNullCameraException(),
+                BreakpointMode.CameraAspectRatio => Camera?.aspect ?? throw getNullCameraException(),
 
                 _ => throw UnityObjectExtensions.SwitchDefaultException(Mode),
             };
+
+            static Exception getNullCameraException() =>
+                new InvalidOperationException(
+                    $"{nameof(Camera)} must be provided when {nameof(Mode)} is " +
+                    $"{nameof(BreakpointMode.CameraWidth)}, {nameof(BreakpointMode.CameraHeight)}, or {nameof(BreakpointMode.CameraAspectRatio)}."
+                );
+        }
 
         internal const string MsgNegativeModeValue = "UI breakpoints can only be matched against non-negative values. You can ignore this warning if you just restarted the Editor.";
 
@@ -210,7 +199,7 @@ namespace UnityEngine.UI
             if (MatchMode == BreakpointMatchMode.MaxEqualOrLess)
             {
                 UiBreakpoint breakpoint = Breakpoints.LastOrDefault(b => b.Enabled && b.Value <= modeValue);
-                if (breakpoint != null)
+                if (breakpoint is not null)
                     invokeBreakpoint(breakpoint);
             }
             else

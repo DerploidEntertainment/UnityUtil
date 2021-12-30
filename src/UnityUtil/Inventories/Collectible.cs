@@ -1,20 +1,23 @@
-﻿using UnityEngine.Assertions;
-using UnityEngine.Logging;
+using Sirenix.OdinInspector;
+using System.Diagnostics.CodeAnalysis;
+using UnityEngine.Assertions;
 
-namespace UnityEngine.Inventory {
+namespace UnityEngine.Inventories {
 
-    public class Collectible : MonoBehaviour {
+    public class Collectible : MonoBehaviour
+    {
+        [Required]
+        public GameObject? Root;
 
-        // INSPECTOR FIELDS
-        public GameObject Root;
         public float Amount = 25f;
         public CollectibleDestroyMode DestroyMode = CollectibleDestroyMode.WhenUsed;
         public CollectEvent Detected = new();
         public CollectEvent Used = new();
         public CollectEvent Emptied = new();
 
+        [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
+        [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
         private void Awake() {
-            this.AssertAssociation(Root, nameof(this.Root));
             Assert.IsTrue(Amount >= 0, $"{this.GetHierarchyNameWithType()} must have a positive {nameof(this.Amount)}!");
         }
 

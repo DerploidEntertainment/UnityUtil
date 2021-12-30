@@ -1,13 +1,13 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 
 namespace UnityEngine.Inputs {
 
-    [CreateAssetMenu(fileName = "start-stop-input-array", menuName = "UnityUtil" + "/" + nameof(UnityEngine.Inputs) + "/" + nameof(UnityEngine.Inputs.StartStopInputArray))]
-    public class StartStopInputArray : ScriptableObject {
-        // API INTERFACE
-        public StartStopInput[] Inputs;
+    [CreateAssetMenu(fileName = "start-stop-input-array", menuName = $"{nameof(UnityUtil)}/{nameof(UnityEngine.Inputs)}/{nameof(UnityEngine.Inputs.StartStopInputArray)}")]
+    public class StartStopInputArray : ScriptableObject
+    {
+        public StartStopInput[] Inputs = Array.Empty<StartStopInput>();
 
-        // INTERFACE
         public int Length => Inputs.Length;
         public bool[] Started() => Inputs.Select(i => i.Started()).ToArray();
         public bool AnyStarted() => Inputs.Any(i => i.Started());

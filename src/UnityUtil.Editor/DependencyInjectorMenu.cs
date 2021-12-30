@@ -9,13 +9,12 @@ namespace UnityUtil.Editor
 {
     public static class DependencyInjectorMenu
     {
-        public const string ItemName = nameof(UnityUtil) + "/Record dependency resolutions";
+        public const string ItemName = $"{nameof(UnityUtil)}/Record dependency resolutions";
 
         [MenuItem(ItemName)]
         private static void toggleRecording()
         {
-            DependencyResolutionCounts counts = null;
-            DependencyInjector.Instance.GetServiceResolutionCounts(ref counts);
+            DependencyResolutionCounts counts = DependencyInjector.Instance.ServiceResolutionCounts;
             DependencyInjector.Instance.RecordingResolutions = !DependencyInjector.Instance.RecordingResolutions;
             if (DependencyInjector.Instance.RecordingResolutions)
                 return;

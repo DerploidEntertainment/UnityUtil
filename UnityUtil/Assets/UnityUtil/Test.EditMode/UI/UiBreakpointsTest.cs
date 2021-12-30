@@ -177,22 +177,21 @@ namespace UnityUtil.Test.EditMode.UI {
             UiBreakpoint[] breakpoints;
 
             breakpoints = getBreakpoints(0f);
-            Assert.IsTrue(UiBreakpoints.AreBreakpointsValid(breakpoints));
+            Assert.That(UiBreakpoints.AreBreakpointsValid(breakpoints), Is.True);
 
             breakpoints = getBreakpoints(1f);
-            Assert.IsTrue(UiBreakpoints.AreBreakpointsValid(breakpoints));
+            Assert.That(UiBreakpoints.AreBreakpointsValid(breakpoints), Is.True);
 
             breakpoints = getBreakpoints(5f, 10f);
-            Assert.IsTrue(UiBreakpoints.AreBreakpointsValid(breakpoints));
+            Assert.That(UiBreakpoints.AreBreakpointsValid(breakpoints), Is.True);
 
             breakpoints = getBreakpoints(0f, 10f, 20f);
-            Assert.IsTrue(UiBreakpoints.AreBreakpointsValid(breakpoints));
+            Assert.That(UiBreakpoints.AreBreakpointsValid(breakpoints), Is.True);
 
             breakpoints = getBreakpoints(0f, 1f, 2f);
-            Assert.IsTrue(UiBreakpoints.AreBreakpointsValid(breakpoints));
+            Assert.That(UiBreakpoints.AreBreakpointsValid(breakpoints), Is.True);
 
-
-            UiBreakpoint[] getBreakpoints(params float[] values) => values.Select(val => new UiBreakpoint(val)).ToArray();
+            static UiBreakpoint[] getBreakpoints(params float[] values) => values.Select(val => new UiBreakpoint(val)).ToArray();
         }
 
         [Test]
@@ -203,28 +202,27 @@ namespace UnityUtil.Test.EditMode.UI {
 
             // Breakpoints not sorted ascending
             breakpoints = getBreakpoints(1f, 1f);
-            Assert.IsFalse(UiBreakpoints.AreBreakpointsValid(breakpoints));
+            Assert.That(UiBreakpoints.AreBreakpointsValid(breakpoints), Is.False);
 
             breakpoints = getBreakpoints(1f, 5f, 5f);
-            Assert.IsFalse(UiBreakpoints.AreBreakpointsValid(breakpoints));
+            Assert.That(UiBreakpoints.AreBreakpointsValid(breakpoints), Is.False);
 
             breakpoints = getBreakpoints(10f, 5f);
-            Assert.IsFalse(UiBreakpoints.AreBreakpointsValid(breakpoints));
+            Assert.That(UiBreakpoints.AreBreakpointsValid(breakpoints), Is.False);
 
             breakpoints = getBreakpoints(0f, 20f, 10f);
-            Assert.IsFalse(UiBreakpoints.AreBreakpointsValid(breakpoints));
+            Assert.That(UiBreakpoints.AreBreakpointsValid(breakpoints), Is.False);
 
             breakpoints = getBreakpoints(20f, 10f, 0f);
-            Assert.IsFalse(UiBreakpoints.AreBreakpointsValid(breakpoints));
+            Assert.That(UiBreakpoints.AreBreakpointsValid(breakpoints), Is.False);
 
             breakpoints = getBreakpoints(0f, 2f, 1f);
-            Assert.IsFalse(UiBreakpoints.AreBreakpointsValid(breakpoints));
+            Assert.That(UiBreakpoints.AreBreakpointsValid(breakpoints), Is.False);
 
             breakpoints = getBreakpoints(2f, 1f, 0f);
-            Assert.IsFalse(UiBreakpoints.AreBreakpointsValid(breakpoints));
+            Assert.That(UiBreakpoints.AreBreakpointsValid(breakpoints), Is.False);
 
-
-            UiBreakpoint[] getBreakpoints(params float[] values) => values.Select(val => new UiBreakpoint(val)).ToArray();
+            static UiBreakpoint[] getBreakpoints(params float[] values) => values.Select(val => new UiBreakpoint(val)).ToArray();
         }
 
         [Test]
@@ -240,7 +238,7 @@ namespace UnityUtil.Test.EditMode.UI {
                 new UiBreakpoint(0.6f),
                 new UiBreakpoint(1f, enabled: false),
             };
-            Assert.IsTrue(UiBreakpoints.AreBreakpointsValid(breakpoints));
+            Assert.That(UiBreakpoints.AreBreakpointsValid(breakpoints), Is.True);
 
             // Unsorted, but out-of-order ones disabled
             breakpoints = new[] {
@@ -249,11 +247,11 @@ namespace UnityUtil.Test.EditMode.UI {
                 new UiBreakpoint(0.6f),
                 new UiBreakpoint(0.4f, enabled: false),
             };
-            Assert.IsTrue(UiBreakpoints.AreBreakpointsValid(breakpoints));
+            Assert.That(UiBreakpoints.AreBreakpointsValid(breakpoints), Is.True);
 
             // Unsorted, with one of the out-of-order ones re-enabled
             breakpoints[1].Enabled = true;
-            Assert.IsFalse(UiBreakpoints.AreBreakpointsValid(breakpoints));
+            Assert.That(UiBreakpoints.AreBreakpointsValid(breakpoints), Is.False);
         }
 
         [Test]
@@ -275,10 +273,10 @@ namespace UnityUtil.Test.EditMode.UI {
             uiBreakpoints.NoBreakpointMatched.AddListener(() => noMatchRaised = true);
 
             Assert.DoesNotThrow(() => uiBreakpoints.InvokeMatchingBreakpoints(0f));
-            Assert.IsFalse(noMatchRaised);
+            Assert.That(noMatchRaised, Is.False);
 
             Assert.DoesNotThrow(() => uiBreakpoints.InvokeMatchingBreakpoints(10f));
-            Assert.IsFalse(noMatchRaised);
+            Assert.That(noMatchRaised, Is.False);
         }
 
         [Test]
@@ -299,8 +297,8 @@ namespace UnityUtil.Test.EditMode.UI {
             uiBreakpoints.InvokeMatchingBreakpoints(1f);
 
             // ASSERT
-            Assert.IsFalse(matchRaised);
-            Assert.IsTrue(noMatchRaised);
+            Assert.That(matchRaised, Is.False);
+            Assert.That(noMatchRaised, Is.True);
 
 
             void noMatchAction() => noMatchRaised = true;
@@ -322,8 +320,8 @@ namespace UnityUtil.Test.EditMode.UI {
             uiBreakpoints.InvokeMatchingBreakpoints(0f);
 
             // ASSERT
-            Assert.IsFalse(matchRaised);
-            Assert.IsTrue(noMatchRaised);
+            Assert.That(matchRaised, Is.False);
+            Assert.That(noMatchRaised, Is.True);
 
 
             void noMatchAction() => noMatchRaised = true;
@@ -344,13 +342,13 @@ namespace UnityUtil.Test.EditMode.UI {
             // ACT/ASSERT - AnyEqualOrGreater
             uiBreakpoints = getUiBreakpoints(matchMode: BreakpointMatchMode.AnyEqualOrGreater, noMatchAction: noMatchAction, breakpoints: breakpoints);
             uiBreakpoints.InvokeMatchingBreakpoints(1f);
-            Assert.IsFalse(matchRaised);
+            Assert.That(matchRaised, Is.False);
             Assert.That(noMatchCount, Is.EqualTo(1));
 
             // ACT/ASSERT - MinEqualOrGreater
             uiBreakpoints = getUiBreakpoints(matchMode: BreakpointMatchMode.AnyEqualOrGreater, noMatchAction: noMatchAction, breakpoints: breakpoints);
             uiBreakpoints.InvokeMatchingBreakpoints(1f);
-            Assert.IsFalse(matchRaised);
+            Assert.That(matchRaised, Is.False);
             Assert.That(noMatchCount, Is.EqualTo(2));
 
 
@@ -372,13 +370,13 @@ namespace UnityUtil.Test.EditMode.UI {
             // ACT/ASSERT - AnyEqualOrLess
             uiBreakpoints = getUiBreakpoints(matchMode: BreakpointMatchMode.AnyEqualOrLess, noMatchAction: noMatchAction, breakpoints: breakpoints);
             uiBreakpoints.InvokeMatchingBreakpoints(0f);
-            Assert.IsFalse(matchRaised);
+            Assert.That(matchRaised, Is.False);
             Assert.That(noMatchCount, Is.EqualTo(1));
 
             // ACT/ASSERT - MaxEqualOrLess
             uiBreakpoints = getUiBreakpoints(matchMode: BreakpointMatchMode.MaxEqualOrLess, noMatchAction: noMatchAction, breakpoints: breakpoints);
             uiBreakpoints.InvokeMatchingBreakpoints(0f);
-            Assert.IsFalse(matchRaised);
+            Assert.That(matchRaised, Is.False);
             Assert.That(noMatchCount, Is.EqualTo(2));
 
 
@@ -398,7 +396,7 @@ namespace UnityUtil.Test.EditMode.UI {
             uiBreakpoints.InvokeMatchingBreakpoints(0f);
 
             // ASSERT
-            Assert.IsFalse(noMatchRaised);
+            Assert.That(noMatchRaised, Is.False);
         }
 
         [Test]
@@ -630,10 +628,10 @@ namespace UnityUtil.Test.EditMode.UI {
             Assert.That(counts[3], Is.EqualTo(4));
         }
 
-        private UiBreakpoints getUiBreakpoints(
+        private static UiBreakpoints getUiBreakpoints(
             BreakpointMode mode = BreakpointMode.SafeAreaAspectRatio,
             BreakpointMatchMode matchMode = BreakpointMatchMode.MaxEqualOrLess,
-            UnityAction noMatchAction = null,
+            UnityAction? noMatchAction = null,
             params UiBreakpoint[] breakpoints
         ) {
             // Create the instance
@@ -641,7 +639,7 @@ namespace UnityUtil.Test.EditMode.UI {
             uiBreakpoints.Mode = mode;
             uiBreakpoints.MatchMode = matchMode;
             uiBreakpoints.Breakpoints = breakpoints;
-            if (noMatchAction != null)
+            if (noMatchAction is not null)
                 uiBreakpoints.NoBreakpointMatched.AddListener(noMatchAction);
 
             return uiBreakpoints;

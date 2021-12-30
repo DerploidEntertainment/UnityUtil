@@ -69,7 +69,7 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
         public void Cannot_Register_UntilInitialized()
         {
             var dependencyInjector = new DependencyInjector(Array.Empty<Type>());
-            object testService = new object();
+            object testService = new();
 
             Assert.Throws<InvalidOperationException>(() => dependencyInjector.RegisterService(testService));
 
@@ -93,7 +93,7 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
         public void Cannot_Resolve_UntilInitialized()
         {
             var dependencyInjector = new DependencyInjector(Array.Empty<Type>());
-            object testClient = new object();
+            object testClient = new();
 
             Assert.Throws<InvalidOperationException>(() => dependencyInjector.ResolveDependenciesOf(testClient));
 
@@ -184,7 +184,7 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
             // ARRANGE
             DependencyInjector dependencyInjector = getDependencyInjector();
 
-            object serviceInstance = new object();
+            object serviceInstance = new();
             dependencyInjector.RegisterService(serviceInstance);
 
             // ACT/ASSERT
@@ -204,7 +204,7 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
             EditModeTestHelpers.ResetScene();
 
             DependencyInjector dependencyInjector = getDependencyInjector();
-            object serviceInstance = new object();
+            object serviceInstance = new();
             dependencyInjector.RegisterService(serviceInstance);
 
             dependencyInjector.TryGetService(typeof(object), tag: DependencyInjector.DefaultTag, clientName: "Unit test", out Service service);
@@ -217,7 +217,7 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
             EditModeTestHelpers.ResetScene();
 
             DependencyInjector dependencyInjector = getDependencyInjector();
-            var serviceInstance = new ApplicationException();
+            var serviceInstance = new InvalidOperationException();
             dependencyInjector.RegisterService<Exception>(serviceInstance);
 
             dependencyInjector.TryGetService(typeof(Exception), tag: DependencyInjector.DefaultTag, clientName: "Unit test", out Service service);
@@ -407,7 +407,7 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
             Type clientType = typeof(TestClient);
             Type baseType = typeof(TestClientBase);
             Mock<ITypeMetadataProvider> mockTypeMetadataProvider = getTypeMetadataProvider();
-            DependencyResolutionCounts counts = null;
+            DependencyResolutionCounts counts;
             DependencyInjector dependencyInjector = getDependencyInjector(
                 cachedResolutionTypes: new[] { typeof(TestClientBase) },
                 typeMetadataProvider: mockTypeMetadataProvider.Object
@@ -420,7 +420,7 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
             // Initial, uncached resolution
             var uncacheClient = new TestClient();
             dependencyInjector.ResolveDependenciesOf(uncacheClient);
-            dependencyInjector.GetServiceResolutionCounts(ref counts);
+            counts = dependencyInjector.ServiceResolutionCounts;
             Assert.That(counts.Uncached.Count, Is.EqualTo(1));
             Assert.That(counts.Uncached[clientType], Is.EqualTo(1));
             Assert.That(counts.Cached.Count, Is.EqualTo(1));
@@ -429,7 +429,7 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
             // Second, base type resolution cached
             var cacheClient = new TestClient();
             dependencyInjector.ResolveDependenciesOf(cacheClient);
-            dependencyInjector.GetServiceResolutionCounts(ref counts);
+            counts = dependencyInjector.ServiceResolutionCounts;
             Assert.That(counts.Uncached.Count, Is.EqualTo(1));
             Assert.That(counts.Uncached[clientType], Is.EqualTo(2));
             Assert.That(counts.Cached.Count, Is.EqualTo(1));
@@ -437,7 +437,7 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
 
             // Clears cached resolutions
             dependencyInjector.RecordingResolutions = false;
-            dependencyInjector.GetServiceResolutionCounts(ref counts);
+            counts = dependencyInjector.ServiceResolutionCounts;
             Assert.That(counts.Uncached.Count, Is.Zero);
             Assert.That(counts.Cached.Count, Is.Zero);
         }
@@ -458,8 +458,7 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
             dependencyInjector.RecordingResolutions = false;
 
             // ASSERT
-            DependencyResolutionCounts counts = null;
-            dependencyInjector.GetServiceResolutionCounts(ref counts);
+            DependencyResolutionCounts counts = dependencyInjector.ServiceResolutionCounts;
             Assert.That(counts.Uncached.Count, Is.Zero);
             Assert.That(counts.Cached.Count, Is.Zero);
         }
@@ -473,11 +472,10 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
             dependencyInjector.RegisterService(getComponentService<TestComponent>());
 
             dependencyInjector.RecordingResolutions = false;
-            DependencyResolutionCounts counts = null;
             dependencyInjector.ResolveDependenciesOf(new TestClientBase());
             dependencyInjector.ResolveDependenciesOf(new TestClientBase());
             dependencyInjector.ResolveDependenciesOf(new TestClientBase());
-            dependencyInjector.GetServiceResolutionCounts(ref counts);
+            DependencyResolutionCounts counts = dependencyInjector.ServiceResolutionCounts;
 
             Assert.That(counts.Cached, Is.Empty);
             Assert.That(counts.Uncached, Is.Empty);
@@ -495,7 +493,7 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
             DependencyInjector dependencyInjector = getDependencyInjector();
             Scene activeScene = SceneManager.GetActiveScene();
             dependencyInjector.RegisterService(new object(), SceneManager.GetActiveScene());
-            dependencyInjector.RegisterService(new Exception(), SceneManager.GetActiveScene());
+            dependencyInjector.RegisterService(new InvalidOperationException(), SceneManager.GetActiveScene());
 
             dependencyInjector.UnregisterSceneServices(activeScene);
 
@@ -515,15 +513,18 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
 
         #endregion
 
-        private DependencyInjector getDependencyInjector(Type[] cachedResolutionTypes = null, ILoggerProvider loggerProvider = null, ITypeMetadataProvider typeMetadataProvider = null)
-        {
+        private static DependencyInjector getDependencyInjector(
+            Type[]? cachedResolutionTypes = null,
+            ILoggerProvider? loggerProvider = null,
+            ITypeMetadataProvider? typeMetadataProvider = null
+        ) {
             var dependencyInjector = new DependencyInjector(cachedResolutionTypes ?? Array.Empty<Type>());
             dependencyInjector.Initialize(loggerProvider ?? new TestLoggerProvider(), typeMetadataProvider ?? new TypeMetadataProvider());
 
             return dependencyInjector;
         }
-        private T getComponentService<T>(string tag = "Untagged") where T : Component => new GameObject { tag = tag }.AddComponent<T>();
-        private Mock<ITypeMetadataProvider> getTypeMetadataProvider()
+        private static T getComponentService<T>(string tag = "Untagged") where T : Component => new GameObject { tag = tag }.AddComponent<T>();
+        private static Mock<ITypeMetadataProvider> getTypeMetadataProvider()
         {
             var mock = new Mock<ITypeMetadataProvider>();
             var typeMetadataProvider = new TypeMetadataProvider();

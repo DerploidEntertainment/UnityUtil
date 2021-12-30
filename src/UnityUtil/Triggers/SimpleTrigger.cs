@@ -5,7 +5,7 @@ namespace UnityEngine.Triggers {
 
     public class SimpleTrigger : MonoBehaviour {
 
-        private int _lastTriggerFrame = 0;
+        private int _lastTriggerFrame;
 
         [Tooltip("If true, then the Trigger event can only be raised once per frame, even if there are multiple calls to Trigger() in a single frame.")]
         public bool OnlyOncePerFrame;

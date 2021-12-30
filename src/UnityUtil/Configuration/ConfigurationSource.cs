@@ -2,14 +2,13 @@ using Sirenix.OdinInspector;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using UnityEngine.Logging;
 
 namespace UnityEngine
 {
 
     [Flags]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1008:Enums should have zero value", Justification = "I think 'Never' sounds better here than 'None'. Suppression may not be necessary in future, see https://github.com/dotnet/roslyn-analyzers/issues/5777")]
     public enum ConfigurationLoadContext {
         Never = 0b0000,
         BuildScript = 0b0001,
@@ -30,31 +29,24 @@ namespace UnityEngine
     {
         public static readonly IReadOnlyDictionary<string, object> EmptyConfigs = new Dictionary<string, object>();
 
-        protected ILogger Logger;
+        protected ILogger? Logger;
 
         protected readonly Dictionary<string, object> LoadedConfigsHidden = new();
 
         [field: ShowInInspector, SerializeField]
-        public bool Required { get; private set; }
+        public bool Required { get; private set; } = true;
 
         [field: Tooltip(
-            "In what contexts should we attempt to load this " + nameof(ConfigurationSource) + "? " +
+            $"In what contexts should we attempt to load this {nameof(ConfigurationSource)}? " +
             "E.g., only when entering Play Mode in the Editor, or only in Release builds. " +
-            "One handy use of the Editor context is for " + nameof(ConfigurationSource) + "s whose corresponding config assets " +
+            $"One handy use of the Editor context is for {nameof(ConfigurationSource)}s whose corresponding config assets " +
             "are included under an Assets/**/Editor/ folder. This lets you keep those config assets out of builds so they don't take up space, " +
             "and then the configuration system won't attempt to load them or warn that they are missing."
         )]
         [field: ShowInInspector, SerializeField]
-        public ConfigurationLoadContext LoadContext { get; private set; }
+        public ConfigurationLoadContext LoadContext { get; private set; } = ConfigurationLoadContext.Always;
 
         public abstract ConfigurationSourceLoadBehavior LoadBehavior { get; }
-
-        [Conditional("UNITY_EDITOR")]
-        [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
-        private void Reset() {
-            Required = true;
-            LoadContext = ConfigurationLoadContext.Always;
-        }
 
         public void Inject(ILoggerProvider loggerProvider) => Logger = loggerProvider.GetLogger(this);
 

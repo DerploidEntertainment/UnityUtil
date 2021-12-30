@@ -1,26 +1,46 @@
-﻿using System;
 using System.Diagnostics.CodeAnalysis;
-using UnityEngine.Inventory;
-using UnityEngine.Logging;
+using UnityEngine.Inventories;
 
 namespace UnityEngine {
 
     public class LookAtRaycast : Updatable {
 
-        [Tooltip("This Transform will always rotate to look at whatever the " + nameof(RaycastingTransform) + " is looking at.  This point is at most " + nameof(Range) + " units ahead, but will be closer if an object matching " + nameof(LayerMask) + " is closer.")]
-        public Transform TransformToRotate;
-        [Tooltip("The " + nameof(LookAtRaycast.TransformToRotate) + " will always rotate to look at whatever the " + nameof(RaycastingTransform) + " is looking at.  This point is at most " + nameof(Range) + " units ahead, but will be closer if an object matching " + nameof(LayerMask) + " is closer.")]
-        public Transform RaycastingTransform;
-        [Tooltip("The " + nameof(LookAtRaycast.TransformToRotate) + " will always rotate to look at whatever the " + nameof(RaycastingTransform) + " is looking at.  This point is at most " + nameof(Range) + " units ahead, but will be closer if an object matching " + nameof(LayerMask) + " is closer.  If a " + nameof(WeaponInfo) + " is provided, then its " + nameof(UnityEngine.Inventory.WeaponInfo.Range) + " will be given priority over this value.")]
+        [Tooltip(
+            $"This Transform will always rotate to look at whatever the {nameof(RaycastingTransform)} is looking at. " +
+            $"This point is at most {nameof(Range)} units ahead, but will be closer if an object matching {nameof(LayerMask)} is closer."
+        )]
+        public Transform? TransformToRotate;
+
+        private const string TOOLTIP_TRANSFORM_ROTATE =
+            $"The {nameof(LookAtRaycast.TransformToRotate)} will always rotate to look at whatever the {nameof(RaycastingTransform)} is looking at. " +
+            $"This point is at most {nameof(Range)} units ahead, but will be closer if an object matching {nameof(LayerMask)} is closer.";
+        private const string TOOLTIP_WEAPONINFO = $"If a {nameof(WeaponInfo)} is provided, then its values will be given priority over this value.";
+
+
+        [Tooltip(TOOLTIP_TRANSFORM_ROTATE)]
+        public Transform? RaycastingTransform;
+
+        [Tooltip($"{TOOLTIP_TRANSFORM_ROTATE} {TOOLTIP_WEAPONINFO}")]
         public float Range;
-        [Tooltip("The " + nameof(LookAtRaycast.TransformToRotate) + " will always rotate to look at whatever the " + nameof(RaycastingTransform) + " is looking at.  This point is at most " + nameof(Range) + " units ahead, but will be closer if an object matching " + nameof(LayerMask) + " is closer.  If a " + nameof(WeaponInfo) + " is provided, then its " + nameof(UnityEngine.Inventory.WeaponInfo.AttackLayerMask) + " will be given priority over this value.")]
+
+        [Tooltip($"{TOOLTIP_TRANSFORM_ROTATE} {TOOLTIP_WEAPONINFO}")]
         public LayerMask LayerMask;
-        [Tooltip("If the " + nameof(LookAtRaycast.RaycastingTransform) + " is associated with a " + nameof(UnityEngine.Inventory.Weapon) + ", then providing its " + nameof(UnityEngine.Inventory.WeaponInfo) + " here will override " + nameof(Range) + " and " + nameof(LayerMask) + ", which might be less error-prone during development.")]
-        public WeaponInfo WeaponInfo;
-        [Tooltip("This upward direction will be used by the " + nameof(LookAtRaycast.TransformToRotate) + " to rotate toward whatever the " + nameof(RaycastingTransform) + " is looking at.")]
-        public AxisDirection UpwardDirectionType;
-        [Tooltip("Only required if " + nameof(UpwardDirectionType) + " is " + nameof(AxisDirection.CustomWorldSpace) + " or " + nameof(AxisDirection.CustomLocalSpace) + ".")]
-        public Vector3 CustomUpwardDirection;
+
+        [Tooltip(
+            $"If the {nameof(LookAtRaycast.RaycastingTransform)} is associated with a {nameof(UnityEngine.Inventories.Weapon)}, " +
+            $"then providing its {nameof(UnityEngine.Inventories.WeaponInfo)} here will override {nameof(Range)} and {nameof(LayerMask)}, " +
+            $"which might be less error-prone during development."
+        )]
+        public WeaponInfo? WeaponInfo;
+
+        [Tooltip(
+            $"This upward direction will be used by the {nameof(LookAtRaycast.TransformToRotate)} to rotate toward " +
+            $"whatever the {nameof(RaycastingTransform)} is looking at."
+        )]
+        public AxisDirection UpwardDirectionType = AxisDirection.OppositeGravity;
+
+        [Tooltip($"Only required if {nameof(UpwardDirectionType)} is {nameof(AxisDirection.CustomWorldSpace)} or {nameof(AxisDirection.CustomLocalSpace)}.")]
+        public Vector3 CustomUpwardDirection = Vector3.up;
 
         /// <summary>
         /// Returns the unit vector that this <see cref="FollowVisionModule"/> will use to rotate towards what its associated <see cref="FollowVisionModule.VisionModule"/> is looking at.
@@ -31,11 +51,10 @@ namespace UnityEngine {
                 AxisDirection.WithGravity => Physics.gravity.normalized,
                 AxisDirection.OppositeGravity => -Physics.gravity.normalized,
                 AxisDirection.CustomWorldSpace => CustomUpwardDirection.normalized,
-                AxisDirection.CustomLocalSpace => TransformToRotate.TransformDirection(CustomUpwardDirection.normalized),
+                AxisDirection.CustomLocalSpace => TransformToRotate!.TransformDirection(CustomUpwardDirection.normalized),
                 _ => throw UnityObjectExtensions.SwitchDefaultException(UpwardDirectionType),
             };
 
-        // EVENT HANDLERS
         protected override void Awake() {
             base.Awake();
 
@@ -44,6 +63,9 @@ namespace UnityEngine {
         }
         [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
         private void OnDrawGizmos() {
+            if (TransformToRotate == null)
+                return;
+
             float range = WeaponInfo?.Range ?? Range;
             Gizmos.DrawLine(TransformToRotate.position, TransformToRotate.TransformPoint(range * Vector3.forward));
         }

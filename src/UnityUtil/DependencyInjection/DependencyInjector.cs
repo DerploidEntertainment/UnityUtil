@@ -36,14 +36,14 @@ namespace UnityEngine.DependencyInjection
         public const string DefaultTag = "Untagged";
         public const string InjectMethodName = "Inject";
         public const string DefaultLoggerProviderName = "default-logger-provider";
-        public const BindingFlags BINDING_FLAGS = BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance;
+        public const BindingFlags InjectMethodBindingFlags = BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance;
 
         private const int DEFAULT_SCENE_HANDLE = -1;
 
         public static readonly DependencyInjector Instance = new(Array.Empty<Type>()) { RecordingResolutions = Device.Application.isEditor };
 
         private ILogger _logger = Debug.unityLogger;
-        private ITypeMetadataProvider _typeMetadataProvider;
+        private ITypeMetadataProvider? _typeMetadataProvider;
 
         private readonly Dictionary<int, Dictionary<Type, Dictionary<string, Service>>> _services = new();
 
@@ -52,7 +52,7 @@ namespace UnityEngine.DependencyInjection
         /// </summary>
         private readonly HashSet<Type> _injectedTypes = new();
 
-        private bool _recording = false;
+        private bool _recording;
         private readonly HashSet<Type> _cachedResolutionTypes;
         private readonly IDictionary<Type, List<Action<object>>> _compiledInject = new Dictionary<Type, List<Action<object>>>();
         private readonly Dictionary<Type, int> _uncachedResolutionCounts = new();
@@ -68,7 +68,7 @@ namespace UnityEngine.DependencyInjection
             _cachedResolutionTypes = new HashSet<Type>(cachedResolutionTypes);
         }
 
-        public bool Initialized { get; private set; } = false;
+        public bool Initialized { get; private set; }
         public void Initialize(ILoggerProvider loggerProvider) => Initialize(loggerProvider, new TypeMetadataProvider());
         internal void Initialize(ILoggerProvider loggerProvider, ITypeMetadataProvider typeMetadataProvider)
         {
@@ -96,7 +96,7 @@ namespace UnityEngine.DependencyInjection
                 serviceTypeName = instance.GetType().AssemblyQualifiedName;
 
             var serviceType = Type.GetType(serviceTypeName);
-            if (serviceType == null)
+            if (serviceType is null)
                 throw new InvalidOperationException($"Could not load Type '{serviceTypeName}'. Make sure that you provided its assembly-qualified name and that its assembly is loaded.");
             if (!serviceType.IsAssignableFrom(instance.GetType()))
                 throw new InvalidOperationException($"The service instance registered for Type '{serviceTypeName}' is not actually derived from that Type!");
@@ -127,6 +127,7 @@ namespace UnityEngine.DependencyInjection
 
             // Register this service with the provided scene (if one was provided), so that it can be unloaded later if the scene is unloaded
             // Show an error if provided service's type/tag match those of an already registered service
+            #pragma warning disable IDE0008 // Use explicit type
             int sceneHandle = scene.HasValue ? scene.Value.handle : DEFAULT_SCENE_HANDLE;
             bool sceneAdded = _services.TryGetValue(sceneHandle, out var sceneServices);
             if (!sceneAdded) {
@@ -139,6 +140,7 @@ namespace UnityEngine.DependencyInjection
                 typedServices = new Dictionary<string, Service>();
                 sceneServices.Add(serviceType, typedServices);
             }
+            #pragma warning restore IDE0008 // Use explicit type
 
             bool tagAdded = typedServices.ContainsKey(service.Tag);
             string fromSceneMsg = scene.HasValue ? $" from scene '{scene.Value.name}'" : "";
@@ -192,12 +194,11 @@ namespace UnityEngine.DependencyInjection
         public void CacheResolution(Type clientType) => _cachedResolutionTypes.Add(clientType);
 
         /// <summary>
-        /// Get the number of times that each service <see cref="Type"/> has been resolved at runtime.
+        /// Gets/sets the number of times that each service <see cref="Type"/> has been resolved at runtime.
         /// </summary>
-        /// <param name="counts">Upon return, will contain the number of times that services were resolved.</param>
-        public void GetServiceResolutionCounts(ref DependencyResolutionCounts counts) => counts = new DependencyResolutionCounts(
-            cachedResolutionCounts: new Dictionary<Type, int>(_cachedResolutionCounts),
-            uncachedResolutionCounts: new Dictionary<Type, int>(_uncachedResolutionCounts)
+        public DependencyResolutionCounts ServiceResolutionCounts => new(
+            cachedResolutionCounts: _cachedResolutionCounts,
+            uncachedResolutionCounts: _uncachedResolutionCounts
         );
 
         /// <summary>
@@ -214,8 +215,8 @@ namespace UnityEngine.DependencyInjection
             // then use/compile those as necessary so that injection is faster for future clients with these types.
             Type serviceType = client.GetType();
             Type objectType = typeof(object);
-            Type cachedParentType = null;
-            List<Action<object>> compiledInjectList = null;     // Will only be initialized if this client's type or one of its parent types is cached, to save heap allocations
+            Type? cachedParentType = null;
+            List<Action<object>>? compiledInjectList = null;     // Will only be initialized if this client's type or one of its parent types is cached, to save heap allocations
             do {
                 // Use compiled inject methods, if they exist
                 if (_compiledInject.TryGetValue(serviceType, out List<Action<object>> compiledInjectMethods)) {
@@ -227,8 +228,8 @@ namespace UnityEngine.DependencyInjection
                 }
 
                 // Get the inject method on this type (will throw if more than one method matches)
-                MethodInfo injectMethod = _typeMetadataProvider.GetMethod(serviceType, InjectMethodName, BINDING_FLAGS);
-                if (injectMethod == null)
+                MethodInfo injectMethod = _typeMetadataProvider!.GetMethod(serviceType, InjectMethodName, InjectMethodBindingFlags);
+                if (injectMethod is null)
                     goto Loop;
 
                 string clientName = (client as MonoBehaviour)?.GetHierarchyNameWithType() ?? (client as Object)?.name ?? $"{injectMethod.DeclaringType.FullName} instance";
@@ -238,7 +239,7 @@ namespace UnityEngine.DependencyInjection
 
                 // Check if the inject method should be compiled. If so, compile/call it; otherwise, invoke it via reflection
                 bool compile = true;
-                if (cachedParentType == null) {
+                if (cachedParentType is null) {
                     if (_cachedResolutionTypes.Contains(serviceType))
                         cachedParentType = serviceType;
                     else {
@@ -259,10 +260,10 @@ namespace UnityEngine.DependencyInjection
 
                 Loop:
                 serviceType = serviceType.BaseType;
-            } while (serviceType != objectType && serviceType != null);
+            } while (serviceType != objectType && serviceType is not null);
 
-            if (cachedParentType != null)
-                _compiledInject.Add(cachedParentType, compiledInjectList);
+            if (cachedParentType is not null)
+                _compiledInject.Add(cachedParentType, compiledInjectList!);
         }
 
         public void UnregisterSceneServices(Scene scene)
@@ -289,7 +290,7 @@ namespace UnityEngine.DependencyInjection
         private object[] getDependeciesOfInjectMethod(string clientName, MethodInfo injectMethod)
         {
             _injectedTypes.Clear();
-            ParameterInfo[] parameters = _typeMetadataProvider.GetMethodParameters(injectMethod);
+            ParameterInfo[] parameters = _typeMetadataProvider!.GetMethodParameters(injectMethod);
             object[] dependencies = new object[parameters.Length];
             for (int p = 0; p < parameters.Length; ++p) {
                 Type paramType = parameters[p].ParameterType;
@@ -300,9 +301,9 @@ namespace UnityEngine.DependencyInjection
                     _logger.LogWarning($"{clientName} has multiple dependencies of Type '{paramType.FullName}'.");
 
                 // If this dependency can't be resolved, then skip it with an error message and clear the field
-                InjectTagAttribute injAttr = _typeMetadataProvider.GetCustomAttribute<InjectTagAttribute>(parameters[p]);
+                InjectTagAttribute? injAttr = _typeMetadataProvider.GetCustomAttribute<InjectTagAttribute>(parameters[p]);
                 bool untagged = string.IsNullOrEmpty(injAttr?.Tag);
-                string tag = untagged ? DefaultTag : injAttr.Tag;
+                string tag = untagged ? DefaultTag : injAttr!.Tag;
                 TryGetService(paramType, tag, clientName, out Service service);
 
                 // Log that this dependency has been resolved
@@ -314,18 +315,15 @@ namespace UnityEngine.DependencyInjection
         }
         internal void TryGetService(Type serviceType, string tag, string clientName, out Service service)
         {
-            bool resolved = false;
-            Dictionary<string, Service> typedServices = null;
+            Dictionary<string, Service>? typedServices = null;
             foreach (int scene in _services.Keys) {
-                if (_services[scene].TryGetValue(serviceType, out typedServices)) {
-                    resolved = true;
+                if (_services[scene].TryGetValue(serviceType, out typedServices))
                     break;
-                }
             }
-            if (!resolved)
+            if (typedServices is null)
                 throw new KeyNotFoundException($"{clientName} has a dependency of Type '{serviceType.FullName}', but no service was registered with that Type. Did you forget to add a service to the service collection?");
 
-            resolved = typedServices.TryGetValue(tag, out service);
+            bool resolved = typedServices.TryGetValue(tag, out service);
             if (!resolved)
                 throw new KeyNotFoundException($"{clientName} has a dependency of Type '{serviceType.FullName}' with tag '{tag}', but no matching service was registered. Did you forget to tag a service?");
         }

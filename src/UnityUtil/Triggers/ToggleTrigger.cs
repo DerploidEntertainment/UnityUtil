@@ -15,7 +15,7 @@ namespace UnityEngine.Triggers {
         [SuppressMessage("Code Quality", "IDE0051:Remove unused private members", Justification = "Unity message")]
         private void Awake() => _currentState = AwakeState;
 
-        [Button, PropertyOrder(-3f), HorizontalGroup(BUTTON_GROUP)]
+        [Button, PropertyOrder(-3f), HorizontalGroup(ButtonGroup)]
         public void TurnOn() {
             if (!_currentState) {
                 _currentState = true;
@@ -24,12 +24,12 @@ namespace UnityEngine.Triggers {
             else
                 StillTrue.Invoke();
         }
-        [Button, PropertyOrder(-2f), HorizontalGroup(BUTTON_GROUP)]
+        [Button, PropertyOrder(-2f), HorizontalGroup(ButtonGroup)]
         public void Toggle() {
             _currentState = !_currentState;
             (_currentState ? BecameTrue : BecameFalse).Invoke();
         }
-        [Button, PropertyOrder(-1f), HorizontalGroup(BUTTON_GROUP)]
+        [Button, PropertyOrder(-1f), HorizontalGroup(ButtonGroup)]
         public void TurnOff() {
             if (_currentState) {
                 _currentState = false;

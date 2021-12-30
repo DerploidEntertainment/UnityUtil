@@ -1,5 +1,4 @@
-﻿using UnityEngine;
-using UnityEngine.Assertions;
+﻿using System;
 
 namespace UnityEngine {
 
@@ -8,8 +7,8 @@ namespace UnityEngine {
     /// </summary>
     public class LookAtAdjuster : Updatable {
 
-        [Tooltip("These are the " + nameof(UnityEngine.LookAt) + " components that will be told what new Transforms to look at.")]
-        public LookAt[] AssociatedLookAts;
+        [Tooltip($"These are the {nameof(UnityEngine.LookAt)} components that will be told what new Transforms to look at.")]
+        public LookAt[] AssociatedLookAts = Array.Empty<LookAt>();
 
         /// <summary>
         /// You can actually set <see cref="LookAt.TransformToLookAt"/> directly.  This function was only created for use with UnityEvents.

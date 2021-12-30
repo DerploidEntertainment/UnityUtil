@@ -1,6 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using UnityEngine;
+using UnityEngine.DependencyInjection;
+using UnityEngine.Logging;
 
 namespace UnityEngine {
 
@@ -16,26 +19,42 @@ namespace UnityEngine {
         MakeAllColliders,
     }
 
-    public class ColliderDuplicator : MonoBehaviour {
+    public class ColliderDuplicator : MonoBehaviour
+    {
+        private ILogger? _logger;
 
-        // HIDDEN FIELDS
-        IList<Transform> _duplicates = new List<Transform>();
+        private List<Transform> _duplicates = new();
 
-        // INSPECTOR FIELDS
         [Tooltip("Each Collider selected for duplication will be duplicated under each of these GameObjects.")]
-        public Transform NewParentOfDuplicates;
+        public Transform? NewParentOfDuplicates;
+
         [Tooltip("Select the behavior for automatically duplicating child Colliders.")]
         public ChildColliderDuplicateMode ChildColliderDuplication = ChildColliderDuplicateMode.None;
-        [Tooltip("Add additional Colliders to duplicate here.  If these are child Colliders, we recommend that you set ChildColliderDuplication to 'None'.")]
-        public Collider[] CollidersToDuplicate;
+
+        [Tooltip(
+            "Add additional Colliders to duplicate here. If these are child Colliders, " +
+            $"we recommend that you set {nameof(ChildColliderDuplication)} to '{nameof(ChildColliderDuplicateMode.None)}'."
+        )]
+        public Collider[] CollidersToDuplicate = Array.Empty<Collider>();
+
         [Tooltip("Select the behavior for changing the 'isTrigger' field of all duplicate Colliders")]
         public ChangeTriggerMode ChangeTriggerMode = ChangeTriggerMode.KeepOriginal;
-        [Tooltip("All duplicate Colliders will be placed in the Layer with this name.")]
-        public string DuplicateLayerName;
-        [Tooltip("If set, all duplicate Colliders will have a PhysTarget component attached that targets this value.")]
-        public MonoBehaviour PhysicsTarget;
 
-        // EVENT HANDLERS
+        [Tooltip("All duplicate Colliders will be placed in the Layer with this name.")]
+        public string DuplicateLayerName = "";
+
+        [Tooltip("If set, all duplicate Colliders will have a PhysTarget component attached that targets this value.")]
+        public MonoBehaviour? PhysicsTarget;
+
+
+        [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
+        [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
+        private void Awake() => DependencyInjector.Instance.ResolveDependenciesOf(this);
+
+        public void Inject(ILoggerProvider loggerProvider) => _logger = loggerProvider.GetLogger(this);
+
+        [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
+        [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
         private void Start() {
             // Create duplicate Colliders
             _duplicates = createDuplicates(NewParentOfDuplicates);
@@ -43,31 +62,20 @@ namespace UnityEngine {
             // Parent these Colliders to the requested object
             // This must happen in a separate loop, or else we duplicate the duplicates also!
             foreach (Transform child in _duplicates) {
-                child.parent = NewParentOfDuplicates.transform;
+                child.parent = NewParentOfDuplicates;
                 child.localPosition = Vector3.zero;
                 child.localRotation = Quaternion.identity;
                 child.localScale = Vector3.one;
             }
         }
 
-        // HELPERS
-        private IList<Transform> createDuplicates(Transform newParent) {
-            // Duplicate child Colliders, as requested...
-            IList<Transform> dupls = new List<Transform>();
-            switch (ChildColliderDuplication) {
-
-                case ChildColliderDuplicateMode.ImmediateChildCollidersOnly:
-                    dupls = duplicateImmediateChildren();
-                    break;
-
-                case ChildColliderDuplicateMode.AllChildCollidersFlattened:
-                    dupls = duplicateAllChildrenFlat();
-                    break;
-
-                case ChildColliderDuplicateMode.AllChildCollidersHierarchy:
-                    dupls = duplicateAllChildrenHierarchy(newParent);
-                    break;
-            }
+        private List<Transform> createDuplicates(Transform? newParent) {
+            List<Transform> dupls = ChildColliderDuplication switch {
+                ChildColliderDuplicateMode.ImmediateChildCollidersOnly => duplicateImmediateChildren(),
+                ChildColliderDuplicateMode.AllChildCollidersFlattened => duplicateAllChildrenFlat(),
+                ChildColliderDuplicateMode.AllChildCollidersHierarchy => newParent == null ? new() : duplicateAllChildrenHierarchy(newParent),
+                _ => new(),
+            };
 
             // Duplicate other child Colliders
             foreach (Collider c in CollidersToDuplicate) {
@@ -78,13 +86,15 @@ namespace UnityEngine {
 
             return dupls;
         }
-        private IList<Transform> duplicateImmediateChildren() {
+
+        private List<Transform> duplicateImmediateChildren() {
             // Get Colliders on immediate children
-            IEnumerable<Collider> childColls = gameObject.GetComponentsInChildren<Collider>()
-                                                         .Where(c => c.transform.parent == this.transform);
+            IEnumerable<Collider> childColls = gameObject
+                .GetComponentsInChildren<Collider>()
+                .Where(c => c.transform.parent == this.transform);
 
             // Duplicate each Collider on its own new GameObject
-            IList<Transform> dupls = new List<Transform>();
+            List<Transform> dupls = new();
             foreach (Collider c in childColls) {
                 var newChild = new GameObject(c.name);
                 duplicateCollider(c, newChild);
@@ -93,12 +103,13 @@ namespace UnityEngine {
 
             return dupls;
         }
-        private IList<Transform> duplicateAllChildrenFlat() {
+
+        private List<Transform> duplicateAllChildrenFlat() {
             // Get Colliders on the root object and all children
             IEnumerable<Collider> childColls = gameObject.GetComponentsInChildren<Collider>();
 
             // Duplicate each Collider on its own new GameObject
-            IList<Transform> dupls = new List<Transform>();
+            List<Transform> dupls = new();
             foreach (Collider c in childColls) {
                 var newChild = new GameObject(c.name);
                 duplicateCollider(c, newChild);
@@ -107,11 +118,13 @@ namespace UnityEngine {
 
             return dupls;
         }
-        private IList<Transform> duplicateAllChildrenHierarchy(Transform newParent) {
+
+        private List<Transform> duplicateAllChildrenHierarchy(Transform newParent) {
             duplicateHierarchy(transform, newParent);
-            return new Transform[0];
+            return new();
         }
-        private IList<Transform> duplicateHierarchy(Transform origParent, Transform duplParent) {
+
+        private List<Transform> duplicateHierarchy(Transform origParent, Transform duplParent) {
             // Duplicate each Collider of the original GameObject to the new GameObject
             foreach (Collider c in origParent.GetComponents<Collider>())
                 duplicateCollider(c, duplParent.gameObject);
@@ -132,14 +145,14 @@ namespace UnityEngine {
                 duplicateHierarchy(origChild, duplChild);
             }
 
-            return new Transform[0];
+            return new();
         }
+
         private void duplicateCollider(Collider collider, GameObject newParent) {
-            Collider newColl = null;
+            Collider? newColl = null;
 
             // Copy BoxCollider properties
-            if (collider is BoxCollider) {
-                var origBox = collider as BoxCollider;
+            if (collider is BoxCollider origBox) {
                 BoxCollider newBox  = newParent.AddComponent<BoxCollider>();
                 newBox.center = origBox.center;
                 newBox.size   = origBox.size;
@@ -147,8 +160,7 @@ namespace UnityEngine {
             }
 
             // Copy SphereCollider properties
-            else if (collider is SphereCollider) {
-                var origSphere = collider as SphereCollider;
+            else if (collider is SphereCollider origSphere) {
                 SphereCollider newSphere  = newParent.AddComponent<SphereCollider>();
                 newSphere.center = origSphere.center;
                 newSphere.radius = origSphere.radius;
@@ -156,14 +168,18 @@ namespace UnityEngine {
             }
 
             // Copy CapsuleCollider properties
-            else if (collider is CapsuleCollider) {
-                var origCapsule = collider as CapsuleCollider;
+            else if (collider is CapsuleCollider origCapsule) {
                 CapsuleCollider newCapsule  = newParent.AddComponent<CapsuleCollider>();
                 newCapsule.center = origCapsule.center;
                 newCapsule.radius = origCapsule.radius;
                 newCapsule.height = origCapsule.height;
                 newCapsule.direction = origCapsule.direction;
                 newColl = newCapsule;
+            }
+
+            else {
+                _logger!.LogWarning($"Collider {collider.GetHierarchyName()} is not a BoxCollider, SphereCollider, or CapsuleCollider, so it will not be duplicated.", context: this);
+                return;
             }
 
             // Copy general Collider properties

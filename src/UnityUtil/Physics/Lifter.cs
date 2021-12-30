@@ -1,8 +1,9 @@
-﻿using System;
+﻿using Sirenix.OdinInspector;
+using System;
+using System.Diagnostics.CodeAnalysis;
 using UnityEngine.Assertions;
 using UnityEngine.Events;
 using UnityEngine.Inputs;
-using UnityEngine.Logging;
 using UnityEngine.Triggers;
 
 namespace UnityEngine {
@@ -31,26 +32,34 @@ namespace UnityEngine {
     public class LiftableReleaseEvent : UnityEvent<Liftable, Lifter, LiftableReleaseType> { }
 
     [DisallowMultipleComponent]
-    public class Lifter : MonoBehaviour {
-
-        // HIDDEN FIELDS
-        private Liftable _liftable;
-        private Transform _oldParent;
+    public class Lifter : Updatable
+    {
+        private Transform? _oldParent;
         private bool _oldKinematic;
         private bool _oldUseGravity;
 
-        // INSPECTOR FIELDS
         [Header("Inputs")]
-        public StartStopInput LiftInput;
-        public StartStopInput ThrowInput;
+        [Required] public StartStopInput? LiftInput;
+        [Required] public StartStopInput? ThrowInput;
 
         [Header("Options")]
-        [Tooltip("If true, Liftables will be attached to this Lifter via the LiftingJoint.  Otherwise, the Liftable will just be parented to the LiftingObject.")]
+        [Tooltip(
+            $"If true, {nameof(Liftable)}s will be attached to this {nameof(Lifter)} via the {nameof(LiftingJoint)}. " +
+            $"Otherwise, the {nameof(Liftable)} will just be parented to the {nameof(LiftingObject)}."
+        )]
         public bool LiftUsingPhysics = false;
-        [Tooltip("If LiftUsingPhysics is true, then Liftables will be attached to this Lifter via the Joint on this GameObject.  Ignored if LiftUsingPhysics is false.")]
-        public JointBreakTrigger LiftingJoint;
-        [Tooltip("If LiftUsingPhysics is false, then Liftables will be attached to this Transform via parenting.  Ignored if LiftUsingPhysics is true.")]
-        public Transform LiftingObject;
+
+        [Tooltip(
+            $"If {nameof(LiftUsingPhysics)} is true, then {nameof(Liftable)}s will be attached to this {nameof(Lifter)} via the Joint on this GameObject. " +
+            $"Ignored if {nameof(LiftUsingPhysics)} is false."
+        )]
+        public JointBreakTrigger? LiftingJoint;
+
+        [Tooltip(
+            $"If {nameof(LiftUsingPhysics)} is false, then {nameof(Liftable)}s will be attached to this Transform via parenting. " +
+            $"Ignored if {nameof(LiftUsingPhysics)} is true."
+        )]
+        public Transform? LiftingObject;
         public LayerMask LiftableLayerMask;
         public float Reach = 4f;
         public float MaxMass = 10f;
@@ -59,69 +68,77 @@ namespace UnityEngine {
         public bool CanThrow = true;
         public float ThrowForce = 10f;
 
-        // EVENT HANDLERS
-        private void Awake() {
+        protected override void Awake()
+        {
+            base.Awake();
+
             Assert.IsTrue(
-                (LiftUsingPhysics && LiftingJoint != null) || (!LiftUsingPhysics && LiftingObject != null),
-                $"{this.GetHierarchyNameWithType()} must have a {nameof(this.LiftingJoint)} if {nameof(this.LiftUsingPhysics)} is set to true, or a {nameof(this.LiftingObject)} if {nameof(this.LiftUsingPhysics)} is set to false.");
+                (LiftUsingPhysics && LiftingJoint != null) || 
+                (!LiftUsingPhysics && LiftingObject != null),
+                $"{this.GetHierarchyNameWithType()} must have a {nameof(this.LiftingJoint)} if {nameof(this.LiftUsingPhysics)} is set to true, " +
+                $"or a {nameof(this.LiftingObject)} if {nameof(this.LiftUsingPhysics)} is set to false."
+            );
+
+            RegisterUpdatesAutomatically = true;
+            BetterUpdate = doUpdate;
         }
-        private void Update() {
+
+        private void doUpdate(float deltaTime)
+        {
             // Get user input
-            bool toggleLift = LiftInput.Started();
-            bool throwing = ThrowInput.Started();
+            bool toggleLift = LiftInput!.Started();
+            bool throwing = ThrowInput!.Started();
             if (toggleLift && throwing)
                 return;
 
             // If the player pressed Use, then pick up or drop a load
             if (toggleLift) {
-                if (_liftable == null)
+                if (CurrentLiftable == null)
                     pickup();
                 else {
-                    LiftingJoint.Joint.connectedBody = null;
+                    LiftingJoint!.Joint!.connectedBody = null;
                     release(LiftableReleaseType.Purposeful);
                 }
             }
 
             // If the player pressed Throw and throwing is currently applicable, then do throw actions
-            if (throwing && CanThrow && _liftable != null)
+            if (throwing && CanThrow && CurrentLiftable != null)
                 doThrow();
         }
         private void onJointBreak(Joint joint) => release(LiftableReleaseType.Accidental);
 
-        // API INTERFACE
-        public Liftable CurrentLiftable => _liftable;
+        public Liftable? CurrentLiftable { get; private set; }
         public LiftablePickupEvent LoadPickedUp = new();
         public LiftableReleaseEvent LoadReleased = new();
 
-        // HELPER FUNCTIONS
         private void pickup() {
             // Check if a physical object that's not too heavy is within range
             // If not, then just return
-            Rigidbody rb = null;
+            Rigidbody? rb = null;
             bool loadAhead = Physics.Raycast(transform.position, transform.forward, out RaycastHit hitInfo, Reach, LiftableLayerMask);
             if (loadAhead) {
                 rb = hitInfo.collider.attachedRigidbody;
                 if (rb != null && rb.mass <= MaxMass) {
-                    _liftable = rb.GetComponent<Liftable>();
-                    if (!_liftable?.CanLift ?? false)
-                        _liftable = null;
+                    CurrentLiftable = rb.GetComponent<Liftable>();
+                    if (!CurrentLiftable?.CanLift ?? false)
+                        CurrentLiftable = null;
                 }
             }
-            if (_liftable == null)
+            if (CurrentLiftable == null)
                 return;
 
             // Connect that Liftable using Physics, if requested
             // Cant use Rigidbody.position/rotation b/c we're about to add it to a Joint
-            Transform loadTrans = rb.transform;
+            Transform loadTrans = rb!.transform;
             _oldParent = loadTrans.parent;
             _oldKinematic = rb.isKinematic;
             _oldUseGravity = rb.useGravity;
             rb.useGravity = false;
             if (LiftUsingPhysics) {
-                loadTrans.position = transform.TransformPoint(_liftable.LiftOffset);
-                if (_liftable.UsePreferredRotation)
-                    loadTrans.rotation = transform.rotation * Quaternion.Euler(_liftable.PreferredLiftRotation);
-                LiftingJoint.Joint.connectedBody = rb;
+                loadTrans.position = transform.TransformPoint(CurrentLiftable.LiftOffset);
+                if (CurrentLiftable.UsePreferredRotation)
+                    loadTrans.rotation = transform.rotation * Quaternion.Euler(CurrentLiftable.PreferredLiftRotation);
+                LiftingJoint!.Joint!.connectedBody = rb;
                 rb.isKinematic = false;
                 LiftingJoint.Broken.AddListener(onJointBreak);
             }
@@ -130,43 +147,43 @@ namespace UnityEngine {
             else {
                 loadTrans.parent = LiftingObject;
                 rb.isKinematic = true;
-                loadTrans.localPosition = _liftable.LiftOffset;
-                if (_liftable.UsePreferredRotation)
-                    loadTrans.localRotation = Quaternion.Euler(_liftable.PreferredLiftRotation);
+                loadTrans.localPosition = CurrentLiftable.LiftOffset;
+                if (CurrentLiftable.UsePreferredRotation)
+                    loadTrans.localRotation = Quaternion.Euler(CurrentLiftable.PreferredLiftRotation);
             }
 
             // Raise the PickUp event
-            _liftable.Lifter = this;
-            LoadPickedUp.Invoke(_liftable, this);
+            CurrentLiftable.Lifter = this;
+            LoadPickedUp.Invoke(CurrentLiftable, this);
         }
         private void release(LiftableReleaseType releaseType) {
             // Disconnect the Liftable using Physics, if requested
-            Rigidbody rb = _liftable.GetComponent<Rigidbody>();
+            Rigidbody rb = CurrentLiftable!.GetComponent<Rigidbody>();
             if (LiftUsingPhysics)
-                LiftingJoint.Broken.RemoveListener(onJointBreak);
+                LiftingJoint!.Broken.RemoveListener(onJointBreak);
 
             // Otherwise, disconnect it by unparenting
             else
-                _liftable.transform.parent = _oldParent;
+                CurrentLiftable.transform.parent = _oldParent;
 
             // Either way, adjust the Liftable's Rigidbody
             rb.isKinematic = _oldKinematic;
             rb.useGravity = _oldUseGravity;
 
             // Either way, raise the Released event
-            _liftable.Lifter = null;
-            Liftable liftable = _liftable;
-            _liftable = null;
+            CurrentLiftable.Lifter = null;
+            Liftable liftable = CurrentLiftable;
+            CurrentLiftable = null;
             LoadReleased.Invoke(liftable, this, releaseType);
         }
         private void doThrow() {
             // Disconnect the Liftable
-            Liftable liftable = _liftable;
-            LiftingJoint.Joint.connectedBody = null;
+            Liftable? liftable = CurrentLiftable;
+            LiftingJoint!.Joint!.connectedBody = null;
             release(LiftableReleaseType.Thrown);
 
             // Apply the throw force
-            Rigidbody rb = liftable.GetComponent<Rigidbody>();
+            Rigidbody rb = liftable!.GetComponent<Rigidbody>();
             rb.AddForce(transform.forward * ThrowForce, ForceMode.Impulse);
         }
 

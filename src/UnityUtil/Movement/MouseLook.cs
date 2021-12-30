@@ -1,66 +1,64 @@
-﻿using UnityEngine.Inputs;
-using UnityEngine.Logging;
+﻿using Sirenix.OdinInspector;
+using UnityEngine.Inputs;
 
 namespace UnityEngine.Movement
 {
 
-    public class MouseLook : Updatable {
-        // HIDDEN FIELDS
-        private float _angle = 0f;
-        private float _deltaSinceLast = 0f;
+    public class MouseLook : Updatable
+    {
+        private float _angle;
+        private float _deltaSinceLast;
 
-        // INSPECTOR FIELDS
-        [Tooltip("The Transform that will be kinematically rotated while looking around.  Only required if " + nameof(UsePhysicsToLook) + " is false.")]
-        public Transform TransformToRotate;
-        [Tooltip("The Rigidbody that will be rotated by physics while looking around.  Only required if " + nameof(UsePhysicsToLook) + " is true.")]
-        public Rigidbody RigidbodyToRotate;
-        public ValueInput LookInput;
-        [Tooltip("The maximum angle around the vertical that can be looked through in the positive direction.  For best results, use values less than 180° to limit the view, or exactly 360° to allow full rotation.")]
+        [Tooltip($"The Transform that will be kinematically rotated while looking around.  Only required if {nameof(UsePhysicsToLook)} is false.")]
+        public Transform? TransformToRotate;
+
+        [Tooltip($"The Rigidbody that will be rotated by physics while looking around.  Only required if {nameof(UsePhysicsToLook)} is true.")]
+        public Rigidbody? RigidbodyToRotate;
+
+        [Required]
+        public ValueInput? LookInput;
+
+        [Tooltip(
+            "The maximum angle around the vertical that can be looked through in the positive direction. " +
+            "For best results, use values less than 180° to limit the view, or exactly 360° to allow full rotation."
+        )]
         [Range(0f, 360f)]
-        public float MaxPositiveAngle;
-        [Tooltip("The maximum angle around the vertical that can be looked through in the negative direction.  For best results, use values greater than -180° to limit the view, or exactly -360° to allow full rotation.")]
-        [Range(-360f, 0f)]
-        public float MaxNegativeAngle;
-        [Tooltip("If true, then the look rotation is applied using physics, otherwise it is applied using kinematic Transform rotation.")]
-        public bool UsePhysicsToLook;
-        [Tooltip("Around what axis will the look rotation be applied?")]
-        public AxisDirection AxisDirectionType;
-        [Tooltip("Only required if " + nameof(AxisDirectionType) + " is " + nameof(AxisDirection.CustomWorldSpace) + " or " + nameof(AxisDirection.CustomLocalSpace) + ".")]
-        public Vector3 CustomAxisDirection;
+        public float MaxPositiveAngle = 360f;
 
-        /// <summary>
-        /// Returns the unit vector in which this <see cref="HoverForce"/> will attempt to hover.
-        /// </summary>
-        /// <returns>The unit vector in which this <see cref="HoverForce"/> will attempt to hover.</returns>
-        public Vector3 GetUpwardUnitVector() =>
+        [Tooltip(
+            "The maximum angle around the vertical that can be looked through in the negative direction. " +
+            "For best results, use values greater than -180° to limit the view, or exactly -360° to allow full rotation."
+        )]
+        [Range(-360f, 0f)]
+        public float MaxNegativeAngle = -360f;
+
+        [Tooltip("If true, then the look rotation is applied using physics, otherwise it is applied using kinematic Transform rotation.")]
+        public bool UsePhysicsToLook = true;
+
+        [Tooltip("Around what axis will the look rotation be applied?")]
+        public AxisDirection AxisDirectionType = AxisDirection.OppositeGravity;
+
+        [Tooltip($"Only required if {nameof(AxisDirectionType)} is {nameof(AxisDirection.CustomWorldSpace)} or {nameof(AxisDirection.CustomLocalSpace)}.")]
+        public Vector3 CustomAxisDirection = Vector3.up;
+
+        public Vector3 GetUpwardUnitVector(Transform relativeTransform) =>
             AxisDirectionType switch {
                 AxisDirection.WithGravity => Physics.gravity.normalized,
                 AxisDirection.OppositeGravity => -Physics.gravity.normalized,
                 AxisDirection.CustomWorldSpace => CustomAxisDirection.normalized,
-                AxisDirection.CustomLocalSpace => (UsePhysicsToLook ? RigidbodyToRotate.transform : TransformToRotate).TransformDirection(CustomAxisDirection.normalized),
+                AxisDirection.CustomLocalSpace => relativeTransform.TransformDirection(CustomAxisDirection.normalized),
                 _ => throw UnityObjectExtensions.SwitchDefaultException(AxisDirectionType),
             };
 
-        // EVENT HANDLERS
-        protected override void Reset() {
-            base.Reset();
-
-            MaxPositiveAngle = 360f;
-            MaxNegativeAngle = -360f;
-            UsePhysicsToLook = true;
-            CustomAxisDirection = Vector3.up;
-        }
         protected override void Awake() {
             base.Awake();
-
-            this.AssertAssociation(LookInput, nameof(this.LookInput));
 
             RegisterUpdatesAutomatically = true;
             BetterUpdate = doUpdate;
             BetterFixedUpdate = doFixedUpdate;
         }
         private void doUpdate(float deltaTime) {
-            _deltaSinceLast += LookInput.Value();
+            _deltaSinceLast += LookInput!.Value();
 
             if (!UsePhysicsToLook && TransformToRotate != null) {
                 doLookRotation();
@@ -74,18 +72,18 @@ namespace UnityEngine.Movement
             }
         }
 
-        // HELPERS
         private void doLookRotation()
         {
-            // Determine the upward direction
-            Vector3 up = GetUpwardUnitVector();
-
             // Rotate the requested number of degrees around the upward axis, using the desired method
             float deltaAngle = (_deltaSinceLast > 0) ? Mathf.Min(MaxPositiveAngle - _angle, _deltaSinceLast) : Mathf.Max(MaxNegativeAngle - _angle, _deltaSinceLast);
-            if (UsePhysicsToLook)
+            if (UsePhysicsToLook && RigidbodyToRotate != null) {
+                Vector3 up = GetUpwardUnitVector(RigidbodyToRotate.transform);
                 RigidbodyToRotate.MoveRotation(RigidbodyToRotate.rotation * Quaternion.AngleAxis(deltaAngle, up));
-            else
+            }
+            else if (!UsePhysicsToLook && TransformToRotate != null) {
+                Vector3 up = GetUpwardUnitVector(TransformToRotate);
                 TransformToRotate.Rotate(up, deltaAngle, Space.World);
+            }
 
             // Adjust the internal angle counter
             _angle += deltaAngle;

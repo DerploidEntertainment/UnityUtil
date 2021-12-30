@@ -1,20 +1,20 @@
-﻿using System.Linq;
-using UnityEngine.Logging;
+﻿using Sirenix.OdinInspector;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 
-namespace UnityEngine.Inventory {
+namespace UnityEngine.Inventories {
 
     [RequireComponent(typeof(Weapon))]
-    public class QuantityWeapon : MonoBehaviour {
+    public class QuantityWeapon : MonoBehaviour
+    {
+        private Weapon? _weapon;
 
-        private Weapon _weapon;
+        [Required]
+        public QuantityWeaponInfo? Info;
 
-        // INSPECTOR FIELDS
-        public QuantityWeaponInfo Info;
-
-        // EVENT HANDLERS
+        [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
+        [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
         private void Awake() {
-            this.AssertAssociation(Info, nameof(QuantityWeaponInfo));
-
             _weapon = GetComponent<Weapon>();
             _weapon.Attacked.AddListener(decreaseQuantity);
         }
@@ -24,8 +24,8 @@ namespace UnityEngine.Inventory {
             // Otherwise, damage the Quantities on all Colliders that are not ignored with one of the specified tags
             for (int h = 0; h < hits.Length; ++h) {
                 RaycastHit hit = hits[h];
-                if (!Info.IgnoreColliderTags.Contains(hit.collider.tag)) {
-                    ManagedQuantity quantity = hit.collider.attachedRigidbody?.GetComponent<ManagedQuantity>();
+                if (!Info!.IgnoreColliderTags.Contains(hit.collider.tag)) {
+                    ManagedQuantity? quantity = hit.collider.attachedRigidbody?.GetComponent<ManagedQuantity>();
                     if (quantity != null) {
                         quantity.Change(Info.Amount, Info.ChangeMode);
                         if (Info.OnlyAffectClosest && hits.Length > 0)

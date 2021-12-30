@@ -22,50 +22,50 @@ namespace UnityEngine {
             }
         }
 
-        protected readonly IDictionary<TKey, int> IndexLookup = new Dictionary<TKey, int>();
-        protected readonly List<Element> List = new();
+        private readonly IDictionary<TKey, int> _indexLookup = new Dictionary<TKey, int>();
+        private readonly List<Element> _list = new();
 
-        public int Count => List.Count;
+        public int Count => _list.Count;
 
-        public TValue this[TKey key] => List[IndexLookup[key]].Value;
-        public TValue this[int index] => List[index].Value;
+        public TValue this[TKey key] => _list[_indexLookup[key]].Value;
+        public TValue this[int index] => _list[index].Value;
 
         /// <summary>
         /// Sets the capacity to the actual number of elements in the underlying collection, to save on memory.
         /// </summary>
-        public void TrimExcess() => List.TrimExcess();
+        public void TrimExcess() => _list.TrimExcess();
         public void Clear() {
-            IndexLookup.Clear();
-            List.Clear();
+            _indexLookup.Clear();
+            _list.Clear();
         }
-        public bool ContainsKey(TKey key) => IndexLookup.ContainsKey(key);
+        public bool ContainsKey(TKey key) => _indexLookup.ContainsKey(key);
         public void CopyTo(TValue[] array, int arrayIndex) {
-            for (int i = 0; i < List.Count; ++i)
-                array[arrayIndex + i] = List[i].Value;
+            for (int i = 0; i < _list.Count; ++i)
+                array[arrayIndex + i] = _list[i].Value;
         }
         public bool Remove(TKey key) {
-            bool contained = IndexLookup.TryGetValue(key, out int index);
+            bool contained = _indexLookup.TryGetValue(key, out int index);
             if (!contained)
                 return false;
 
-            Element last = List[List.Count - 1];
-            IndexLookup[last.Key] = index;
-            List[index] = last;
-            IndexLookup.Remove(key);
-            List.RemoveAt(List.Count - 1);
+            Element last = _list[^1];
+            _indexLookup[last.Key] = index;
+            _list[index] = last;
+            _indexLookup.Remove(key);
+            _list.RemoveAt(_list.Count - 1);
 
             return true;
         }
         public void Add(TKey key, TValue value) {
-            IndexLookup.Add(key, List.Count);
-            List.Add(new Element(key, value));
+            _indexLookup.Add(key, _list.Count);
+            _list.Add(new Element(key, value));
         }
 
         [SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "Parameters required to implement interface")]
-        public bool TryGetValue(TKey key, out TValue value) => throw new System.NotImplementedException();
+        public bool TryGetValue(TKey key, out TValue value) => throw new System.InvalidOperationException();
 
-        public IEnumerator<TValue> GetEnumerator() => List.Select(i => i.Value).GetEnumerator();
-        IEnumerator IEnumerable.GetEnumerator() => List.Select(i => i.Value).GetEnumerator();
+        public IEnumerator<TValue> GetEnumerator() => _list.Select(i => i.Value).GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => _list.Select(i => i.Value).GetEnumerator();
 
     }
 

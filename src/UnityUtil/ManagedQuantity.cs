@@ -1,6 +1,5 @@
 ﻿using System;
 using UnityEngine.Events;
-using UnityEngine.Logging;
 
 namespace UnityEngine {
 
@@ -18,16 +17,14 @@ namespace UnityEngine {
             PercentMax,
         }
 
-        // INSPECTOR FIELDS
         public float Value = 100f;
-        public float MinValue = 0f;
+        public float MinValue;
         public float MaxValue = 100f;
         public QuantityEvent FullyFilled = new();
         public QuantityEvent Changed = new();
         public QuantityEvent FullyDepleted = new();
         public QuantityEvent Restored = new();
 
-        // API
         public static float ConvertAmount(float amount, ChangeMode fromChangeMode, ChangeMode toChangeMode, float currentAmount, float maxAmount) {
             // Get the "from" change amount as an Absolute amount
             float absChange = fromChangeMode switch {
@@ -46,23 +43,18 @@ namespace UnityEngine {
             };
         }
 
-        public float Increase(float amount, ChangeMode changeMode = ChangeMode.Absolute) {
-            if (amount < 0f)
-                throw new ArgumentOutOfRangeException(nameof(amount), amount, $"Cannot increase {this.GetHierarchyNameWithType()} by a negative amount!");
-
-            return doChange(amount, changeMode);
-        }
-        public float Decrease(float amount, ChangeMode changeMode = ChangeMode.Absolute) {
-            if (amount < 0f)
-                throw new ArgumentOutOfRangeException(nameof(amount), amount, $"Cannot decrease {this.GetHierarchyNameWithType()} by a negative amount!");
-
-            return doChange(-amount, changeMode);
-        }
+        public float Increase(float amount, ChangeMode changeMode = ChangeMode.Absolute) =>
+            amount < 0f
+                ? throw new ArgumentOutOfRangeException(nameof(amount), amount, $"Cannot increase {this.GetHierarchyNameWithType()} by a negative amount!")
+                : doChange(amount, changeMode);
+        public float Decrease(float amount, ChangeMode changeMode = ChangeMode.Absolute) =>
+            amount < 0f
+                ? throw new ArgumentOutOfRangeException(nameof(amount), amount, $"Cannot decrease {this.GetHierarchyNameWithType()} by a negative amount!")
+                : doChange(-amount, changeMode);
         public float Change(float amount, ChangeMode changeMode = ChangeMode.Absolute) => doChange(amount, changeMode);
         public void FillCompletely() => doChange(MaxValue - Value, ChangeMode.Absolute);
         public void DepleteCompletely() => doChange(-Value, ChangeMode.Absolute);
 
-        // HELPER FUNCTIONS
         private float doChange(float amount, ChangeMode changeMode) {
             if (amount == 0f)
                 return 0f;

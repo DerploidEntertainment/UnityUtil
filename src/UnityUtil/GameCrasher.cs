@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using UnityEngine.Diagnostics;
-using Application = UnityEngine.Device.Application;
 
 namespace UnityEngine
 {
@@ -11,7 +10,7 @@ namespace UnityEngine
         public void UncaughtExceptionClr()
         {
             Debug.Log("Attempting crash via uncaught CLR exception...");
-            throw new Exception("AAHHH, MANAGED EXCEPTION!!!! JK, everything is fine.");
+            throw new InvalidOperationException("AAHHH, MANAGED EXCEPTION!!!! JK, everything is fine.");
         }
 
         [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "UnityEvents can't call static methods")]
@@ -71,10 +70,9 @@ namespace UnityEngine
             var message = new AndroidJavaObject("java.lang.String", "AAHHH ANDROID UNCAUGHT EXCEPTION!!! JK, everything is fine.");
             var exception = new AndroidJavaObject("java.lang.Exception", message);
 
-            AndroidJavaObject mainThread = new AndroidJavaClass("android.os.Looper")
-                .CallStatic<AndroidJavaObject>("getMainLooper")
-                .Call<AndroidJavaObject>("getThread");
-            AndroidJavaObject exceptionHandler = mainThread.Call<AndroidJavaObject>("getUncaughtExceptionHandler");
+            using AndroidJavaClass looperClass = new("android.os.Looper");
+            using AndroidJavaObject mainThread = looperClass.CallStatic<AndroidJavaObject>("getMainLooper").Call<AndroidJavaObject>("getThread");
+            using AndroidJavaObject exceptionHandler = mainThread.Call<AndroidJavaObject>("getUncaughtExceptionHandler");
             exceptionHandler.Call("uncaughtException", mainThread, exception);
         }
     }

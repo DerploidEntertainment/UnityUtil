@@ -3,27 +3,24 @@ using UnityEngine.Logging;
 
 namespace UnityEngine.Triggers {
 
-    public class TimerTrigger : StartStoppable {
-
-        // INSPECTOR FIELDS
-        [Tooltip("The duration, in seconds, before the " + nameof(TimerTrigger.Timeout) + " event.")]
+    public class TimerTrigger : StartStoppable
+    {
+        [Tooltip($"The duration, in seconds, before the {nameof(TimerTrigger.Timeout)} event.")]
         public float Duration = 1f;
         [Tooltip("The time, in seconds, that has passed since the timer started.")]
         public float TimePassed = 0f;
-        public bool Logging = false;
+        public bool Logging;
 
         public UnityEvent Timeout = new();
         public UnityEvent Stopped = new();
 
-        // API INTERFACE
         public float PercentProgress => TimePassed / Duration;
 
-        // HELPERS
         protected override void DoRestart() {
             base.DoRestart();
 
             if (Logging)
-                Logger.Log("Starting", context: this);
+                Logger!.Log("Starting", context: this);
 
             TimePassed = 0f;
         }
@@ -31,20 +28,20 @@ namespace UnityEngine.Triggers {
             base.DoStop();
 
             if (Logging)
-                Logger.Log($"Stopped", context: this);
+                Logger!.Log($"Stopped", context: this);
             Stopped.Invoke();
         }
         protected override void DoPause() {
             base.DoStop();
 
             if (Logging)
-                Logger.Log($"Paused", context: this);
+                Logger!.Log($"Paused", context: this);
         }
         protected override void DoResume() {
             base.DoResume();
 
             if (Logging)
-                Logger.Log("Resumed", context: this);
+                Logger!.Log("Resumed", context: this);
         }
         protected override void DoUpdate(float deltaTime) {
             // Update the time elapsed, if the Timer is running
@@ -54,7 +51,7 @@ namespace UnityEngine.Triggers {
 
             // Once the timer is up, raise the Timeout event
             if (Logging)
-                Logger.Log("Timed out!", context: this);
+                Logger!.Log("Timed out!", context: this);
             Timeout.Invoke();
             if (Running)   // May now be false if any UnityEvents manually stopped this timer
                 DoStop();

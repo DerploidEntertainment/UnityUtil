@@ -1,18 +1,23 @@
 ﻿using NUnit.Framework;
+using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
 using UnityEngine.Triggers;
 
-namespace UnityUtil.Test.EditMode.Triggers {
-
-    internal class MockConditionalTrigger : ConditionalTrigger {
-        public bool State = false;
+namespace UnityUtil.Test.EditMode.Triggers
+{
+    [SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses", Justification = "Instantiated when added to test Game Objects")]
+    internal class MockConditionalTrigger : ConditionalTrigger
+    {
+        public bool State;
         public override bool IsConditionMet() => State;
     }
 
-    public class ConditionalTriggerTest {
+    public class ConditionalTriggerTest
+    {
 
         [Test]
-        public void TriggersStateCorrectly() {
+        public void TriggersStateCorrectly()
+        {
             MockConditionalTrigger trigger = getConditionalTrigger();
             int falseTriggerCount = 0, trueTriggerCount = 0;
             trigger.StillFalse.AddListener(() => ++falseTriggerCount);
@@ -30,7 +35,8 @@ namespace UnityUtil.Test.EditMode.Triggers {
         }
 
         [Test]
-        public void TriggersStateDoesNothingIfTurnedOff() {
+        public void TriggersStateDoesNothingIfTurnedOff()
+        {
             MockConditionalTrigger trigger = getConditionalTrigger();
             int falseTriggerCount = 0, trueTriggerCount = 0;
             trigger.StillFalse.AddListener(() => ++falseTriggerCount);
@@ -56,11 +62,7 @@ namespace UnityUtil.Test.EditMode.Triggers {
             Assert.That(trueTriggerCount, Is.EqualTo(0));
         }
 
-        private MockConditionalTrigger getConditionalTrigger() {
-            MockConditionalTrigger trigger = new GameObject().AddComponent<MockConditionalTrigger>();
-
-            return trigger;
-        }
+        private static MockConditionalTrigger getConditionalTrigger() => new GameObject().AddComponent<MockConditionalTrigger>();
 
     }
 }

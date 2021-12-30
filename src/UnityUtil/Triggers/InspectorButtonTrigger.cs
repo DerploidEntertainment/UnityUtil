@@ -4,14 +4,18 @@ using UnityEngine.Events;
 namespace UnityEngine.Triggers
 {
 
-    public class InspectorButtonTrigger : Updatable {
-
+    public class InspectorButtonTrigger : Updatable
+    {
         private float _tRefactory = -1f;
 
-        // INSPECTOR FIELDS
         public UnityEvent Triggered = new();
-        [Tooltip("This flag will be set to false while in the refactory period, so that you don't accidentally press the button again. You can manually tick it back to true if you won't to press the button during a refactory period.")]
+
+        [Tooltip(
+            "This flag will be set to false while in the refactory period, so that you don't accidentally press the button again. " +
+            "You can manually tick it back to true if you want to press the button during a refactory period."
+        )]
         public bool CanPress = true;
+
         [Tooltip("Time, in seconds, before the button may be pressed again.")]
         public float RefactoryPeriod = 1f;
 
@@ -24,16 +28,15 @@ namespace UnityEngine.Triggers
             base.OnEnable();
 
             if (_tRefactory > -1f)
-                Updater.RegisterUpdate(InstanceID, updateRefactory);
+                Updater!.RegisterUpdate(InstanceId, updateRefactory);
         }
         protected override void OnDisable() {
             base.OnDisable();
 
             if (_tRefactory > -1f)
-                Updater.UnregisterUpdate(InstanceID);
+                Updater!.UnregisterUpdate(InstanceId);
         }
 
-        // API INTERFACE
         [Button, EnableIf(nameof(CanPress))]
         public void Press() {
             // Don't press the button if its still in the refractory period
@@ -44,10 +47,9 @@ namespace UnityEngine.Triggers
             Triggered.Invoke();
             CanPress = false;
             _tRefactory = 0f;
-            Updater.RegisterUpdate(InstanceID, updateRefactory);
+            Updater!.RegisterUpdate(InstanceId, updateRefactory);
         }
 
-        // HIDDEN FUNCTIONS
         private void updateRefactory(float deltaTime) {
             if (_tRefactory <= RefactoryPeriod) {
                 _tRefactory += deltaTime;
@@ -55,7 +57,7 @@ namespace UnityEngine.Triggers
             }
 
             _tRefactory = 0f;
-            Updater.UnregisterUpdate(InstanceID);
+            Updater!.UnregisterUpdate(InstanceId);
 
             CanPress = true;
         }

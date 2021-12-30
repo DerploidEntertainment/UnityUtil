@@ -17,49 +17,73 @@ namespace UnityEngine.UI
         Logarithmic
     }
 
-    [TypeInfoBox("Make sure this component is enabled (and its " + nameof(GameObject) + " is active) on startup, otherwise initialization of " + nameof(AudioMixer) + " from the cache will not work correctly.\n\nNote that an " + nameof(EventTrigger) + " component will be attached to " + nameof(UI.Slider) + " (if one isn't attached already), so that we can listen for " + nameof(EventTriggerType.PointerUp) + " events to play " + nameof(TestAudio) + " and save to a cache. This will make the " + nameof(Slider) + "'s " + nameof(GameObject) + " intercept all events, and no event bubbling will occur from that object!")]
+    [TypeInfoBox(
+        $"Make sure this component is enabled (and its {nameof(GameObject)} is active) on startup, " +
+        $"otherwise initialization of {nameof(AudioMixer)} from the cache will not work correctly." +
+        $"\n\nNote that an {nameof(EventTrigger)} component will be attached to {nameof(UI.Slider)} (if one isn't attached already), " +
+        $"so that we can listen for {nameof(EventTriggerType.PointerUp)} events to play {nameof(TestAudio)} and save to a cache. " +
+        $"This will make the {nameof(Slider)}'s {nameof(GameObject)} intercept all events, " +
+        $"and no event bubbling will occur from that object!"
+    )]
     public class AudioMixerParameterSlider : Configurable {
 
-        private ILogger _logger;
-        private ILocalCache _localCache;
+        private ILogger? _logger;
+        private ILocalCache? _localCache;
 
-        public AudioMixer AudioMixer;
-        [Tooltip("This parameter must already be exposed on " + nameof(AudioMixer) + ", and its value will be updated as the user updates " + nameof(Slider) + ".")]
-        public string ExposedParameterName;
-        [Tooltip("The value of this " + nameof(UI.Slider) + " will be used to update the exposed parameter of " + nameof(AudioMixer) + ". Its value will be transformed according to " + nameof(SliderTransformation) + ".")]
-        public Slider Slider;
-        [Tooltip("Optional. This " + nameof(AudioSource) + " will be played anytime the " + nameof(Slider) + "'s value is changed, so that the user can hear the difference. Make sure that its output " + nameof(AudioMixerGroup) + " is set correctly. The " + nameof(AudioClip) + " played should not be long (like music), so as not to annoy the user.")]
-        public AudioSource TestAudio;
-        [Tooltip("If true, then " + nameof(Slider) + "'s value (after transformation) will be saved to a cache, so that it is 'saved' between sessions, and can theoretically be edited by the user.")]
-        public bool StoreParameterInCache;
+        [Required]
+        public AudioMixer? AudioMixer;
+
+        [Tooltip($"This parameter must already be exposed on {nameof(AudioMixer)}, and its value will be updated as the user updates {nameof(Slider)}.")]
+        public string ExposedParameterName = "Volume";
+
+        [Tooltip(
+            $"The value of this {nameof(UI.Slider)} will be used to update the exposed parameter of {nameof(AudioMixer)}. " +
+            $"Its value will be transformed according to {nameof(SliderTransformation)}."
+        )]
+        [Required]
+        public Slider? Slider;
+
+        [Tooltip(
+            $"Optional. This {nameof(AudioSource)} will be played anytime the {nameof(Slider)}'s value is changed, " +
+            $"so that the user can hear the difference. Make sure that its output {nameof(AudioMixerGroup)} is set correctly. " +
+            $"The {nameof(AudioClip)} played should not be long (like music), so as not to annoy the user."
+        )]
+        public AudioSource? TestAudio;
+
+        [Tooltip(
+            $"If true, then {nameof(Slider)}'s value (after transformation) will be saved to a cache, " +
+            $"so that it is 'saved' between sessions, and can theoretically be edited by the user."
+        )]
+        public bool StoreParameterInCache = true;
+
         [ShowIf(nameof(StoreParameterInCache))]
-        [Tooltip("If empty, the value of " + nameof(ExposedParameterName) + " will be used as key.")]
-        public string CacheKey;
+        [Tooltip($"If empty, the value of {nameof(ExposedParameterName)} will be used as key.")]
+        public string CacheKey = "";
+
 
         [Header("Slider to Volume Conversion")]
-        [Tooltip("How " + nameof(Slider) + "'s value is transformed to the new value of the exposed parameter of " + nameof(AudioMixer) + ".\nIf " + nameof(AudioSliderTransformation.Linear) + ", then the parameter's new value will equal " + nameof(Coefficient) + " * (" + nameof(Slider) + " value).\nIf " + nameof(AudioSliderTransformation.Logarithmic) + ", then the parameter's new value will equal " + nameof(Coefficient) + " * Log (base " + nameof(LogBase) + ") of (" + nameof(Slider) + " value). Usually, for " + nameof(AudioSliderTransformation.Linear) + " transformations, you will want a " + nameof(Coefficient) + " of 1. When transforming volumes, you will want to use " + nameof(AudioSliderTransformation.Logarithmic) + " with a " + nameof(LogBase) + " of 10 and a " + nameof(Coefficient) + " of 20 (and your slider should have a " + nameof(UI.Slider.minValue) + " and " + nameof(UI.Slider.maxValue) + " of 0.0001 and 1, respectively).")]
-        public AudioSliderTransformation SliderTransformation;
+
+        [Tooltip(
+            $"How {nameof(Slider)}'s value is transformed to the new value of the exposed parameter of {nameof(AudioMixer)}." +
+            $"\nIf {nameof(AudioSliderTransformation.Linear)}, then the parameter's new value will equal {nameof(Coefficient)} * ({nameof(Slider)} value). " +
+            $"Usually, you will want a {nameof(Coefficient)} of 1. " +
+            $"\nIf {nameof(AudioSliderTransformation.Logarithmic)}, then the parameter's new value will equal " +
+            $"{nameof(Coefficient)} * Log (base {nameof(LogBase)}) of ({nameof(Slider)} value). " +
+            $"\nWhen transforming volumes, you will want to use {nameof(AudioSliderTransformation.Logarithmic)} with a " +
+            $"{nameof(LogBase)} of 10 and a {nameof(Coefficient)} of 20 " +
+            $"(and your slider should have a {nameof(UI.Slider.minValue)} and {nameof(UI.Slider.maxValue)} of 0.0001 and 1, respectively)."
+        )]
+        public AudioSliderTransformation SliderTransformation = AudioSliderTransformation.Linear;
+
         [ShowIf(nameof(SliderTransformation), AudioSliderTransformation.Logarithmic)]
-        [Tooltip("See " + nameof(SliderTransformation) + " for the purpose of this field.")]
-        public float LogBase;
-        [Tooltip("See " + nameof(SliderTransformation) + " for the purpose of this field.")]
-        public float Coefficient;
+        [Tooltip($"See {nameof(SliderTransformation)} for the purpose of this field.")]
+        public float LogBase = 10f;
+
+        [Tooltip($"See {nameof(SliderTransformation)} for the purpose of this field.")]
+        public float Coefficient = 1f;
 
         public string FinalCacheKey => string.IsNullOrEmpty(CacheKey) ? ExposedParameterName : CacheKey;
 
-        protected override void Reset()
-        {
-            base.Reset();
-
-            ExposedParameterName = "Volume";
-
-            StoreParameterInCache = true;
-            CacheKey = "";
-
-            SliderTransformation = AudioSliderTransformation.Linear;
-            LogBase = 10f;
-            Coefficient = 1f;
-        }
         public void Inject(ILoggerProvider loggerProvider, ILocalCache localCache) {
             _logger = loggerProvider.GetLogger(this);
             _localCache = localCache;
@@ -67,14 +91,11 @@ namespace UnityEngine.UI
         protected override void Awake() {
             base.Awake();
 
-            this.AssertAssociation(AudioMixer, nameof(AudioMixer));
-            this.AssertAssociation(Slider, nameof(Slider));
-
-            bool paramExposed = AudioMixer.GetFloat(ExposedParameterName, out _);
+            bool paramExposed = AudioMixer!.GetFloat(ExposedParameterName, out _);
             Assert.IsTrue(paramExposed, $"{nameof(AudioMixer)} must expose a parameter with the name specified by {nameof(ExposedParameterName)} ('{ExposedParameterName}')");
 
             // Update AudioMixer and cache (if requested) whenever slider changes
-            Slider.onValueChanged.AddListener(sliderValue => {
+            Slider!.onValueChanged.AddListener(sliderValue => {
                 float newVal = transformValue(sliderValue);
                 AudioMixer.SetFloat(ExposedParameterName, newVal);
             });
@@ -86,8 +107,8 @@ namespace UnityEngine.UI
             pointerUpEvent.callback.AddListener(e => {
                 if (StoreParameterInCache) {
                     float newVal = transformValue(Slider.value);
-                    _localCache.SetFloat(FinalCacheKey, newVal);
-                    _logger.Log($"Saved new value ({newVal}) of exposed parameter '{ExposedParameterName}' of {nameof(Audio.AudioMixer)} '{AudioMixer.name}' to cache", context: this);
+                    _localCache!.SetFloat(FinalCacheKey, newVal);
+                    _logger!.Log($"Saved new value ({newVal}) of exposed parameter '{ExposedParameterName}' of {nameof(Audio.AudioMixer)} '{AudioMixer.name}' to cache", context: this);
                 }
                 if (TestAudio != null)
                     TestAudio.Play();   // Don't know why the F*CK a null-coalescing operator isn't working here...
@@ -102,17 +123,17 @@ namespace UnityEngine.UI
             string logMsg;
 
             string cacheKey = FinalCacheKey;
-            if (StoreParameterInCache && _localCache.HasKey(cacheKey)) {
+            if (StoreParameterInCache && _localCache!.HasKey(cacheKey)) {
                 val = _localCache.GetFloat(cacheKey);
-                logMsg = $"Loaded value ({val}) of exposed parameter '{ExposedParameterName}' of {nameof(Audio.AudioMixer)} '{AudioMixer.name}' from cache";
+                logMsg = $"Loaded value ({val}) of exposed parameter '{ExposedParameterName}' of {nameof(Audio.AudioMixer)} '{AudioMixer!.name}' from cache";
             }
             else {
-                AudioMixer.GetFloat(ExposedParameterName, out val);
+                AudioMixer!.GetFloat(ExposedParameterName, out val);
                 logMsg = $"Not using cache or key '{cacheKey}' could not be found. Loaded value of exposed parameter '{ExposedParameterName}' from {nameof(Audio.AudioMixer)} '{AudioMixer.name}' instead";
             }
 
-            Slider.value = untransformValue(val);   // This will trigger onValueChanged and thus initialize the AudioMixer as well
-            _logger.Log(logMsg, context: this);
+            Slider!.value = untransformValue(val);   // This will trigger onValueChanged and thus initialize the AudioMixer as well
+            _logger!.Log(logMsg, context: this);
         }
 
         private float untransformValue(float transformedValue) =>

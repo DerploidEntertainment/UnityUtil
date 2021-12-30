@@ -13,17 +13,15 @@ namespace UnityUtil.Editor {
     [CustomEditor(typeof(AsciiSprites))]
     public class AsciiSpritesDrawer : E.Editor {
 
-        private ILogger _logger;
-        private SerializedProperty _pathProp;
+        private ILogger? _logger;
+        private SerializedProperty? _pathProp;
         private readonly IDictionary<char, SerializedProperty> _charProps = new Dictionary<char, SerializedProperty>();
 
         public void Inject(ILoggerProvider loggerProvider) => _logger = loggerProvider.GetLogger(this);
 
         [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
         [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
-        private void Awake() {
-            DependencyInjector.Instance.ResolveDependenciesOf(this);
-        }
+        private void Awake() => DependencyInjector.Instance.ResolveDependenciesOf(this);
 
         [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
         [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
@@ -32,8 +30,7 @@ namespace UnityUtil.Editor {
 
             // Find serialized properties corresponding to these card value/suit pairs
             for (char ch = ' '; ch <= '~'; ++ch) {
-                string propPath = ch switch
-                {
+                string propPath = ch switch {
                     ' ' => nameof(AsciiSprites.Space),
                     '!' => nameof(AsciiSprites.Exclamation),
                     '"' => nameof(AsciiSprites.DoubleQuote),
@@ -51,7 +48,7 @@ namespace UnityUtil.Editor {
                     '.' => nameof(AsciiSprites.Period),
                     '/' => nameof(AsciiSprites.Slash),
 
-                    char ch2 when ('0' <= ch2 && ch2 <= '9') => "Num" + ch2,
+                    (>= '0' and <= '9') => "Num" + ch,
 
                     ':' => nameof(AsciiSprites.Colon),
                     ';' => nameof(AsciiSprites.Semicolon),
@@ -61,7 +58,7 @@ namespace UnityUtil.Editor {
                     '?' => nameof(AsciiSprites.Question),
                     '@' => nameof(AsciiSprites.AtSign),
 
-                    char ch2 when ('A' <= ch2 && ch2 <= 'Z') => "Upper" + ch2.ToString().ToUpperInvariant(),
+                    (>= 'A' and <= 'Z') => "Upper" + ch,
 
                     '[' => nameof(AsciiSprites.BracketOpen),
                     '\\' => nameof(AsciiSprites.Backslash),
@@ -70,7 +67,7 @@ namespace UnityUtil.Editor {
                     '_' => nameof(AsciiSprites.Underscore),
                     '`' => nameof(AsciiSprites.GraveAccent),
 
-                    char ch2 when ('a' <= ch2 && ch2 <= 'z') => "Lower" + ch2.ToString().ToLowerInvariant(),
+                    (>= 'a' and <= 'z') => "Lower" + ch.ToString().ToUpperInvariant(),
 
                     '{' => nameof(AsciiSprites.CurlyBraceOpen),
                     '|' => nameof(AsciiSprites.Pipe),
@@ -104,7 +101,7 @@ namespace UnityUtil.Editor {
             EditorGUI.BeginChangeCheck();
             serializedObject.Update();
 
-            _pathProp.stringValue = EditorGUILayout.TextField("Auto-Load Sprite Path", _pathProp.stringValue);
+            _pathProp!.stringValue = EditorGUILayout.TextField("Auto-Load Sprite Path", _pathProp.stringValue);
 
             if (GUILayout.Button("Auto-Load Character Sprites"))
                 loadAllSpriteAssets();
@@ -125,35 +122,35 @@ namespace UnityUtil.Editor {
         }
 
         private void loadAllSpriteAssets() {
-            _logger.Log($"Loading character Sprites using path template '{_pathProp.stringValue}'...", context: this);
+            _logger!.Log($"Loading character Sprites using path template '{_pathProp!.stringValue}'...", context: this);
             loadSpriteAssets(' ', '~');
         }
         private void loadNumberSpriteAssets() {
-            _logger.Log($"Loading number Sprites using path template '{_pathProp.stringValue}'...", context: this);
+            _logger!.Log($"Loading number Sprites using path template '{_pathProp!.stringValue}'...", context: this);
             loadSpriteAssets('0', '9');
         }
         private void loadUppercaseSpriteAssets() {
-            _logger.Log($"Loading uppercase letter Sprites using path template '{_pathProp.stringValue}'...", context: this);
+            _logger!.Log($"Loading uppercase letter Sprites using path template '{_pathProp!.stringValue}'...", context: this);
             loadSpriteAssets('A', 'Z');
         }
         private void loadLowercaseSpriteAssets() {
-            _logger.Log($"Loading lowercase letter Sprites using path template '{_pathProp.stringValue}'...", context: this);
+            _logger!.Log($"Loading lowercase letter Sprites using path template '{_pathProp!.stringValue}'...", context: this);
             loadSpriteAssets('a', 'z');
         }
         private void loadSpriteAssets(char firstChar, char lastChar) {
             int numLoaded = 0;
 
-            if (string.IsNullOrEmpty(_pathProp.stringValue))
+            if (string.IsNullOrEmpty(_pathProp!.stringValue))
                 throw new InvalidOperationException($"Cannot auto-load sprites if {nameof(AsciiSprites.AutoLoadSpritePath)} is null or empty");
-            if (_pathProp.stringValue.Contains("\\"))
+            if (_pathProp.stringValue.Contains('\\', StringComparison.Ordinal))
                 throw new InvalidOperationException($"{nameof(AsciiSprites.AutoLoadSpritePath)} must not contain backslashes ('\\'), even on Windows; use forward slash ('/') instead");
 
             // Attempt to load requested character Sprites
             for (char ch = firstChar; ch <= lastChar; ++ch) {
                 string assetFileName = GetAssetName(ch, _pathProp.stringValue);
-                Sprite sprite = AssetDatabase.LoadAssetAtPath<Sprite>(assetFileName);
+                Sprite? sprite = AssetDatabase.LoadAssetAtPath<Sprite>(assetFileName);
                 if (sprite == null)
-                    _logger.LogWarning($"Could not locate Sprite for character '{ch}' (expected at '{assetFileName}').", context: this);
+                    _logger!.LogWarning($"Could not locate Sprite for character '{ch}' (expected at '{assetFileName}').", context: this);
                 else {
                     _charProps[ch].objectReferenceValue = sprite;
                     ++numLoaded;
@@ -167,7 +164,7 @@ namespace UnityUtil.Editor {
                 numLoaded == 0 ? $"Character Sprites were not loaded. See warnings above." :
                 numLoaded < numAttempted ? $"Loaded {numLoaded} / {numAttempted} character Sprites. See warnings above." :
                 $"Successfully loaded all {numAttempted} character Sprites!";
-            _logger.Log(msg, context: this);
+            _logger!.Log(msg, context: this);
         }
         internal static string GetAssetName(char character, string templateFileName) {
             string fileName = $"Assets/{templateFileName}";

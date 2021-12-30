@@ -10,8 +10,8 @@ namespace UnityUtil.Editor {
 
     public static class EditModeTestHelpers {
 
-        private static MethodInfo s_clearConsoleMethod;
-        private static uint s_numLogs = 0u;
+        private static MethodInfo? s_clearConsoleMethod;
+        private static uint s_numLogs;
 
         public static void ResetScene() {
             EditorSceneManager.NewScene(NewSceneSetup.EmptyScene);
@@ -33,8 +33,8 @@ namespace UnityUtil.Editor {
         public static void ClearEditorConsole() {
             // See here: https://answers.unity.com/questions/578393/clear-console-through-code-in-development-build.html
 
-            if (s_clearConsoleMethod == null) {
-                Assembly assembly = Assembly.GetAssembly(typeof(SceneView));
+            if (s_clearConsoleMethod is null) {
+                var assembly = Assembly.GetAssembly(typeof(SceneView));
                 Type logEntries = assembly.GetType("UnityEditor.LogEntries");
                 s_clearConsoleMethod = logEntries.GetMethod("Clear");
             }
