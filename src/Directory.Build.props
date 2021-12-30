@@ -28,17 +28,25 @@
     </Otherwise>
   </Choose>
 
+  <PropertyGroup>
+    <IsTestProject Condition="$(MSBuildProjectName.Contains('.Test'))">true</IsTestProject>
+  </PropertyGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Condition="'$(IsTestProject)'!='true'" Include="UnityUtil.Test.EditMode" />
+    <InternalsVisibleTo Condition="'$(IsTestProject)'!='true'" Include="UnityUtil.Test.PlayMode" />
+    <InternalsVisibleTo Condition="'$(IsTestProject)'!='true'" Include="DynamicProxyGenAssembly2" />
+  </ItemGroup>
+
   <ItemGroup Label="CLS compliance">
-    <!-- Test assemblies will never be referenced by 3rd parties, so they don't need CLS-compliance -->
     <!--
-    For our other game assemblies, we'll just mark them as entirely not CLS-compliant also. After all,
-    the Unity assemblies are not CLS-compliant, so any type that inherits from one of their types (e.g., MonoBehaviour)
-    or uses one of their types in a public API is also not CLS-compliant. We don't wanna play whack-a-mole to mark every new type/member
-    with [CLSCompliant(false)] as necessary...
+      Disable CLS compliance by default (other importing projects can re-enable it. Justification:
+      1. Test assemblies will never be referenced by 3rd parties, so they don't need CLS-compliance.
+      2. The Unity assemblies are not CLS-compliant, so any type that inherits from one of their types (e.g., MonoBehaviour)
+         or uses one of their types in a public API is also not CLS-compliant. We don't wanna play whack-a-mole to mark every new type/member
+         with [CLSCompliant(false)] as necessary, so these libray game assemblies will not be marked CLS-compliant either.
     -->
     <AssemblyAttribute Include="System.CLSCompliantAttribute">
-      <_Parameter1 Condition="!$(MSBuildProjectName.Contains('Test'))">false</_Parameter1>
-      <_Parameter1 Condition="$(MSBuildProjectName.Contains('Test'))">false</_Parameter1>
+      <_Parameter1>false</_Parameter1>
     </AssemblyAttribute>
   </ItemGroup>
 
@@ -54,5 +62,31 @@
     <AnalysisMode>All</AnalysisMode>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
   </PropertyGroup>
+
+  <ItemGroup Label="Global suppressions">
+    <!-- I think this is justified for occasional squashing and logging... -->
+    <AssemblyAttribute Include="System.Diagnostics.CodeAnalysis.SuppressMessage">
+      <_Parameter1>Design</_Parameter1>
+      <_Parameter2>CA1031:Do not catch general exception types</_Parameter2>
+    </AssemblyAttribute>
+
+    <!-- Unity components often need public fields, and I don't want to play whack-a-mole on every one of them -->
+    <AssemblyAttribute Include="System.Diagnostics.CodeAnalysis.SuppressMessage">
+      <_Parameter1>Design</_Parameter1>
+      <_Parameter2>CA1051:Do not declare visible instance fields</_Parameter2>
+    </AssemblyAttribute>
+
+    <!-- I guess this analyzer doesn't know about nullable reference types yet?? -->
+    <AssemblyAttribute Include="System.Diagnostics.CodeAnalysis.SuppressMessage">
+      <_Parameter1>Design</_Parameter1>
+      <_Parameter2>CA1062:Validate arguments of public methods</_Parameter2>
+    </AssemblyAttribute>
+    
+    <!-- Test method names can definitely have underscores... -->
+    <AssemblyAttribute Condition="'$(IsTestProject)'=='true'" Include="System.Diagnostics.CodeAnalysis.SuppressMessage">
+      <_Parameter1>Naming</_Parameter1>
+      <_Parameter2>CA1707:Identifiers should not contain underscores</_Parameter2>
+    </AssemblyAttribute>
+  </ItemGroup>
   
 </Project>

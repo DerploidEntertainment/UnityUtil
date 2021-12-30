@@ -10,11 +10,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <InternalsVisibleTo Include="UnityUtil.Test.EditMode" />
-    <InternalsVisibleTo Include="UnityUtil.Test.PlayMode" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Reference Include="$(UnityInstallRoot)\$(UnityVersion)\$(UnityModulesPath)\UnityEngine.AndroidJNIModule.dll" Private="false" />
     <Reference Include="$(UnityInstallRoot)\$(UnityVersion)\$(UnityModulesPath)\UnityEngine.AnimationModule.dll" Private="false" />
     <Reference Include="$(UnityInstallRoot)\$(UnityVersion)\$(UnityModulesPath)\UnityEngine.AudioModule.dll" Private="false" />
