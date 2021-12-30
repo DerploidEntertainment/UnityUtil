@@ -61,24 +61,33 @@ namespace UnityEngine.Legal
             string acceptedTag = _localCache!.GetString(doc.CacheKey);
             bool firstTime = string.IsNullOrEmpty(acceptedTag);
 
-            // Get the latest tag from the web
-            UnityWebRequest req = downloadHandler is null
-                ? new UnityWebRequest(doc.LatestVersionUri!.Uri, UnityWebRequest.kHttpVerbHEAD)
-                : new UnityWebRequest(doc.LatestVersionUri!.Uri, UnityWebRequest.kHttpVerbHEAD, downloadHandler, uploadHandler);
-            using (req) {
+            UnityWebRequest? req = null;
+            try {
+                // Get the latest tag from the web
+#pragma warning disable CA2000 // Dispose objects before losing scope
+                req = downloadHandler is null
+                    ? new UnityWebRequest(doc.LatestVersionUri!.Uri, UnityWebRequest.kHttpVerbHEAD)
+                    : new UnityWebRequest(doc.LatestVersionUri!.Uri, UnityWebRequest.kHttpVerbHEAD, downloadHandler, uploadHandler);
+#pragma warning restore CA2000 // Dispose objects before losing scope
                 UnityWebRequestAsyncOperation reqOp = req.SendWebRequest();
-                reqOp.completed += handleWebResponse;
+                reqOp.completed += op => onRequestCompleted(req);   // Request must be explicitly disposed in here
+            }
+            catch {
+                _logger!.LogWarning($"Unable to fetch latest version of legal document with URI '{doc.LatestVersionUri!.Uri}'. Error received: {req?.error ?? ""}", context: this);
+                req?.Dispose();
             }
 
 
-            void handleWebResponse(AsyncOperation op)
+            void onRequestCompleted(UnityWebRequest request)
             {
                 // Parse the tag from the response
                 string? webTag = null;
-                if (req.result != UnityWebRequest.Result.Success)
-                    _logger!.LogWarning($"Unable to fetch latest version of legal document with URI '{doc.LatestVersionUri.Uri}'. Error received: {req.error}", context: this);
+                if (request.result != UnityWebRequest.Result.Success)
+                    _logger!.LogWarning($"Unable to fetch latest version of legal document with URI '{doc.LatestVersionUri.Uri}'. Error received: {request.error}", context: this);
                 else
-                    webTag = req.GetResponseHeader(doc.TagHeader);
+                    webTag = request.GetResponseHeader(doc.TagHeader);
+
+                request.Dispose();
 
                 // If unable to parse tag due to network or server errors, then
                 // Use a random GUID as the tag (shouldn't collide with an existing accepted tag), unless user has already accepted this document once before
