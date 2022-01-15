@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using U = UnityEngine;
 
-namespace UnityEngine {
+namespace UnityEngine
+{
 
-    public static class MoreMath {
+    public static class MoreMath
+    {
 
         public const float Sqrt2 = 1.41421f;
         public const float TwoPi = 2 * Mathf.PI;
@@ -23,13 +25,14 @@ namespace UnityEngine {
         /// |-------|----------------------|---|--------|
         /// |------------------^------------------------|
         /// </code>
-        /// The carrot represents a random value, R, between 0 and 1 (inclusive).
+        /// The caret represents a random value, R, between 0 and 1 (inclusive).
         /// The probability of choosing index i (0-based), according to the specified weights,
         /// equals the probability of R falling within the (i+1)th range (where each range includes its left bound).
         /// E.g., the probability of choosing index 1 equals the probability of R falling within the 2nd range.
         /// Therefore, the index at which the cumulative probability of <paramref name="indexWeights"/> is greater than R is our "chosen" index.
         /// </remarks>
-        public static int RandomWeightedIndex(IReadOnlyList<float> indexWeights) {
+        public static int RandomWeightedIndex(IReadOnlyList<float> indexWeights)
+        {
             if (indexWeights.Sum() != 1f)
                 throw new InvalidOperationException($"The sum of all {nameof(indexWeights)} must equal 1!");
 
@@ -41,7 +44,19 @@ namespace UnityEngine {
 
             return w;
         }
-        public static int[] RandomUniqueIndices(int count, int sourceCount) {
+
+        /// <summary>
+        /// Returns a set of <paramref name="count"/> unique random indices into a collection with the provided <paramref name="sourceCount"/>.
+        /// Order of the returned indices is unspecified. Note that this method allocates a block of memory that
+        /// scales linearly (O(n)) with <paramref name="sourceCount"/>.
+        /// </summary>
+        /// <param name="count">The number of unique random indices to return.</param>
+        /// <param name="sourceCount">The number of elements in the source collection into which we are returning random indices.</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="count"/> or <paramref name="sourceCount"/> is less than zero.</exception>
+        /// <exception cref="InvalidOperationException"><paramref name="count"/> is greater than <paramref name="sourceCount"/>.</exception>
+        public static int[] RandomUniqueIndices(int count, int sourceCount)
+        {
             if (count < 0)
                 throw new ArgumentOutOfRangeException(nameof(count), count, $" must be greater than or equal to zero.");
             if (sourceCount < 0)
@@ -90,7 +105,8 @@ namespace UnityEngine {
                 ? throw new ArgumentOutOfRangeException(nameof(halfAngle), halfAngle, $"Cannot generate a random unit vector within a cone of half-angle {halfAngle}°")
             : randomConeVector(axis, halfAngle, onlyBoundary);
 
-        private static Vector3 randomConeVector(Vector3 axis, float halfAngle, bool onlyBoundary) {
+        private static Vector3 randomConeVector(Vector3 axis, float halfAngle, bool onlyBoundary)
+        {
             // Logic taken from @joriki's answer on the following StackExchange post: https://math.stackexchange.com/questions/56784/generate-a-random-direction-within-a-cone
 
             // Get random direction in cone centered around Vector3.forward
