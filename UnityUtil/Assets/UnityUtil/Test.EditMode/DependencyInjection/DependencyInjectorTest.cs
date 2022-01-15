@@ -1,4 +1,4 @@
-﻿using Moq;
+using Moq;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -58,7 +58,8 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
         #region Initialization tests
 
         [Test]
-        public void Cannot_Initialize_MultipleTimes() {
+        public void Cannot_Initialize_MultipleTimes()
+        {
             var dependencyInjector = new DependencyInjector(Array.Empty<Type>());
             dependencyInjector.Initialize(new TestLoggerProvider());
 
@@ -199,7 +200,7 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
         #region Service resolution tests
 
         [Test]
-        public void Can_Resolve_ByType()
+        public void Resolves_ByType()
         {
             EditModeTestHelpers.ResetScene();
 
@@ -212,7 +213,7 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
         }
 
         [Test]
-        public void Can_Resolve_DerivedType()
+        public void Resolves_DerivedType()
         {
             EditModeTestHelpers.ResetScene();
 
@@ -227,7 +228,7 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
         }
 
         [Test]
-        public void Can_Resolve_ByTypeAndTag()
+        public void Resolves_ByTypeAndTag()
         {
             EditModeTestHelpers.ResetScene();
 
@@ -254,7 +255,7 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
         }
 
         [Test, Ignore("Haven't figured out a way to open a new Scene while in the unsaved scene created by the Test Runner")]
-        public void Can_Resolve_ServiceInScene_ClientInDifferentScene()
+        public void Resolves_ServiceInScene_ClientInDifferentScene()
         {
             EditModeTestHelpers.ResetScene();
 
@@ -318,7 +319,7 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
         }
 
         [Test]
-        public void Can_CacheResolve_RootType()
+        public void Resolve_CanCache_RootType()
         {
             EditModeTestHelpers.ResetScene();
 
@@ -345,7 +346,7 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
         }
 
         [Test]
-        public void Can_CacheResolve_BaseType()
+        public void Resolve_CanCache_BaseType()
         {
             EditModeTestHelpers.ResetScene();
 
@@ -361,7 +362,7 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
             // Initial, uncached resolution
             var uncacheClient = new TestClient();
             dependencyInjector.ResolveDependenciesOf(uncacheClient);
-            mockTypeMetadataProvider.Verify(x => 
+            mockTypeMetadataProvider.Verify(x =>
                 x.GetMethod(typeof(TestClient), DependencyInjector.InjectMethodName, It.IsAny<BindingFlags>()),
             Times.Once);
             mockTypeMetadataProvider.Verify(x =>
