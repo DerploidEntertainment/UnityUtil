@@ -43,11 +43,25 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
         void Inject(Component componentService);
     }
 
-    internal class RepeatedDependencyClient
+    internal class SameTypeNoTagsClient
     {
         [SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "Parameters are just for testing")]
         [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "This type is just for testing so I don't wanna think about this...")]
         public void Inject(TestComponent componentService1, TestComponent componentService2) { }
+    }
+
+    internal class SameTypeDifferentTagsClient
+    {
+        [SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "Parameters are just for testing")]
+        [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "This type is just for testing so I don't wanna think about this...")]
+        public void Inject([InjectTag("test")] TestComponent componentService1, [InjectTag("not-test")] TestComponent componentService2) { }
+    }
+
+    internal class SameTypeSameTagsClient
+    {
+        [SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "Parameters are just for testing")]
+        [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "This type is just for testing so I don't wanna think about this...")]
+        public void Inject([InjectTag("test")] TestComponent componentService1, [InjectTag("test")] TestComponent componentService2) { }
     }
 
     #endregion
@@ -381,7 +395,7 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
         }
 
         [Test]
-        public void Resolve_Warns_RepeatedDependencies()
+        public void Resolve_Warns_SameTypeNoTags()
         {
             EditModeTestHelpers.ResetScene();
 
@@ -391,7 +405,40 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
             DependencyInjector dependencyInjector = getDependencyInjector(loggerProvider: loggerProvider.Object);
             dependencyInjector.RegisterService(getComponentService<TestComponent>());
 
-            dependencyInjector.ResolveDependenciesOf(new RepeatedDependencyClient());
+            dependencyInjector.ResolveDependenciesOf(new SameTypeNoTagsClient());
+
+            Assert.That(testLogger.NumWarnings, Is.EqualTo(1));
+        }
+
+        [Test]
+        public void Resolve_DoesNotWarn_SameTypeDifferentTags()
+        {
+            EditModeTestHelpers.ResetScene();
+
+            var loggerProvider = new Mock<ILoggerProvider>();
+            var testLogger = new TestLogger();
+            loggerProvider.Setup(x => x.GetLogger(It.IsAny<object>())).Returns(testLogger);
+            DependencyInjector dependencyInjector = getDependencyInjector(loggerProvider: loggerProvider.Object);
+            dependencyInjector.RegisterService(getComponentService<TestComponent>(tag: "test"));
+            dependencyInjector.RegisterService(getComponentService<TestComponent>(tag: "not-test"));
+
+            dependencyInjector.ResolveDependenciesOf(new SameTypeDifferentTagsClient());
+
+            Assert.That(testLogger.NumWarnings, Is.EqualTo(0));
+        }
+
+        [Test]
+        public void Resolve_Warns_SameTypeSameTags()
+        {
+            EditModeTestHelpers.ResetScene();
+
+            var loggerProvider = new Mock<ILoggerProvider>();
+            var testLogger = new TestLogger();
+            loggerProvider.Setup(x => x.GetLogger(It.IsAny<object>())).Returns(testLogger);
+            DependencyInjector dependencyInjector = getDependencyInjector(loggerProvider: loggerProvider.Object);
+            dependencyInjector.RegisterService(getComponentService<TestComponent>(tag: "test"));
+
+            dependencyInjector.ResolveDependenciesOf(new SameTypeSameTagsClient());
 
             Assert.That(testLogger.NumWarnings, Is.EqualTo(1));
         }

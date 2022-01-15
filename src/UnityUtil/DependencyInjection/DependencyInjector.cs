@@ -50,7 +50,7 @@ namespace UnityEngine.DependencyInjection
         /// <summary>
         /// This collection is only a field (rather than a local var) so as to reduce allocations in <see cref="loadDependeciesOfInjectMethod(object, MethodInfo)"/>
         /// </summary>
-        private readonly HashSet<Type> _injectedTypes = new();
+        private readonly HashSet<(Type type, string? tag)> _injectedTypes = new();
 
         private bool _recording;
         private readonly HashSet<Type> _cachedResolutionTypes;
@@ -127,7 +127,7 @@ namespace UnityEngine.DependencyInjection
 
             // Register this service with the provided scene (if one was provided), so that it can be unloaded later if the scene is unloaded
             // Show an error if provided service's type/tag match those of an already registered service
-            #pragma warning disable IDE0008 // Use explicit type
+#pragma warning disable IDE0008 // Use explicit type
             int sceneHandle = scene.HasValue ? scene.Value.handle : DEFAULT_SCENE_HANDLE;
             bool sceneAdded = _services.TryGetValue(sceneHandle, out var sceneServices);
             if (!sceneAdded) {
@@ -140,7 +140,7 @@ namespace UnityEngine.DependencyInjection
                 typedServices = new Dictionary<string, Service>();
                 sceneServices.Add(serviceType, typedServices);
             }
-            #pragma warning restore IDE0008 // Use explicit type
+#pragma warning restore IDE0008 // Use explicit type
 
             bool tagAdded = typedServices.ContainsKey(service.Tag);
             string fromSceneMsg = scene.HasValue ? $" from scene '{scene.Value.name}'" : "";
@@ -230,12 +230,12 @@ namespace UnityEngine.DependencyInjection
                 // Get the inject method on this type (will throw if more than one method matches)
                 MethodInfo injectMethod = _typeMetadataProvider!.GetMethod(serviceType, InjectMethodName, InjectMethodBindingFlags);
                 if (injectMethod is null)
-                    goto Loop;
+                    goto ContinueHierarchy;
 
                 string clientName = (client as MonoBehaviour)?.GetHierarchyNameWithType() ?? (client as Object)?.name ?? $"{injectMethod.DeclaringType.FullName} instance";
                 object[] dependencies = getDependeciesOfInjectMethod(clientName, injectMethod);
                 if (dependencies.Length == 0)
-                    goto Loop;
+                    goto ContinueHierarchy;
 
                 // Check if the inject method should be compiled. If so, compile/call it; otherwise, invoke it via reflection
                 bool compile = true;
@@ -258,7 +258,7 @@ namespace UnityEngine.DependencyInjection
                         _cachedResolutionCounts[serviceType] = 1;
                 }
 
-                Loop:
+                ContinueHierarchy:
                 serviceType = serviceType.BaseType;
             } while (serviceType != objectType && serviceType is not null);
 
@@ -282,11 +282,12 @@ namespace UnityEngine.DependencyInjection
         }
 
         /// <summary>
-        /// Load the dependencies of <paramref name="injectMethod"/>
+        /// Resolve the dependencies of <paramref name="injectMethod"/>.
+        /// I.e., get the service that satisfies the <see cref="Type"/> and (optional) tag of each of <paramref name="injectMethod"/>'s parameters.
         /// </summary>
-        /// <param name="client">The client object instance on which <paramref name="injectMethod"/> can be called</param>
+        /// <param name="clientName">Name of the client object instance on which <paramref name="injectMethod"/> can be called</param>
         /// <param name="injectMethod">The method for which to resolve dependencies</param>
-        /// <returns>The number of dependencies (parameters) required by <paramref name="injectMethod"/></returns>
+        /// <returns>The dependencies (parameters) required by <paramref name="injectMethod"/></returns>
         private object[] getDependeciesOfInjectMethod(string clientName, MethodInfo injectMethod)
         {
             _injectedTypes.Clear();
@@ -295,19 +296,19 @@ namespace UnityEngine.DependencyInjection
             for (int p = 0; p < parameters.Length; ++p) {
                 Type paramType = parameters[p].ParameterType;
 
-                // Warn if a dependency with this Type has already been injected
-                bool firstInjection = _injectedTypes.Add(paramType);
-                if (!firstInjection)
-                    _logger.LogWarning($"{clientName} has multiple dependencies of Type '{paramType.FullName}'.");
-
-                // If this dependency can't be resolved, then skip it with an error message and clear the field
-                InjectTagAttribute? injAttr = _typeMetadataProvider.GetCustomAttribute<InjectTagAttribute>(parameters[p]);
+                // Get the dependency's requested tag, if it exists
+                InjectTagAttribute? injAttr = _typeMetadataProvider!.GetCustomAttribute<InjectTagAttribute>(parameters[p]);
                 bool untagged = string.IsNullOrEmpty(injAttr?.Tag);
                 string tag = untagged ? DefaultTag : injAttr!.Tag;
-                TryGetService(paramType, tag, clientName, out Service service);
 
-                // Log that this dependency has been resolved
+                // Warn if a dependency with this Type and tag has already been injected
+                bool firstInjection = _injectedTypes.Add((paramType, tag));
+                if (!firstInjection)
+                    _logger.LogWarning($"{clientName} has multiple dependencies of Type '{paramType.FullName}' with tag '{tag}'.");
+
+                TryGetService(paramType, tag, clientName, out Service service);
                 dependencies[p] = service.Instance;
+
                 _logger.Log($"{clientName} had dependency of Type '{paramType.FullName}'{(untagged ? "" : $" with tag '{tag}'")} injected into parameter '{parameters[p].Name}'.");
             }
 
