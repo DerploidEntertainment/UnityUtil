@@ -18,19 +18,6 @@ namespace UnityEngine.DependencyInjection
         public IReadOnlyDictionary<Type, int> Uncached { get; }
     }
 
-    internal readonly struct Service
-    {
-        public Service(Type serviceType, string tag, object instance)
-        {
-            ServiceType = serviceType;
-            Tag = tag;
-            Instance = instance;
-        }
-        public readonly Type ServiceType;
-        public readonly string Tag;
-        public readonly object Instance;
-    }
-
     public class DependencyInjector
     {
         public const string DefaultTag = "Untagged";
