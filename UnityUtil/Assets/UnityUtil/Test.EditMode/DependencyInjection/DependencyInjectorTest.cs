@@ -64,6 +64,47 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
         public void Inject([InjectTag("test")] TestComponent componentService1, [InjectTag("test")] TestComponent componentService2) { }
     }
 
+    internal class NoConstructorClient
+    {
+    }
+
+    internal class EmptyConstructorClient
+    {
+        public EmptyConstructorClient() { }
+    }
+
+    internal class MultiConstructorClient
+    {
+        public int NumParamsInUsedConstructor { get; private set; }
+
+        [SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "Parameters are just for testing")]
+        public MultiConstructorClient(TestComponent componentService, object objectService, Animator animatorService) : this(componentService, objectService) => NumParamsInUsedConstructor = 3;
+
+        [SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "Parameters are just for testing")]
+        public MultiConstructorClient(TestComponent componentService, object objectService) : this(componentService) => NumParamsInUsedConstructor = 2;
+
+        [SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "Parameters are just for testing")]
+        public MultiConstructorClient(TestComponent componentService) => NumParamsInUsedConstructor = 1;
+    }
+
+    internal class ConstructorSameTypeNoTagsClient
+    {
+        [SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "Parameters are just for testing")]
+        public ConstructorSameTypeNoTagsClient(TestComponent componentService1, TestComponent componentService2) { }
+    }
+
+    internal class ConstructorSameTypeDifferentTagsClient
+    {
+        [SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "Parameters are just for testing")]
+        public ConstructorSameTypeDifferentTagsClient([InjectTag("test")] TestComponent componentService1, [InjectTag("not-test")] TestComponent componentService2) { }
+    }
+
+    internal class ConstructorSameTypeSameTagsClient
+    {
+        [SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "Parameters are just for testing")]
+        public ConstructorSameTypeSameTagsClient([InjectTag("test")] TestComponent componentService1, [InjectTag("test")] TestComponent componentService2) { }
+    }
+
     #endregion
 
     public class DependencyInjectorTest
@@ -443,12 +484,153 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
             Assert.That(testLogger.NumWarnings, Is.EqualTo(1));
         }
 
+        [Test]
+        public void Construct_TriesConstructors_WithMostParamsFirst()
+        {
+            EditModeTestHelpers.ResetScene();
+
+            DependencyInjector dependencyInjector = getDependencyInjector();
+            dependencyInjector.RegisterService(new GameObject().AddComponent<TestComponent>());
+            dependencyInjector.RegisterService(new object());
+            dependencyInjector.RegisterService(getComponentService<Animator>());
+
+            MultiConstructorClient instance = dependencyInjector.Construct<MultiConstructorClient>();
+
+            Assert.That(instance.NumParamsInUsedConstructor, Is.EqualTo(3));
+        }
+
+        [Test]
+        public void Construct_TriesConstructors_WithDecreasingNumParams()
+        {
+            EditModeTestHelpers.ResetScene();
+
+            DependencyInjector dependencyInjector = getDependencyInjector();
+            dependencyInjector.RegisterService(new GameObject().AddComponent<TestComponent>());
+            dependencyInjector.RegisterService(new object());
+
+            MultiConstructorClient instance = dependencyInjector.Construct<MultiConstructorClient>();
+
+            // Not enough services were registered for 3-param constructor, so falls back to constructor with next most params (2-param constructor not 1-param)
+            Assert.That(instance.NumParamsInUsedConstructor, Is.EqualTo(2));
+        }
+
+        [Test]
+        public void Construct_YieldsSameResult_GenericOrNonGeneric()
+        {
+            EditModeTestHelpers.ResetScene();
+
+            DependencyInjector dependencyInjector = getDependencyInjector();
+            dependencyInjector.RegisterService(new GameObject().AddComponent<TestComponent>());
+
+            MultiConstructorClient genericInstance = dependencyInjector.Construct<MultiConstructorClient>();
+            MultiConstructorClient nonGenericInstance = (MultiConstructorClient)dependencyInjector.Construct(typeof(MultiConstructorClient));
+
+            Assert.That(genericInstance.NumParamsInUsedConstructor, Is.EqualTo(1));
+            Assert.That(nonGenericInstance.NumParamsInUsedConstructor, Is.EqualTo(1));
+            Assert.That(genericInstance, Is.Not.SameAs(nonGenericInstance));    // Separate instances of same type
+        }
+
+        [Test]
+        public void Construct_WithoutConstructor_DoesNotThrow()
+        {
+            EditModeTestHelpers.ResetScene();
+
+            DependencyInjector dependencyInjector = getDependencyInjector();
+            Assert.DoesNotThrow(() => dependencyInjector.Construct<NoConstructorClient>());
+        }
+
+        [Test]
+        public void Construct_CallsEmptyConstructor_IfOnlyOption()
+        {
+            EditModeTestHelpers.ResetScene();
+
+            Mock<ITypeMetadataProvider> typeMetadataProvider = getTypeMetadataProvider();
+            typeMetadataProvider
+                .Setup(x => x.GetMethodParameters(It.IsAny<ConstructorInfo>()))
+                .Returns((ConstructorInfo constructor) => constructor.GetParameters());
+            DependencyInjector dependencyInjector = getDependencyInjector(typeMetadataProvider: typeMetadataProvider.Object);
+
+            // Client constructor takes no parameters, but is still invoked to instantiate an object
+            dependencyInjector.Construct<EmptyConstructorClient>();
+            typeMetadataProvider.Verify(x => x.GetMethodParameters(It.IsAny<ConstructorInfo>()), Times.Once);
+        }
+
+        [Test]
+        public void Construct_CanCache()
+        {
+            EditModeTestHelpers.ResetScene();
+
+            Mock<ITypeMetadataProvider> mockTypeMetadataProvider = getTypeMetadataProvider();
+            DependencyInjector dependencyInjector = getDependencyInjector(
+                cachedResolutionTypes: new[] { typeof(MultiConstructorClient) },
+                typeMetadataProvider: mockTypeMetadataProvider.Object
+            );
+            dependencyInjector.RegisterService(getComponentService<TestComponent>());
+
+            // Initial, uncached resolution
+            dependencyInjector.Construct<MultiConstructorClient>();
+            mockTypeMetadataProvider.Verify(x => x.GetConstructors(typeof(MultiConstructorClient)), Times.Once);
+
+            // Cached resolution
+            dependencyInjector.Construct<MultiConstructorClient>();
+            mockTypeMetadataProvider.Verify(x => x.GetConstructors(typeof(MultiConstructorClient)), Times.Once);
+        }
+
+        [Test]
+        public void Construct_Warns_SameTypeNoTags()
+        {
+            EditModeTestHelpers.ResetScene();
+
+            var loggerProvider = new Mock<ILoggerProvider>();
+            var testLogger = new TestLogger();
+            loggerProvider.Setup(x => x.GetLogger(It.IsAny<object>())).Returns(testLogger);
+            DependencyInjector dependencyInjector = getDependencyInjector(loggerProvider: loggerProvider.Object);
+            dependencyInjector.RegisterService(getComponentService<TestComponent>());
+
+            dependencyInjector.Construct<ConstructorSameTypeNoTagsClient>();
+
+            Assert.That(testLogger.NumWarnings, Is.EqualTo(1));
+        }
+
+        [Test]
+        public void Construct_DoesNotWarn_SameTypeDifferentTags()
+        {
+            EditModeTestHelpers.ResetScene();
+
+            var loggerProvider = new Mock<ILoggerProvider>();
+            var testLogger = new TestLogger();
+            loggerProvider.Setup(x => x.GetLogger(It.IsAny<object>())).Returns(testLogger);
+            DependencyInjector dependencyInjector = getDependencyInjector(loggerProvider: loggerProvider.Object);
+            dependencyInjector.RegisterService(getComponentService<TestComponent>(tag: "test"));
+            dependencyInjector.RegisterService(getComponentService<TestComponent>(tag: "not-test"));
+
+            dependencyInjector.Construct<ConstructorSameTypeDifferentTagsClient>();
+
+            Assert.That(testLogger.NumWarnings, Is.EqualTo(0));
+        }
+
+        [Test]
+        public void Construct_Warns_SameTypeSameTags()
+        {
+            EditModeTestHelpers.ResetScene();
+
+            var loggerProvider = new Mock<ILoggerProvider>();
+            var testLogger = new TestLogger();
+            loggerProvider.Setup(x => x.GetLogger(It.IsAny<object>())).Returns(testLogger);
+            DependencyInjector dependencyInjector = getDependencyInjector(loggerProvider: loggerProvider.Object);
+            dependencyInjector.RegisterService(getComponentService<TestComponent>(tag: "test"));
+
+            dependencyInjector.Construct<ConstructorSameTypeSameTagsClient>();
+
+            Assert.That(testLogger.NumWarnings, Is.EqualTo(1));
+        }
+
         #endregion
 
         #region Resolution recording tests
 
         [Test]
-        public void Can_Record_Resolutions()
+        public void CanRecord_During_ResolveDependenciesOf()
         {
             EditModeTestHelpers.ResetScene();
 
@@ -491,6 +673,44 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
         }
 
         [Test]
+        public void CanRecord_During_Construct()
+        {
+            EditModeTestHelpers.ResetScene();
+
+            Type clientType = typeof(MultiConstructorClient);
+            Mock<ITypeMetadataProvider> mockTypeMetadataProvider = getTypeMetadataProvider();
+            DependencyResolutionCounts counts;
+            DependencyInjector dependencyInjector = getDependencyInjector(
+                cachedResolutionTypes: new[] { typeof(MultiConstructorClient) },
+                typeMetadataProvider: mockTypeMetadataProvider.Object
+            );
+            dependencyInjector.RegisterService(getComponentService<TestComponent>());
+            dependencyInjector.RegisterService(new object());
+            dependencyInjector.RegisterService(getComponentService<Animator>());
+            dependencyInjector.RecordingResolutions = true;
+
+            // Initial, uncached resolution
+            dependencyInjector.Construct<MultiConstructorClient>();
+            counts = dependencyInjector.ServiceResolutionCounts;
+            Assert.That(counts.Uncached.Count, Is.EqualTo(0));
+            Assert.That(counts.Cached.Count, Is.EqualTo(1));
+            Assert.That(counts.Cached[clientType], Is.EqualTo(1));
+
+            // Second, type resolution cached
+            dependencyInjector.Construct<MultiConstructorClient>();
+            counts = dependencyInjector.ServiceResolutionCounts;
+            Assert.That(counts.Uncached.Count, Is.EqualTo(0));
+            Assert.That(counts.Cached.Count, Is.EqualTo(1));
+            Assert.That(counts.Cached[clientType], Is.EqualTo(2));
+
+            // Clears cached resolutions
+            dependencyInjector.RecordingResolutions = false;
+            counts = dependencyInjector.ServiceResolutionCounts;
+            Assert.That(counts.Uncached.Count, Is.Zero);
+            Assert.That(counts.Cached.Count, Is.Zero);
+        }
+
+        [Test]
         public void Record_Stop_ClearsRecordedResolutions()
         {
             EditModeTestHelpers.ResetScene();
@@ -512,7 +732,7 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
         }
 
         [Test]
-        public void Resolutions_AreNotStored_WhileNotRecording()
+        public void ResolutionsNotStored_WhenNotRecording_During_ResolveDependenciesOf()
         {
             EditModeTestHelpers.ResetScene();
 
@@ -523,6 +743,26 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
             dependencyInjector.ResolveDependenciesOf(new TestClientBase());
             dependencyInjector.ResolveDependenciesOf(new TestClientBase());
             dependencyInjector.ResolveDependenciesOf(new TestClientBase());
+            DependencyResolutionCounts counts = dependencyInjector.ServiceResolutionCounts;
+
+            Assert.That(counts.Cached, Is.Empty);
+            Assert.That(counts.Uncached, Is.Empty);
+        }
+
+        [Test]
+        public void ResolutionsNotStored_WhenNotRecording_During_Construct()
+        {
+            EditModeTestHelpers.ResetScene();
+
+            DependencyInjector dependencyInjector = getDependencyInjector();
+            dependencyInjector.RegisterService(getComponentService<TestComponent>());
+            dependencyInjector.RegisterService(new object());
+            dependencyInjector.RegisterService(getComponentService<Animator>());
+
+            dependencyInjector.RecordingResolutions = false;
+            dependencyInjector.Construct<MultiConstructorClient>();
+            dependencyInjector.Construct<MultiConstructorClient>();
+            dependencyInjector.Construct<MultiConstructorClient>();
             DependencyResolutionCounts counts = dependencyInjector.ServiceResolutionCounts;
 
             Assert.That(counts.Cached, Is.Empty);
@@ -565,7 +805,8 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
             Type[]? cachedResolutionTypes = null,
             ILoggerProvider? loggerProvider = null,
             ITypeMetadataProvider? typeMetadataProvider = null
-        ) {
+        )
+        {
             var dependencyInjector = new DependencyInjector(cachedResolutionTypes ?? Array.Empty<Type>());
             dependencyInjector.Initialize(loggerProvider ?? new TestLoggerProvider(), typeMetadataProvider ?? new TypeMetadataProvider());
 
@@ -576,11 +817,15 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
         {
             var mock = new Mock<ITypeMetadataProvider>();
             var typeMetadataProvider = new TypeMetadataProvider();
+
             mock.Setup(x => x.GetMethod(It.IsAny<Type>(), It.IsAny<string>(), It.IsAny<BindingFlags>()))
                 .Returns<Type, string, BindingFlags>((type, name, bindingFlags) => typeMetadataProvider.GetMethod(type, name, bindingFlags));
 
-            mock.Setup(x => x.GetMethodParameters(It.IsAny<MethodInfo>()))
-                .Returns<MethodInfo>(method => typeMetadataProvider.GetMethodParameters(method));
+            mock.Setup(x => x.GetConstructors(It.IsAny<Type>()))
+                .Returns<Type>(type => typeMetadataProvider.GetConstructors(type));
+
+            mock.Setup(x => x.GetMethodParameters(It.IsAny<MethodBase>()))
+                .Returns<MethodBase>(method => typeMetadataProvider.GetMethodParameters(method));
 
             mock.Setup(x => x.GetCustomAttribute<InjectTagAttribute>(It.IsAny<ParameterInfo>()))
                 .Returns<ParameterInfo>(param => typeMetadataProvider.GetCustomAttribute<InjectTagAttribute>(param));
@@ -588,6 +833,10 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
             mock.Setup(x => x.CompileMethodCall(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MethodInfo>(), It.IsAny<object[]>()))
                 .Returns<string, string, MethodInfo, object[]>((methodName, paramName, injectMethod, args) =>
                     typeMetadataProvider.CompileMethodCall(methodName, paramName, injectMethod, args));
+
+            mock.Setup(x => x.CompileConstructorCall(It.IsAny<ConstructorInfo>(), It.IsAny<object[]>()))
+                .Returns<ConstructorInfo, object[]>((constructor, args) =>
+                    typeMetadataProvider.CompileConstructorCall(constructor, args));
 
             return mock;
         }
