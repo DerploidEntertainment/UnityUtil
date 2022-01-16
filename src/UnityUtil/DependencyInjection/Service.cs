@@ -4,15 +4,25 @@ namespace UnityEngine.DependencyInjection
 {
     internal readonly struct Service
     {
+        private readonly Lazy<object> _instance;
+
         public Service(Type serviceType, string tag, object instance)
         {
             ServiceType = serviceType;
             Tag = tag;
-            Instance = instance;
+            _instance = new Lazy<object>(instance);
         }
+
+        public Service(Type serviceType, string tag, Func<object> instanceFactory)
+        {
+            ServiceType = serviceType;
+            Tag = tag;
+            _instance = new Lazy<object>(instanceFactory);
+        }
+
         public readonly Type ServiceType;
         public readonly string Tag;
-        public readonly object Instance;
+        public object Instance => _instance.Value;
     }
 
 }

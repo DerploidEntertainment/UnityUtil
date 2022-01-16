@@ -93,6 +93,32 @@ namespace UnityEngine.DependencyInjection
         }
         public void RegisterService<TInstance>(TInstance instance, Scene? scene = null) where TInstance : class => RegisterService(typeof(TInstance), instance, scene);
         public void RegisterService<TService, TInstance>(TInstance instance, Scene? scene = null) where TInstance : class, TService => RegisterService(typeof(TService), instance, scene);
+        public void RegisterService(Type serviceType, object instance, Scene? scene = null)
+        {
+            var service = new Service(serviceType, (instance as Component)?.tag ?? DefaultTag, instance);
+            registerService(service, scene);
+        }
+
+        public void RegisterService(string serviceTypeName, Func<object> instanceFactory, string tag = DefaultTag, Scene? scene = null)
+        {
+            if (string.IsNullOrEmpty(serviceTypeName))
+                serviceTypeName = instanceFactory.GetType().AssemblyQualifiedName;
+
+            var serviceType = Type.GetType(serviceTypeName);
+            if (serviceType is null)
+                throw new InvalidOperationException($"Could not load Type '{serviceTypeName}'. Make sure that you provided its assembly-qualified name and that its assembly is loaded.");
+            if (!serviceType.IsAssignableFrom(instanceFactory.GetType()))
+                throw new InvalidOperationException($"The service instance registered for Type '{serviceTypeName}' is not actually derived from that Type!");
+
+            RegisterService(serviceType, instanceFactory, tag, scene);
+        }
+        public void RegisterService<TInstance>(Func<TInstance> instanceFactory, string tag = DefaultTag, Scene? scene = null) where TInstance : class => RegisterService(typeof(TInstance), instanceFactory, tag, scene);
+        public void RegisterService<TService, TInstance>(Func<TInstance> instanceFactory, string tag = DefaultTag, Scene? scene = null) where TInstance : class, TService => RegisterService(typeof(TService), instanceFactory, tag, scene);
+        public void RegisterService(Type serviceType, Func<object> instanceFactory, string tag = DefaultTag, Scene? scene = null)
+        {
+            var service = new Service(serviceType, tag, instanceFactory);
+            registerService(service, scene);
+        }
 
         /// <summary>
         /// Register <paramref name="service"/> present in <paramref name="scene"/>
@@ -100,18 +126,15 @@ namespace UnityEngine.DependencyInjection
         /// <exception cref="InvalidOperationException">
         /// A <see cref="Service"/> with the provided <see cref="Service.ServiceType"/> and <see cref="Service.Tag"/> has already been registered.
         /// </exception>
-        public void RegisterService(Type serviceType, object instance, Scene? scene = null)
+        private void registerService(Service service, Scene? scene = null)
         {
             throwIfUninitialized(nameof(RegisterService));
 
-            var service = new Service(serviceType, (instance as Component)?.tag ?? DefaultTag, instance);
-
             // Check if the provided service is for logging
-            if (serviceType == typeof(ILoggerProvider) && _logger == null)
-                _logger = ((ILoggerProvider)instance).GetLogger(this);
-            else if (serviceType == typeof(ILogger) && _logger == null)
-                _logger = (ILogger)instance;
-
+            if (service.ServiceType == typeof(ILoggerProvider) && _logger == null)
+                _logger = ((ILoggerProvider)service.Instance).GetLogger(this);
+            else if (service.ServiceType == typeof(ILogger) && _logger == null)
+                _logger = (ILogger)service.Instance;
 
             // Register this service with the provided scene (if one was provided), so that it can be unloaded later if the scene is unloaded
             // Show an error if provided service's type/tag match those of an already registered service
@@ -123,10 +146,10 @@ namespace UnityEngine.DependencyInjection
                 _services.Add(sceneHandle, sceneServices);
             }
 
-            bool typeAdded = sceneServices.TryGetValue(serviceType, out var typedServices);
+            bool typeAdded = sceneServices.TryGetValue(service.ServiceType, out var typedServices);
             if (!typeAdded) {
                 typedServices = new Dictionary<string, Service>();
-                sceneServices.Add(serviceType, typedServices);
+                sceneServices.Add(service.ServiceType, typedServices);
             }
 #pragma warning restore IDE0008 // Use explicit type
 

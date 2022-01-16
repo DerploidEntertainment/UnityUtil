@@ -162,18 +162,31 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
         #region Service registration tests
 
         [Test]
-        public void Can_Register_SameTypeDifferentTag()
+        public void Registers_Instance_SameTypeDifferentTag()
         {
             EditModeTestHelpers.ResetScene();
 
             DependencyInjector dependencyInjector = getDependencyInjector();
 
+            // Test fails if these lines throw or log an error
             dependencyInjector.RegisterService(getComponentService<TestComponent>(tag: "test"));
-            dependencyInjector.RegisterService(getComponentService<TestComponent>(tag: "not-test"));    // Test would fail if this threw or logged an error
+            dependencyInjector.RegisterService(getComponentService<TestComponent>(tag: "not-test"));
         }
 
         [Test]
-        public void Cannot_Register_SameTypeAndTag_SameScene()
+        public void Registers_Factory_SameTypeDifferentTag()
+        {
+            EditModeTestHelpers.ResetScene();
+
+            DependencyInjector dependencyInjector = getDependencyInjector();
+
+            // Test fails if these lines throw or log an error
+            dependencyInjector.RegisterService(() => getComponentService<TestComponent>(), "test");
+            dependencyInjector.RegisterService(() => getComponentService<TestComponent>(), "not-test");
+        }
+
+        [Test]
+        public void CannotRegister_Instance_SameTypeAndTag_SameScene()
         {
             EditModeTestHelpers.ResetScene();
 
@@ -190,8 +203,49 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
                 dependencyInjector.RegisterService(getComponentService<TestComponent>()));
         }
 
+        [Test]
+        public void CannotRegister_Factory_SameTypeAndTag_SameScene()
+        {
+            EditModeTestHelpers.ResetScene();
+
+            // ARRANGE
+            DependencyInjector dependencyInjector = getDependencyInjector();
+            dependencyInjector.RegisterService(getComponentService<TestComponent>("test"));
+            dependencyInjector.RegisterService(getComponentService<TestComponent>());
+
+            // ACT/ASSERT
+            Assert.Throws<InvalidOperationException>(() =>
+                dependencyInjector.RegisterService(() => getComponentService<TestComponent>(), "test"));
+
+            Assert.Throws<InvalidOperationException>(() =>
+                dependencyInjector.RegisterService(() => getComponentService<TestComponent>()));
+        }
+
         [Test, Ignore("Haven't figured out a way to open a new Scene while in the unsaved scene created by the Test Runner")]
-        public void Cannot_Register_SameTypeAndTag_OtherScene()
+        public void CannotRegister_Instance_SameTypeAndTag_OtherScene()
+        {
+            EditModeTestHelpers.ResetScene();
+
+            // ARRANGE
+            DependencyInjector dependencyInjector = getDependencyInjector();
+            dependencyInjector.RegisterService(getComponentService<TestComponent>("test"));
+            dependencyInjector.RegisterService(getComponentService<TestComponent>());
+
+            Scene otherScene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Additive);
+            SceneManager.SetActiveScene(otherScene);
+
+            // ACT/ASSERT
+            Assert.Throws<InvalidOperationException>(() =>
+                dependencyInjector.RegisterService(getComponentService<TestComponent>("test")));
+
+            Assert.Throws<InvalidOperationException>(() =>
+                dependencyInjector.RegisterService(getComponentService<TestComponent>()));
+
+            EditorSceneManager.CloseScene(otherScene, removeScene: true);
+        }
+
+        [Test, Ignore("Haven't figured out a way to open a new Scene while in the unsaved scene created by the Test Runner")]
+        public void CannotRegister_Factory_SameTypeAndTag_OtherScene()
         {
             EditModeTestHelpers.ResetScene();
 
@@ -214,7 +268,7 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
         }
 
         [Test]
-        public void Registers_Components_WithInspectorTag()
+        public void Registers_ComponentInstances_WithInspectorTag()
         {
             EditModeTestHelpers.ResetScene();
 
@@ -233,7 +287,7 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
         }
 
         [Test]
-        public void Registers_NonComponents_WithDefaultTag()
+        public void Registers_NonComponentInstances_WithDefaultTag()
         {
             EditModeTestHelpers.ResetScene();
 
@@ -255,7 +309,7 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
         #region Service resolution tests
 
         [Test]
-        public void Resolves_ByType()
+        public void Resolves_Instance_ByType()
         {
             EditModeTestHelpers.ResetScene();
 
@@ -264,11 +318,12 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
             dependencyInjector.RegisterService(serviceInstance);
 
             dependencyInjector.TryGetService(typeof(object), tag: DependencyInjector.DefaultTag, clientName: "Unit test", out Service service);
+
             Assert.That(service.Instance, Is.SameAs(serviceInstance));
         }
 
         [Test]
-        public void Resolves_DerivedType()
+        public void Resolves_Instance_DerivedType()
         {
             EditModeTestHelpers.ResetScene();
 
@@ -277,13 +332,14 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
             dependencyInjector.RegisterService<Exception>(serviceInstance);
 
             dependencyInjector.TryGetService(typeof(Exception), tag: DependencyInjector.DefaultTag, clientName: "Unit test", out Service service);
+
             Assert.That(service.Instance, Is.SameAs(serviceInstance));
             Assert.Throws<KeyNotFoundException>(() =>
                 dependencyInjector.TryGetService(typeof(ApplicationException), tag: DependencyInjector.DefaultTag, clientName: "Unit test", out _));
         }
 
         [Test]
-        public void Resolves_ByTypeAndTag()
+        public void Resolves_Instance_ByTypeAndTag()
         {
             EditModeTestHelpers.ResetScene();
 
@@ -293,8 +349,57 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
             dependencyInjector.RegisterService(serviceInstance);
 
             dependencyInjector.TryGetService(typeof(TestComponent), tag: "test", clientName: "Unit test", out Service service);
+
             Assert.That(service.Instance, Is.SameAs(serviceInstance));
         }
+
+        [Test]
+        public void Resolves_Factory_ByType()
+        {
+            EditModeTestHelpers.ResetScene();
+
+            DependencyInjector dependencyInjector = getDependencyInjector();
+            object serviceInstance = new();
+            dependencyInjector.RegisterService(() => serviceInstance);
+
+            dependencyInjector.TryGetService(typeof(object), tag: DependencyInjector.DefaultTag, clientName: "Unit test", out Service service);
+
+            Assert.That(service.Instance, Is.SameAs(serviceInstance));
+        }
+
+        [Test]
+        public void Resolves_Factory_DerivedType()
+        {
+            EditModeTestHelpers.ResetScene();
+
+            DependencyInjector dependencyInjector = getDependencyInjector();
+            var serviceInstance = new InvalidOperationException();
+            dependencyInjector.RegisterService<Exception, InvalidOperationException>(() => serviceInstance);
+
+            dependencyInjector.TryGetService(typeof(Exception), tag: DependencyInjector.DefaultTag, clientName: "Unit test", out Service service);
+
+            Assert.That(service.Instance, Is.SameAs(serviceInstance));
+            Assert.Throws<KeyNotFoundException>(() =>
+                dependencyInjector.TryGetService(typeof(ApplicationException), tag: DependencyInjector.DefaultTag, clientName: "Unit test", out _));
+        }
+
+        [Test]
+        public void Resolves_Factory_ByTypeAndTag()
+        {
+            EditModeTestHelpers.ResetScene();
+
+            DependencyInjector dependencyInjector = getDependencyInjector();
+            TestComponent serviceInstance = new GameObject().AddComponent<TestComponent>();
+            dependencyInjector.RegisterService(() => serviceInstance, "test");
+
+            dependencyInjector.TryGetService(typeof(TestComponent), tag: "test", clientName: "Unit test", out Service service);
+
+            Assert.That(service.Instance, Is.SameAs(serviceInstance));
+        }
+
+        #endregion
+
+        #region Method injection tests
 
         [Test]
         public void Cannot_Resolve_MissingService()
@@ -484,6 +589,10 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
             Assert.That(testLogger.NumWarnings, Is.EqualTo(1));
         }
 
+        #endregion
+
+        #region Constructor injection tests
+
         [Test]
         public void Construct_TriesConstructors_WithMostParamsFirst()
         {
@@ -523,7 +632,7 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
             dependencyInjector.RegisterService(new GameObject().AddComponent<TestComponent>());
 
             MultiConstructorClient genericInstance = dependencyInjector.Construct<MultiConstructorClient>();
-            MultiConstructorClient nonGenericInstance = (MultiConstructorClient)dependencyInjector.Construct(typeof(MultiConstructorClient));
+            var nonGenericInstance = (MultiConstructorClient)dependencyInjector.Construct(typeof(MultiConstructorClient));
 
             Assert.That(genericInstance.NumParamsInUsedConstructor, Is.EqualTo(1));
             Assert.That(nonGenericInstance.NumParamsInUsedConstructor, Is.EqualTo(1));
