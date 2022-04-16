@@ -1,16 +1,16 @@
-﻿namespace UnityEngine.UI {
-    public enum BreakpointMode
-    {
-        ScreenWidth,
-        ScreenHeight,
-        ScreenAspectRatio,
+﻿namespace UnityEngine.UI;
 
-        SafeAreaWidth,
-        SafeAreaHeight,
-        SafeAreaAspectRatio,
+public enum BreakpointMode
+{
+    ScreenWidth,
+    ScreenHeight,
+    ScreenAspectRatio,
 
-        CameraWidth,
-        CameraHeight,
-        CameraAspectRatio,
-    }
+    SafeAreaWidth,
+    SafeAreaHeight,
+    SafeAreaAspectRatio,
+
+    CameraWidth,
+    CameraHeight,
+    CameraAspectRatio,
 }

@@ -2,40 +2,41 @@
 using System;
 using UnityEngine.Triggers;
 
-namespace UnityEngine.Inputs {
+namespace UnityEngine.Inputs;
 
-    public class Interaction2DEventArgs : EventArgs {
-        public RaycastHit2D HitInfo;
-        public SimpleTrigger? InteractedTrigger;
+public class Interaction2DEventArgs : EventArgs
+{
+    public RaycastHit2D HitInfo;
+    public SimpleTrigger? InteractedTrigger;
+}
+
+public class StartInteractor2D : Updatable
+{
+    [Required]
+    public StartStopInput? Input;
+    public float Range;
+    public LayerMask InteractLayerMask;
+
+    public event EventHandler<Interaction2DEventArgs>? Interacted;
+
+    protected override void Awake()
+    {
+        base.Awake();
+
+        RegisterUpdatesAutomatically = true;
+        BetterUpdate = raycast;
     }
 
-    public class StartInteractor2D : Updatable
+    private void raycast(float deltaTime)
     {
-        [Required]
-        public StartStopInput? Input;
-        public float Range;
-        public LayerMask InteractLayerMask;
-
-        public event EventHandler<Interaction2DEventArgs>? Interacted;
-
-        protected override void Awake() {
-            base.Awake();
-
-            RegisterUpdatesAutomatically = true;
-            BetterUpdate = raycast;
-        }
-
-        private void raycast(float deltaTime) {
-            if (Input!.Started()) {
-                RaycastHit2D hit = Physics2D.Raycast(transform.position, transform.forward, Range, InteractLayerMask);
-                if (hit.collider != null) {
-                    SimpleTrigger st = hit.collider.GetComponent<SimpleTrigger>();
-                    st?.Trigger();
-                    Interacted?.Invoke(this, new Interaction2DEventArgs() { HitInfo = hit, InteractedTrigger = st });
-                }
+        if (Input!.Started()) {
+            RaycastHit2D hit = Physics2D.Raycast(transform.position, transform.forward, Range, InteractLayerMask);
+            if (hit.collider != null) {
+                SimpleTrigger st = hit.collider.GetComponent<SimpleTrigger>();
+                st?.Trigger();
+                Interacted?.Invoke(this, new Interaction2DEventArgs() { HitInfo = hit, InteractedTrigger = st });
             }
         }
-
     }
 
 }

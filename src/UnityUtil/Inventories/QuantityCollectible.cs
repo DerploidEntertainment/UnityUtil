@@ -1,10 +1,9 @@
-﻿namespace UnityEngine.Inventories {
+﻿namespace UnityEngine.Inventories;
 
-    [RequireComponent(typeof(Collectible))]
-    public class QuantityCollectible : MonoBehaviour {
+[RequireComponent(typeof(Collectible))]
+public class QuantityCollectible : MonoBehaviour
+{
 
-        public ManagedQuantity.ChangeMode ChangeMode = ManagedQuantity.ChangeMode.Absolute;
-
-    }
+    public ManagedQuantity.ChangeMode ChangeMode = ManagedQuantity.ChangeMode.Absolute;
 
 }

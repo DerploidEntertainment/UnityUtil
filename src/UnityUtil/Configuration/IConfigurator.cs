@@ -1,7 +1,6 @@
-﻿namespace UnityEngine
+﻿namespace UnityEngine;
+
+public interface IConfigurator
 {
-    public interface IConfigurator
-    {
-        void Configure(object client, string cacheKey);
-    }
+    void Configure(object client, string cacheKey);
 }

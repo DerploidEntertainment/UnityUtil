@@ -3,26 +3,26 @@ using System;
 using System.Globalization;
 using UnityEngine.UI;
 
-namespace UnityEngine.Legal
+namespace UnityEngine.Legal;
+
+public class CopyrightText : Configurable
 {
-    public class CopyrightText : Configurable
+    [Tooltip(
+        $"This string is used to populate {nameof(Text)}. " +
+        $"'{{0}}' will be replaced with the current date (in user's culture) and '{{1}}' will be replaced with {nameof(Device.Application.companyName)}, " +
+        $"using .NET composite formatting. For example, '{{0:yyyy}}' would be replaced with just the current 4-digit year. " +
+        $"See here for details: https://docs.microsoft.com/en-us/dotnet/standard/base-types/composite-formatting"
+    )]
+    [Multiline]
+    public string FormatString = "© {0}, {1}";
+
+    [Required]
+    public Text? Text;
+
+    protected override void Awake()
     {
-        [Tooltip(
-            $"This string is used to populate {nameof(Text)}. " +
-            $"'{{0}}' will be replaced with the current date (in user's culture) and '{{1}}' will be replaced with {nameof(Device.Application.companyName)}, " +
-            $"using .NET composite formatting. For example, '{{0:yyyy}}' would be replaced with just the current 4-digit year. " +
-            $"See here for details: https://docs.microsoft.com/en-us/dotnet/standard/base-types/composite-formatting"
-        )]
-        [Multiline]
-        public string FormatString = "© {0}, {1}";
+        base.Awake();
 
-        [Required]
-        public Text? Text;
-
-        protected override void Awake() {
-            base.Awake();
-
-            Text!.text = string.Format(CultureInfo.CurrentCulture, FormatString, DateTime.Now, Device.Application.companyName);
-        }
+        Text!.text = string.Format(CultureInfo.CurrentCulture, FormatString, DateTime.Now, Device.Application.companyName);
     }
 }

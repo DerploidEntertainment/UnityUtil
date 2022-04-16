@@ -1,8 +1,7 @@
-﻿namespace UnityEngine.Legal
+﻿namespace UnityEngine.Legal;
+
+public interface ILegalAcceptManager
 {
-    public interface ILegalAcceptManager
-    {
-        bool HasAccepted { get; }
-        void Accept();
-    }
+    bool HasAccepted { get; }
+    void Accept();
 }

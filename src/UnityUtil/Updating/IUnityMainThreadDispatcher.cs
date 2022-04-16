@@ -12,30 +12,28 @@
 using System;
 using System.Threading.Tasks;
 
-namespace UnityEngine
+namespace UnityEngine;
+
+/// <summary>
+/// Original author: Pim de Witte (pimdewitte.com) and contributors, https://github.com/PimDeWitte/UnityMainThreadDispatcher.
+/// Encapsulates a thread-safe queue with actions to execute on the next update loop.
+/// It can be used to make calls to Unity's main thread for things such as UI manipulation.
+/// It was developed for use in combination with the Firebase Unity plugin, which uses separate threads for event handling.
+/// </summary>
+public interface IUnityMainThreadDispatcher
 {
 
     /// <summary>
-    /// Original author: Pim de Witte (pimdewitte.com) and contributors, https://github.com/PimDeWitte/UnityMainThreadDispatcher.
-    /// Encapsulates a thread-safe queue with actions to execute on the next update loop.
-    /// It can be used to make calls to Unity's main thread for things such as UI manipulation.
-    /// It was developed for use in combination with the Firebase Unity plugin, which uses separate threads for event handling.
+    /// Locks the queue and adds <paramref name="action"/> to the queue
     /// </summary>
-    public interface IUnityMainThreadDispatcher {
+    /// <param name="action">Action that will be executed from Unity's main thread.</param>
+    void Enqueue(Action action);
 
-        /// <summary>
-        /// Locks the queue and adds <paramref name="action"/> to the queue
-        /// </summary>
-        /// <param name="action">Action that will be executed from Unity's main thread.</param>
-        void Enqueue(Action action);
-
-        /// <summary>
-        /// Locks the queue and adds <paramref name="action"/> to the queue, returning a <see cref="Task"/> which is completed when the action completes
-        /// </summary>
-        /// <param name="action">Action that will be executed from Unity's main thread.</param>
-        /// <returns>A <see cref="Task"/> that can be awaited until the action completes</returns>
-        public Task EnqueueAsync(Action action);
-
-    }
+    /// <summary>
+    /// Locks the queue and adds <paramref name="action"/> to the queue, returning a <see cref="Task"/> which is completed when the action completes
+    /// </summary>
+    /// <param name="action">Action that will be executed from Unity's main thread.</param>
+    /// <returns>A <see cref="Task"/> that can be awaited until the action completes</returns>
+    public Task EnqueueAsync(Action action);
 
 }

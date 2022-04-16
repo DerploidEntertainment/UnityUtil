@@ -1,13 +1,8 @@
-﻿using UnityEngine;
+﻿namespace UnityEngine.Inputs;
 
-namespace UnityEngine.Inputs {
-
-    public abstract class StartStopInput : ScriptableObject {
-
-        public abstract bool Started();
-        public abstract bool Happening();
-        public abstract bool Stopped();
-
-    }
-
+public abstract class StartStopInput : ScriptableObject
+{
+    public abstract bool Started();
+    public abstract bool Happening();
+    public abstract bool Stopped();
 }
