@@ -1,22 +1,23 @@
 ﻿using NUnit.Framework;
-using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
 using UnityEngine.Logging;
 using UnityUtil.Editor;
 
-namespace UnityUtil.Test.EditMode.Logging {
+namespace UnityUtil.Test.EditMode.Logging
+{
 
-    public class ObjectNameLogEnricherTest {
+    public class ObjectNameLogEnricherTest
+    {
 
         [Test]
-        [SuppressMessage("Style", "IDE0090:Use 'new(...)'", Justification = "Unity doesn't support C#8 features")]
-        public void NonUnityObjectsReturnEmpty() {
+        public void NonUnityObjectsReturnEmpty()
+        {
             EditModeTestHelpers.ResetScene();
 
             ObjectNameLogEnricher enricher = getObjectNameLogEnricher();
             string log;
 
-            object objSource = new object();
+            object objSource = new();
             log = enricher.GetEnrichedLog(objSource);
             Assert.That(log, Is.Empty);
 
@@ -34,7 +35,8 @@ namespace UnityUtil.Test.EditMode.Logging {
         }
 
         [Test]
-        public void ScriptableObjectsReturnName() {
+        public void ScriptableObjectsReturnName()
+        {
             EditModeTestHelpers.ResetScene();
 
             ObjectNameLogEnricher enricher = getObjectNameLogEnricher();
@@ -55,7 +57,8 @@ namespace UnityUtil.Test.EditMode.Logging {
         }
 
         [Test]
-        public void GameObjectsReturnName() {
+        public void GameObjectsReturnName()
+        {
             EditModeTestHelpers.ResetScene();
 
             ObjectNameLogEnricher enricher = getObjectNameLogEnricher();
@@ -72,7 +75,8 @@ namespace UnityUtil.Test.EditMode.Logging {
         }
 
         [Test]
-        public void ComponentsOnSameGameObjectReturnSame() {
+        public void ComponentsOnSameGameObjectReturnSame()
+        {
             EditModeTestHelpers.ResetScene();
 
             ObjectNameLogEnricher enricher = getObjectNameLogEnricher(numParents: 1, ancestorNameSeparator: ">");
@@ -91,7 +95,8 @@ namespace UnityUtil.Test.EditMode.Logging {
             Assert.That(log, Is.EqualTo("parent>obj"));
         }
 
-        private static ObjectNameLogEnricher getObjectNameLogEnricher(uint numParents = 1u, string ancestorNameSeparator = ">", string formatString = "{0}") {
+        private static ObjectNameLogEnricher getObjectNameLogEnricher(uint numParents = 1u, string ancestorNameSeparator = ">", string formatString = "{0}")
+        {
             ObjectNameLogEnricher enricher = ScriptableObject.CreateInstance<ObjectNameLogEnricher>();
             enricher.NumParents = numParents;
             enricher.AncestorNameSeparator = ancestorNameSeparator;

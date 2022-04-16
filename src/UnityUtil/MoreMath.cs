@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using U = UnityEngine;
@@ -7,7 +7,6 @@ namespace UnityEngine;
 
 public static class MoreMath
 {
-
     public const float Sqrt2 = 1.41421f;
     public const float TwoPi = 2 * Mathf.PI;
 
@@ -33,7 +32,7 @@ public static class MoreMath
     public static int RandomWeightedIndex(IReadOnlyList<float> indexWeights)
     {
         if (indexWeights.Sum() != 1f)
-            throw new InvalidOperationException($"The sum of all {nameof(indexWeights)} must equal 1!");
+            throw new InvalidOperationException($"The sum of all {nameof(indexWeights)} must equal 1.");
 
         int w;
         float val = Random.value;   // Between 0 and 1 (inclusive)
@@ -61,7 +60,7 @@ public static class MoreMath
         if (sourceCount < 0)
             throw new ArgumentOutOfRangeException(nameof(sourceCount), sourceCount, $" must be greater than or equal to zero.");
         if (count > sourceCount)
-            throw new InvalidOperationException($"{nameof(count)} must be less than or equal to {nameof(sourceCount)}");
+            throw new InvalidOperationException($"{nameof(count)} must be less than or equal to {nameof(sourceCount)}.");
 
         int[] resultIndices = new int[count];
 
@@ -87,8 +86,9 @@ public static class MoreMath
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="halfAngle"/> is less then 0° or greater than or equal to 360°.</exception>
     public static Vector3 RandomConeVector(Transform transform, float halfAngle, bool onlyBoundary) =>
         halfAngle < 0f || 360f <= halfAngle
-            ? throw new ArgumentOutOfRangeException(nameof(halfAngle), halfAngle, $"Cannot generate a random unit vector within a cone of half-angle {halfAngle}°")
+            ? throw new ArgumentOutOfRangeException(nameof(halfAngle), halfAngle, $"Cannot generate a random unit vector within a cone of half-angle {halfAngle}°.")
             : randomConeVector(transform.forward, halfAngle, onlyBoundary);
+
     /// <summary>
     /// Returns a random unit vector within a cone of the provided half-angle centered around the provided axis (uniformly distributed).
     /// </summary>
@@ -99,9 +99,9 @@ public static class MoreMath
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="halfAngle"/> is less then 0° or greater than or equal to 360°.</exception>
     public static Vector3 RandomConeVector(Vector3 axis, float halfAngle, bool onlyBoundary) =>
         axis == Vector3.zero
-            ? throw new ArgumentOutOfRangeException(nameof(axis), axis, $"Cannot generate a random unit vector within a cone whose center axis is the zero vector")
+            ? throw new ArgumentOutOfRangeException(nameof(axis), axis, $"Cannot generate a random unit vector within a cone whose center axis is the zero vector.")
         : halfAngle < 0f || 360f <= halfAngle
-            ? throw new ArgumentOutOfRangeException(nameof(halfAngle), halfAngle, $"Cannot generate a random unit vector within a cone of half-angle {halfAngle}°")
+            ? throw new ArgumentOutOfRangeException(nameof(halfAngle), halfAngle, $"Cannot generate a random unit vector within a cone of half-angle {halfAngle}°.")
         : randomConeVector(axis, halfAngle, onlyBoundary);
 
     private static Vector3 randomConeVector(Vector3 axis, float halfAngle, bool onlyBoundary)

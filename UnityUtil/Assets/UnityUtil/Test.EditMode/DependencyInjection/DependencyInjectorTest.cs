@@ -64,15 +64,18 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
         public void Inject([InjectTag("test")] TestComponent componentService1, [InjectTag("test")] TestComponent componentService2) { }
     }
 
+    [SuppressMessage("Performance", "CA1812:Avoid uninstantiated internal classes", Justification = "Instantiated by DI during test")]
     internal class NoConstructorClient
     {
     }
 
+    [SuppressMessage("Performance", "CA1812:Avoid uninstantiated internal classes", Justification = "Instantiated by DI during test")]
     internal class EmptyConstructorClient
     {
         public EmptyConstructorClient() { }
     }
 
+    [SuppressMessage("Performance", "CA1812:Avoid uninstantiated internal classes", Justification = "Instantiated by DI during test")]
     internal class MultiConstructorClient
     {
         public int NumParamsInUsedConstructor { get; private set; }
@@ -87,18 +90,21 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
         public MultiConstructorClient(TestComponent componentService) => NumParamsInUsedConstructor = 1;
     }
 
+    [SuppressMessage("Performance", "CA1812:Avoid uninstantiated internal classes", Justification = "Instantiated by DI during test")]
     internal class ConstructorSameTypeNoTagsClient
     {
         [SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "Parameters are just for testing")]
         public ConstructorSameTypeNoTagsClient(TestComponent componentService1, TestComponent componentService2) { }
     }
 
+    [SuppressMessage("Performance", "CA1812:Avoid uninstantiated internal classes", Justification = "Instantiated by DI during test")]
     internal class ConstructorSameTypeDifferentTagsClient
     {
         [SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "Parameters are just for testing")]
         public ConstructorSameTypeDifferentTagsClient([InjectTag("test")] TestComponent componentService1, [InjectTag("not-test")] TestComponent componentService2) { }
     }
 
+    [SuppressMessage("Performance", "CA1812:Avoid uninstantiated internal classes", Justification = "Instantiated by DI during test")]
     internal class ConstructorSameTypeSameTagsClient
     {
         [SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "Parameters are just for testing")]
