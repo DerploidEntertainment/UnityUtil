@@ -15,7 +15,7 @@ public class RemoteConfigConfigurationSource : ConfigurationSource
     private static int s_numLoads;
     private bool _fetchComplete;
 
-    public const string DefaultEnvironment = "Release";
+    public const string DefaultEnvironment = "production";
 
     [Tooltip("The Remote Config environment from which to request configuration settings")]
     [InfoBox(
