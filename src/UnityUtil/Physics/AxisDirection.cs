@@ -1,10 +1,9 @@
-﻿namespace UnityEngine {
+﻿namespace UnityEngine;
 
-    public enum AxisDirection {
-        WithGravity,
-        OppositeGravity,
-        CustomWorldSpace,
-        CustomLocalSpace
-    }
-
+public enum AxisDirection
+{
+    WithGravity,
+    OppositeGravity,
+    CustomWorldSpace,
+    CustomLocalSpace
 }

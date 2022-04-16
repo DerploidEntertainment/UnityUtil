@@ -13,65 +13,64 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace UnityEngine
+namespace UnityEngine;
+
+/// <summary>
+/// Original author: Pim de Witte (pimdewitte.com) and contributors, https://github.com/PimDeWitte/UnityMainThreadDispatcher.
+/// A thread-safe class which holds a queue with actions to execute on the next update loop.
+/// It can be used to make calls to Unity's main thread for things such as UI manipulation.
+/// It was developed for use in combination with the Firebase Unity plugin, which uses separate threads for event handling.
+/// </summary>
+public class UnityMainThreadDispatcher : IUnityMainThreadDispatcher
 {
 
-    /// <summary>
-    /// Original author: Pim de Witte (pimdewitte.com) and contributors, https://github.com/PimDeWitte/UnityMainThreadDispatcher.
-    /// A thread-safe class which holds a queue with actions to execute on the next update loop.
-    /// It can be used to make calls to Unity's main thread for things such as UI manipulation.
-    /// It was developed for use in combination with the Firebase Unity plugin, which uses separate threads for event handling.
-    /// </summary>
-    public class UnityMainThreadDispatcher : IUnityMainThreadDispatcher
+    private readonly IUpdater _updater;
+    private readonly Queue<Action> _actionQueue = new();
+    public int InstanceID { get; private set; }
+
+    public UnityMainThreadDispatcher(IUpdater updater, IRuntimeIdProvider runtimeIdProvider)
     {
+        _updater = updater;
+        InstanceID = runtimeIdProvider.GetId();
 
-        private readonly IUpdater _updater;
-        private readonly Queue<Action> _actionQueue = new();
-        public int InstanceID { get; private set; }
+        _updater.RegisterUpdate(InstanceID, processActionQueue);
+    }
 
-        public UnityMainThreadDispatcher(IUpdater updater, IRuntimeIdProvider runtimeIdProvider)
-        {
-            _updater = updater;
-            InstanceID = runtimeIdProvider.GetId();
+    ~UnityMainThreadDispatcher()
+    {
+        _updater.UnregisterUpdate(InstanceID);
+    }
 
-            _updater.RegisterUpdate(InstanceID, processActionQueue);
+    private void processActionQueue(float deltaTime)
+    {
+        lock (_actionQueue) {
+            while (_actionQueue.Count > 0)
+                _actionQueue.Dequeue().Invoke();
         }
+    }
 
-        ~UnityMainThreadDispatcher()
-        {
-            _updater.UnregisterUpdate(InstanceID);
-        }
+    /// <inheritdoc/>
+    public void Enqueue(Action action) => _actionQueue.Enqueue(action);
 
-        private void processActionQueue(float deltaTime) {
-            lock (_actionQueue) {
-                while (_actionQueue.Count > 0)
-                    _actionQueue.Dequeue().Invoke();
+    /// <inheritdoc/>
+    public Task EnqueueAsync(Action action)
+    {
+        var tcs = new TaskCompletionSource<bool>();
+
+        Enqueue(() => {
+            try {
+                action();
+                tcs.TrySetResult(true);
             }
-        }
 
-        /// <inheritdoc/>
-        public void Enqueue(Action action) => _actionQueue.Enqueue(action);
+#pragma warning disable CA1031 // Do not catch general exception types
+            catch (Exception ex) {
+                tcs.TrySetException(ex);
+            }
+#pragma warning restore CA1031 // Do not catch general exception types
+        });
 
-        /// <inheritdoc/>
-        public Task EnqueueAsync(Action action) {
-            var tcs = new TaskCompletionSource<bool>();
-
-            Enqueue(() => {
-                try {
-                    action();
-                    tcs.TrySetResult(true);
-                }
-
-                #pragma warning disable CA1031 // Do not catch general exception types
-                catch (Exception ex) {
-                    tcs.TrySetException(ex);
-                }
-                #pragma warning restore CA1031 // Do not catch general exception types
-            });
-
-            return tcs.Task;
-        }
-
+        return tcs.Task;
     }
 
 }

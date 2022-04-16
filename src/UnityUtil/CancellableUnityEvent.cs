@@ -1,15 +1,15 @@
 ﻿using System;
 using UnityEngine.Events;
 
-namespace UnityEngine {
+namespace UnityEngine;
 
-    [Serializable]
-    public class CancellableUnityEvent : UnityEvent {
-        public bool Cancel { get; set; }
-        public new void Invoke() {
-            Cancel = false;
-            base.Invoke();
-        }
+[Serializable]
+public class CancellableUnityEvent : UnityEvent
+{
+    public bool Cancel { get; set; }
+    public new void Invoke()
+    {
+        Cancel = false;
+        base.Invoke();
     }
-
 }

@@ -1,120 +1,123 @@
 ﻿using Sirenix.OdinInspector;
 using UnityEngine.Inputs;
 
-namespace UnityEngine.Movement {
+namespace UnityEngine.Movement;
 
-    public class CharacterFPSWalker : Updatable
+public class CharacterFPSWalker : Updatable
+{
+    private float _oldHeight;
+
+    [Required]
+    public CharacterController? ControllerToMove;
+
+    [Header("Inputs")]
+    [Required] public StartStopInput? SprintInput;
+    [Required] public StartStopInput? CrouchInput;
+    [Required] public StartStopInput? JumpInput;
+    [Required] public ValueInput? HorizontalInput;
+    [Required] public ValueInput? VerticalInput;
+
+    [Header("Speed")]
+    public float WalkSpeed = 15f;
+    public float SprintSpeed = 30f;
+    public bool CanSprint = true;
+    public float CrouchSpeed = 5f;
+    public bool CanCrouch = true;
+    public float CrouchHeight = 1f;
+    public bool LimitDiagonalSpeed = true;
+    public bool ReduceSpeedOnSlopes = true;
+
+    [Header("Jumping")]
+    public float Mass = 70f;
+    public bool CanJump = true;
+    public float JumpHeight = 3f;
+
+    protected override void Awake()
     {
-        private float _oldHeight;
+        base.Awake();
 
-        [Required]
-        public CharacterController? ControllerToMove;
+        _oldHeight = ControllerToMove!.height;
+        CrouchHeight = Mathf.Min(CrouchHeight, _oldHeight);
 
-        [Header("Inputs")]
-        [Required] public StartStopInput? SprintInput;
-        [Required] public StartStopInput? CrouchInput;
-        [Required] public StartStopInput? JumpInput;
-        [Required] public ValueInput? HorizontalInput;
-        [Required] public ValueInput? VerticalInput;
+        BetterUpdate = doUpdate;
+        RegisterUpdatesAutomatically = true;
+    }
+    private void doUpdate(float deltaTime)
+    {
+        Vector3 targetV = Vector3.zero;
 
-        [Header("Speed")]
-        public float WalkSpeed = 15f;
-        public float SprintSpeed = 30f;
-        public bool CanSprint = true;
-        public float CrouchSpeed = 5f;
-        public bool CanCrouch = true;
-        public float CrouchHeight = 1f;
-        public bool LimitDiagonalSpeed = true;
-        public bool ReduceSpeedOnSlopes = true;
-
-        [Header("Jumping")]
-        public float Mass = 70f;
-        public bool CanJump = true;
-        public float JumpHeight = 3f;
-
-        protected override void Awake() {
-            base.Awake();
-
-            _oldHeight = ControllerToMove!.height;
-            CrouchHeight = Mathf.Min(CrouchHeight, _oldHeight);
-
-            BetterUpdate = doUpdate;
-            RegisterUpdatesAutomatically = true;
-        }
-        private void doUpdate(float deltaTime) {
-            Vector3 targetV = Vector3.zero;
-
-            // Adjust target velocity for jumping, if its allowed
-            if (CanJump) {
-                bool jumped = JumpInput!.Started();
-                targetV += jumpComponent(deltaTime, jumped);
-            }
-
-            // Adjust target velocity for movement, if its allowed
-            bool sprinting = SprintInput!.Happening();
-            bool crouching = CrouchInput!.Happening();
-            float inputHorz = HorizontalInput!.DiscreteValue();   // raw means only returns one of: { -1, 0, 1 }
-            float inputVert = VerticalInput!.DiscreteValue();     // raw means only returns one of: { -1, 0, 1 }
-            targetV += moveComponent(inputHorz, inputVert, CanSprint && sprinting, CanCrouch && crouching);
-
-            // Do crouching if its allowed
-            crouch(CanCrouch && crouching);
-
-            // Move the rigidbody to the target velocity
-            ControllerToMove!.Move(targetV * deltaTime);
+        // Adjust target velocity for jumping, if its allowed
+        if (CanJump) {
+            bool jumped = JumpInput!.Started();
+            targetV += jumpComponent(deltaTime, jumped);
         }
 
-        private Vector3 jumpComponent(float deltaTime, bool jumping) {
-            // Account for gravity
-            Vector3 jumpV = Vector3.zero;
-            float g = Physics.gravity.magnitude * Mass;
+        // Adjust target velocity for movement, if its allowed
+        bool sprinting = SprintInput!.Happening();
+        bool crouching = CrouchInput!.Happening();
+        float inputHorz = HorizontalInput!.DiscreteValue();   // raw means only returns one of: { -1, 0, 1 }
+        float inputVert = VerticalInput!.DiscreteValue();     // raw means only returns one of: { -1, 0, 1 }
+        targetV += moveComponent(inputHorz, inputVert, CanSprint && sprinting, CanCrouch && crouching);
 
-            // Account for jumping (if it is allowed and the button was pressed)
-            if (jumping && ControllerToMove!.isGrounded)
-                jumpV.y += Mathf.Sqrt(2f * g * JumpHeight);
-            else
-                jumpV.y -= g * deltaTime;
+        // Do crouching if its allowed
+        crouch(CanCrouch && crouching);
 
-            return jumpV;
-        }
-        private void crouch(bool crouching) => ControllerToMove!.height = (crouching ? CrouchHeight : _oldHeight);
-        private Vector3 moveComponent(float horz, float vert, bool sprinting, bool crouching) {
-            // Determine the slope of the ground
-            bool hitGround = Physics.Raycast(transform.position, Vector3.down, out RaycastHit hitInfo, float.PositiveInfinity);
-            float slopeAngle = (hitGround ? Vector3.Angle(Vector3.up, hitInfo.normal) : 0f);
+        // Move the rigidbody to the target velocity
+        ControllerToMove!.Move(targetV * deltaTime);
+    }
 
-            // Get the target movement vector (speed + direction)
-            float targetSpeed = getTargetSpeed(horz, vert, sprinting, crouching, slopeAngle);
-            Vector3 unitDir = (transform.forward * vert + transform.right * horz).normalized;
-            Vector3 targetV = targetSpeed * unitDir;
+    private Vector3 jumpComponent(float deltaTime, bool jumping)
+    {
+        // Account for gravity
+        Vector3 jumpV = Vector3.zero;
+        float g = Physics.gravity.magnitude * Mass;
 
-            return targetV;
-        }
-        private float getTargetSpeed(float horz, float vert, bool sprinting, bool crouching, float slopeAngle) {
-            // If we're not moving then just return zero
-            if (horz == 0f && vert == 0f)
-                return 0f;
+        // Account for jumping (if it is allowed and the button was pressed)
+        if (jumping && ControllerToMove!.isGrounded)
+            jumpV.y += Mathf.Sqrt(2f * g * JumpHeight);
+        else
+            jumpV.y -= g * deltaTime;
 
-            // Adjust for running/crouching (pressing both cancels each other out)
-            float speed = WalkSpeed;
-            if (sprinting && !crouching && vert != 0f)
-                speed = SprintSpeed;
-            else if (crouching && !sprinting)
-                speed = CrouchSpeed;
+        return jumpV;
+    }
+    private void crouch(bool crouching) => ControllerToMove!.height = (crouching ? CrouchHeight : _oldHeight);
+    private Vector3 moveComponent(float horz, float vert, bool sprinting, bool crouching)
+    {
+        // Determine the slope of the ground
+        bool hitGround = Physics.Raycast(transform.position, Vector3.down, out RaycastHit hitInfo, float.PositiveInfinity);
+        float slopeAngle = (hitGround ? Vector3.Angle(Vector3.up, hitInfo.normal) : 0f);
 
-            // Account for diagonal motion
-            bool isDiagonal = (horz != 0f && vert != 0f);
-            if (isDiagonal && LimitDiagonalSpeed)
-                speed /= MoreMath.Sqrt2;
+        // Get the target movement vector (speed + direction)
+        float targetSpeed = getTargetSpeed(horz, vert, sprinting, crouching, slopeAngle);
+        Vector3 unitDir = (transform.forward * vert + transform.right * horz).normalized;
+        Vector3 targetV = targetSpeed * unitDir;
 
-            // Account for slopes
-            // If speed decreases with slope, then speed = 0 when slope = slopeLimit
-            float slopeRatio = 1f - slopeAngle / ControllerToMove!.slopeLimit;
-            speed *= slopeRatio;
+        return targetV;
+    }
+    private float getTargetSpeed(float horz, float vert, bool sprinting, bool crouching, float slopeAngle)
+    {
+        // If we're not moving then just return zero
+        if (horz == 0f && vert == 0f)
+            return 0f;
 
-            return speed;
-        }
+        // Adjust for running/crouching (pressing both cancels each other out)
+        float speed = WalkSpeed;
+        if (sprinting && !crouching && vert != 0f)
+            speed = SprintSpeed;
+        else if (crouching && !sprinting)
+            speed = CrouchSpeed;
 
+        // Account for diagonal motion
+        bool isDiagonal = (horz != 0f && vert != 0f);
+        if (isDiagonal && LimitDiagonalSpeed)
+            speed /= MoreMath.Sqrt2;
+
+        // Account for slopes
+        // If speed decreases with slope, then speed = 0 when slope = slopeLimit
+        float slopeRatio = 1f - slopeAngle / ControllerToMove!.slopeLimit;
+        speed *= slopeRatio;
+
+        return speed;
     }
 
 }
