@@ -15,6 +15,7 @@ public static class MoreMath
     /// there is a 30% chance of returning 0, 40% chance of returning 1, and 30% chance of returning 2.
     /// </summary>
     /// <param name="indexWeights">The weights for each index. These must sum up to 1.</param>
+    /// <param name="randomNumberGenerator">The object used to generate pseudorandom numbers.</param>
     /// <returns>An index between 0 (inclusive) and the length of <paramref name="indexWeights"/> (exclusive)</returns>
     /// <exception cref="InvalidOperationException">The sum of <paramref name="indexWeights"/> is not 1</exception>
     /// <remarks>
@@ -29,13 +30,13 @@ public static class MoreMath
     /// E.g., the probability of choosing index 1 equals the probability of R falling within the 2nd range.
     /// Therefore, the index at which the cumulative probability of <paramref name="indexWeights"/> is greater than R is our "chosen" index.
     /// </remarks>
-    public static int RandomWeightedIndex(IReadOnlyList<float> indexWeights)
+    public static int RandomWeightedIndex(IReadOnlyList<float> indexWeights, IRandomNumberGenerator randomNumberGenerator)
     {
         if (indexWeights.Sum() != 1f)
             throw new InvalidOperationException($"The sum of all {nameof(indexWeights)} must equal 1.");
 
         int w;
-        float val = Random.value;   // Between 0 and 1 (inclusive)
+        float val = (float)randomNumberGenerator.NextDouble();   // Between 0 (inclusive) and 1 (exclusive)
         float sum = indexWeights[0];
         for (w = 0; w < indexWeights.Count - 1 && sum <= val; ++w)
             sum += indexWeights[w + 1];
@@ -50,10 +51,11 @@ public static class MoreMath
     /// </summary>
     /// <param name="count">The number of unique random indices to return.</param>
     /// <param name="sourceCount">The number of elements in the source collection into which we are returning random indices.</param>
+    /// <param name="randomNumberGenerator">The object used to generate pseudorandom numbers.</param>
     /// <returns></returns>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="count"/> or <paramref name="sourceCount"/> is less than zero.</exception>
     /// <exception cref="InvalidOperationException"><paramref name="count"/> is greater than <paramref name="sourceCount"/>.</exception>
-    public static int[] RandomUniqueIndices(int count, int sourceCount)
+    public static int[] RandomUniqueIndices(int count, int sourceCount, IRandomNumberGenerator randomNumberGenerator)
     {
         if (count < 0)
             throw new ArgumentOutOfRangeException(nameof(count), count, $" must be greater than or equal to zero.");
@@ -66,7 +68,7 @@ public static class MoreMath
 
         int[] sourceIndices = Enumerable.Range(0, sourceCount).ToArray();
         for (int r = 0; r < count; ++r) {
-            int s = U.Random.Range(0, sourceCount - r);
+            int s = randomNumberGenerator.Range(0, sourceCount - r);
             resultIndices[r] = sourceIndices[s];
             int temp = sourceIndices[s];
             sourceIndices[s] = sourceIndices[sourceCount - r - 1];
