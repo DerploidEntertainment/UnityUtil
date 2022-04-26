@@ -2,7 +2,8 @@
 using UnityEngine;
 using UnityEngine.Triggers;
 
-namespace UnityUtil.Test.EditMode.Triggers {
+namespace UnityUtil.Test.EditMode.Triggers
+{
     public class AndTriggerTest
     {
 
@@ -52,55 +53,55 @@ namespace UnityUtil.Test.EditMode.Triggers {
             AndTrigger andTrigger = getAndTrigger(condition0, condition1);
             andTrigger.RaiseBecameEvents = false;
             andTrigger.RaiseStillEvents = false;
-            var orTriggerWrapper = new ConditionalTriggerWrapper<AndTrigger>(andTrigger);
+            var andTriggerWrapper = new TestConditionalTriggerWrapper<AndTrigger>(andTrigger);
 
             // Act/assert
             condition0.StillFalse.Invoke();
-            orTriggerWrapper.AssertTriggerCounts(0, 0, 0, 0);
+            andTriggerWrapper.AssertTriggerCounts(0, 0, 0, 0);
 
             condition1.StillFalse.Invoke();
-            orTriggerWrapper.AssertTriggerCounts(0, 0, 0, 0);
+            andTriggerWrapper.AssertTriggerCounts(0, 0, 0, 0);
 
             condition0.BecameTrue.Invoke();
-            orTriggerWrapper.AssertTriggerCounts(0, 0, 0, 0);
+            andTriggerWrapper.AssertTriggerCounts(0, 0, 0, 0);
 
             condition0.StillTrue.Invoke();
-            orTriggerWrapper.AssertTriggerCounts(0, 0, 0, 0);
+            andTriggerWrapper.AssertTriggerCounts(0, 0, 0, 0);
 
             condition0.State = false;
             condition0.BecameFalse.Invoke();
-            orTriggerWrapper.AssertTriggerCounts(0, 0, 0, 0);
+            andTriggerWrapper.AssertTriggerCounts(0, 0, 0, 0);
 
             condition1.State = true;
             condition1.BecameTrue.Invoke();
-            orTriggerWrapper.AssertTriggerCounts(0, 0, 0, 0);
+            andTriggerWrapper.AssertTriggerCounts(0, 0, 0, 0);
 
             condition1.StillTrue.Invoke();
-            orTriggerWrapper.AssertTriggerCounts(0, 0, 0, 0);
+            andTriggerWrapper.AssertTriggerCounts(0, 0, 0, 0);
 
             condition0.State = true;
             condition0.BecameTrue.Invoke();
-            orTriggerWrapper.AssertTriggerCounts(0, 0, 0, 0);
+            andTriggerWrapper.AssertTriggerCounts(0, 0, 0, 0);
 
             condition0.StillTrue.Invoke();
             condition1.StillTrue.Invoke();
-            orTriggerWrapper.AssertTriggerCounts(0, 0, 0, 0);
+            andTriggerWrapper.AssertTriggerCounts(0, 0, 0, 0);
 
             condition1.State = false;
             condition1.BecameFalse.Invoke();
-            orTriggerWrapper.AssertTriggerCounts(0, 0, 0, 0);
+            andTriggerWrapper.AssertTriggerCounts(0, 0, 0, 0);
 
             condition1.State = true;
             condition1.BecameTrue.Invoke();
-            orTriggerWrapper.AssertTriggerCounts(0, 0, 0, 0);
+            andTriggerWrapper.AssertTriggerCounts(0, 0, 0, 0);
 
             condition0.State = false;
             condition0.BecameFalse.Invoke();
-            orTriggerWrapper.AssertTriggerCounts(0, 0, 0, 0);
+            andTriggerWrapper.AssertTriggerCounts(0, 0, 0, 0);
 
             condition1.State = false;
             condition1.BecameFalse.Invoke();
-            orTriggerWrapper.AssertTriggerCounts(0, 0, 0, 0);
+            andTriggerWrapper.AssertTriggerCounts(0, 0, 0, 0);
         }
 
         [Test]
@@ -112,55 +113,61 @@ namespace UnityUtil.Test.EditMode.Triggers {
             AndTrigger andTrigger = getAndTrigger(condition0, condition1);
             andTrigger.RaiseBecameEvents = true;
             andTrigger.RaiseStillEvents = false;
-            var orTriggerWrapper = new ConditionalTriggerWrapper<AndTrigger>(andTrigger);
+            var andTriggerWrapper = new TestConditionalTriggerWrapper<AndTrigger>(andTrigger);
 
             // Act/assert
             condition0.StillFalse.Invoke();
-            orTriggerWrapper.AssertTriggerCounts(0, 0, 0, 0);
+            andTrigger.TriggerState();
+            andTriggerWrapper.AssertTriggerCounts(0, 0, 0, 0);
 
             condition1.StillFalse.Invoke();
-            orTriggerWrapper.AssertTriggerCounts(0, 0, 0, 0);
-
-            condition0.BecameTrue.Invoke();
-            orTriggerWrapper.AssertTriggerCounts(0, 0, 0, 0);
-
-            condition0.StillTrue.Invoke();
-            orTriggerWrapper.AssertTriggerCounts(0, 0, 0, 0);
-
-            condition0.State = false;
-            condition0.BecameFalse.Invoke();
-            orTriggerWrapper.AssertTriggerCounts(0, 0, 0, 0);
-
-            condition1.State = true;
-            condition1.BecameTrue.Invoke();
-            orTriggerWrapper.AssertTriggerCounts(0, 0, 0, 0);
-
-            condition1.StillTrue.Invoke();
-            orTriggerWrapper.AssertTriggerCounts(0, 0, 0, 0);
+            andTrigger.TriggerState();
+            andTriggerWrapper.AssertTriggerCounts(0, 0, 0, 0);
 
             condition0.State = true;
             condition0.BecameTrue.Invoke();
-            orTriggerWrapper.AssertTriggerCounts(1, 0, 0, 0);
+            andTriggerWrapper.AssertTriggerCounts(0, 0, 0, 0);
 
             condition0.StillTrue.Invoke();
-            condition1.StillTrue.Invoke();
-            orTriggerWrapper.AssertTriggerCounts(1, 0, 0, 0);
-
-            condition1.State = false;
-            condition1.BecameFalse.Invoke();
-            orTriggerWrapper.AssertTriggerCounts(1, 1, 0, 0);
-
-            condition1.State = true;
-            condition1.BecameTrue.Invoke();
-            orTriggerWrapper.AssertTriggerCounts(2, 1, 0, 0);
+            andTrigger.TriggerState();
+            andTriggerWrapper.AssertTriggerCounts(0, 0, 0, 0);
 
             condition0.State = false;
             condition0.BecameFalse.Invoke();
-            orTriggerWrapper.AssertTriggerCounts(2, 2, 0, 0);
+            andTriggerWrapper.AssertTriggerCounts(0, 0, 0, 0);
+
+            condition1.State = true;
+            condition1.BecameTrue.Invoke();
+            andTriggerWrapper.AssertTriggerCounts(0, 0, 0, 0);
+
+            condition1.StillTrue.Invoke();
+            andTrigger.TriggerState();
+            andTriggerWrapper.AssertTriggerCounts(0, 0, 0, 0);
+
+            condition0.State = true;
+            condition0.BecameTrue.Invoke();
+            andTriggerWrapper.AssertTriggerCounts(1, 0, 0, 0);
+
+            condition0.StillTrue.Invoke();
+            condition1.StillTrue.Invoke();
+            andTrigger.TriggerState();
+            andTriggerWrapper.AssertTriggerCounts(1, 0, 0, 0);
 
             condition1.State = false;
             condition1.BecameFalse.Invoke();
-            orTriggerWrapper.AssertTriggerCounts(2, 2, 0, 0);
+            andTriggerWrapper.AssertTriggerCounts(1, 1, 0, 0);
+
+            condition1.State = true;
+            condition1.BecameTrue.Invoke();
+            andTriggerWrapper.AssertTriggerCounts(2, 1, 0, 0);
+
+            condition0.State = false;
+            condition0.BecameFalse.Invoke();
+            andTriggerWrapper.AssertTriggerCounts(2, 2, 0, 0);
+
+            condition1.State = false;
+            condition1.BecameFalse.Invoke();
+            andTriggerWrapper.AssertTriggerCounts(2, 2, 0, 0);
         }
 
         [Test]
@@ -172,55 +179,61 @@ namespace UnityUtil.Test.EditMode.Triggers {
             AndTrigger andTrigger = getAndTrigger(condition0, condition1);
             andTrigger.RaiseBecameEvents = false;
             andTrigger.RaiseStillEvents = true;
-            var orTriggerWrapper = new ConditionalTriggerWrapper<AndTrigger>(andTrigger);
+            var andTriggerWrapper = new TestConditionalTriggerWrapper<AndTrigger>(andTrigger);
 
             // Act/assert
             condition0.StillFalse.Invoke();
-            orTriggerWrapper.AssertTriggerCounts(0, 0, 0, 1);
+            andTrigger.TriggerState();
+            andTriggerWrapper.AssertTriggerCounts(0, 0, 0, 1);
 
             condition1.StillFalse.Invoke();
-            orTriggerWrapper.AssertTriggerCounts(0, 0, 0, 2);
-
-            condition0.BecameTrue.Invoke();
-            orTriggerWrapper.AssertTriggerCounts(0, 0, 0, 3);
-
-            condition0.StillTrue.Invoke();
-            orTriggerWrapper.AssertTriggerCounts(0, 0, 0, 4);
-
-            condition0.State = false;
-            condition0.BecameFalse.Invoke();
-            orTriggerWrapper.AssertTriggerCounts(0, 0, 0, 5);
-
-            condition1.State = true;
-            condition1.BecameTrue.Invoke();
-            orTriggerWrapper.AssertTriggerCounts(0, 0, 0, 6);
-
-            condition1.StillTrue.Invoke();
-            orTriggerWrapper.AssertTriggerCounts(0, 0, 0, 7);
+            andTrigger.TriggerState();
+            andTriggerWrapper.AssertTriggerCounts(0, 0, 0, 2);
 
             condition0.State = true;
             condition0.BecameTrue.Invoke();
-            orTriggerWrapper.AssertTriggerCounts(0, 0, 0, 7);
+            andTriggerWrapper.AssertTriggerCounts(0, 0, 0, 2);
 
             condition0.StillTrue.Invoke();
-            condition1.StillTrue.Invoke();
-            orTriggerWrapper.AssertTriggerCounts(0, 0, 2, 7);
-
-            condition1.State = false;
-            condition1.BecameFalse.Invoke();
-            orTriggerWrapper.AssertTriggerCounts(0, 0, 2, 7);
-
-            condition1.State = true;
-            condition1.BecameTrue.Invoke();
-            orTriggerWrapper.AssertTriggerCounts(0, 0, 2, 7);
+            andTrigger.TriggerState();
+            andTriggerWrapper.AssertTriggerCounts(0, 0, 0, 3);
 
             condition0.State = false;
             condition0.BecameFalse.Invoke();
-            orTriggerWrapper.AssertTriggerCounts(0, 0, 2, 7);
+            andTriggerWrapper.AssertTriggerCounts(0, 0, 0, 3);
+
+            condition1.State = true;
+            condition1.BecameTrue.Invoke();
+            andTriggerWrapper.AssertTriggerCounts(0, 0, 0, 3);
+
+            condition1.StillTrue.Invoke();
+            andTrigger.TriggerState();
+            andTriggerWrapper.AssertTriggerCounts(0, 0, 0, 4);
+
+            condition0.State = true;
+            condition0.BecameTrue.Invoke();
+            andTriggerWrapper.AssertTriggerCounts(0, 0, 0, 4);
+
+            condition0.StillTrue.Invoke();
+            condition1.StillTrue.Invoke();
+            andTrigger.TriggerState();
+            andTriggerWrapper.AssertTriggerCounts(0, 0, 1, 4);
 
             condition1.State = false;
             condition1.BecameFalse.Invoke();
-            orTriggerWrapper.AssertTriggerCounts(0, 0, 2, 8);
+            andTriggerWrapper.AssertTriggerCounts(0, 0, 1, 4);
+
+            condition1.State = true;
+            condition1.BecameTrue.Invoke();
+            andTriggerWrapper.AssertTriggerCounts(0, 0, 1, 4);
+
+            condition0.State = false;
+            condition0.BecameFalse.Invoke();
+            andTriggerWrapper.AssertTriggerCounts(0, 0, 1, 4);
+
+            condition1.State = false;
+            condition1.BecameFalse.Invoke();
+            andTriggerWrapper.AssertTriggerCounts(0, 0, 1, 4);
         }
 
         [Test]
@@ -232,55 +245,61 @@ namespace UnityUtil.Test.EditMode.Triggers {
             AndTrigger andTrigger = getAndTrigger(condition0, condition1);
             andTrigger.RaiseBecameEvents = true;
             andTrigger.RaiseStillEvents = true;
-            var orTriggerWrapper = new ConditionalTriggerWrapper<AndTrigger>(andTrigger);
+            var andTriggerWrapper = new TestConditionalTriggerWrapper<AndTrigger>(andTrigger);
 
             // Act/assert
             condition0.StillFalse.Invoke();
-            orTriggerWrapper.AssertTriggerCounts(0, 0, 0, 1);
+            andTrigger.TriggerState();
+            andTriggerWrapper.AssertTriggerCounts(0, 0, 0, 1);
 
             condition1.StillFalse.Invoke();
-            orTriggerWrapper.AssertTriggerCounts(0, 0, 0, 2);
-
-            condition0.BecameTrue.Invoke();
-            orTriggerWrapper.AssertTriggerCounts(0, 0, 0, 3);
-
-            condition0.StillTrue.Invoke();
-            orTriggerWrapper.AssertTriggerCounts(0, 0, 0, 4);
-
-            condition0.State = false;
-            condition0.BecameFalse.Invoke();
-            orTriggerWrapper.AssertTriggerCounts(0, 0, 0, 5);
-
-            condition1.State = true;
-            condition1.BecameTrue.Invoke();
-            orTriggerWrapper.AssertTriggerCounts(0, 0, 0, 6);
-
-            condition1.StillTrue.Invoke();
-            orTriggerWrapper.AssertTriggerCounts(0, 0, 0, 7);
+            andTrigger.TriggerState();
+            andTriggerWrapper.AssertTriggerCounts(0, 0, 0, 2);
 
             condition0.State = true;
             condition0.BecameTrue.Invoke();
-            orTriggerWrapper.AssertTriggerCounts(1, 0, 0, 7);
+            andTriggerWrapper.AssertTriggerCounts(0, 0, 0, 2);
 
             condition0.StillTrue.Invoke();
-            condition1.StillTrue.Invoke();
-            orTriggerWrapper.AssertTriggerCounts(1, 0, 2, 7);
-
-            condition1.State = false;
-            condition1.BecameFalse.Invoke();
-            orTriggerWrapper.AssertTriggerCounts(1, 1, 2, 7);
-
-            condition1.State = true;
-            condition1.BecameTrue.Invoke();
-            orTriggerWrapper.AssertTriggerCounts(2, 1, 2, 7);
+            andTrigger.TriggerState();
+            andTriggerWrapper.AssertTriggerCounts(0, 0, 0, 3);
 
             condition0.State = false;
             condition0.BecameFalse.Invoke();
-            orTriggerWrapper.AssertTriggerCounts(2, 2, 2, 7);
+            andTriggerWrapper.AssertTriggerCounts(0, 0, 0, 3);
+
+            condition1.State = true;
+            condition1.BecameTrue.Invoke();
+            andTriggerWrapper.AssertTriggerCounts(0, 0, 0, 3);
+
+            condition1.StillTrue.Invoke();
+            andTrigger.TriggerState();
+            andTriggerWrapper.AssertTriggerCounts(0, 0, 0, 4);
+
+            condition0.State = true;
+            condition0.BecameTrue.Invoke();
+            andTriggerWrapper.AssertTriggerCounts(1, 0, 0, 4);
+
+            condition0.StillTrue.Invoke();
+            condition1.StillTrue.Invoke();
+            andTrigger.TriggerState();
+            andTriggerWrapper.AssertTriggerCounts(1, 0, 1, 4);
 
             condition1.State = false;
             condition1.BecameFalse.Invoke();
-            orTriggerWrapper.AssertTriggerCounts(2, 2, 2, 8);
+            andTriggerWrapper.AssertTriggerCounts(1, 1, 1, 4);
+
+            condition1.State = true;
+            condition1.BecameTrue.Invoke();
+            andTriggerWrapper.AssertTriggerCounts(2, 1, 1, 4);
+
+            condition0.State = false;
+            condition0.BecameFalse.Invoke();
+            andTriggerWrapper.AssertTriggerCounts(2, 2, 1, 4);
+
+            condition1.State = false;
+            condition1.BecameFalse.Invoke();
+            andTriggerWrapper.AssertTriggerCounts(2, 2, 1, 4);
         }
 
         private static MockConditionalTrigger getTrigger(bool state = false)
@@ -293,11 +312,11 @@ namespace UnityUtil.Test.EditMode.Triggers {
         private static AndTrigger getAndTrigger(params ConditionalTrigger[] conditions)
         {
             AndTrigger trigger = new GameObject().AddComponent<AndTrigger>();
-            trigger.TriggerWhenConditionsChanged = true;
-            trigger.TriggerWhenConditionsMaintained = true;
+            trigger.RaiseBecameEvents = true;
+            trigger.RaiseStillEvents = true;
 
             trigger.Conditions = conditions;
-            trigger.ResetEventListeners();
+            trigger.ResetBecameEventListeners();
 
             return trigger;
         }

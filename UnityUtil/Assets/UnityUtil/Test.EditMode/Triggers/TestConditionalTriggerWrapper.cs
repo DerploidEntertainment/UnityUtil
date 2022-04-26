@@ -4,10 +4,10 @@ using UnityEngine.Triggers;
 namespace UnityUtil.Test.EditMode.Triggers
 {
 
-    internal class ConditionalTriggerWrapper<T> where T : ConditionalTrigger
+    internal class TestConditionalTriggerWrapper<T> where T : ConditionalTrigger
     {
         public T Trigger { get; private set; }
-        public ConditionalTriggerWrapper(T orTrigger)
+        public TestConditionalTriggerWrapper(T orTrigger)
         {
             Trigger = orTrigger;
             Trigger.BecameTrue.AddListener(() => ++BecameTrueCount);
@@ -21,12 +21,12 @@ namespace UnityUtil.Test.EditMode.Triggers
         public int StillTrueCount { get; private set; }
         public int StillFalseCount { get; private set; }
 
-        public void AssertTriggerCounts(int expectedBecameTrue, int expectedBecameFalse, int expectedStillTrue, int expectedStillFalse)
+        public void AssertTriggerCounts(int expectedBecameTrueCount, int expectedBecameFalseCount, int expectedStillTrueCount, int expectedStillFalseCount)
         {
-            Assert.That(BecameTrueCount, Is.EqualTo(expectedBecameTrue));
-            Assert.That(BecameFalseCount, Is.EqualTo(expectedBecameFalse));
-            Assert.That(StillTrueCount, Is.EqualTo(expectedStillTrue));
-            Assert.That(StillFalseCount, Is.EqualTo(expectedStillFalse));
+            Assert.That(BecameTrueCount, Is.EqualTo(expectedBecameTrueCount));
+            Assert.That(BecameFalseCount, Is.EqualTo(expectedBecameFalseCount));
+            Assert.That(StillTrueCount, Is.EqualTo(expectedStillTrueCount));
+            Assert.That(StillFalseCount, Is.EqualTo(expectedStillFalseCount));
         }
     }
 

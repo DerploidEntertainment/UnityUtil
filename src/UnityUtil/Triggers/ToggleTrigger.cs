@@ -5,7 +5,8 @@ namespace UnityEngine.Triggers;
 
 public class ToggleTrigger : ConditionalTrigger
 {
-    [PropertyOrder(-5f), ReadOnly, ShowInInspector, Tooltip("Note that this property may not refresh unless you select a different component in the Inspector then select this component again.")]
+    [PropertyOrder(-5f), ReadOnly, ShowInInspector]
+    [Tooltip("Note that this property may not refresh unless you select a different component in the Inspector then select this component again.")]
     private bool _currentState;
 
     [PropertyOrder(-4f)]

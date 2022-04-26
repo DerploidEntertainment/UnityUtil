@@ -5,7 +5,6 @@ namespace UnityEngine.Triggers;
 
 public abstract class ConditionalTrigger : MonoBehaviour
 {
-
     public abstract bool IsConditionMet();
 
     protected const string ButtonGroup = "Buttons";
