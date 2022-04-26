@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.IO;
 using System.Linq;
@@ -59,7 +60,7 @@ public class CsvConfigurationSource : ConfigurationSource
         // Read the config keys/values into a Dictionary
 #pragma warning disable IDE0008 // Use explicit type
         var configGrps = txt.text
-            .Split('\n')
+            .Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)     // Accounts for line endings of CSVs generated on different OSs
             .Where(cfg => !string.IsNullOrWhiteSpace(cfg))
             .Select((cfg, line) => {
                 string[] tokens = cfg.Split(',');
