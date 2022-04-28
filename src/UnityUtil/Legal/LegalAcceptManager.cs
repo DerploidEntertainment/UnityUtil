@@ -1,7 +1,6 @@
 using Sirenix.OdinInspector;
 using System;
 using System.Diagnostics;
-using UnityEngine.Events;
 using UnityEngine.Logging;
 using UnityEngine.Networking;
 using UnityEngine.Storage;
@@ -9,7 +8,7 @@ using UnityEngine.UI;
 
 namespace UnityEngine.Legal;
 
-public class LegalAcceptManager : Configurable
+public class LegalAcceptManager : Configurable, ILegalAcceptManager
 {
     private ILogger? _logger;
     private ILocalCache? _localCache;
@@ -21,43 +20,26 @@ public class LegalAcceptManager : Configurable
 
     public LegalDocument[] Documents = Array.Empty<LegalDocument>();
 
-    [Tooltip("This UI object will be activated if no version tags of the provided legal documents have been accepted yet.")]
-    [Required] public GameObject? AcceptInitialUi;
-
-    [Tooltip("This UI object will be activated if the version tags of the provided legal documents on the web don't match those that have already been accepted.")]
-    [Required] public GameObject? AcceptUpdateUi;
-
-    [Tooltip("This UI object will only be activated once all documents have been checked for updates, so that players don't 'accept' before there is actually anything ready to accept.")]
-    [Required] public GameObject? AcceptUi;
-
-    [Tooltip("If the player has already accepted the latest versions of all legal documents, then this event will be raised instead.")]
-    public UnityEvent AlreadyAccepted = new();
-
     public void Inject(ILoggerProvider loggerProvider, ILocalCache localCache)
     {
         _logger = loggerProvider.GetLogger(this);
         _localCache = localCache;
     }
 
-    protected override void Awake()
+    public void CheckAcceptance(Action<LegalAcceptance> callback)
     {
-        base.Awake();
-
         _latestVersionTags = new string[Documents.Length];
-
-        AcceptInitialUi!.SetActive(false);
-        AcceptUpdateUi!.SetActive(false);
-        AcceptUi!.SetActive(false);
-
         for (int d = 0; d < Documents.Length; ++d)
-            CheckForUpdate(Documents[d], d);
+            CheckForUpdate(d, callback);
     }
-    internal void CheckForUpdate(LegalDocument doc, int index, DownloadHandler? downloadHandler = null, UploadHandler? uploadHandler = null)
+
+    internal void CheckForUpdate(int documentIndex, Action<LegalAcceptance> callback, DownloadHandler? downloadHandler = null, UploadHandler? uploadHandler = null)
     {
         if (downloadHandler is null ^ uploadHandler is null)
             throw new InvalidOperationException();
 
         // Get the last accepted tag from the cache (will be empty if none stored yet)
+        LegalDocument doc = Documents[documentIndex];
         string acceptedTag = _localCache!.GetString(doc.CacheKey);
         bool firstTime = string.IsNullOrEmpty(acceptedTag);
 
@@ -102,23 +84,20 @@ public class LegalAcceptManager : Configurable
                 }
             }
 
-            ++_numTagsFetched;
-            _latestVersionTags[index] = webTag;
+            _latestVersionTags[documentIndex] = webTag;
 
             // If the tag from the web does not match the version in cache, then
             // Show the "accept" text or the "accept an update" text, depending on whether cached tag existed
-            _acceptRequired = _acceptRequired || (webTag != acceptedTag);
-            _acceptUpdate = _acceptUpdate || (_acceptRequired && !firstTime);
-            if (_numTagsFetched == Documents.Length) {
+            _acceptRequired |= (webTag != acceptedTag);
+            _acceptUpdate |= (_acceptRequired && !firstTime);
+            if (++_numTagsFetched == Documents.Length) {
                 if (_acceptRequired) {
-                    AcceptInitialUi!.SetActive(!_acceptUpdate);
-                    AcceptUpdateUi!.SetActive(_acceptUpdate);
-                    AcceptUi!.SetActive(true);
                     _logger!.Log($"User must accept latest versions of all legal documents {(_acceptUpdate ? "because the versions that they last accepted are out of date" : "for the first time")}.", context: this);
+                    callback(_acceptUpdate ? LegalAcceptance.Stale : LegalAcceptance.Unprovided);
                 }
                 else {
                     _logger!.Log($"User already accepted latest versions of all legal documents.", context: this);
-                    AlreadyAccepted.Invoke();
+                    callback(LegalAcceptance.Current);
                 }
             }
         }
@@ -132,7 +111,7 @@ public class LegalAcceptManager : Configurable
 
         HasAccepted = true;
 
-        _logger!.Log($"User has accepted latest versions all legal documents.", context: this);
+        _logger!.Log($"User has accepted latest versions of all legal documents.", context: this);
     }
 
     [Button, Conditional("DEBUG")]
