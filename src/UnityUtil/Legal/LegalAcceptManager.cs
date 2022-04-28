@@ -9,7 +9,7 @@ using UnityEngine.UI;
 
 namespace UnityEngine.Legal;
 
-public class LegalAcceptManager : Configurable
+public class LegalAcceptManager : Configurable, ILegalAcceptManager
 {
     private ILogger? _logger;
     private ILocalCache? _localCache;
