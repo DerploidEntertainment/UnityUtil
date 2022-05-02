@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 using U = UnityEngine;
 
-namespace UnityEngine;
+namespace UnityUtil.Math;
 
 public static class MoreMath
 {

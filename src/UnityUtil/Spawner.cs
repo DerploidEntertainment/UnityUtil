@@ -2,6 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 using UnityEngine.DependencyInjection;
 using UnityEngine.Logging;
+using UnityUtil.Math;
 using U = UnityEngine;
 
 namespace UnityEngine;

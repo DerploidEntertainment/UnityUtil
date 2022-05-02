@@ -1,10 +1,11 @@
 ﻿using Sirenix.OdinInspector;
 using System;
 using System.Globalization;
+using UnityEngine;
 using UnityEngine.Logging;
 using S = System;
 
-namespace UnityEngine;
+namespace UnityUtil.Math;
 
 public sealed class RandomNumberGenerator : Configurable, IRandomNumberGenerator
 {
@@ -24,7 +25,7 @@ public sealed class RandomNumberGenerator : Configurable, IRandomNumberGenerator
         else
             Logger!.Log($"Using configured seed {seed}", context: this);
 
-        Random.InitState(seed);
+        UnityEngine.Random.InitState(seed);
         SystemRand = new S.Random(seed);
     }
 
