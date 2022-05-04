@@ -59,7 +59,7 @@ public class GameCrasher : MonoBehaviour
     public void UncaughtExceptionAndroid()
     {
         if (Application.platform != RuntimePlatform.Android) {
-            Debug.LogWarning("Can't call the Android uncaught exception handler if we're not on Android, silly");
+            Debug.LogWarning("Can't call the Android uncaught exception handler on non-Android platform.");
             return;
         }
 

@@ -6,6 +6,7 @@ using System.Linq;
 using UnityEngine.DependencyInjection;
 using UnityEngine.Events;
 using UnityEngine.Logging;
+using UnityUtil.Math;
 
 namespace UnityEngine.Inventories;
 

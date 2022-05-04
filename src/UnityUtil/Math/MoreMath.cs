@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 using U = UnityEngine;
 
-namespace UnityEngine;
+namespace UnityUtil.Math;
 
 public static class MoreMath
 {
@@ -17,7 +18,8 @@ public static class MoreMath
     /// <param name="indexWeights">The weights for each index. These must sum up to 1.</param>
     /// <param name="randomNumberGenerator">The object used to generate pseudorandom numbers.</param>
     /// <returns>An index between 0 (inclusive) and the length of <paramref name="indexWeights"/> (exclusive)</returns>
-    /// <exception cref="InvalidOperationException">The sum of <paramref name="indexWeights"/> is not 1</exception>
+    /// <exception cref="ArgumentException"><paramref name="optionProbabilities"/> is empty.</exception>
+    /// <exception cref="InvalidOperationException">The sum of <paramref name="indexWeights"/> is not 1.</exception>
     /// <remarks>
     /// Picture a set of ranges between 0 and 1, with sizes determined by <paramref name="indexWeights"/>
     /// <code>
@@ -32,16 +34,26 @@ public static class MoreMath
     /// </remarks>
     public static int RandomWeightedIndex(IReadOnlyList<float> indexWeights, IRandomNumberGenerator randomNumberGenerator)
     {
-        if (indexWeights.Sum() != 1f)
-            throw new InvalidOperationException($"The sum of all {nameof(indexWeights)} must equal 1.");
+        if (indexWeights.Count == 0)
+            throw new ArgumentException($"{nameof(indexWeights)} must have at least one element.", nameof(indexWeights));
 
-        int w;
         float val = (float)randomNumberGenerator.NextDouble();   // Between 0 (inclusive) and 1 (exclusive)
-        float sum = indexWeights[0];
-        for (w = 0; w < indexWeights.Count - 1 && sum <= val; ++w)
-            sum += indexWeights[w + 1];
 
-        return w;
+        int index = -1;
+        float sum = 0f;
+        for (int x = 0; x < indexWeights.Count; ++x) {
+            float weight = indexWeights[x];
+            if (weight < 0f || weight > 1f)
+                throw new InvalidOperationException($"All {nameof(indexWeights)} must be >= 0 and <= 1. Index {x} was {weight}.");
+
+            sum += weight;
+            if (index == -1 && sum > val)
+                index = x;
+        }
+
+        return sum == 1f
+            ? index == -1 ? indexWeights.Count - 1 : index
+            : throw new InvalidOperationException($"The sum of all {nameof(indexWeights)} must equal 1.");
     }
 
     /// <summary>

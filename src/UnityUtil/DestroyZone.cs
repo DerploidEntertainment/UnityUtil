@@ -14,7 +14,7 @@ public class DestroyZone : MonoBehaviour
     public bool DestroyAttachedRigidbody = true;
 
     [Tooltip(
-        "If non-null, this value will be used to filter OnTriggerEnter events to only those where the attached Rigidbody of " +
+        $"If non-null, this value will be used to filter {nameof(OnTriggerEnter)} events to only those where the attached Rigidbody of " +
         $"the enterring Collider MATCHES or DOES NOT MATCH this Tag, depending on the value of {nameof(DestroyZone.FilterIsBlacklist)}."
     )]
     public string? AttachedRigidbodyTagFilter = null;
