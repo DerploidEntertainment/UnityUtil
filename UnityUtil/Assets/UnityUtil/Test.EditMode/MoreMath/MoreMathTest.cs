@@ -11,6 +11,16 @@ namespace UnityUtil.Test.EditMode.Math
     public class MoreMathTest
     {
         [Test]
+        public void RandomWeightedIndex_Fails_NoWeights()
+        {
+            EditModeTestHelpers.ResetScene();
+
+            Assert.Throws<ArgumentException>(() =>
+                MoreMath.RandomWeightedIndex(Array.Empty<float>(), getRandomNumberGenerator())
+            );
+        }
+
+        [Test]
         [TestCase(new[] { 0f })]
         [TestCase(new[] { 1f, 1f })]
         [TestCase(new[] { 0.5f, 0f, 0.5f, 0.5f })]
