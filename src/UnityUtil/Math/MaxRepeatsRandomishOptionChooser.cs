@@ -6,6 +6,12 @@ namespace UnityUtil.Math;
 
 public class MaxRepeatsRandomishOptionState
 {
+    /// <summary>
+    /// All <see cref="OptionProbabilities"/> must sum to 1, within this tolerance.
+    /// This accounts for probabilities that cannot be accurately represented with floating point numbers (e.g., 9 options of uniform probability).
+    /// </summary>
+    public const float ProbabilitySumTolerance = 0.000001f;
+
     private readonly float[] _probabilities;
     private readonly int[] _repeats;
     private readonly int[] _repeatRingBuffer;
@@ -41,8 +47,8 @@ public class MaxRepeatsRandomishOptionState
             sum += weight;
         }
 
-        if (sum != 1f)
-            throw new InvalidOperationException($"The sum of all {nameof(optionProbabilities)} must equal 1.");
+        if (MathF.Abs(sum - 1f) > ProbabilitySumTolerance)
+            throw new InvalidOperationException($"The sum of all {nameof(optionProbabilities)} must equal 1 (± {ProbabilitySumTolerance}).");
 
         MaxRepeats = maxRepeats;
         _probabilities = optionProbabilities;
