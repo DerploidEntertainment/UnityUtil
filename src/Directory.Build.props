@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.1</TargetFramework>
     <Nullable>enable</Nullable>
     <LangVersion>latest</LangVersion>
-    <UnityVersion>2021.2.2f1</UnityVersion>
+    <UnityVersion>2021.3.2f1</UnityVersion>
     <DefineConstants Condition="'$(Configuration)'=='Debug'">UNITY_ASSERTIONS;UNITY_EDITOR</DefineConstants>
 
     <SirenixAssembliesRelativeDir>Assets\Plugins\Sirenix\Assemblies</SirenixAssembliesRelativeDir>
