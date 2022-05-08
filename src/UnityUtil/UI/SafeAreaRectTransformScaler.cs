@@ -5,6 +5,12 @@ using UnityEngine.Logging;
 
 namespace UnityEngine.UI;
 
+/// <summary>
+/// Note that there is a simple <a href="https://docs.unity3d.com/Manual/class-PlayerSettingsAndroid.html#Resolution">project setting</a>
+/// for toggling safe area usage on Android (Player > Resolution and Presentation > Render outside safe area),
+/// but <a href="https://forum.unity.com/threads/notch-avoidance-for-ios.1073261/">iOS doesn't support</a> this option.
+/// This component can be used on iOS <em>and</em> Android for a consistent dev experience across platforms.
+/// </summary>
 public class SafeAreaRectTransformScaler : MonoBehaviour
 {
     private ILogger? _logger;
