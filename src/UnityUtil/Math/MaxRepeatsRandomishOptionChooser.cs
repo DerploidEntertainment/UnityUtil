@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine.Scripting;
 
 namespace UnityUtil.Math;
 
@@ -100,6 +101,7 @@ public class MaxRepeatsRandomishOptionChooser : IRandomishOptionChooser<MaxRepea
 {
     private readonly IRandomNumberGenerator _randomNumberGenerator;
 
+    [Preserve]
     public MaxRepeatsRandomishOptionChooser(IRandomNumberGenerator randomNumberGenerator)
     {
         _randomNumberGenerator = randomNumberGenerator;
