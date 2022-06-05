@@ -8,7 +8,8 @@
 
     <SirenixAssembliesDir>Assets\Plugins\Sirenix\Assemblies</SirenixAssembliesDir>
   </PropertyGroup>
-  
+
+  <!-- Set paths to Unity project assemblies (depending on whether we're currently in the UnityUtil solution) -->
   <Choose>
     <When Condition="'$(SolutionName)'=='UnityUtil'">
       <PropertyGroup>
@@ -27,6 +28,7 @@
     </Otherwise>
   </Choose>
 
+  <!-- Make internals visible to test projects (and Moq) in non-test projects -->
   <PropertyGroup>
     <IsTestProject Condition="$(MSBuildProjectName.Contains('.Test'))">true</IsTestProject>
   </PropertyGroup>
@@ -36,7 +38,8 @@
     <InternalsVisibleTo Condition="'$(IsTestProject)'!='true'" Include="DynamicProxyGenAssembly2" />
   </ItemGroup>
 
-  <ItemGroup Label="CLS compliance">
+  <!-- CLS compliance -->
+  <ItemGroup>
     <!--
       Disable CLS compliance by default (other importing projects can re-enable it. Justification:
       1. Test assemblies will never be referenced by 3rd parties, so they don't need CLS-compliance.
@@ -49,17 +52,20 @@
     </AssemblyAttribute>
   </ItemGroup>
 
-  <ItemGroup Label="Dependencies">
+  <!-- Dependencies -->
+  <ItemGroup>
     <PackageReference Include="Unity3D" Version="2.0.0" />
   </ItemGroup>
 
-  <PropertyGroup Label="Code analysis">
+  <!-- Code analysis -->
+  <PropertyGroup>
     <EnableNETAnalyzers>true</EnableNETAnalyzers> <!-- Not required on .NET 5+ (https://docs.microsoft.com/en-us/dotnet/core/project-sdk/msbuild-props#enablenetanalyzers) -->
     <AnalysisMode>All</AnalysisMode>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
   </PropertyGroup>
 
-  <ItemGroup Label="Global suppressions">
+  <!-- Global message suppressions -->
+  <ItemGroup>
     <!-- I think this is justified for occasional squashing and logging... -->
     <AssemblyAttribute Include="System.Diagnostics.CodeAnalysis.SuppressMessage">
       <_Parameter1>Design</_Parameter1>
