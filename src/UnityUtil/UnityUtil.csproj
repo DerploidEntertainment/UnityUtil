@@ -1,24 +1,26 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="../OtherUnityAssemblies.props" />
 
   <PropertyGroup>
     <RootNamespace>UnityEngine</RootNamespace>
     <DebugSymbols>true</DebugSymbols> <!-- Always emit debug symbols, even in Release. We can decide in Unity whether they're then included in a game build. -->
 
-    <RemoteConfigRelativeDir>$(UnityScriptAssembliesPath)\Unity.RemoteConfig.dll</RemoteConfigRelativeDir>
-    <UnityRemoteConfigPath>$(UnityProjectPath)\$(RemoteConfigRelativeDir)</UnityRemoteConfigPath>
-    <UnityRemoteConfigPath Condition="!Exists('$(UnityRemoteConfigPath)')">$(UnityUtilProjectPath)\$(RemoteConfigRelativeDir)</UnityRemoteConfigPath>
+    <RemoteConfigAssembly>$(UnityScriptAssembliesDir)\Unity.RemoteConfig.dll</RemoteConfigAssembly>
+    <UnityRemoteConfigPath>$(UnityProjectPath)\$(RemoteConfigAssembly)</UnityRemoteConfigPath>
+    <UnityRemoteConfigPath Condition="!Exists('$(UnityRemoteConfigPath)')">$(UnityUtilProjectPath)\$(RemoteConfigAssembly)</UnityRemoteConfigPath>
   </PropertyGroup>
 
   <ItemGroup>
-    <Reference Include="$(UnityInstallRoot)\$(UnityVersion)\$(UnityModulesPath)\UnityEngine.AndroidJNIModule.dll" Private="false" />
-    <Reference Include="$(UnityInstallRoot)\$(UnityVersion)\$(UnityModulesPath)\UnityEngine.AnimationModule.dll" Private="false" />
-    <Reference Include="$(UnityInstallRoot)\$(UnityVersion)\$(UnityModulesPath)\UnityEngine.AudioModule.dll" Private="false" />
-    <Reference Include="$(UnityInstallRoot)\$(UnityVersion)\$(UnityModulesPath)\UnityEngine.CoreModule.dll" Private="false" />
-    <Reference Include="$(UnityInstallRoot)\$(UnityVersion)\$(UnityModulesPath)\UnityEngine.InputLegacyModule.dll" Private="false" />
-    <Reference Include="$(UnityInstallRoot)\$(UnityVersion)\$(UnityModulesPath)\UnityEngine.ParticleSystemModule.dll" Private="false" />
-    <Reference Include="$(UnityInstallRoot)\$(UnityVersion)\$(UnityModulesPath)\UnityEngine.Physics2DModule.dll" Private="false" />
-    <Reference Include="$(UnityInstallRoot)\$(UnityVersion)\$(UnityModulesPath)\UnityEngine.PhysicsModule.dll" Private="false" />
-    <Reference Include="$(UnityInstallRoot)\$(UnityVersion)\$(UnityModulesPath)\UnityEngine.UnityWebRequestModule.dll" Private="false" />
+    <Reference Include="$(UnityModulesPath)\UnityEngine.AndroidJNIModule.dll" Private="false" />
+    <Reference Include="$(UnityModulesPath)\UnityEngine.AnimationModule.dll" Private="false" />
+    <Reference Include="$(UnityModulesPath)\UnityEngine.AudioModule.dll" Private="false" />
+    <Reference Include="$(UnityModulesPath)\UnityEngine.CoreModule.dll" Private="false" />
+    <Reference Include="$(UnityModulesPath)\UnityEngine.InputLegacyModule.dll" Private="false" />
+    <Reference Include="$(UnityModulesPath)\UnityEngine.ParticleSystemModule.dll" Private="false" />
+    <Reference Include="$(UnityModulesPath)\UnityEngine.Physics2DModule.dll" Private="false" />
+    <Reference Include="$(UnityModulesPath)\UnityEngine.PhysicsModule.dll" Private="false" />
+    <Reference Include="$(UnityModulesPath)\UnityEngine.UnityWebRequestModule.dll" Private="false" />
 
     <Reference Include="$(UnityRemoteConfigPath)" Private="false" />
   </ItemGroup>

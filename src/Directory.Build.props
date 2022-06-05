@@ -1,13 +1,12 @@
 <Project>
-  
+
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <Nullable>enable</Nullable>
     <LangVersion>latest</LangVersion>
-    <UnityVersion>2021.3.2f1</UnityVersion>
     <DefineConstants Condition="'$(Configuration)'=='Debug'">UNITY_ASSERTIONS;UNITY_EDITOR</DefineConstants>
 
-    <SirenixAssembliesRelativeDir>Assets\Plugins\Sirenix\Assemblies</SirenixAssembliesRelativeDir>
+    <SirenixAssembliesDir>Assets\Plugins\Sirenix\Assemblies</SirenixAssembliesDir>
   </PropertyGroup>
   
   <Choose>
@@ -15,15 +14,15 @@
       <PropertyGroup>
         <UnityUtilProjectPath>$(SolutionDir)\..\UnityUtil</UnityUtilProjectPath>
         <UnityProjectPath>$(UnityUtilProjectPath)</UnityProjectPath>
-        <SirenixAssembliesDir>$(UnityProjectPath)\$(SirenixAssembliesRelativeDir)</SirenixAssembliesDir>
-      </PropertyGroup>
+        <SirenixAssembliesPath>$(UnityProjectPath)\$(SirenixAssembliesDir)</SirenixAssembliesPath>
+    </PropertyGroup>
     </When>
     <Otherwise>
       <PropertyGroup>
         <UnityUtilProjectPath>$(SolutionDir)\..\..\UnityUtil\UnityUtil</UnityUtilProjectPath>
         <UnityProjectPath>$(SolutionDir)\..\$(SolutionName)</UnityProjectPath>
-        <SirenixAssembliesDir>$(UnityProjectPath)\$(SirenixAssembliesRelativeDir)</SirenixAssembliesDir>
-        <SirenixAssembliesDir Condition="!Exists('$(SirenixAssembliesDir)')">$(UnityUtilProjectPath)\$(SirenixAssembliesRelativeDir)</SirenixAssembliesDir>
+        <SirenixAssembliesPath>$(UnityProjectPath)\$(SirenixAssembliesDir)</SirenixAssembliesPath>
+        <SirenixAssembliesPath Condition="!Exists('$(SirenixAssembliesPath)')">$(UnityUtilProjectPath)\$(SirenixAssembliesDir)</SirenixAssembliesPath>
       </PropertyGroup>
     </Otherwise>
   </Choose>
@@ -51,10 +50,7 @@
   </ItemGroup>
 
   <ItemGroup Label="Dependencies">
-    <PackageReference Include="Unity3D" Version="1.7.0" />
-
-    <Reference Include="$(SirenixAssembliesDir)\Sirenix.OdinInspector.Attributes.dll" Private="false"/>
-    <Reference Include="$(UnityProjectPath)\$(UnityScriptAssembliesPath)\UnityEngine.UI.dll" Private="false" />
+    <PackageReference Include="Unity3D" Version="2.0.0" />
   </ItemGroup>
 
   <PropertyGroup Label="Code analysis">
@@ -81,12 +77,12 @@
       <_Parameter1>Design</_Parameter1>
       <_Parameter2>CA1062:Validate arguments of public methods</_Parameter2>
     </AssemblyAttribute>
-    
+
     <!-- Test method names can definitely have underscores... -->
     <AssemblyAttribute Condition="'$(IsTestProject)'=='true'" Include="System.Diagnostics.CodeAnalysis.SuppressMessage">
       <_Parameter1>Naming</_Parameter1>
       <_Parameter2>CA1707:Identifiers should not contain underscores</_Parameter2>
     </AssemblyAttribute>
   </ItemGroup>
-  
+
 </Project>

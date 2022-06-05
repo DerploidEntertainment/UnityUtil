@@ -2,7 +2,7 @@
 
   <!-- This line must go here, not in Directory.Build.props, otherwise we'd be trying to remove UnityEngine.dll before it's been added! -->
   <ItemGroup>
-    <Reference Remove="$(UnityInstallRoot)\$(UnityVersion)\$(UnityEnginePath)" />
+    <Reference Remove="$(UnityEnginePath)" />
   </ItemGroup>
 
 </Project>

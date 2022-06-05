@@ -5,9 +5,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Reference Include="$(UnityInstallRoot)\$(UnityVersion)\$(UnityModulesPath)\UnityEngine.CoreModule.dll" Private="false" />
-    <Reference Include="$(UnityInstallRoot)\$(UnityVersion)\$(UnityModulesPath)\UnityEngine.PhysicsModule.dll" Private="false" />
-    <Reference Include="$(UnityInstallRoot)\$(UnityVersion)\$(UnityModulesPath)\UnityEngine.Physics2DModule.dll" Private="false" />
+    <Reference Include="$(UnityModulesPath)\UnityEngine.CoreModule.dll" Private="false" />
+    <Reference Include="$(UnityModulesPath)\UnityEngine.PhysicsModule.dll" Private="false" />
+    <Reference Include="$(UnityModulesPath)\UnityEngine.Physics2DModule.dll" Private="false" />
   </ItemGroup>
 
 </Project>

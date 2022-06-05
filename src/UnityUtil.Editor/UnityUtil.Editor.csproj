@@ -1,15 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
+  <Import Project="../OtherUnityAssemblies.props"/>
+
   <ItemGroup>
     <ProjectReference Include="..\UnityUtil\UnityUtil.csproj" />
 
-    <Reference Include="$(SirenixAssembliesDir)\Sirenix.OdinInspector.Editor.dll" Private="false" />
-    <Reference Include="$(UnityInstallRoot)\$(UnityVersion)\$(UnityEditorPath)" Private="false" />
-    <Reference Include="$(UnityProjectPath)\$(UnityScriptAssembliesPath)\UnityEngine.TestRunner.dll" Private="false" />
+    <Reference Include="$(SirenixAssembliesPath)\Sirenix.OdinInspector.Editor.dll" Private="false" />
+    <Reference Include="$(UnityEditorPath)" Private="false" />
+    <Reference Include="$(UnityScriptAssembliesPath)\UnityEngine.TestRunner.dll" Private="false" />
 
-    <Reference Include="$(UnityInstallRoot)\$(UnityVersion)\$(UnityModulesPath)\UnityEngine.dll" Private="false" />
-    <Reference Include="$(UnityInstallRoot)\$(UnityVersion)\$(UnityModulesPath)\UnityEngine.CoreModule.dll" Private="false" />
-    <Reference Include="$(UnityInstallRoot)\$(UnityVersion)\$(UnityModulesPath)\UnityEngine.IMGUIModule.dll" Private="false" />
+    <Reference Include="$(UnityModulesPath)\UnityEngine.dll" Private="false" />
+    <Reference Include="$(UnityModulesPath)\UnityEngine.CoreModule.dll" Private="false" />
+    <Reference Include="$(UnityModulesPath)\UnityEngine.IMGUIModule.dll" Private="false" />
   </ItemGroup>
 
   <Target Name="CopyOutputs" AfterTargets="AfterBuild">
