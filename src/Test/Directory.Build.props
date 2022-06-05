@@ -2,17 +2,19 @@
 
   <Import Project="../Directory.Build.props" />
 
+  <Import Project="../OtherUnityAssemblies.props"/>
+
   <PropertyGroup>
     <MoqPath>$(UnityProjectPath)\Assets\$(SolutionName)\logic\Editor\Moq\Moq.dll</MoqPath>
     <MoqPath Condition="!Exists('$(MoqPath)')">$(UnityUtilProjectPath)\Assets\Editor\Moq\Moq.dll</MoqPath>
   </PropertyGroup>
   
   <ItemGroup Label="Dependencies">
-    <Reference Include="$(UnityProjectPath)\$(UnityPackageCache)\$(NunitPath)" Private="false" />
+    <Reference Include="$(NunitPath)" Private="false" />
     <Reference Include="$(MoqPath)" Private="false" />
     <PackageReference Include="NUnit.Analyzers" Version="3.2.0" />
     <ProjectReference Include="..\..\UnityUtil\UnityUtil.csproj" />
-    <Reference Include="$(UnityProjectPath)\$(UnityScriptAssembliesPath)\UnityEngine.TestRunner.dll" Private="false" />
+    <Reference Include="$(UnityScriptAssembliesPath)\UnityEngine.TestRunner.dll" Private="false" />
   </ItemGroup>
 
   <ItemGroup>
