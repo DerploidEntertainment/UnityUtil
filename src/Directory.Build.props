@@ -54,7 +54,7 @@
 
   <!-- Dependencies -->
   <ItemGroup>
-    <PackageReference Include="Unity3D" Version="2.0.0" />
+    <PackageReference Include="Unity3D" Version="2.0.1" />
   </ItemGroup>
 
   <!-- Code analysis -->

@@ -8,8 +8,9 @@
     <MoqPath>$(UnityProjectPath)\Assets\$(SolutionName)\logic\Editor\Moq\Moq.dll</MoqPath>
     <MoqPath Condition="!Exists('$(MoqPath)')">$(UnityUtilProjectPath)\Assets\Editor\Moq\Moq.dll</MoqPath>
   </PropertyGroup>
-  
-  <ItemGroup Label="Dependencies">
+
+  <!-- Dependencies -->
+  <ItemGroup>
     <Reference Include="$(NunitPath)" Private="false" />
     <Reference Include="$(MoqPath)" Private="false" />
     <PackageReference Include="NUnit.Analyzers" Version="3.2.0" />
