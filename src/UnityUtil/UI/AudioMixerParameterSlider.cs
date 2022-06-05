@@ -133,7 +133,7 @@ public class AudioMixerParameterSlider : Configurable
         }
         else {
             AudioMixer!.GetFloat(ExposedParameterName, out val);
-            logMsg = $"Not using cache or key '{cacheKey}' could not be found. Loaded value of exposed parameter '{ExposedParameterName}' from {nameof(Audio.AudioMixer)} '{AudioMixer.name}' instead";
+            logMsg = $"Not using cache or key '{cacheKey}' could not be found. Loaded value of exposed parameter '{ExposedParameterName}' ({val}) from {nameof(Audio.AudioMixer)} '{AudioMixer.name}' instead";
         }
 
         Slider!.value = untransformValue(val);   // This will trigger onValueChanged and thus initialize the AudioMixer as well
