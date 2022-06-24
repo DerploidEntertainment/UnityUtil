@@ -5,6 +5,7 @@
   <Import Project="../OtherUnityAssemblies.props"/>
 
   <PropertyGroup>
+    <LangVersion>9.0</LangVersion>
     <MoqPath>$(UnityProjectPath)\Assets\$(SolutionName)\logic\Editor\Moq\Moq.dll</MoqPath>
     <MoqPath Condition="!Exists('$(MoqPath)')">$(UnityUtilProjectPath)\Assets\Editor\Moq\Moq.dll</MoqPath>
   </PropertyGroup>
