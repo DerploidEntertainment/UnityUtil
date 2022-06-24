@@ -19,9 +19,9 @@ public enum AudioSliderTransformation
 
 [TypeInfoBox(
     $"Make sure this component is enabled (and its {nameof(GameObject)} is active) on startup, " +
-    $"otherwise initialization of {nameof(AudioMixer)} from the cache will not work correctly." +
+    $"otherwise initialization of {nameof(AudioMixer)} from local preferences will not work correctly." +
     $"\n\nNote that an {nameof(EventTrigger)} component will be attached to {nameof(UI.Slider)} (if one isn't attached already), " +
-    $"so that we can listen for {nameof(EventTriggerType.PointerUp)} events to play {nameof(TestAudio)} and save to a cache. " +
+    $"so that we can listen for {nameof(EventTriggerType.PointerUp)} events to play {nameof(TestAudio)} and save to local preferences. " +
     $"This will make the {nameof(Slider)}'s {nameof(GameObject)} intercept all events, " +
     $"and no event bubbling will occur from that object!"
 )]
@@ -29,7 +29,7 @@ public class AudioMixerParameterSlider : Configurable
 {
 
     private ILogger? _logger;
-    private ILocalCache? _localCache;
+    private ILocalPreferences? _localPreferences;
 
     [Required]
     public AudioMixer? AudioMixer;
@@ -52,14 +52,14 @@ public class AudioMixerParameterSlider : Configurable
     public AudioSource? TestAudio;
 
     [Tooltip(
-        $"If true, then {nameof(Slider)}'s value (after transformation) will be saved to a cache, " +
+        $"If true, then {nameof(Slider)}'s value (after transformation) will be saved to local preferences, " +
         $"so that it is 'saved' between sessions, and can theoretically be edited by the user."
     )]
-    public bool StoreParameterInCache = true;
+    public bool StoreParameterInPreferences = true;
 
-    [ShowIf(nameof(StoreParameterInCache))]
+    [ShowIf(nameof(StoreParameterInPreferences))]
     [Tooltip($"If empty, the value of {nameof(ExposedParameterName)} will be used as key.")]
-    public string CacheKey = "";
+    public string PreferencesKey = "";
 
 
     [Header("Slider to Volume Conversion")]
@@ -83,12 +83,12 @@ public class AudioMixerParameterSlider : Configurable
     [Tooltip($"See {nameof(SliderTransformation)} for the purpose of this field.")]
     public float Coefficient = 1f;
 
-    public string FinalCacheKey => string.IsNullOrEmpty(CacheKey) ? ExposedParameterName : CacheKey;
+    public string FinalPreferencesKey => string.IsNullOrEmpty(PreferencesKey) ? ExposedParameterName : PreferencesKey;
 
-    public void Inject(ILoggerProvider loggerProvider, ILocalCache localCache)
+    public void Inject(ILoggerProvider loggerProvider, ILocalPreferences localPreferences)
     {
         _logger = loggerProvider.GetLogger(this);
-        _localCache = localCache;
+        _localPreferences = localPreferences;
     }
     protected override void Awake()
     {
@@ -97,7 +97,7 @@ public class AudioMixerParameterSlider : Configurable
         bool paramExposed = AudioMixer!.GetFloat(ExposedParameterName, out _);
         Assert.IsTrue(paramExposed, $"{nameof(AudioMixer)} must expose a parameter with the name specified by {nameof(ExposedParameterName)} ('{ExposedParameterName}')");
 
-        // Update AudioMixer and cache (if requested) whenever slider changes
+        // Update AudioMixer and preferences (if requested) whenever slider changes
         Slider!.onValueChanged.AddListener(sliderValue => {
             float newVal = transformValue(sliderValue);
             AudioMixer.SetFloat(ExposedParameterName, newVal);
@@ -108,10 +108,10 @@ public class AudioMixerParameterSlider : Configurable
         EventTrigger eventTrigger = Slider.GetComponent<EventTrigger>() ?? Slider.gameObject.AddComponent<EventTrigger>();
         var pointerUpEvent = new EventTrigger.Entry { eventID = EventTriggerType.PointerUp };
         pointerUpEvent.callback.AddListener(e => {
-            if (StoreParameterInCache) {
+            if (StoreParameterInPreferences) {
                 float newVal = transformValue(Slider.value);
-                _localCache!.SetFloat(FinalCacheKey, newVal);
-                _logger!.Log($"Saved new value ({newVal}) of exposed parameter '{ExposedParameterName}' of {nameof(Audio.AudioMixer)} '{AudioMixer.name}' to cache", context: this);
+                _localPreferences!.SetFloat(FinalPreferencesKey, newVal);
+                _logger!.Log($"Saved new value ({newVal}) of exposed parameter '{ExposedParameterName}' of {nameof(Audio.AudioMixer)} '{AudioMixer.name}' to local preferences", context: this);
             }
             if (TestAudio != null)
                 TestAudio.Play();   // Don't know why the F*CK a null-coalescing operator isn't working here...
@@ -121,19 +121,19 @@ public class AudioMixerParameterSlider : Configurable
     [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
     private void Start()
     {
-        // Initialize audio parameters from cache, if requested
+        // Initialize audio parameters from preferences, if requested
         // This must occur in Start, as apparently setting AudioMixer parameters in Awake is undefined behavior... https://fogbugz.unity3d.com/default.asp?1197165_nik4gg1io942ae13#bugevent_1071843210
         float val;
         string logMsg;
 
-        string cacheKey = FinalCacheKey;
-        if (StoreParameterInCache && _localCache!.HasKey(cacheKey)) {
-            val = _localCache.GetFloat(cacheKey);
-            logMsg = $"Loaded value ({val}) of exposed parameter '{ExposedParameterName}' of {nameof(Audio.AudioMixer)} '{AudioMixer!.name}' from cache";
+        string prefsKey = FinalPreferencesKey;
+        if (StoreParameterInPreferences && _localPreferences!.HasKey(prefsKey)) {
+            val = _localPreferences.GetFloat(prefsKey);
+            logMsg = $"Loaded value ({val}) of exposed parameter '{ExposedParameterName}' of {nameof(Audio.AudioMixer)} '{AudioMixer!.name}' from preferences";
         }
         else {
             AudioMixer!.GetFloat(ExposedParameterName, out val);
-            logMsg = $"Not using cache or key '{cacheKey}' could not be found. Loaded value of exposed parameter '{ExposedParameterName}' ({val}) from {nameof(Audio.AudioMixer)} '{AudioMixer.name}' instead";
+            logMsg = $"Not using preferences or key '{prefsKey}' could not be found. Loaded value of exposed parameter '{ExposedParameterName}' ({val}) from {nameof(Audio.AudioMixer)} '{AudioMixer.name}' instead";
         }
 
         Slider!.value = untransformValue(val);   // This will trigger onValueChanged and thus initialize the AudioMixer as well
@@ -154,17 +154,17 @@ public class AudioMixerParameterSlider : Configurable
         };
 
     [Button]
-    public void ClearCachedState()
+    public void ClearPreferences()
     {
-        string cacheKey = FinalCacheKey;
-        if (_localCache == null)
-            PlayerPrefs.DeleteKey(cacheKey);
+        string prefsKey = FinalPreferencesKey;
+        if (_localPreferences == null)
+            PlayerPrefs.DeleteKey(prefsKey);
         else
-            _localCache.DeleteKey(cacheKey);
+            _localPreferences.DeleteKey(prefsKey);
 
         // Use debug logger in case this is being run from the Inspector outside Play mode
         _logger ??= Debug.unityLogger;
-        Debug.Log($"Deleted cache key '{cacheKey}'.", context: this);
+        Debug.Log($"Deleted preferences key '{prefsKey}'.", context: this);
     }
 
 }

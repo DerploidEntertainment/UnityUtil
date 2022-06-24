@@ -1,6 +1,6 @@
 ﻿namespace UnityEngine.Storage;
 
-public class PlayerPrefsLocalCache : ILocalCache
+public class PlayerPrefsLocalPreferences : ILocalPreferences
 {
     public void DeleteAll() => PlayerPrefs.DeleteAll();
     public void DeleteKey(string key) => PlayerPrefs.DeleteKey(getFullKey(key));

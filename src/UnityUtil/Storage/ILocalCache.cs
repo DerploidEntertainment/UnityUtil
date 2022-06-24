@@ -1,6 +1,6 @@
 ﻿namespace UnityEngine.Storage;
 
-public interface ILocalCache
+public interface ILocalPreferences
 {
     /// <summary>
     /// Removes all keys and values from the preferences. Use with caution.

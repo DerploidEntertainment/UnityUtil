@@ -11,7 +11,7 @@ namespace UnityEngine.Legal;
 public class LegalAcceptManager : Configurable, ILegalAcceptManager
 {
     private ILogger? _logger;
-    private ILocalCache? _localCache;
+    private ILocalPreferences? _localPreferences;
 
     private string[] _latestVersionTags = Array.Empty<string>();
     private bool _acceptRequired;
@@ -20,10 +20,10 @@ public class LegalAcceptManager : Configurable, ILegalAcceptManager
 
     public LegalDocument[] Documents = Array.Empty<LegalDocument>();
 
-    public void Inject(ILoggerProvider loggerProvider, ILocalCache localCache)
+    public void Inject(ILoggerProvider loggerProvider, ILocalPreferences localPreferences)
     {
         _logger = loggerProvider.GetLogger(this);
-        _localCache = localCache;
+        _localPreferences = localPreferences;
     }
 
     public void CheckAcceptance(Action<LegalAcceptance> callback)
@@ -38,9 +38,9 @@ public class LegalAcceptManager : Configurable, ILegalAcceptManager
         if (downloadHandler is null ^ uploadHandler is null)
             throw new InvalidOperationException();
 
-        // Get the last accepted tag from the cache (will be empty if none stored yet)
+        // Get the last accepted tag from preferences (will be empty if none stored yet)
         LegalDocument doc = Documents[documentIndex];
-        string acceptedTag = _localCache!.GetString(doc.CacheKey);
+        string acceptedTag = _localPreferences!.GetString(doc.PreferencesKey);
         bool firstTime = string.IsNullOrEmpty(acceptedTag);
 
         UnityWebRequest? req = null;
@@ -86,8 +86,8 @@ public class LegalAcceptManager : Configurable, ILegalAcceptManager
 
             _latestVersionTags[documentIndex] = webTag;
 
-            // If the tag from the web does not match the version in cache, then
-            // Show the "accept" text or the "accept an update" text, depending on whether cached tag existed
+            // If the tag from the web does not match the version in preferences, then
+            // Show the "accept" text or the "accept an update" text, depending on whether preferences tag existed
             _acceptRequired |= (webTag != acceptedTag);
             _acceptUpdate |= (_acceptRequired && !firstTime);
             if (++_numTagsFetched == Documents.Length) {
@@ -107,7 +107,7 @@ public class LegalAcceptManager : Configurable, ILegalAcceptManager
     public void Accept()
     {
         for (int v = 0; v < _latestVersionTags.Length; ++v)
-            _localCache!.SetString(Documents[v].CacheKey, _latestVersionTags[v].ToString());
+            _localPreferences!.SetString(Documents[v].PreferencesKey, _latestVersionTags[v].ToString());
 
         HasAccepted = true;
 
@@ -117,15 +117,15 @@ public class LegalAcceptManager : Configurable, ILegalAcceptManager
     [Button, Conditional("DEBUG")]
     public void ClearAcceptance()
     {
-        if (_localCache == null) {
+        if (_localPreferences == null) {
             for (int d = 0; d < Documents.Length; ++d)
-                PlayerPrefs.DeleteKey(Documents[d].CacheKey);
+                PlayerPrefs.DeleteKey(Documents[d].PreferencesKey);
         }
 
         // Use PlayerPrefs in case this is being run from the Inspector outside Play mode
         else {
             for (int d = 0; d < Documents.Length; ++d)
-                _localCache.DeleteKey(Documents[d].CacheKey);
+                _localPreferences.DeleteKey(Documents[d].PreferencesKey);
         }
 
         ILogger logger = (_logger ?? Debug.unityLogger);    // Use debug logger in case this is being run from the Inspector outside Play mode

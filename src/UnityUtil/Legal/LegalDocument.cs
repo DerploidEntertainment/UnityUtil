@@ -2,7 +2,7 @@
 
 namespace UnityEngine.Legal;
 
-[CreateAssetMenu(menuName = $"{nameof(UnityUtil)}/{nameof(UnityEngine.Legal)}/{ nameof(LegalDocument)}", fileName = "policy.asset")]
+[CreateAssetMenu(menuName = $"{nameof(UnityUtil)}/{nameof(UnityEngine.Legal)}/{nameof(LegalDocument)}", fileName = "policy.asset")]
 public class LegalDocument : ScriptableObject
 {
     [Tooltip(
@@ -14,13 +14,13 @@ public class LegalDocument : ScriptableObject
 
     [Tooltip(
         $"The server response for the resource located at {nameof(LatestVersionUri)} must include this header, " +
-        "containing a unique tag for the document version that can be stored in a cache."
+        "containing a unique tag for the document version that can be stored in preferences."
     )]
     public string TagHeader = "ETag";
 
     [Tooltip(
         $"After a user accepts the latest version of this legal document, that version's tag (from the {nameof(TagHeader)}) " +
-        "will be stored in a cache, so that the user doesn't have to accept again until the document is updated with a new tag."
+        "will be stored in preferences, so that the user doesn't have to accept again until the document is updated with a new tag."
     )]
-    public string CacheKey = "ACCEPTED_POLICY_ETAG";
+    public string PreferencesKey = "ACCEPTED_POLICY_ETAG";
 }
