@@ -1,9 +1,12 @@
-﻿namespace UnityEngine.Storage;
+﻿using UnityEngine.Scripting;
+
+namespace UnityEngine.Storage;
 
 public class PlayerPrefsLocalPreferences : ILocalPreferences
 {
     private readonly IAppVersion _appVersion;
 
+    [Preserve]
     public PlayerPrefsLocalPreferences(IAppVersion appVersion)
     {
         _appVersion = appVersion;
