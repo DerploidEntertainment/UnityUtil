@@ -38,5 +38,6 @@ public class RemoveFromBuild : MonoBehaviour
     public BuildContext PreserveBuildContexts;
 
     [Tooltip(MSG_PRESERVE_CONTEXT + " Order does not matter.")]
+    [ListDrawerSettings(Expanded = true)]
     public RuntimePlatform[] PreservePlatforms = Array.Empty<RuntimePlatform>();
 }
