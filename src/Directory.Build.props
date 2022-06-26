@@ -13,14 +13,16 @@
   <Choose>
     <When Condition="'$(SolutionName)'=='UnityUtil'">
       <PropertyGroup>
-        <UnityUtilProjectPath>$(SolutionDir)\..\UnityUtil</UnityUtilProjectPath>
+        <UnityUtilSolutionDir>$(SolutionDir)</UnityUtilSolutionDir>
+        <UnityUtilProjectPath>$(UnityUtilSolutionDir)\UnityUtil</UnityUtilProjectPath>
         <UnityProjectPath>$(UnityUtilProjectPath)</UnityProjectPath>
         <SirenixAssembliesPath>$(UnityProjectPath)\$(SirenixAssembliesDir)</SirenixAssembliesPath>
     </PropertyGroup>
     </When>
     <Otherwise>
       <PropertyGroup>
-        <UnityUtilProjectPath>$(SolutionDir)\..\..\UnityUtil\UnityUtil</UnityUtilProjectPath>
+        <UnityUtilSolutionDir>$(SolutionDir)\..\..\UnityUtil</UnityUtilSolutionDir>
+        <UnityUtilProjectPath>$(UnityUtilSolutionDir)\UnityUtil</UnityUtilProjectPath>
         <UnityProjectPath>$(SolutionDir)\..\$(SolutionName)</UnityProjectPath>
         <SirenixAssembliesPath>$(UnityProjectPath)\$(SirenixAssembliesDir)</SirenixAssembliesPath>
         <SirenixAssembliesPath Condition="!Exists('$(SirenixAssembliesPath)')">$(UnityUtilProjectPath)\$(SirenixAssembliesDir)</SirenixAssembliesPath>
@@ -53,6 +55,14 @@
   </ItemGroup>
 
   <!-- Dependencies -->
+  <!--
+  When developing NuGet package dependencies on the same machine,
+  copy the packages to the folder below so we can consume them before they're published.
+  Run `nuget pack <nuspec|csproj> -OutputDirectory <path>` to pack a dependency and output its .nupkg to the folder below.
+  -->
+  <PropertyGroup>
+    <RestoreAdditionalProjectSources>$(UnityUtilSolutionDir)\..\lib</RestoreAdditionalProjectSources>
+  </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Unity3D" Version="2.0.1" />
   </ItemGroup>
