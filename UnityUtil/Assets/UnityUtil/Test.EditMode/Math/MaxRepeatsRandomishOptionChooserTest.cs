@@ -11,15 +11,18 @@ namespace UnityUtil.Test.EditMode.Math
 {
     public class MaxRepeatsRandomishOptionChooserTest
     {
-        #region RandomishOptionState constructor
+        #region Constructor
 
         [Test]
-        public void RandomishOptionState_CannotConstruct_NoProbabilities()
+        public void CannotConstruct_NoProbabilities()
         {
             EditModeTestHelpers.ResetScene();
 
             Assert.Throws<ArgumentException>(() =>
-                new MaxRepeatsRandomishOptionState(maxRepeats: 1, Array.Empty<float>())
+                new MaxRepeatsRandomishOptionChooser(
+                    Mock.Of<IRandomNumberGenerator>(),
+                    new MaxRepeatsRandomishOptionChooserConfig { MaxRepeats = 1, OptionProbabilities = Array.Empty<float>() }
+                )
             );
         }
 
@@ -32,13 +35,16 @@ namespace UnityUtil.Test.EditMode.Math
         [TestCase(new[] { 0.25f, 0.85f })]
         [TestCase(new[] { 0.1f, 0.1f })]
         [TestCase(new[] { 0.2f, 0.5f })]
-        public void RandomishOptionState_CannotConstruct_ProbabilitiesDontSumToOne(float[] optionProbabilities)
+        public void CannotConstruct_ProbabilitiesDontSumToOne(float[] optionProbabilities)
         {
             EditModeTestHelpers.ResetScene();
 
             Debug.Log($"Option probabilities: {string.Join(',', optionProbabilities)}");
             Assert.Throws<InvalidOperationException>(() =>
-                new MaxRepeatsRandomishOptionState(maxRepeats: 1, optionProbabilities)
+                new MaxRepeatsRandomishOptionChooser(
+                    Mock.Of<IRandomNumberGenerator>(),
+                    new MaxRepeatsRandomishOptionChooserConfig { MaxRepeats = 1, OptionProbabilities = optionProbabilities }
+                )
             );
         }
 
@@ -48,258 +54,288 @@ namespace UnityUtil.Test.EditMode.Math
         [TestCase(new[] { -0.5f, -0.5f })]
         [TestCase(new[] { -0.5f, 0.5f })]
         [TestCase(new[] { 0.5f, -0.25f, 0.75f })]
-        public void RandomishOptionState_CannotConstruct_NegativeProbabilities(float[] optionProbabilities)
+        public void CannotConstruct_NegativeProbabilities(float[] optionProbabilities)
         {
             EditModeTestHelpers.ResetScene();
 
             Debug.Log($"Option probabilities: {string.Join(',', optionProbabilities)}");
             Assert.Throws<InvalidOperationException>(() =>
-                new MaxRepeatsRandomishOptionState(maxRepeats: 1, optionProbabilities)
+                new MaxRepeatsRandomishOptionChooser(
+                    Mock.Of<IRandomNumberGenerator>(),
+                    new MaxRepeatsRandomishOptionChooserConfig { MaxRepeats = 1, OptionProbabilities = optionProbabilities }
+                )
             );
         }
 
         [Test]
         [TestCase(0)]
         [TestCase(-1)]
-        public void RandomishOptionState_CannotConstruct_RepeatFactorLessThanOne(int repeatFactor)
+        public void CannotConstruct_MaxRepeatsLessThanOne(int maxRepeats)
         {
             EditModeTestHelpers.ResetScene();
 
-            Assert.Throws<ArgumentOutOfRangeException>(() =>
-                new MaxRepeatsRandomishOptionState(repeatFactor, new[] { 1f })
+            Assert.Throws<ArgumentException>(() =>
+                new MaxRepeatsRandomishOptionChooser(
+                    Mock.Of<IRandomNumberGenerator>(),
+                    new MaxRepeatsRandomishOptionChooserConfig { MaxRepeats = maxRepeats, OptionProbabilities = new[] { 1f } }
+                )
             );
         }
 
         #endregion
 
-        #region RandomishOptionState UseOption
+        #region UseOption
 
         [Test]
         [TestCase(-1, new[] { 1f })]
         [TestCase(1, new[] { 1f })]
         [TestCase(-1, new[] { 0.5f, 0.5f })]
         [TestCase(2, new[] { 0.5f, 0.5f })]
-        public void RandomishOptionState_UseOption_IndexMustBeInRange(int occurenceIndex, float[] optionProbabilities)
+        public void UseOption_IndexMustBeInRange(int occurenceIndex, float[] optionProbabilities)
         {
             EditModeTestHelpers.ResetScene();
 
             Debug.Log($"Option probabilities: {string.Join(',', optionProbabilities)}");
-            MaxRepeatsRandomishOptionState state = new(maxRepeats: 1, new[] { 1f });
+            MaxRepeatsRandomishOptionChooser maxRepeatsRandomishOptionChooser = getRandomishOptionChooser(
+                config: new MaxRepeatsRandomishOptionChooserConfig { MaxRepeats = 1, OptionProbabilities = new[] { 1f } }
+            );
+
             Assert.Throws<ArgumentOutOfRangeException>(() =>
-                state.UseOption(occurenceIndex)
+                maxRepeatsRandomishOptionChooser.UseOption(occurenceIndex)
             );
         }
 
         [Test]
-        public void RandomishOptionState_UseOption_IncrementsAndDecrementsCounts()
+        public void UseOption_IncrementsAndDecrementsCounts()
         {
             EditModeTestHelpers.ResetScene();
 
-            MaxRepeatsRandomishOptionState state = new(maxRepeats: 2, new[] { 0.5f, 0.5f });
+            MaxRepeatsRandomishOptionChooser maxRepeatsRandomishOptionChooser = getRandomishOptionChooser(
+                config: new MaxRepeatsRandomishOptionChooserConfig { MaxRepeats = 2, OptionProbabilities = new[] { 0.5f, 0.5f } }
+            );
 
-            Assert.That(state.OptionRepeats[0], Is.Zero);
-            Assert.That(state.OptionRepeats[1], Is.Zero);
+            Assert.That(maxRepeatsRandomishOptionChooser.OptionRepeats[0], Is.Zero);
+            Assert.That(maxRepeatsRandomishOptionChooser.OptionRepeats[1], Is.Zero);
 
-            state.UseOption(0);
-            Assert.That(state.OptionRepeats[0], Is.EqualTo(1));
-            Assert.That(state.OptionRepeats[1], Is.EqualTo(0));
+            maxRepeatsRandomishOptionChooser.UseOption(0);
+            Assert.That(maxRepeatsRandomishOptionChooser.OptionRepeats[0], Is.EqualTo(1));
+            Assert.That(maxRepeatsRandomishOptionChooser.OptionRepeats[1], Is.EqualTo(0));
 
-            state.UseOption(0);
-            Assert.That(state.OptionRepeats[0], Is.EqualTo(2));
-            Assert.That(state.OptionRepeats[1], Is.EqualTo(0));
+            maxRepeatsRandomishOptionChooser.UseOption(0);
+            Assert.That(maxRepeatsRandomishOptionChooser.OptionRepeats[0], Is.EqualTo(2));
+            Assert.That(maxRepeatsRandomishOptionChooser.OptionRepeats[1], Is.EqualTo(0));
 
-            state.UseOption(1);
-            Assert.That(state.OptionRepeats[0], Is.EqualTo(1));
-            Assert.That(state.OptionRepeats[1], Is.EqualTo(1));
+            maxRepeatsRandomishOptionChooser.UseOption(1);
+            Assert.That(maxRepeatsRandomishOptionChooser.OptionRepeats[0], Is.EqualTo(1));
+            Assert.That(maxRepeatsRandomishOptionChooser.OptionRepeats[1], Is.EqualTo(1));
 
-            state.UseOption(1);
-            Assert.That(state.OptionRepeats[0], Is.EqualTo(0));
-            Assert.That(state.OptionRepeats[1], Is.EqualTo(2));
+            maxRepeatsRandomishOptionChooser.UseOption(1);
+            Assert.That(maxRepeatsRandomishOptionChooser.OptionRepeats[0], Is.EqualTo(0));
+            Assert.That(maxRepeatsRandomishOptionChooser.OptionRepeats[1], Is.EqualTo(2));
         }
 
         [Test]
         [TestCase(2)]
         [TestCase(3)]
-        public void RandomishOptionState_UseOption_DoesNotIncrementCounts_AboveMaxRepeats(int maxRepeats)
+        public void UseOption_DoesNotIncrementCounts_AboveMaxRepeats(int maxRepeats)
         {
             EditModeTestHelpers.ResetScene();
 
-            MaxRepeatsRandomishOptionState state = new(maxRepeats, new[] { 0.5f, 0.5f });
+            MaxRepeatsRandomishOptionChooser maxRepeatsRandomishOptionChooser = getRandomishOptionChooser(
+                config: new MaxRepeatsRandomishOptionChooserConfig { MaxRepeats = maxRepeats, OptionProbabilities = new[] { 0.5f, 0.5f } }
+            );
 
-            Assert.That(state.OptionRepeats[0], Is.Zero);
-            Assert.That(state.OptionRepeats[1], Is.Zero);
+            Assert.That(maxRepeatsRandomishOptionChooser.OptionRepeats[0], Is.Zero);
+            Assert.That(maxRepeatsRandomishOptionChooser.OptionRepeats[1], Is.Zero);
 
             for (int x = 0; x < maxRepeats; ++x)
-                state.UseOption(0);
-            Assert.That(state.OptionRepeats[0], Is.EqualTo(maxRepeats));
-            Assert.That(state.OptionRepeats[1], Is.EqualTo(0));
+                maxRepeatsRandomishOptionChooser.UseOption(0);
+            Assert.That(maxRepeatsRandomishOptionChooser.OptionRepeats[0], Is.EqualTo(maxRepeats));
+            Assert.That(maxRepeatsRandomishOptionChooser.OptionRepeats[1], Is.EqualTo(0));
 
-            state.UseOption(1);
-            state.UseOption(0);
-            Assert.That(state.OptionRepeats[0], Is.EqualTo(maxRepeats - 1));
-            Assert.That(state.OptionRepeats[1], Is.EqualTo(1));
+            maxRepeatsRandomishOptionChooser.UseOption(1);
+            maxRepeatsRandomishOptionChooser.UseOption(0);
+            Assert.That(maxRepeatsRandomishOptionChooser.OptionRepeats[0], Is.EqualTo(maxRepeats - 1));
+            Assert.That(maxRepeatsRandomishOptionChooser.OptionRepeats[1], Is.EqualTo(1));
         }
 
         [Test]
         [TestCase(2)]
         [TestCase(3)]
-        public void RandomishOptionState_UseOption_CannotHaveMoreThanMaxRepeatsInRow(int maxRepeats)
+        public void UseOption_CannotHaveMoreThanMaxRepeatsInRow(int maxRepeats)
         {
             EditModeTestHelpers.ResetScene();
 
-            MaxRepeatsRandomishOptionState state = new(maxRepeats, new[] { 0.5f, 0.5f });
+            MaxRepeatsRandomishOptionChooser maxRepeatsRandomishOptionChooser = getRandomishOptionChooser(
+                config: new MaxRepeatsRandomishOptionChooserConfig { MaxRepeats = maxRepeats, OptionProbabilities = new[] { 0.5f, 0.5f } }
+            );
 
-            Assert.That(state.OptionRepeats[0], Is.Zero);
-            Assert.That(state.OptionRepeats[1], Is.Zero);
+            Assert.That(maxRepeatsRandomishOptionChooser.OptionRepeats[0], Is.Zero);
+            Assert.That(maxRepeatsRandomishOptionChooser.OptionRepeats[1], Is.Zero);
 
             for (int x = 0; x < maxRepeats; ++x)
-                state.UseOption(0);
-            Assert.That(state.OptionRepeats[0], Is.EqualTo(maxRepeats));
+                maxRepeatsRandomishOptionChooser.UseOption(0);
+            Assert.That(maxRepeatsRandomishOptionChooser.OptionRepeats[0], Is.EqualTo(maxRepeats));
 
-            Assert.Throws<InvalidOperationException>(() => state.UseOption(0));
+            Assert.Throws<InvalidOperationException>(() => maxRepeatsRandomishOptionChooser.UseOption(0));
         }
 
         [Test]
         [TestCase(2)]
         [TestCase(3)]
-        public void RandomishOptionState_UseOption_RemovesAndAddsProbability(int maxRepeats)
+        public void UseOption_RemovesAndAddsProbability(int maxRepeats)
         {
             EditModeTestHelpers.ResetScene();
 
-            MaxRepeatsRandomishOptionState state = new(maxRepeats, new[] { 0.5f, 0.5f });
+            MaxRepeatsRandomishOptionChooserConfig config = new() { MaxRepeats = maxRepeats, OptionProbabilities = new[] { 0.5f, 0.5f } };
+            MaxRepeatsRandomishOptionChooser maxRepeatsRandomishOptionChooser = getRandomishOptionChooser(
+                config: new MaxRepeatsRandomishOptionChooserConfig { MaxRepeats = maxRepeats, OptionProbabilities = new[] { 0.5f, 0.5f } }
+            );
 
-            Assert.That(state.TotalProbability, Is.EqualTo(1f));
+            Assert.That(maxRepeatsRandomishOptionChooser.TotalProbability, Is.EqualTo(1f));
 
             for (int x = 0; x < maxRepeats - 1; ++x)
-                state.UseOption(0);
-            Assert.That(state.TotalProbability, Is.EqualTo(1f));
+                maxRepeatsRandomishOptionChooser.UseOption(0);
+            Assert.That(maxRepeatsRandomishOptionChooser.TotalProbability, Is.EqualTo(1f));
 
-            state.UseOption(0);
-            Assert.That(state.TotalProbability, Is.EqualTo(1f - state.OptionProbabilities[0]));
+            maxRepeatsRandomishOptionChooser.UseOption(0);
+            Assert.That(maxRepeatsRandomishOptionChooser.TotalProbability, Is.EqualTo(1f - config.OptionProbabilities[0]));
 
-            state.UseOption(1);
-            Assert.That(state.TotalProbability, Is.EqualTo(1f));
+            maxRepeatsRandomishOptionChooser.UseOption(1);
+            Assert.That(maxRepeatsRandomishOptionChooser.TotalProbability, Is.EqualTo(1f));
         }
 
         [Test]
         [TestCase(1)]
         [TestCase(2)]
         [TestCase(5)]
-        public void RandomishOptionState_UseOption_CanReturnSingleOptionForever(int maxRepeats)
+        public void UseOption_CanReturnSingleOptionForever(int maxRepeats)
         {
             EditModeTestHelpers.ResetScene();
 
-            MaxRepeatsRandomishOptionState state = new(maxRepeats, new[] { 1f });
+            MaxRepeatsRandomishOptionChooser maxRepeatsRandomishOptionChooser = getRandomishOptionChooser(
+                config: new MaxRepeatsRandomishOptionChooserConfig { MaxRepeats = maxRepeats, OptionProbabilities = new[] { 1f } }
+            );
 
             for (int x = 0; x < 10; ++x) {
-                state.UseOption(0);
-                Assert.That(state.OptionRepeats[0], Is.EqualTo(1));
-                Assert.That(state.TotalProbability, Is.EqualTo(1f));
+                maxRepeatsRandomishOptionChooser.UseOption(0);
+                Assert.That(maxRepeatsRandomishOptionChooser.OptionRepeats[0], Is.EqualTo(1));
+                Assert.That(maxRepeatsRandomishOptionChooser.TotalProbability, Is.EqualTo(1f));
             }
         }
 
         [Test]
-        public void RandomishOptionState_UseOption_RemovesOptionsAfterMaxRepeats()
+        public void UseOption_RemovesOptionsAfterMaxRepeats()
         {
             EditModeTestHelpers.ResetScene();
 
-            MaxRepeatsRandomishOptionState state = new(maxRepeats: 2, new[] { 0.5f, 0.5f });
+            MaxRepeatsRandomishOptionChooser maxRepeatsRandomishOptionChooser = getRandomishOptionChooser(
+                config: new MaxRepeatsRandomishOptionChooserConfig { MaxRepeats = 2, OptionProbabilities = new[] { 0.5f, 0.5f } }
+            );
 
-            Assert.That(state.TotalProbability, Is.EqualTo(1f));
-            Assert.That(state.OptionRepeats[0], Is.EqualTo(0));
+            Assert.That(maxRepeatsRandomishOptionChooser.TotalProbability, Is.EqualTo(1f));
+            Assert.That(maxRepeatsRandomishOptionChooser.OptionRepeats[0], Is.EqualTo(0));
 
-            state.UseOption(0);
-            Assert.That(state.TotalProbability, Is.EqualTo(1f));
-            Assert.That(state.OptionRepeats[0], Is.EqualTo(1));
+            maxRepeatsRandomishOptionChooser.UseOption(0);
+            Assert.That(maxRepeatsRandomishOptionChooser.TotalProbability, Is.EqualTo(1f));
+            Assert.That(maxRepeatsRandomishOptionChooser.OptionRepeats[0], Is.EqualTo(1));
 
-            state.UseOption(0);
-            Assert.That(state.TotalProbability, Is.EqualTo(0.5f));
-            Assert.That(state.OptionRepeats[0], Is.EqualTo(2));
+            maxRepeatsRandomishOptionChooser.UseOption(0);
+            Assert.That(maxRepeatsRandomishOptionChooser.TotalProbability, Is.EqualTo(0.5f));
+            Assert.That(maxRepeatsRandomishOptionChooser.OptionRepeats[0], Is.EqualTo(2));
         }
 
         #endregion
 
-        #region GetWeightedOptionIndex
+        #region GetOptionIndex
 
         [Test]
         [TestCase(1)]
         [TestCase(2)]
         [TestCase(5)]
-        public void GetWeightedOptionIndex_CanReturnSingleOptionForever(int maxRepeats)
+        public void GetOptionIndex_CanReturnSingleOptionForever(int maxRepeats)
         {
             EditModeTestHelpers.ResetScene();
 
-            MaxRepeatsRandomishOptionState state = new(maxRepeats, new[] { 1f });
+            MaxRepeatsRandomishOptionChooser maxRepeatsRandomishOptionChooser = getRandomishOptionChooser(
+                config: new MaxRepeatsRandomishOptionChooserConfig { MaxRepeats = maxRepeats, OptionProbabilities = new[] { 1f } }
+            );
+
             MaxRepeatsRandomishOptionChooser randomishOptionChooser = getRandomishOptionChooser();
 
             for (int x = 0; x < 10; ++x) {
-                int index = randomishOptionChooser.GetWeightedOptionIndex(state);
+                int index = maxRepeatsRandomishOptionChooser.GetOptionIndex();
                 Assert.That(index, Is.EqualTo(0));
             }
         }
 
         [Test]
-        public void GetWeightedOptionIndex_UsesCorrectRandomRange()
+        public void GetOptionIndex_UsesCorrectRandomRange()
         {
             EditModeTestHelpers.ResetScene();
 
+            MaxRepeatsRandomishOptionChooserConfig config;
+            MaxRepeatsRandomishOptionChooser randomishOptionChooser;
             var randomNumberGenerator = new Mock<IRandomNumberGenerator>();
-            MaxRepeatsRandomishOptionChooser randomishOptionChooser = getRandomishOptionChooser(randomNumberGenerator.Object);
             randomNumberGenerator.SetupSequence(x => x.Range(0f, It.IsAny<float>())).Returns(0);
 
             // Uniform distribution, 1 max repeat
             randomNumberGenerator.Invocations.Clear();
-            MaxRepeatsRandomishOptionState state = new(maxRepeats: 1, new[] { 0.5f, 0.5f });
+            config = new() { MaxRepeats = 1, OptionProbabilities = new[] { 0.5f, 0.5f } };
+            randomishOptionChooser = getRandomishOptionChooser(randomNumberGenerator.Object, config);
 
-            randomishOptionChooser.GetWeightedOptionIndex(state);
+            randomishOptionChooser.GetOptionIndex();
             randomNumberGenerator.Verify(x => x.Range(0f, 1.0f), Times.Exactly(1));
             randomNumberGenerator.Verify(x => x.Range(0f, 0.5f), Times.Exactly(0));
 
-            randomishOptionChooser.GetWeightedOptionIndex(state);
+            randomishOptionChooser.GetOptionIndex();
             randomNumberGenerator.Verify(x => x.Range(0f, 1.0f), Times.Exactly(1));
             randomNumberGenerator.Verify(x => x.Range(0f, 0.5f), Times.Exactly(1));
 
             // Uniform distribution, >1 max repeat
             randomNumberGenerator.Invocations.Clear();
-            state = new(maxRepeats: 2, new[] { 0.5f, 0.5f });
+            config = new() { MaxRepeats = 2, OptionProbabilities = new[] { 0.5f, 0.5f } };
+            randomishOptionChooser = getRandomishOptionChooser(randomNumberGenerator.Object, config);
 
-            randomishOptionChooser.GetWeightedOptionIndex(state);
+            randomishOptionChooser.GetOptionIndex();
             randomNumberGenerator.Verify(x => x.Range(0f, 1.0f), Times.Exactly(1));
             randomNumberGenerator.Verify(x => x.Range(0f, 0.5f), Times.Exactly(0));
 
-            randomishOptionChooser.GetWeightedOptionIndex(state);
+            randomishOptionChooser.GetOptionIndex();
             randomNumberGenerator.Verify(x => x.Range(0f, 1.0f), Times.Exactly(2));
             randomNumberGenerator.Verify(x => x.Range(0f, 0.5f), Times.Exactly(0));
 
-            randomishOptionChooser.GetWeightedOptionIndex(state);
+            randomishOptionChooser.GetOptionIndex();
             randomNumberGenerator.Verify(x => x.Range(0f, 1.0f), Times.Exactly(2));
             randomNumberGenerator.Verify(x => x.Range(0f, 0.5f), Times.Exactly(1));
 
             // Non-uniform distribution, 1 max repeat
             randomNumberGenerator.Invocations.Clear();
-            state = new(maxRepeats: 1, new[] { 0.75f, 0.25f });
+            config = new() { MaxRepeats = 1, OptionProbabilities = new[] { 0.75f, 0.25f } };
+            randomishOptionChooser = getRandomishOptionChooser(randomNumberGenerator.Object, config);
 
-            randomishOptionChooser.GetWeightedOptionIndex(state);
+            randomishOptionChooser.GetOptionIndex();
             randomNumberGenerator.Verify(x => x.Range(0f, 1.0f), Times.Exactly(1));
             randomNumberGenerator.Verify(x => x.Range(0f, 0.25f), Times.Exactly(0));
 
-            randomishOptionChooser.GetWeightedOptionIndex(state);
+            randomishOptionChooser.GetOptionIndex();
             randomNumberGenerator.Verify(x => x.Range(0f, 1.0f), Times.Exactly(1));
             randomNumberGenerator.Verify(x => x.Range(0f, 0.25f), Times.Exactly(1));
 
             // Non-uniform distribution, >1 max repeat
             randomNumberGenerator.Invocations.Clear();
-            state = new(maxRepeats: 2, new[] { 0.75f, 0.25f });
+            config = new() { MaxRepeats = 2, OptionProbabilities = new[] { 0.75f, 0.25f } };
+            randomishOptionChooser = getRandomishOptionChooser(randomNumberGenerator.Object, config);
 
-            randomishOptionChooser.GetWeightedOptionIndex(state);
+            randomishOptionChooser.GetOptionIndex();
             randomNumberGenerator.Verify(x => x.Range(0f, 1.0f), Times.Exactly(1));
             randomNumberGenerator.Verify(x => x.Range(0f, 0.25f), Times.Exactly(0));
 
-            randomishOptionChooser.GetWeightedOptionIndex(state);
+            randomishOptionChooser.GetOptionIndex();
             randomNumberGenerator.Verify(x => x.Range(0f, 1.0f), Times.Exactly(2));
             randomNumberGenerator.Verify(x => x.Range(0f, 0.25f), Times.Exactly(0));
 
-            randomishOptionChooser.GetWeightedOptionIndex(state);
+            randomishOptionChooser.GetOptionIndex();
             randomNumberGenerator.Verify(x => x.Range(0f, 1.0f), Times.Exactly(2));
             randomNumberGenerator.Verify(x => x.Range(0f, 0.25f), Times.Exactly(1));
         }
@@ -333,16 +369,16 @@ namespace UnityUtil.Test.EditMode.Math
 
         [Test]
         [TestCaseSource(nameof(yieldCorrectIndexTestCases))]
-        public void GetWeightedOptionIndex_ReturnsCorrectIndex(double randomValue, float[] optionProbabilities, int expectedIndex)
+        public void GetOptionIndex_ReturnsCorrectIndex(double randomValue, float[] optionProbabilities, int expectedIndex)
         {
             EditModeTestHelpers.ResetScene();
 
             Debug.Log($"Index weights: {string.Join(',', optionProbabilities)}");
             IRandomNumberGenerator randomNumberGenerator = Mock.Of<IRandomNumberGenerator>(x => x.Range(0f, It.IsAny<float>()) == randomValue);
-            MaxRepeatsRandomishOptionState state = new(maxRepeats: 1, optionProbabilities);
-            MaxRepeatsRandomishOptionChooser randomishOptionChooser = getRandomishOptionChooser(randomNumberGenerator);
+            MaxRepeatsRandomishOptionChooserConfig config = new() { MaxRepeats = 1, OptionProbabilities = optionProbabilities };
+            MaxRepeatsRandomishOptionChooser randomishOptionChooser = getRandomishOptionChooser(randomNumberGenerator, config);
 
-            int index = randomishOptionChooser.GetWeightedOptionIndex(state);
+            int index = randomishOptionChooser.GetOptionIndex();
 
             Assert.That(index, Is.EqualTo(expectedIndex));
         }
@@ -351,44 +387,44 @@ namespace UnityUtil.Test.EditMode.Math
         [TestCase(1)]
         [TestCase(2)]
         [TestCase(5)]
-        public void GetWeightedOptionIndex_CorrectlyRepeatsIndices_UniformDistro(int maxRepeats)
+        public void GetOptionIndex_CorrectlyRepeatsIndices_UniformDistro(int maxRepeats)
         {
             EditModeTestHelpers.ResetScene();
 
-            MaxRepeatsRandomishOptionState state = new(maxRepeats, new[] { 0.25f, 0.25f, 0.25f, 0.25f });
+            MaxRepeatsRandomishOptionChooserConfig config = new() { MaxRepeats = maxRepeats, OptionProbabilities = new[] { 0.25f, 0.25f, 0.25f, 0.25f } };
             IRandomNumberGenerator randomNumberGenerator = Mock.Of<IRandomNumberGenerator>(x => x.Range(It.IsAny<float>(), It.IsAny<float>()) == 0f);
-            MaxRepeatsRandomishOptionChooser randomishOptionChooser = getRandomishOptionChooser(randomNumberGenerator);
+            MaxRepeatsRandomishOptionChooser randomishOptionChooser = getRandomishOptionChooser(randomNumberGenerator, config);
 
             List<int> chosenIndices = new();
 
-            for (int x = 0; x < state.MaxRepeats + 2; ++x)
-                chosenIndices.Add(randomishOptionChooser.GetWeightedOptionIndex(state));
-            for (int x = 0; x < state.MaxRepeats; ++x)
+            for (int x = 0; x < config.MaxRepeats + 2; ++x)
+                chosenIndices.Add(randomishOptionChooser.GetOptionIndex());
+            for (int x = 0; x < config.MaxRepeats; ++x)
                 Assert.That(chosenIndices[x], Is.EqualTo(0));
-            Assert.That(chosenIndices[state.MaxRepeats], Is.EqualTo(1));        // First option already repeated max times
-            Assert.That(chosenIndices[state.MaxRepeats + 1], Is.EqualTo(0));    // First option available again
+            Assert.That(chosenIndices[config.MaxRepeats], Is.EqualTo(1));        // First option already repeated max times
+            Assert.That(chosenIndices[config.MaxRepeats + 1], Is.EqualTo(0));    // First option available again
         }
 
         [Test]
         [TestCase(1)]
         [TestCase(2)]
         [TestCase(5)]
-        public void GetWeightedOptionIndex_CorrectlyRepeatsIndices_NonUniformDistro(int maxRepeats)
+        public void GetOptionIndex_CorrectlyRepeatsIndices_NonUniformDistro(int maxRepeats)
         {
             EditModeTestHelpers.ResetScene();
 
-            MaxRepeatsRandomishOptionState state = new(maxRepeats, new[] { 0.75f, 0.25f });
+            MaxRepeatsRandomishOptionChooserConfig config = new() { MaxRepeats = maxRepeats, OptionProbabilities = new[] { 0.75f, 0.25f } };
             IRandomNumberGenerator randomNumberGenerator = Mock.Of<IRandomNumberGenerator>(x => x.Range(It.IsAny<float>(), It.IsAny<float>()) == 0f);
-            MaxRepeatsRandomishOptionChooser randomishOptionChooser = getRandomishOptionChooser(randomNumberGenerator);
+            MaxRepeatsRandomishOptionChooser randomishOptionChooser = getRandomishOptionChooser(randomNumberGenerator, config);
 
             List<int> chosenIndices = new();
 
-            for (int x = 0; x < state.MaxRepeats + 2; ++x)
-                chosenIndices.Add(randomishOptionChooser.GetWeightedOptionIndex(state));
-            for (int x = 0; x < state.MaxRepeats; ++x)
+            for (int x = 0; x < config.MaxRepeats + 2; ++x)
+                chosenIndices.Add(randomishOptionChooser.GetOptionIndex());
+            for (int x = 0; x < config.MaxRepeats; ++x)
                 Assert.That(chosenIndices[x], Is.EqualTo(0));
-            Assert.That(chosenIndices[state.MaxRepeats], Is.EqualTo(1));        // First option already repeated max times
-            Assert.That(chosenIndices[state.MaxRepeats + 1], Is.EqualTo(0));    // First option available again
+            Assert.That(chosenIndices[config.MaxRepeats], Is.EqualTo(1));        // First option already repeated max times
+            Assert.That(chosenIndices[config.MaxRepeats + 1], Is.EqualTo(0));    // First option available again
         }
 
         [Test]
@@ -398,27 +434,27 @@ namespace UnityUtil.Test.EditMode.Math
         [TestCase(1, new[] { 0.7f, 0.2f, 0.1f })]
         [TestCase(2, new[] { 0.7f, 0.2f, 0.1f })]
         [TestCase(5, new[] { 0.7f, 0.2f, 0.1f })]
-        public void GetWeightedOptionIndex_DoesNotRepeatOverMax(int maxRepeats, float[] optionProbabilities)
+        public void GetOptionIndex_DoesNotRepeatOverMax(int maxRepeats, float[] optionProbabilities)
         {
             EditModeTestHelpers.ResetScene();
 
             // ARRANGE
-            MaxRepeatsRandomishOptionState state = new(maxRepeats, optionProbabilities);
-            MaxRepeatsRandomishOptionChooser randomishOptionChooser = getRandomishOptionChooser();
+            MaxRepeatsRandomishOptionChooserConfig config = new() { MaxRepeats = maxRepeats, OptionProbabilities = optionProbabilities };
+            MaxRepeatsRandomishOptionChooser randomishOptionChooser = getRandomishOptionChooser(config: config);
             List<int> chosenIndices = new();
 
             // ACT
             const int NUM_ITERATIONS = 100;
             for (int x = 0; x < NUM_ITERATIONS; ++x)
-                chosenIndices.Add(randomishOptionChooser.GetWeightedOptionIndex(state));
+                chosenIndices.Add(randomishOptionChooser.GetOptionIndex());
 
             // ASSERT
             int currIndex = -1;
             int currRepeatCount = 0;
             for (int x = 0; x < NUM_ITERATIONS; ++x) {
-                Assert.That(chosenIndices[x], Is.InRange(0, state.OptionCount - 1));
+                Assert.That(chosenIndices[x], Is.InRange(0, config.OptionProbabilities.Count - 1));
                 if (chosenIndices[x] == currIndex)
-                    Assert.That(++currRepeatCount, Is.LessThanOrEqualTo(state.MaxRepeats));
+                    Assert.That(++currRepeatCount, Is.LessThanOrEqualTo(config.MaxRepeats));
                 else {
                     currIndex = chosenIndices[x];
                     currRepeatCount = 1;
@@ -431,17 +467,17 @@ namespace UnityUtil.Test.EditMode.Math
         [TestCase(1)]
         [TestCase(2)]
         [TestCase(5)]
-        public void GetWeightedOptionIndex_RepeatsSingleOptionForever(int maxRepeats)
+        public void GetOptionIndex_RepeatsSingleOptionForever(int maxRepeats)
         {
             EditModeTestHelpers.ResetScene();
 
-            MaxRepeatsRandomishOptionState state = new(maxRepeats, new[] { 1f });
-            MaxRepeatsRandomishOptionChooser randomishOptionChooser = getRandomishOptionChooser();
+            MaxRepeatsRandomishOptionChooserConfig config = new() { MaxRepeats = maxRepeats, OptionProbabilities = new[] { 1f } };
+            MaxRepeatsRandomishOptionChooser randomishOptionChooser = getRandomishOptionChooser(config: config);
             List<int> chosenIndices = new();
 
             const int NUM_ITERATIONS = 100;
             for (int x = 0; x < NUM_ITERATIONS; ++x)
-                chosenIndices.Add(randomishOptionChooser.GetWeightedOptionIndex(state));
+                chosenIndices.Add(randomishOptionChooser.GetOptionIndex());
 
             CollectionAssert.AreEqual(Enumerable.Repeat(0, NUM_ITERATIONS), chosenIndices);
         }
@@ -456,19 +492,19 @@ namespace UnityUtil.Test.EditMode.Math
         [TestCase(1, new[] { 0.7f, 0.2f, 0.1f })]
         [TestCase(2, new[] { 0.7f, 0.2f, 0.1f })]
         [TestCase(5, new[] { 0.7f, 0.2f, 0.1f })]
-        public void GetWeightedOptionIndex_CorrectlyDistributesOptions(int maxRepeats, float[] optionProbabilities)
+        public void GetOptionIndex_CorrectlyDistributesOptions(int maxRepeats, float[] optionProbabilities)
         {
             EditModeTestHelpers.ResetScene();
 
             // ARRANGE
-            MaxRepeatsRandomishOptionState state = new(maxRepeats, optionProbabilities);
-            MaxRepeatsRandomishOptionChooser randomishOptionChooser = getRandomishOptionChooser();
+            MaxRepeatsRandomishOptionChooserConfig config = new() { MaxRepeats = maxRepeats, OptionProbabilities = optionProbabilities };
+            MaxRepeatsRandomishOptionChooser randomishOptionChooser = getRandomishOptionChooser(config: config);
             List<int> chosenIndices = new();
 
             // ACT
             const int NUM_ITERATIONS = 10_000;
             for (int x = 0; x < NUM_ITERATIONS; ++x)
-                chosenIndices.Add(randomishOptionChooser.GetWeightedOptionIndex(state));
+                chosenIndices.Add(randomishOptionChooser.GetOptionIndex());
 
             // ASSERT
             // TODO: Assert that chosenIndices has correct distribution of option indices
@@ -478,8 +514,14 @@ namespace UnityUtil.Test.EditMode.Math
         #endregion
 
         private static IRandomNumberGenerator getRandomNumberGenerator() => new TestRandomNumberGenerator(123456789);    // Hard-coded seed so tests are stable
-        private static MaxRepeatsRandomishOptionChooser getRandomishOptionChooser(IRandomNumberGenerator? randomNumberGenerator = null) =>
-            new(randomNumberGenerator ?? getRandomNumberGenerator());
+        private static MaxRepeatsRandomishOptionChooser getRandomishOptionChooser(
+            IRandomNumberGenerator? randomNumberGenerator = null,
+            MaxRepeatsRandomishOptionChooserConfig? config = null
+        ) =>
+            new(
+                randomNumberGenerator ?? getRandomNumberGenerator(),
+                config ?? new MaxRepeatsRandomishOptionChooserConfig()
+            );
 
     }
 }
