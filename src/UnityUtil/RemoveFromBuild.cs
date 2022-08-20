@@ -24,7 +24,10 @@ public class RemoveFromBuild : MonoBehaviour
         "This GameObject (and/or its children) will be removed from the build unless the build context matches " +
         $"{nameof(PreserveBuildContexts)} AND the platform matches {nameof(PreservePlatforms)}.";
 
-    [InfoBox("This component will not actually affect your scene files; it will only remove this GameObject and/or its children from BUILDS.")]
+    [InfoBox(
+        "This component will not actually change your scene file; rather, it will remove this GameObject and/or its children from the scene during builds." +
+        "This keeps your builds smaller and scene load times faster, without adding noise to version control."
+    )]
     [InfoBox(
         "This component will NOT affect prefabs instantiated at runtime. " +
         $"Any GameObjects with {nameof(RemoveFromBuild)} components in prefabs will NOT be removed at runtime unless YOU do so explicitly.",
