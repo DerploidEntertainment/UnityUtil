@@ -1,17 +1,15 @@
-﻿using UnityUtil.Editor;
-using NUnit.Framework;
-using System;
+﻿using NUnit.Framework;
+using UnityUtil.Editor;
 
 namespace UnityUtil.Test.EditMode
 {
 
-    public class AsciiSpritesDrawerTest
+    public class AsciiSpritesDrawerTest : BaseEditModeTestFixture
     {
 
         [Test]
-        public void ExpandsDecimalTemplateString() {
-            EditModeTestHelpers.ResetScene();
-
+        public void ExpandsDecimalTemplateString()
+        {
             string assetName;
             string templateFileName;
 
@@ -69,9 +67,8 @@ namespace UnityUtil.Test.EditMode
         }
 
         [Test]
-        public void ExpandsHexadecimalTemplateString() {
-            EditModeTestHelpers.ResetScene();
-
+        public void ExpandsHexadecimalTemplateString()
+        {
             string assetName;
             string templateFileName;
 
@@ -129,9 +126,8 @@ namespace UnityUtil.Test.EditMode
         }
 
         [Test]
-        public void ExpandsOctalTemplateString() {
-            EditModeTestHelpers.ResetScene();
-
+        public void ExpandsOctalTemplateString()
+        {
             string assetName;
             string templateFileName;
 
@@ -189,9 +185,8 @@ namespace UnityUtil.Test.EditMode
         }
 
         [Test]
-        public void ExpandsBinaryTemplateString() {
-            EditModeTestHelpers.ResetScene();
-
+        public void ExpandsBinaryTemplateString()
+        {
             string assetName;
             string templateFileName;
 
@@ -249,9 +244,8 @@ namespace UnityUtil.Test.EditMode
         }
 
         [Test]
-        public void ExpandsMixedBaseTemplateString() {
-            EditModeTestHelpers.ResetScene();
-
+        public void ExpandsMixedBaseTemplateString()
+        {
             string assetName;
             string templateFileName;
 
@@ -296,9 +290,8 @@ namespace UnityUtil.Test.EditMode
         }
 
         [Test]
-        public void ExpandsMultipleOfSameTemplateString() {
-            EditModeTestHelpers.ResetScene();
-
+        public void ExpandsMultipleOfSameTemplateString()
+        {
             string assetName;
             string templateFileName;
 
@@ -343,9 +336,8 @@ namespace UnityUtil.Test.EditMode
         }
 
         [Test]
-        public void ExpandsTemplateStringIgnoringCase() {
-            EditModeTestHelpers.ResetScene();
-
+        public void ExpandsTemplateStringIgnoringCase()
+        {
             string assetName;
             string expectedAssetName;
 
@@ -373,9 +365,8 @@ namespace UnityUtil.Test.EditMode
         }
 
         [Test]
-        public void DoesNotExpandMissingTemplateString() {
-            EditModeTestHelpers.ResetScene();
-
+        public void DoesNotExpandMissingTemplateString()
+        {
             string assetName = AsciiSpritesDrawer.GetAssetName(' ', "derp.png");
             Assert.That(assetName, Is.EqualTo("Assets/derp.png"));
         }

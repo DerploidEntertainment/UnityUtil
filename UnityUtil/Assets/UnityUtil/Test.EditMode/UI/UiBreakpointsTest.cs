@@ -1,21 +1,18 @@
 ﻿using NUnit.Framework;
 using NUnit.Framework.Constraints;
 using System.Linq;
-using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
-using UnityUtil.Editor;
 using UA = UnityEngine.Assertions;
 
-namespace UnityUtil.Test.EditMode.UI {
-    public class UiBreakpointsTest
+namespace UnityUtil.Test.EditMode.UI
+{
+    public class UiBreakpointsTest : BaseEditModeTestFixture
     {
         [Test]
         public void ReturnsCorrect_IsScreenMode()
         {
-            EditModeTestHelpers.ResetScene();
-
             UiBreakpoints uiBreakpoints = getUiBreakpoints();
 
             assert(BreakpointMode.ScreenWidth, true);
@@ -41,8 +38,6 @@ namespace UnityUtil.Test.EditMode.UI {
         [Test]
         public void ReturnsCorrect_IsSafeAreaMode()
         {
-            EditModeTestHelpers.ResetScene();
-
             UiBreakpoints uiBreakpoints = getUiBreakpoints();
 
             assert(BreakpointMode.ScreenWidth, false);
@@ -66,9 +61,8 @@ namespace UnityUtil.Test.EditMode.UI {
         }
 
         [Test]
-        public void ReturnsCorrect_IsCameraMode() {
-            EditModeTestHelpers.ResetScene();
-
+        public void ReturnsCorrect_IsCameraMode()
+        {
             UiBreakpoints uiBreakpoints = getUiBreakpoints();
 
             assert(BreakpointMode.ScreenWidth, false);
@@ -84,16 +78,16 @@ namespace UnityUtil.Test.EditMode.UI {
             assert(BreakpointMode.CameraAspectRatio, true);
 
 
-            void assert(BreakpointMode mode, bool assertion) {
+            void assert(BreakpointMode mode, bool assertion)
+            {
                 uiBreakpoints.Mode = mode;
                 Assert.That(uiBreakpoints.IsCameraMode, assertion ? Is.True : (Constraint)Is.False);
             }
         }
 
         [Test]
-        public void ReturnsCorrect_IsWidthMode() {
-            EditModeTestHelpers.ResetScene();
-
+        public void ReturnsCorrect_IsWidthMode()
+        {
             UiBreakpoints uiBreakpoints = getUiBreakpoints();
 
             assert(BreakpointMode.ScreenWidth, true);
@@ -108,16 +102,16 @@ namespace UnityUtil.Test.EditMode.UI {
             assert(BreakpointMode.CameraAspectRatio, false);
 
 
-            void assert(BreakpointMode mode, bool assertion) {
+            void assert(BreakpointMode mode, bool assertion)
+            {
                 uiBreakpoints.Mode = mode;
                 Assert.That(uiBreakpoints.IsWidthMode, assertion ? Is.True : (Constraint)Is.False);
             }
         }
 
         [Test]
-        public void ReturnsCorrect_IsHeightMode() {
-            EditModeTestHelpers.ResetScene();
-
+        public void ReturnsCorrect_IsHeightMode()
+        {
             UiBreakpoints uiBreakpoints = getUiBreakpoints();
 
             assert(BreakpointMode.ScreenHeight, true);
@@ -132,16 +126,16 @@ namespace UnityUtil.Test.EditMode.UI {
             assert(BreakpointMode.CameraAspectRatio, false);
 
 
-            void assert(BreakpointMode mode, bool assertion) {
+            void assert(BreakpointMode mode, bool assertion)
+            {
                 uiBreakpoints.Mode = mode;
                 Assert.That(uiBreakpoints.IsHeightMode, assertion ? Is.True : (Constraint)Is.False);
             }
         }
 
         [Test]
-        public void ReturnsCorrect_IsAspectRatioMode() {
-            EditModeTestHelpers.ResetScene();
-
+        public void ReturnsCorrect_IsAspectRatioMode()
+        {
             UiBreakpoints uiBreakpoints = getUiBreakpoints();
 
             assert(BreakpointMode.ScreenAspectRatio, true);
@@ -156,14 +150,16 @@ namespace UnityUtil.Test.EditMode.UI {
             assert(BreakpointMode.CameraHeight, false);
 
 
-            void assert(BreakpointMode mode, bool assertion) {
+            void assert(BreakpointMode mode, bool assertion)
+            {
                 uiBreakpoints.Mode = mode;
                 Assert.That(uiBreakpoints.IsAspectRatioMode, assertion ? Is.True : (Constraint)Is.False);
             }
         }
 
         [Test]
-        public void CannotConstructUiBreakpoint_NegativeValue() {
+        public void CannotConstructUiBreakpoint_NegativeValue()
+        {
             Assert.Throws<UA.AssertionException>(() => new UiBreakpoint(-2f));
             Assert.Throws<UA.AssertionException>(() => new UiBreakpoint(-1f));
             Assert.DoesNotThrow(() => new UiBreakpoint(0f));
@@ -171,9 +167,8 @@ namespace UnityUtil.Test.EditMode.UI {
         }
 
         [Test]
-        public void CorrectlyValidates_SortedBreakpoints() {
-            EditModeTestHelpers.ResetScene();
-
+        public void CorrectlyValidates_SortedBreakpoints()
+        {
             UiBreakpoint[] breakpoints;
 
             breakpoints = getBreakpoints(0f);
@@ -195,9 +190,8 @@ namespace UnityUtil.Test.EditMode.UI {
         }
 
         [Test]
-        public void CorrectlyValidates_UnsortedBreakpoints() {
-            EditModeTestHelpers.ResetScene();
-
+        public void CorrectlyValidates_UnsortedBreakpoints()
+        {
             UiBreakpoint[] breakpoints;
 
             // Breakpoints not sorted ascending
@@ -226,9 +220,8 @@ namespace UnityUtil.Test.EditMode.UI {
         }
 
         [Test]
-        public void CorrectlyValidates_SortedBreakpoints_SomeDisabled() {
-            EditModeTestHelpers.ResetScene();
-
+        public void CorrectlyValidates_SortedBreakpoints_SomeDisabled()
+        {
             UiBreakpoint[] breakpoints;
 
             // Sorted with some disabled
@@ -255,9 +248,8 @@ namespace UnityUtil.Test.EditMode.UI {
         }
 
         [Test]
-        public void CannotMatchNegativeValue() {
-            EditModeTestHelpers.ResetScene();
-
+        public void CannotMatchNegativeValue()
+        {
             UiBreakpoints uiBreakpoints = getUiBreakpoints();
 
             Assert.DoesNotThrow(() => uiBreakpoints.InvokeMatchingBreakpoints(-1f));
@@ -265,9 +257,8 @@ namespace UnityUtil.Test.EditMode.UI {
         }
 
         [Test]
-        public void NothingHappens_NoBreakpoints() {
-            EditModeTestHelpers.ResetScene();
-
+        public void NothingHappens_NoBreakpoints()
+        {
             bool noMatchRaised = false;
             UiBreakpoints uiBreakpoints = getUiBreakpoints();
             uiBreakpoints.NoBreakpointMatched.AddListener(() => noMatchRaised = true);
@@ -280,9 +271,8 @@ namespace UnityUtil.Test.EditMode.UI {
         }
 
         [Test]
-        public void NoMatches_NoMatch() {
-            EditModeTestHelpers.ResetScene();
-
+        public void NoMatches_NoMatch()
+        {
             // ARRANGE
             bool noMatchRaised = false;
             bool matchRaised = false;
@@ -305,9 +295,8 @@ namespace UnityUtil.Test.EditMode.UI {
         }
 
         [Test]
-        public void NoMatches_MatchingBreakpointDisabled() {
-            EditModeTestHelpers.ResetScene();
-
+        public void NoMatches_MatchingBreakpointDisabled()
+        {
             // ARRANGE
             bool noMatchRaised = false;
             bool matchRaised = false;
@@ -328,9 +317,8 @@ namespace UnityUtil.Test.EditMode.UI {
         }
 
         [Test]
-        public void NoMatch_AllBreakpointsLess() {
-            EditModeTestHelpers.ResetScene();
-
+        public void NoMatch_AllBreakpointsLess()
+        {
             // ARRANGE
             bool matchRaised = false;
             int noMatchCount = 0;
@@ -356,9 +344,8 @@ namespace UnityUtil.Test.EditMode.UI {
         }
 
         [Test]
-        public void NoMatch_AllBreakpointsGreater() {
-            EditModeTestHelpers.ResetScene();
-
+        public void NoMatch_AllBreakpointsGreater()
+        {
             // ARRANGE
             bool matchRaised = false;
             int noMatchCount = 0;
@@ -384,9 +371,8 @@ namespace UnityUtil.Test.EditMode.UI {
         }
 
         [Test]
-        public void NoMatchNotRaised_SomeBreakpointMatches() {
-            EditModeTestHelpers.ResetScene();
-
+        public void NoMatchNotRaised_SomeBreakpointMatches()
+        {
             // ARRANGE
             bool noMatchRaised = false;
             UiBreakpoint[] breakpoints = new[] { new UiBreakpoint(0f) };
@@ -400,9 +386,8 @@ namespace UnityUtil.Test.EditMode.UI {
         }
 
         [Test]
-        public void Match_1BreakpointEqualOrGreater() {
-            EditModeTestHelpers.ResetScene();
-
+        public void Match_1BreakpointEqualOrGreater()
+        {
             // ARRANGE
             int matchCount = 0;
             UiBreakpoints uiBreakpoints;
@@ -432,9 +417,8 @@ namespace UnityUtil.Test.EditMode.UI {
         }
 
         [Test]
-        public void Match_1BreakpointEqualOrLess() {
-            EditModeTestHelpers.ResetScene();
-
+        public void Match_1BreakpointEqualOrLess()
+        {
             // ARRANGE
             int matchCount = 0;
             UiBreakpoints uiBreakpoints;
@@ -464,9 +448,8 @@ namespace UnityUtil.Test.EditMode.UI {
         }
 
         [Test]
-        public void CorrectMatch_MultipleBreakpoints_AnyEqualOrGreater() {
-            EditModeTestHelpers.ResetScene();
-
+        public void CorrectMatch_MultipleBreakpoints_AnyEqualOrGreater()
+        {
             // ARRANGE
             int[] counts = new[] { 0, 0, 0 };
             UiBreakpoint[] breakpoints = new[] { new UiBreakpoint(0f), new UiBreakpoint(0.5f), new UiBreakpoint(1f), };
@@ -494,9 +477,8 @@ namespace UnityUtil.Test.EditMode.UI {
         }
 
         [Test]
-        public void CorrectMatch_MultipleBreakpoints_MinEqualOrGreater() {
-            EditModeTestHelpers.ResetScene();
-
+        public void CorrectMatch_MultipleBreakpoints_MinEqualOrGreater()
+        {
             // ARRANGE
             int[] counts = new[] { 0, 0, 0 };
             UiBreakpoint[] breakpoints = new[] { new UiBreakpoint(0f), new UiBreakpoint(0.5f), new UiBreakpoint(1f), };
@@ -524,9 +506,8 @@ namespace UnityUtil.Test.EditMode.UI {
         }
 
         [Test]
-        public void CorrectMatch_MultipleBreakpoints_AnyEqualOrLess() {
-            EditModeTestHelpers.ResetScene();
-
+        public void CorrectMatch_MultipleBreakpoints_AnyEqualOrLess()
+        {
             // ARRANGE
             int[] counts = new[] { 0, 0, 0 };
             UiBreakpoint[] breakpoints = new[] { new UiBreakpoint(0f), new UiBreakpoint(0.5f), new UiBreakpoint(1f), };
@@ -554,9 +535,8 @@ namespace UnityUtil.Test.EditMode.UI {
         }
 
         [Test]
-        public void CorrectMatch_MultipleBreakpoints_MaxEqualOrLess() {
-            EditModeTestHelpers.ResetScene();
-
+        public void CorrectMatch_MultipleBreakpoints_MaxEqualOrLess()
+        {
             // ARRANGE
             int[] counts = new[] { 0, 0, 0 };
             UiBreakpoint[] breakpoints = new[] { new UiBreakpoint(0f), new UiBreakpoint(0.5f), new UiBreakpoint(1f), };
@@ -584,9 +564,8 @@ namespace UnityUtil.Test.EditMode.UI {
         }
 
         [Test]
-        public void CorrectMatch_MultipleBreakpoints_SomeDisabled() {
-            EditModeTestHelpers.ResetScene();
-
+        public void CorrectMatch_MultipleBreakpoints_SomeDisabled()
+        {
             // ARRANGE
             int[] counts = new[] { 0, 0, 0, 0 };
             UiBreakpoint[] breakpoints = new[] {
@@ -633,7 +612,8 @@ namespace UnityUtil.Test.EditMode.UI {
             BreakpointMatchMode matchMode = BreakpointMatchMode.MaxEqualOrLess,
             UnityAction? noMatchAction = null,
             params UiBreakpoint[] breakpoints
-        ) {
+        )
+        {
             // Create the instance
             UiBreakpoints uiBreakpoints = new GameObject().AddComponent<UiBreakpoints>();
             uiBreakpoints.Mode = mode;

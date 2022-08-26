@@ -12,7 +12,7 @@ namespace UnityUtil.Test.EditMode.Triggers
         public override bool IsConditionMet() => State;
     }
 
-    public class ConditionalTriggerTest
+    public class ConditionalTriggerTest : BaseEditModeTestFixture
     {
 
         [Test]

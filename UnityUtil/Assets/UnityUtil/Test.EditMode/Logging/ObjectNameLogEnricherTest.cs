@@ -1,19 +1,16 @@
 ﻿using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.Logging;
-using UnityUtil.Editor;
 
 namespace UnityUtil.Test.EditMode.Logging
 {
 
-    public class ObjectNameLogEnricherTest
+    public class ObjectNameLogEnricherTest : BaseEditModeTestFixture
     {
 
         [Test]
         public void NonUnityObjectsReturnEmpty()
         {
-            EditModeTestHelpers.ResetScene();
-
             ObjectNameLogEnricher enricher = getObjectNameLogEnricher();
             string log;
 
@@ -37,8 +34,6 @@ namespace UnityUtil.Test.EditMode.Logging
         [Test]
         public void ScriptableObjectsReturnName()
         {
-            EditModeTestHelpers.ResetScene();
-
             ObjectNameLogEnricher enricher = getObjectNameLogEnricher();
             string log;
 
@@ -59,8 +54,6 @@ namespace UnityUtil.Test.EditMode.Logging
         [Test]
         public void GameObjectsReturnName()
         {
-            EditModeTestHelpers.ResetScene();
-
             ObjectNameLogEnricher enricher = getObjectNameLogEnricher();
             GameObject obj;
             string log;
@@ -77,8 +70,6 @@ namespace UnityUtil.Test.EditMode.Logging
         [Test]
         public void ComponentsOnSameGameObjectReturnSame()
         {
-            EditModeTestHelpers.ResetScene();
-
             ObjectNameLogEnricher enricher = getObjectNameLogEnricher(numParents: 1, ancestorNameSeparator: ">");
             var parent = new GameObject("parent");
             var obj = new GameObject("obj");

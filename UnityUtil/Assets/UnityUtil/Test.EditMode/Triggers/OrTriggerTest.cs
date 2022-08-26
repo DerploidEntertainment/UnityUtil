@@ -5,7 +5,7 @@ using UnityEngine.Triggers;
 namespace UnityUtil.Test.EditMode.Triggers
 {
 
-    public class OrTriggerTest
+    public class OrTriggerTest : BaseEditModeTestFixture
     {
 
         [Test]

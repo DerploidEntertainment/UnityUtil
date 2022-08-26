@@ -6,15 +6,16 @@ using UnityEngine.Logging;
 using UnityUtil.Editor;
 using static System.Globalization.CultureInfo;
 
-namespace UnityUtil.Test.EditMode.Logging {
+namespace UnityUtil.Test.EditMode.Logging
+{
 
     [SuppressMessage("Usage", "CA2201:Do not raise reserved exception types", Justification = "They're just for testing...")]
-    public class DebugLoggerTest {
+    public class DebugLoggerTest : BaseEditModeTestFixture
+    {
 
         [Test]
-        public void CanEnrichLogs() {
-            EditModeTestHelpers.ResetScene();
-
+        public void CanEnrichLogs()
+        {
             var testObj = new GameObject("test");
             string[] enrichTxts = { "Enriched0", "Enriched1", "Enriched2" };
 
@@ -78,7 +79,7 @@ namespace UnityUtil.Test.EditMode.Logging {
                 msg = EditModeTestHelpers.GetUniqueLog("Error");
                 logger.LogError(tag: "Tag", msg);
                 EditModeTestHelpers.ExpectLog(LogType.Error, $"Tag: {enrichTxt} | {msg}");
-                
+
                 msg = EditModeTestHelpers.GetUniqueLog("Error+Context");
                 logger.LogError(tag: "Tag", msg, context: testObj);
                 EditModeTestHelpers.ExpectLog(LogType.Error, $"Tag: {enrichTxt} | {msg}");
@@ -95,7 +96,7 @@ namespace UnityUtil.Test.EditMode.Logging {
                 msg = EditModeTestHelpers.GetUniqueLog("Warning");
                 logger.LogWarning(tag: "Tag", msg);
                 EditModeTestHelpers.ExpectLog(LogType.Warning, $"Tag: {enrichTxt} | {msg}");
-                
+
                 msg = EditModeTestHelpers.GetUniqueLog("Warning+Context");
                 logger.LogWarning(tag: "Tag", msg, context: testObj);
                 EditModeTestHelpers.ExpectLog(LogType.Warning, $"Tag: {enrichTxt} | {msg}");
@@ -103,9 +104,8 @@ namespace UnityUtil.Test.EditMode.Logging {
         }
 
         [Test]
-        public void CannotEnrichExceptionLogs() {
-            EditModeTestHelpers.ResetScene();
-
+        public void CannotEnrichExceptionLogs()
+        {
             var testObj = new GameObject("test");
             string[] enrichTxts = { "Enriched0", "Enriched1", "Enriched2" };
             string msg;
@@ -128,9 +128,8 @@ namespace UnityUtil.Test.EditMode.Logging {
         }
 
         [Test]
-        public void LogTypeMethodsLogToConsole() {
-            EditModeTestHelpers.ResetScene();
-
+        public void LogTypeMethodsLogToConsole()
+        {
             var logger = new DebugLogger(() => string.Empty);
             var testObj = new GameObject("test");
             string msg;
@@ -171,9 +170,8 @@ namespace UnityUtil.Test.EditMode.Logging {
         }
 
         [Test]
-        public void LogMethodsLogToConsole() {
-            EditModeTestHelpers.ResetScene();
-
+        public void LogMethodsLogToConsole()
+        {
             var logger = new DebugLogger(() => string.Empty);
             var testObj = new GameObject("test");
             string msg;
@@ -196,9 +194,8 @@ namespace UnityUtil.Test.EditMode.Logging {
         }
 
         [Test]
-        public void LogFormatMethodsLogToConsole() {
-            EditModeTestHelpers.ResetScene();
-
+        public void LogFormatMethodsLogToConsole()
+        {
             var logger = new DebugLogger(() => string.Empty);
             var testObj = new GameObject("test");
             string format;
@@ -221,9 +218,8 @@ namespace UnityUtil.Test.EditMode.Logging {
         }
 
         [Test]
-        public void ErrorMethodsLogToConsole() {
-            EditModeTestHelpers.ResetScene();
-
+        public void ErrorMethodsLogToConsole()
+        {
             var logger = new DebugLogger(() => string.Empty);
             var testObj = new GameObject("test");
             string msg;
@@ -246,9 +242,8 @@ namespace UnityUtil.Test.EditMode.Logging {
         }
 
         [Test]
-        public void ExceptionMethodsLogToConsole() {
-            EditModeTestHelpers.ResetScene();
-
+        public void ExceptionMethodsLogToConsole()
+        {
             var logger = new DebugLogger(() => string.Empty);
             var testObj = new GameObject("test");
             string msg;
@@ -266,9 +261,8 @@ namespace UnityUtil.Test.EditMode.Logging {
         }
 
         [Test]
-        public void WarningMethodsLogToConsole() {
-            EditModeTestHelpers.ResetScene();
-
+        public void WarningMethodsLogToConsole()
+        {
             var logger = new DebugLogger(() => string.Empty);
             var testObj = new GameObject("test");
             string msg;
@@ -291,9 +285,8 @@ namespace UnityUtil.Test.EditMode.Logging {
         }
 
         [Test]
-        public void CanAccessNonLoggingMembers() {
-            EditModeTestHelpers.ResetScene();
-
+        public void CanAccessNonLoggingMembers()
+        {
             var logger = new DebugLogger(() => string.Empty);
 
             Assert.That(logger.logHandler, Is.SameAs(Debug.unityLogger.logHandler));
@@ -305,12 +298,11 @@ namespace UnityUtil.Test.EditMode.Logging {
         }
 
         [Test]
-        public void CanFilterLogType() {
-            EditModeTestHelpers.ResetScene();
-
-            #pragma warning disable IDE0017 // Simplify object initialization
+        public void CanFilterLogType()
+        {
+#pragma warning disable IDE0017 // Simplify object initialization
             var logger = new DebugLogger(() => string.Empty);
-            #pragma warning restore IDE0017 // Simplify object initialization
+#pragma warning restore IDE0017 // Simplify object initialization
 
             logger.filterLogType = LogType.Log;
             Assert.That(logger.filterLogType, Is.EqualTo(Debug.unityLogger.filterLogType));

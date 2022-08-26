@@ -9,7 +9,6 @@ using UnityEngine;
 using UnityEngine.DependencyInjection;
 using UnityEngine.Logging;
 using UnityEngine.SceneManagement;
-using UnityUtil.Editor;
 using UnityUtil.Test.EditMode.Logging;
 
 namespace UnityUtil.Test.EditMode.DependencyInjection
@@ -113,7 +112,7 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
 
     #endregion
 
-    public class DependencyInjectorTest
+    public class DependencyInjectorTest : BaseEditModeTestFixture
     {
 
         #region Initialization tests
@@ -170,8 +169,6 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
         [Test]
         public void Registers_Instance_SameTypeDifferentTag()
         {
-            EditModeTestHelpers.ResetScene();
-
             DependencyInjector dependencyInjector = getDependencyInjector();
 
             // Test fails if these lines throw or log an error
@@ -182,8 +179,6 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
         [Test]
         public void Registers_Factory_SameTypeDifferentTag()
         {
-            EditModeTestHelpers.ResetScene();
-
             DependencyInjector dependencyInjector = getDependencyInjector();
 
             // Test fails if these lines throw or log an error
@@ -194,8 +189,6 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
         [Test]
         public void CannotRegister_Instance_SameTypeAndTag_SameScene()
         {
-            EditModeTestHelpers.ResetScene();
-
             // ARRANGE
             DependencyInjector dependencyInjector = getDependencyInjector();
             dependencyInjector.RegisterService(getComponentService<TestComponent>("test"));
@@ -212,8 +205,6 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
         [Test]
         public void CannotRegister_Factory_SameTypeAndTag_SameScene()
         {
-            EditModeTestHelpers.ResetScene();
-
             // ARRANGE
             DependencyInjector dependencyInjector = getDependencyInjector();
             dependencyInjector.RegisterService(getComponentService<TestComponent>("test"));
@@ -230,8 +221,6 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
         [Test, Ignore("Haven't figured out a way to open a new Scene while in the unsaved scene created by the Test Runner")]
         public void CannotRegister_Instance_SameTypeAndTag_OtherScene()
         {
-            EditModeTestHelpers.ResetScene();
-
             // ARRANGE
             DependencyInjector dependencyInjector = getDependencyInjector();
             dependencyInjector.RegisterService(getComponentService<TestComponent>("test"));
@@ -253,8 +242,6 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
         [Test, Ignore("Haven't figured out a way to open a new Scene while in the unsaved scene created by the Test Runner")]
         public void CannotRegister_Factory_SameTypeAndTag_OtherScene()
         {
-            EditModeTestHelpers.ResetScene();
-
             // ARRANGE
             DependencyInjector dependencyInjector = getDependencyInjector();
             dependencyInjector.RegisterService(getComponentService<TestComponent>("test"));
@@ -276,8 +263,6 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
         [Test]
         public void Registers_ComponentInstances_WithInspectorTag()
         {
-            EditModeTestHelpers.ResetScene();
-
             // ARRANGE
             DependencyInjector dependencyInjector = getDependencyInjector();
 
@@ -295,8 +280,6 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
         [Test]
         public void Registers_NonComponentInstances_WithDefaultTag()
         {
-            EditModeTestHelpers.ResetScene();
-
             // ARRANGE
             DependencyInjector dependencyInjector = getDependencyInjector();
 
@@ -317,8 +300,6 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
         [Test]
         public void Resolves_Instance_ByType()
         {
-            EditModeTestHelpers.ResetScene();
-
             DependencyInjector dependencyInjector = getDependencyInjector();
             object serviceInstance = new();
             dependencyInjector.RegisterService(serviceInstance);
@@ -331,8 +312,6 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
         [Test]
         public void Resolves_Instance_DerivedType()
         {
-            EditModeTestHelpers.ResetScene();
-
             DependencyInjector dependencyInjector = getDependencyInjector();
             var serviceInstance = new InvalidOperationException();
             dependencyInjector.RegisterService<Exception>(serviceInstance);
@@ -347,8 +326,6 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
         [Test]
         public void Resolves_Instance_ByTypeAndTag()
         {
-            EditModeTestHelpers.ResetScene();
-
             DependencyInjector dependencyInjector = getDependencyInjector();
             var obj = new GameObject { tag = "test" };
             TestComponent serviceInstance = obj.AddComponent<TestComponent>();
@@ -362,8 +339,6 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
         [Test]
         public void Resolves_Factory_ByType()
         {
-            EditModeTestHelpers.ResetScene();
-
             DependencyInjector dependencyInjector = getDependencyInjector();
             object serviceInstance = new();
             dependencyInjector.RegisterService(() => serviceInstance);
@@ -376,8 +351,6 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
         [Test]
         public void Resolves_Factory_DerivedType()
         {
-            EditModeTestHelpers.ResetScene();
-
             DependencyInjector dependencyInjector = getDependencyInjector();
             var serviceInstance = new InvalidOperationException();
             dependencyInjector.RegisterService<Exception, InvalidOperationException>(() => serviceInstance);
@@ -392,8 +365,6 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
         [Test]
         public void Resolves_Factory_ByTypeAndTag()
         {
-            EditModeTestHelpers.ResetScene();
-
             DependencyInjector dependencyInjector = getDependencyInjector();
             TestComponent serviceInstance = new GameObject().AddComponent<TestComponent>();
             dependencyInjector.RegisterService(() => serviceInstance, "test");
@@ -410,8 +381,6 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
         [Test]
         public void Cannot_Resolve_MissingService()
         {
-            EditModeTestHelpers.ResetScene();
-
             DependencyInjector dependencyInjector = getDependencyInjector();
 
             Assert.Throws<KeyNotFoundException>(() => dependencyInjector.TryGetService(typeof(Component), tag: "any", clientName: "Unit test", out _));
@@ -421,18 +390,11 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
         }
 
         [Test, Ignore("Haven't figured out a way to open a new Scene while in the unsaved scene created by the Test Runner")]
-        public void Resolves_ServiceInScene_ClientInDifferentScene()
-        {
-            EditModeTestHelpers.ResetScene();
-
-            Assert.Fail();
-        }
+        public void Resolves_ServiceInScene_ClientInDifferentScene() => Assert.Fail();
 
         [Test]
         public void Resolve_CallsInject_UpInheritanceHierarchy()
         {
-            EditModeTestHelpers.ResetScene();
-
             Mock<ITypeMetadataProvider> typeMetadataProvider = getTypeMetadataProvider();
             DependencyInjector dependencyInjector = getDependencyInjector(typeMetadataProvider: typeMetadataProvider.Object);
 
@@ -450,8 +412,6 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
         [Test]
         public void Resolve_WithoutInject_DoesNotThrow()
         {
-            EditModeTestHelpers.ResetScene();
-
             DependencyInjector dependencyInjector = getDependencyInjector();
             Assert.DoesNotThrow(() => dependencyInjector.ResolveDependenciesOf(new GameObject()));
         }
@@ -459,8 +419,6 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
         [Test]
         public void Resolve_DoesNotCallInject_WithNoDependencies()
         {
-            EditModeTestHelpers.ResetScene();
-
             Mock<ITypeMetadataProvider> typeMetadataProvider = getTypeMetadataProvider();
             DependencyInjector dependencyInjector = getDependencyInjector(typeMetadataProvider: typeMetadataProvider.Object);
 
@@ -475,8 +433,6 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
         [Test]
         public void Cannot_Resolve_MultipleInjectMethods()
         {
-            EditModeTestHelpers.ResetScene();
-
             Mock<ITypeMetadataProvider> typeMetadataProvider = getTypeMetadataProvider();
             DependencyInjector dependencyInjector = getDependencyInjector(typeMetadataProvider: typeMetadataProvider.Object);
             var client = new Mock<IMultipleInjectClient>();
@@ -487,8 +443,6 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
         [Test]
         public void Resolve_CanCache_RootType()
         {
-            EditModeTestHelpers.ResetScene();
-
             Mock<ITypeMetadataProvider> mockTypeMetadataProvider = getTypeMetadataProvider();
             DependencyInjector dependencyInjector = getDependencyInjector(
                 cachedResolutionTypes: new[] { typeof(TestClientBase) },
@@ -514,8 +468,6 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
         [Test]
         public void Resolve_CanCache_BaseType()
         {
-            EditModeTestHelpers.ResetScene();
-
             Mock<ITypeMetadataProvider> mockTypeMetadataProvider = getTypeMetadataProvider();
             DependencyInjector dependencyInjector = getDependencyInjector(
                 cachedResolutionTypes: new[] { typeof(TestClientBase) },
@@ -549,8 +501,6 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
         [Test]
         public void Resolve_Warns_SameTypeNoTags()
         {
-            EditModeTestHelpers.ResetScene();
-
             var loggerProvider = new Mock<ILoggerProvider>();
             var testLogger = new TestLogger();
             loggerProvider.Setup(x => x.GetLogger(It.IsAny<object>())).Returns(testLogger);
@@ -565,8 +515,6 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
         [Test]
         public void Resolve_DoesNotWarn_SameTypeDifferentTags()
         {
-            EditModeTestHelpers.ResetScene();
-
             var loggerProvider = new Mock<ILoggerProvider>();
             var testLogger = new TestLogger();
             loggerProvider.Setup(x => x.GetLogger(It.IsAny<object>())).Returns(testLogger);
@@ -582,8 +530,6 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
         [Test]
         public void Resolve_Warns_SameTypeSameTags()
         {
-            EditModeTestHelpers.ResetScene();
-
             var loggerProvider = new Mock<ILoggerProvider>();
             var testLogger = new TestLogger();
             loggerProvider.Setup(x => x.GetLogger(It.IsAny<object>())).Returns(testLogger);
@@ -602,8 +548,6 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
         [Test]
         public void Construct_TriesConstructors_WithMostParamsFirst()
         {
-            EditModeTestHelpers.ResetScene();
-
             DependencyInjector dependencyInjector = getDependencyInjector();
             dependencyInjector.RegisterService(new GameObject().AddComponent<TestComponent>());
             dependencyInjector.RegisterService(new object());
@@ -617,8 +561,6 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
         [Test]
         public void Construct_TriesConstructors_WithDecreasingNumParams()
         {
-            EditModeTestHelpers.ResetScene();
-
             DependencyInjector dependencyInjector = getDependencyInjector();
             dependencyInjector.RegisterService(new GameObject().AddComponent<TestComponent>());
             dependencyInjector.RegisterService(new object());
@@ -632,8 +574,6 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
         [Test]
         public void Construct_YieldsSameResult_GenericOrNonGeneric()
         {
-            EditModeTestHelpers.ResetScene();
-
             DependencyInjector dependencyInjector = getDependencyInjector();
             dependencyInjector.RegisterService(new GameObject().AddComponent<TestComponent>());
 
@@ -648,8 +588,6 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
         [Test]
         public void Construct_WithoutConstructor_DoesNotThrow()
         {
-            EditModeTestHelpers.ResetScene();
-
             DependencyInjector dependencyInjector = getDependencyInjector();
             Assert.DoesNotThrow(() => dependencyInjector.Construct<NoConstructorClient>());
         }
@@ -657,8 +595,6 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
         [Test]
         public void Construct_CallsEmptyConstructor_IfOnlyOption()
         {
-            EditModeTestHelpers.ResetScene();
-
             Mock<ITypeMetadataProvider> typeMetadataProvider = getTypeMetadataProvider();
             typeMetadataProvider
                 .Setup(x => x.GetMethodParameters(It.IsAny<ConstructorInfo>()))
@@ -673,8 +609,6 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
         [Test]
         public void Construct_CanCache()
         {
-            EditModeTestHelpers.ResetScene();
-
             Mock<ITypeMetadataProvider> mockTypeMetadataProvider = getTypeMetadataProvider();
             DependencyInjector dependencyInjector = getDependencyInjector(
                 cachedResolutionTypes: new[] { typeof(MultiConstructorClient) },
@@ -694,8 +628,6 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
         [Test]
         public void Construct_Warns_SameTypeNoTags()
         {
-            EditModeTestHelpers.ResetScene();
-
             var loggerProvider = new Mock<ILoggerProvider>();
             var testLogger = new TestLogger();
             loggerProvider.Setup(x => x.GetLogger(It.IsAny<object>())).Returns(testLogger);
@@ -710,8 +642,6 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
         [Test]
         public void Construct_DoesNotWarn_SameTypeDifferentTags()
         {
-            EditModeTestHelpers.ResetScene();
-
             var loggerProvider = new Mock<ILoggerProvider>();
             var testLogger = new TestLogger();
             loggerProvider.Setup(x => x.GetLogger(It.IsAny<object>())).Returns(testLogger);
@@ -727,8 +657,6 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
         [Test]
         public void Construct_Warns_SameTypeSameTags()
         {
-            EditModeTestHelpers.ResetScene();
-
             var loggerProvider = new Mock<ILoggerProvider>();
             var testLogger = new TestLogger();
             loggerProvider.Setup(x => x.GetLogger(It.IsAny<object>())).Returns(testLogger);
@@ -747,8 +675,6 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
         [Test]
         public void CanRecord_During_ResolveDependenciesOf()
         {
-            EditModeTestHelpers.ResetScene();
-
             Type clientType = typeof(TestClient);
             Type baseType = typeof(TestClientBase);
             Mock<ITypeMetadataProvider> mockTypeMetadataProvider = getTypeMetadataProvider();
@@ -790,8 +716,6 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
         [Test]
         public void CanRecord_During_Construct()
         {
-            EditModeTestHelpers.ResetScene();
-
             Type clientType = typeof(MultiConstructorClient);
             Mock<ITypeMetadataProvider> mockTypeMetadataProvider = getTypeMetadataProvider();
             DependencyResolutionCounts counts;
@@ -828,8 +752,6 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
         [Test]
         public void Record_Stop_ClearsRecordedResolutions()
         {
-            EditModeTestHelpers.ResetScene();
-
             // ARRANGE
             DependencyInjector dependencyInjector = getDependencyInjector(cachedResolutionTypes: new[] { typeof(TestClientBase) });
             dependencyInjector.RegisterService(getComponentService<TestComponent>());
@@ -849,8 +771,6 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
         [Test]
         public void ResolutionsNotStored_WhenNotRecording_During_ResolveDependenciesOf()
         {
-            EditModeTestHelpers.ResetScene();
-
             DependencyInjector dependencyInjector = getDependencyInjector();
             dependencyInjector.RegisterService(getComponentService<TestComponent>());
 
@@ -867,8 +787,6 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
         [Test]
         public void ResolutionsNotStored_WhenNotRecording_During_Construct()
         {
-            EditModeTestHelpers.ResetScene();
-
             DependencyInjector dependencyInjector = getDependencyInjector();
             dependencyInjector.RegisterService(getComponentService<TestComponent>());
             dependencyInjector.RegisterService(new object());
@@ -891,8 +809,6 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
         [Test]
         public void Can_Unregister_AllServicesFromScene()
         {
-            EditModeTestHelpers.ResetScene();
-
             DependencyInjector dependencyInjector = getDependencyInjector();
             Scene activeScene = SceneManager.GetActiveScene();
             dependencyInjector.RegisterService(new object(), SceneManager.GetActiveScene());
@@ -907,12 +823,7 @@ namespace UnityUtil.Test.EditMode.DependencyInjection
         }
 
         [Test, Ignore("Haven't figured out a way to open a new Scene while in the unsaved scene created by the Test Runner")]
-        public void Can_Unregister_AllServicesFromScene_LeavesOtherSceneServices()
-        {
-            EditModeTestHelpers.ResetScene();
-
-            Assert.Fail();
-        }
+        public void Can_Unregister_AllServicesFromScene_LeavesOtherSceneServices() => Assert.Fail();
 
         #endregion
 
