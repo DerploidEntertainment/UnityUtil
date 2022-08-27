@@ -61,19 +61,22 @@ public class MaxRepeatsRandomishOptionChooser : IRandomishOptionChooser
         _repeatRingBuffer = Enumerable.Repeat(-1, _config.MaxRepeats).ToArray();
     }
 
+    /// <summary>
+    /// Number of times the option at each index has been repeated during the last <see cref="MaxRepeats"/> calls to <see cref="GetOptionIndex"/>.
+    /// </summary>
     public IReadOnlyList<int> OptionRepeats => _repeats;
-    public float TotalProbability { get; private set; } = 1f;
+    internal float TotalProbability { get; private set; } = 1f;
 
     /// <summary>
     /// Chooses an option index using "randomish" logic.
-    /// This is an O(n) operation, where n is the number options.
+    /// This is an O(n) operation, where n is the number of options.
     /// </summary>
     /// <returns>
-    /// An index between 0 (inclusive) and <paramref name="state"/>'s <see cref="MaxRepeatsRandomishOptionChooserConfig.OptionCount"/> (exclusive).
+    /// An index between 0 (inclusive) and the number of options (exclusive).
     /// </returns>
     /// <remarks>
     /// <para>
-    /// Indices are chosen using <paramref name="state"/>'s <see cref="MaxRepeatsRandomishOptionChooserConfig.OptionProbabilities"/>
+    /// Indices are chosen using the configured <see cref="MaxRepeatsRandomishOptionChooserConfig.OptionProbabilities"/>
     /// while ensuring that no option is returned more than <see cref="MaxRepeatsRandomishOptionChooserConfig.MaxRepeats"/> times in a row.
     /// For example, suppose [0.3, 0.4, 0.3] are the specified probabilities, with a max repeat of 3.
     /// Initially, there is a 30% chance of returning 0, 40% chance of returning 1, and 30% chance of returning 2.
@@ -96,9 +99,9 @@ public class MaxRepeatsRandomishOptionChooser : IRandomishOptionChooser
     /// Therefore, the index at which the cumulative probability of <see cref="MaxRepeatsRandomishOptionChooserConfig.OptionProbabilities"/> is greater than R is the "chosen" index.
     /// </para>
     /// <para>
-    /// <paramref name="state"/> maintains a collection of the last <see cref="MaxRepeatsRandomishOptionChooserConfig.MaxRepeats"/> indices returned.
+    /// <see cref="MaxRepeatsRandomishOptionChooser"/> maintains a collection of the last <see cref="MaxRepeatsRandomishOptionChooserConfig.MaxRepeats"/> indices returned.
     /// When an option has been chosen more than the max allowed times in a row, its probability is temporarily zero.
-    /// In the above visualization, this is equivalent to removing the interval for that option, and then restricting R
+    /// In the above visualization, this is equivalent to collapsing that option's interval to zero width, and then restricting R
     /// to the range between 0 and (1 - that option's probability).
     /// </para>
     /// </remarks>
