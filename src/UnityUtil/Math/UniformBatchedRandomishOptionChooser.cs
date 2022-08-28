@@ -77,16 +77,22 @@ public class UniformBatchedRandomishOptionChooser : IRandomishOptionChooser
     /// </summary>
     internal Func<IReadOnlyList<int>> BatchProviderDelegate { get; set; }
 
+    /// <summary>
+    /// <see cref="GetBatch"/> will ensure that this index is not chosen at the start of a batch,
+    /// to prevent accidentally "continuing" a run across batches.
+    /// <strong>This property should only be explicitly set in unit tests!</strong>
+    /// </summary>
+    internal int LastOptionIndexOfPreviousBatch = -1;
+
     /// <inheritdoc/>
     public int GetOptionIndex()
     {
         if (_currBatchIndex == 0)
             _batch = BatchProviderDelegate();
 
-        int nextOptionIndex = _batch![_currBatchIndex++];
+        int nextOptionIndex = _batch![_currBatchIndex];
 
-        if (_currBatchIndex == _batch.Count)
-            _currBatchIndex = 0;
+        _currBatchIndex = (++_currBatchIndex) % _batch.Count;
 
         return nextOptionIndex;
     }
@@ -112,20 +118,23 @@ public class UniformBatchedRandomishOptionChooser : IRandomishOptionChooser
 
         // Generate a random sequence of option indices with the runs determined above.
         // I tried doing this in a way that wouldn't require a separate collection of "available options";
-        // unfortunately, it always required inserting into a List (O(n)). Doing this repeatedly is probably slower in the long run
-        // than just allocating one additional collection and then pulling from it.
+        // unfortunately, it always required inserting into a List (an O(n) worst-case operation).
+        // Doing this repeatedly is probably slower in the long run than just allocating one additional collection and pulling from it.
         int currBatchIndex = 0;
         int[] batch = new int[batchCount];
         int[] availableOptions = Enumerable.Range(0, _config.OptionCount).ToArray();
         for (int opt = 0; opt < _config.OptionCount; ++opt) {
             int randAvailableIndex = _randomNumberGenerator.Range(0, _config.OptionCount - opt);
             int randOpt = availableOptions[randAvailableIndex];
+            if (opt == 0 && randOpt == LastOptionIndexOfPreviousBatch && _config.OptionCount > 1) { --opt; continue; }  // Make sure we don't accidentally "continue" last run of previous batch
             availableOptions[randAvailableIndex] = availableOptions[_config.OptionCount - opt - 1];
 
             int repeatCount = 1 + (extraOptionRepeats.TryGetValue(randOpt, out int extraRepeatCount) ? extraRepeatCount : 0);
             for (int x = 0; x < repeatCount; ++x)
                 batch[currBatchIndex++] = randOpt;
         }
+
+        LastOptionIndexOfPreviousBatch = batch[^1];
 
         return batch;
     }

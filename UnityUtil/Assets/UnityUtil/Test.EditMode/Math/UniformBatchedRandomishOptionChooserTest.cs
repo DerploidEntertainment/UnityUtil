@@ -1,3 +1,4 @@
+using Moq;
 using NUnit.Framework;
 using System;
 using System.Collections;
@@ -215,6 +216,7 @@ namespace UnityUtil.Test.EditMode.Math
 
             // ACT
             int[] batch1 = (int[])uniformBatchedRandomishOptionChooser.GetBatch();
+            uniformBatchedRandomishOptionChooser.LastOptionIndexOfPreviousBatch = -1;
             int[] batch2 = (int[])uniformBatchedRandomishOptionChooser.GetBatch();
 
             // ASSERT
@@ -366,11 +368,104 @@ namespace UnityUtil.Test.EditMode.Math
             };
             UniformBatchedRandomishOptionChooser uniformBatchedRandomishOptionChooser = getRandomishOptionChooser(config: config);
 
-            int[] batch = (int[])uniformBatchedRandomishOptionChooser.GetBatch();
+            IReadOnlyList<int> batch = uniformBatchedRandomishOptionChooser.GetBatch();
 
-            Assert.That(batch.Length, Is.EqualTo(config.MaxRepeatsPerRun * optionCount));
+            Assert.That(batch.Count, Is.EqualTo(config.MaxRepeatsPerRun * optionCount));
             for (int opt = 0; opt < optionCount; ++opt)
                 Assert.That(batch.Count(x => x == opt), Is.EqualTo(config.MaxRepeatsPerRun));
+        }
+
+        [Test]
+        [TestCase(3, 0, 2)]
+        [TestCase(3, 2, 2)]
+        [TestCase(3, 0, 3)]
+        [TestCase(3, 2, 3)]
+        [TestCase(3, 0, 4)]
+        [TestCase(3, 2, 4)]
+        [TestCase(9, 2, 4)]
+        public void GetBatch_CannotContinueRunBetweenBatches(int optionCount, int runCount, int maxRepeatsPerRun)
+        {
+            // ARRANGE
+            // Mocked random number generator will return the hard-coded test "last option of a previous batch run".
+            // Every random choice of option index for the batch will return this "forbidden" option.
+            const int LAST_OPTION = 0;
+            const int NUM_ATTEMPTS = 20;
+            int numAttempts = 0;
+#pragma warning disable CA2201 // Do not raise reserved exception types
+            Mock<IRandomNumberGenerator> mockedRandomNumberGenerator = getPrngWithOptionIndexRandomization(optionCount, runCount, () =>
+                (++numAttempts == NUM_ATTEMPTS) ? throw new Exception() : LAST_OPTION);
+#pragma warning restore CA2201 // Do not raise reserved exception types
+            UniformBatchedRandomishOptionChooser uniformBatchedRandomishOptionChooser = getRandomishOptionChooser(
+                mockedRandomNumberGenerator.Object,
+                new() {
+                    OptionCount = optionCount,
+                    MinRunsPerBatch = runCount,
+                    MaxRunsPerBatch = runCount,
+                    MaxRepeatsPerRun = maxRepeatsPerRun,
+                }
+            );
+            uniformBatchedRandomishOptionChooser.LastOptionIndexOfPreviousBatch = LAST_OPTION;
+
+            // ACT
+            Assert.Throws<Exception>(() =>
+                uniformBatchedRandomishOptionChooser.GetBatch()
+            );
+
+            // ASSERT
+            Assert.That(numAttempts, Is.EqualTo(NUM_ATTEMPTS));
+        }
+
+        [Test]
+        [TestCase(1, 0, 2)]
+        [TestCase(1, 1, 2)]
+        [TestCase(3, 0, 2)]
+        [TestCase(3, 2, 2)]
+        [TestCase(3, 0, 3)]
+        [TestCase(3, 2, 3)]
+        [TestCase(3, 0, 4)]
+        [TestCase(3, 2, 4)]
+        [TestCase(9, 2, 4)]
+        public void GetBatch_SubsequentBatchIncludesAllOptions(int optionCount, int runCount, int maxRepeatsPerRun)
+        {
+            UniformBatchedRandomishOptionChooser uniformBatchedRandomishOptionChooser = getRandomishOptionChooser(
+                config: new() {
+                    OptionCount = optionCount,
+                    MinRunsPerBatch = runCount,
+                    MaxRunsPerBatch = runCount,
+                    MaxRepeatsPerRun = maxRepeatsPerRun,
+                }
+            );
+
+            uniformBatchedRandomishOptionChooser.GetBatch();
+            IReadOnlyList<int> batch2 = uniformBatchedRandomishOptionChooser.GetBatch();
+
+            // Assert that a subsequent batch still includes all options,
+            // even though last option of previous batch isn't repeated (to prevent "extended" runs, asserted in other tests)
+            for (int x = 0; x < optionCount; ++x)
+                Assert.That(batch2, Contains.Item(x));
+        }
+
+        [Test]
+        [TestCase(1, 0, 2)]
+        [TestCase(1, 1, 2)]
+        [TestCase(1, 1, 3)]
+        public void GetBatch_CanContinueRunBetweenBatches_OnlyOneOption(int optionCount, int runCount, int maxRepeatsPerRun)
+        {
+            Mock<IRandomNumberGenerator> mockedRandomNumberGenerator = getPrngWithOptionIndexRandomization(optionCount, runCount, () => 0);
+            UniformBatchedRandomishOptionChooser uniformBatchedRandomishOptionChooser = getRandomishOptionChooser(
+                mockedRandomNumberGenerator.Object,
+                new() {
+                    OptionCount = optionCount,
+                    MinRunsPerBatch = runCount,
+                    MaxRunsPerBatch = runCount,
+                    MaxRepeatsPerRun = maxRepeatsPerRun,
+                }
+            );
+            uniformBatchedRandomishOptionChooser.LastOptionIndexOfPreviousBatch = 0;
+
+            IReadOnlyList<int> batch = uniformBatchedRandomishOptionChooser.GetBatch();
+            Assert.That(batch.Count, runCount == 0 ? Is.EqualTo(1) : Is.InRange(2, runCount * maxRepeatsPerRun));
+            Assert.That(batch, Is.All.EqualTo(0));
         }
 
         #endregion
@@ -417,6 +512,7 @@ namespace UnityUtil.Test.EditMode.Math
         #endregion
 
         private static IRandomNumberGenerator getRandomNumberGenerator() => new TestRandomNumberGenerator(123456789);    // Hard-coded seed so tests are stable
+
         private static UniformBatchedRandomishOptionChooser getRandomishOptionChooser(
             IRandomNumberGenerator? randomNumberGenerator = null,
             UniformBatchedRandomishOptionChooserConfig? config = null
@@ -425,6 +521,31 @@ namespace UnityUtil.Test.EditMode.Math
                 randomNumberGenerator ?? getRandomNumberGenerator(),
                 config ?? new UniformBatchedRandomishOptionChooserConfig()
             );
+
+        /// <summary>
+        /// Set up <paramref name="mockedRandomNumberGenerator"/> to return the following "randomish" numbers:
+        /// <list type="number">
+        /// <item>Actual random numbers while logic is picking number/length of runs</item>
+        /// <item>Thereafter, values provided by <paramref name="optionIndexProvider"/></item>
+        /// </list>
+        /// </summary>
+        private static Mock<IRandomNumberGenerator> getPrngWithOptionIndexRandomization(int optionCount, int runCount, Func<int> optionIndexProvider)
+        {
+            Mock<IRandomNumberGenerator> mockedRandomNumberGenerator = new();
+
+            // All "other" range calls will just return PRNG-generated values
+            IRandomNumberGenerator randomNumberGenerator = getRandomNumberGenerator();
+            mockedRandomNumberGenerator.Setup(x => x.Range(It.IsAny<int>(), It.IsAny<int>()))
+                .Returns<int, int>((inclusiveMin, exclusiveMax) => randomNumberGenerator.Range(inclusiveMin, exclusiveMax));
+
+            // Range(0, optionCount) will first be called several times to decide which options will have runs,
+            // so just return actual PRNG-generated values for those calls.
+            int numAttempts = 0;
+            mockedRandomNumberGenerator.Setup(x => x.Range(0, optionCount)) // Can't use SetupSequence cause it doesn't support "do this for all following invokes"
+                .Returns(() => (numAttempts++ < runCount) ? randomNumberGenerator.Range(0, optionCount) : optionIndexProvider());
+
+            return mockedRandomNumberGenerator;
+        }
 
     }
 }
