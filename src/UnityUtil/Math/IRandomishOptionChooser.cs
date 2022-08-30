@@ -1,15 +1,15 @@
-﻿namespace UnityUtil.Math;
+namespace UnityUtil.Math;
 
 /// <summary>
-/// Chooses between options in a "randomish" way, i.e., a way that FEELS random to humans over time but may not be truly random.
+/// Chooses between options in a "randomish" way, i.e., a way that <em>feels</em> random to humans over time but may not be truly (psuedo)random.
 /// </summary>
-/// <typeparam name="TState">Represents state that persists between "randomish" option choices.</typeparam>
-public interface IRandomishOptionChooser<TState>
+public interface IRandomishOptionChooser
 {
     /// <summary>
-    /// Chooses an option index in a "randomish" way, i.e., a way that FEELS random to humans over time but may not be truly random.
+    /// Chooses an option index in a "randomish" way, i.e., a way that <em>feels</em> random to humans over time but may not be truly (psuedo)random.
     /// </summary>
-    /// <param name="state">Option choosing state, presumably carried over from the last choice.</param>
-    /// <returns>An option index (0-based).</returns>
-    int GetWeightedOptionIndex(TState state);
+    /// <returns>
+    /// An index between 0 (inclusive) and the number of options (exclusive).
+    /// </returns>
+    int GetOptionIndex();
 }

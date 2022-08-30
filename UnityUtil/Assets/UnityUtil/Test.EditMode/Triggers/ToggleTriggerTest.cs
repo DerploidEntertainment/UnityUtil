@@ -2,11 +2,14 @@
 using UnityEngine;
 using UnityEngine.Triggers;
 
-namespace UnityUtil.Test.EditMode.Triggers {
-    public class ToggleTriggerTest {
+namespace UnityUtil.Test.EditMode.Triggers
+{
+    public class ToggleTriggerTest : BaseEditModeTestFixture
+    {
 
         [Test]
-        public void CanToggle() {
+        public void CanToggle()
+        {
             ToggleTrigger trigger = getToggleTrigger();
 
             trigger.TurnOn();
@@ -20,7 +23,8 @@ namespace UnityUtil.Test.EditMode.Triggers {
         }
 
         [Test]
-        public void TogglingRaisesCorrectEvent() {
+        public void TogglingRaisesCorrectEvent()
+        {
             ToggleTrigger trigger = getToggleTrigger();
             int numFalseTriggers = 0, numTrueTriggers = 0;
             trigger.BecameFalse.AddListener(() => ++numFalseTriggers);
@@ -40,7 +44,8 @@ namespace UnityUtil.Test.EditMode.Triggers {
         }
 
         [Test]
-        public void RepeatedToggleDoesNotRaiseEvent() {
+        public void RepeatedToggleDoesNotRaiseEvent()
+        {
             ToggleTrigger trigger = getToggleTrigger();
             int numFalseTriggers = 0, numTrueTriggers = 0;
             trigger.BecameFalse.AddListener(() => ++numFalseTriggers);
@@ -66,7 +71,8 @@ namespace UnityUtil.Test.EditMode.Triggers {
         }
 
         [Test]
-        public void RepeatedToggleRaisesStillEvent() {
+        public void RepeatedToggleRaisesStillEvent()
+        {
             ToggleTrigger trigger = getToggleTrigger();
             int numFalseTriggers = 0, numTrueTriggers = 0;
             trigger.StillFalse.AddListener(() => ++numFalseTriggers);

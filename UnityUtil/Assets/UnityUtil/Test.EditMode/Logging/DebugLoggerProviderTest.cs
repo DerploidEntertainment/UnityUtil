@@ -7,7 +7,7 @@ using UnityUtil.Editor;
 
 namespace UnityUtil.Test.EditMode.Logging
 {
-    public class DebugLoggerProviderTest
+    public class DebugLoggerProviderTest : BaseEditModeTestFixture
     {
         [SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses", Justification = "Instantiated when added to test Game Objects")]
         private class HerpLogEnricher : LogEnricher
@@ -30,8 +30,6 @@ namespace UnityUtil.Test.EditMode.Logging
         [Test]
         public void CanEnrichLogs_DiffEnrichers()
         {
-            EditModeTestHelpers.ResetScene();
-
             HerpLogEnricher herpEnricher = ScriptableObject.CreateInstance<HerpLogEnricher>();
             DerpLogEnricher derpEnricher = ScriptableObject.CreateInstance<DerpLogEnricher>();
             var sourceObj = new GameObject("source");
@@ -61,8 +59,6 @@ namespace UnityUtil.Test.EditMode.Logging
         [Test]
         public void CanEnrichLogs_DiffSeparators()
         {
-            EditModeTestHelpers.ResetScene();
-
             HerpLogEnricher herpEnricher = ScriptableObject.CreateInstance<HerpLogEnricher>();
             DerpLogEnricher derpEnricher = ScriptableObject.CreateInstance<DerpLogEnricher>();
             var sourceObj = new GameObject("source");
@@ -92,8 +88,6 @@ namespace UnityUtil.Test.EditMode.Logging
         [Test]
         public void CanEnrichLogs_DiffSourceObjects()
         {
-            EditModeTestHelpers.ResetScene();
-
             SourceNameLogEnricher sourceNameEnricher = ScriptableObject.CreateInstance<SourceNameLogEnricher>();
             DebugLoggerProvider loggerProvider = getDebugLoggerProvider(logEnrichers: sourceNameEnricher);
             GameObject sourceObj;
@@ -122,8 +116,6 @@ namespace UnityUtil.Test.EditMode.Logging
         [Test]
         public void LogEnricherOrderPreserved()
         {
-            EditModeTestHelpers.ResetScene();
-
             HerpLogEnricher herpEnricher = ScriptableObject.CreateInstance<HerpLogEnricher>();
             DerpLogEnricher derpEnricher = ScriptableObject.CreateInstance<DerpLogEnricher>();
             var sourceObj = new GameObject("source");

@@ -5,14 +5,15 @@ using UnityEngine.Events;
 using UnityEngine.TestTools;
 using UnityEngine.Triggers;
 
-namespace UnityUtil.Test.PlayMode {
+namespace UnityUtil.Test.PlayMode
+{
 
-    public class ColliderTriggerTest {
+    public class ColliderTriggerTest : BasePlayModeTestFixture
+    {
 
         [UnityTest]
-        public IEnumerator TriggerEnterCanTrigger() {
-            PlayModeTestHelpers.ResetScene();
-
+        public IEnumerator TriggerEnterCanTrigger()
+        {
             int numTriggers = 0;
             ColliderEnterTrigger trigger = getTriggerObject<ColliderEnterTrigger>(isTrigger: true, () => ++numTriggers);
             Collider testCollider = getCollidingObject();
@@ -30,9 +31,8 @@ namespace UnityUtil.Test.PlayMode {
         }
 
         [UnityTest]
-        public IEnumerator CollisionCanTrigger() {
-            PlayModeTestHelpers.ResetScene();
-
+        public IEnumerator CollisionCanTrigger()
+        {
             int numTriggers = 0;
             ColliderEnterTrigger trigger = getTriggerObject<ColliderEnterTrigger>(isTrigger: false, () => ++numTriggers);
             Collider testCollider = getCollidingObject();
@@ -53,9 +53,8 @@ namespace UnityUtil.Test.PlayMode {
         }
 
         [UnityTest]
-        public IEnumerator TriggerExitCanTrigger() {
-            PlayModeTestHelpers.ResetScene();
-
+        public IEnumerator TriggerExitCanTrigger()
+        {
             int numTriggers = 0;
             ColliderExitTrigger trigger = getTriggerObject<ColliderExitTrigger>(isTrigger: true, () => ++numTriggers);
             Collider testCollider = getCollidingObject();
@@ -73,9 +72,8 @@ namespace UnityUtil.Test.PlayMode {
         }
 
         [UnityTest]
-        public IEnumerator CollisionStopCanTrigger() {
-            PlayModeTestHelpers.ResetScene();
-
+        public IEnumerator CollisionStopCanTrigger()
+        {
             int numTriggers = 0;
             ColliderExitTrigger trigger = getTriggerObject<ColliderExitTrigger>(isTrigger: false, () => ++numTriggers);
             Collider testCollider = getCollidingObject();
@@ -96,9 +94,8 @@ namespace UnityUtil.Test.PlayMode {
         }
 
         [UnityTest]
-        public IEnumerator CanFilterWithWhiteList() {
-            PlayModeTestHelpers.ResetScene();
-
+        public IEnumerator CanFilterWithWhiteList()
+        {
             int numTriggers = 0;
             ColliderEnterTrigger trigger = getTriggerObject<ColliderEnterTrigger>(isTrigger: true, () => ++numTriggers, "test");
             Collider testCollider = getCollidingObject();
@@ -126,9 +123,8 @@ namespace UnityUtil.Test.PlayMode {
         }
 
         [UnityTest]
-        public IEnumerator CanFilterWithBlackList() {
-            PlayModeTestHelpers.ResetScene();
-
+        public IEnumerator CanFilterWithBlackList()
+        {
             int numTriggers = 0;
             ColliderEnterTrigger trigger = getTriggerObject<ColliderEnterTrigger>(isTrigger: true, () => ++numTriggers, "test", filterIsBlacklist: true);
             Collider testCollider = getCollidingObject();
@@ -156,9 +152,8 @@ namespace UnityUtil.Test.PlayMode {
         }
 
         [UnityTest]
-        public IEnumerator NoRigidbodyTriggerEnterCanTrigger() {
-            PlayModeTestHelpers.ResetScene();
-
+        public IEnumerator NoRigidbodyTriggerEnterCanTrigger()
+        {
             int numTriggers = 0;
             ColliderEnterTrigger trigger = getTriggerObject<ColliderEnterTrigger>(isTrigger: true, () => ++numTriggers);
             Collider testCollider = getCollidingObject(hasRigidbody: false);
@@ -175,9 +170,8 @@ namespace UnityUtil.Test.PlayMode {
         }
 
         [UnityTest]
-        public IEnumerator NoRigidbodyCollisionCanTrigger() {
-            PlayModeTestHelpers.ResetScene();
-
+        public IEnumerator NoRigidbodyCollisionCanTrigger()
+        {
             int numTriggers = 0;
             ColliderEnterTrigger trigger = getTriggerObject<ColliderEnterTrigger>(isTrigger: false, () => ++numTriggers, useGravity: true);
             Collider testCollider = getCollidingObject(hasRigidbody: false);
@@ -197,9 +191,8 @@ namespace UnityUtil.Test.PlayMode {
         }
 
         [UnityTest]
-        public IEnumerator NoRigidbodyTriggersWhenBlackListed() {
-            PlayModeTestHelpers.ResetScene();
-
+        public IEnumerator NoRigidbodyTriggersWhenBlackListed()
+        {
             int numTriggers = 0;
             ColliderEnterTrigger trigger = getTriggerObject<ColliderEnterTrigger>(isTrigger: true, () => ++numTriggers, "test", filterIsBlacklist: true);
             Collider testCollider = getCollidingObject(hasRigidbody: false);
@@ -216,7 +209,8 @@ namespace UnityUtil.Test.PlayMode {
             Assert.That(numTriggers, Is.EqualTo(1));
         }
 
-        private static Collider getCollidingObject(bool hasRigidbody = true) {
+        private static Collider getCollidingObject(bool hasRigidbody = true)
+        {
             var obj = new GameObject($"test-collider");
             Collider collider = obj.AddComponent<SphereCollider>();
             if (hasRigidbody)
@@ -229,7 +223,8 @@ namespace UnityUtil.Test.PlayMode {
             string? tagFilter = null,
             bool filterIsBlacklist = false,
             bool useGravity = false
-        ) where T : ColliderTriggerBase {
+        ) where T : ColliderTriggerBase
+        {
             var obj = new GameObject("test-trigger");
 
             Rigidbody rb = obj.AddComponent<Rigidbody>();

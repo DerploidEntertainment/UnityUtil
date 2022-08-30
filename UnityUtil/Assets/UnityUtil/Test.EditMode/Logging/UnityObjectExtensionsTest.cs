@@ -7,14 +7,12 @@ using UA = UnityEngine.Assertions;
 namespace UnityUtil.Test.EditMode.Logging
 {
 
-    public class UnityObjectExtensionsTest
+    public class UnityObjectExtensionsTest : BaseEditModeTestFixture
     {
 
         [Test]
         public void CanGetHierarchyName_DiffNumParents()
         {
-            EditModeTestHelpers.ResetScene();
-
             GameObject obj = getGameObject("test", numParents: 5);
             string name;
 
@@ -31,8 +29,6 @@ namespace UnityUtil.Test.EditMode.Logging
         [Test]
         public void CanGetHierarchyName_DiffSeparators()
         {
-            EditModeTestHelpers.ResetScene();
-
             GameObject obj = getGameObject("test", numParents: 1);
             string name;
 
@@ -49,8 +45,6 @@ namespace UnityUtil.Test.EditMode.Logging
         [Test]
         public void CanGetHierarchyName_DiffFormatStrings()
         {
-            EditModeTestHelpers.ResetScene();
-
             GameObject obj = getGameObject("test", numParents: 1);
             string name;
 
@@ -70,8 +64,6 @@ namespace UnityUtil.Test.EditMode.Logging
         [Test]
         public void CanGetHierarchyName_IncludesOnlyNumParentsThatExist()
         {
-            EditModeTestHelpers.ResetScene();
-
             GameObject obj = getGameObject("test", numParents: 2);
             string name;
 
@@ -88,8 +80,6 @@ namespace UnityUtil.Test.EditMode.Logging
         [Test]
         public void CanGetHierarchyName_SameForAllAttachedComponents()
         {
-            EditModeTestHelpers.ResetScene();
-
             GameObject obj = getGameObject("test", numParents: 1);
             Component component;
             string name;
@@ -110,8 +100,6 @@ namespace UnityUtil.Test.EditMode.Logging
         [Test]
         public void CanGetHierarchyNameWithType_DiffComponents()
         {
-            EditModeTestHelpers.ResetScene();
-
             GameObject obj = getGameObject("test", numParents: 1);
             Component component;
             string name;
@@ -132,8 +120,6 @@ namespace UnityUtil.Test.EditMode.Logging
         [Test]
         public void CanGetHierarchyNameWithType_DiffFormatString()
         {
-            EditModeTestHelpers.ResetScene();
-
             GameObject obj = getGameObject("test", numParents: 1);
             string name;
 
@@ -156,8 +142,6 @@ namespace UnityUtil.Test.EditMode.Logging
         [Test]
         public void CanAssertActiveAndEnabled()
         {
-            EditModeTestHelpers.ResetScene();
-
             GameObject obj = getGameObject("test", numParents: 0);
             Behaviour behaviour = obj.AddComponent<Animator>();
 

@@ -3,20 +3,17 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Triggers;
-using UnityUtil.Editor;
 using UnityUtil.Test.EditMode.Logging;
 
 namespace UnityUtil.Test.EditMode.Triggers
 {
 
-    public class SequenceTriggerTest
+    public class SequenceTriggerTest : BaseEditModeTestFixture
     {
 
         [Test]
         public void CanStep()
         {
-            EditModeTestHelpers.ResetScene();
-
             SequenceTrigger trigger = getSequenceTrigger(2);
             int origStep = trigger.CurrentStep;
 
@@ -28,8 +25,6 @@ namespace UnityUtil.Test.EditMode.Triggers
         [Test]
         public void CanStepForwardMultiple()
         {
-            EditModeTestHelpers.ResetScene();
-
             SequenceTrigger trigger = getSequenceTrigger(10);
             int origStep = trigger.CurrentStep;
 
@@ -44,8 +39,6 @@ namespace UnityUtil.Test.EditMode.Triggers
         [Test]
         public void CanStepBackwardMultiple()
         {
-            EditModeTestHelpers.ResetScene();
-
             SequenceTrigger trigger = getSequenceTrigger(10);
             int origStep = 5;
             trigger.CurrentStep = origStep;
@@ -61,8 +54,6 @@ namespace UnityUtil.Test.EditMode.Triggers
         [Test]
         public void StepForwardCanClamp()
         {
-            EditModeTestHelpers.ResetScene();
-
             int numSteps = 2;
             SequenceTrigger trigger = getSequenceTrigger(numSteps);
             int origStep = 0;
@@ -79,8 +70,6 @@ namespace UnityUtil.Test.EditMode.Triggers
         [Test]
         public void StepBackwardCanClamp()
         {
-            EditModeTestHelpers.ResetScene();
-
             int numSteps = 2;
             SequenceTrigger trigger = getSequenceTrigger(numSteps);
             int origStep = numSteps - 1;
@@ -97,8 +86,6 @@ namespace UnityUtil.Test.EditMode.Triggers
         [Test]
         public void StepForwardCanCycle()
         {
-            EditModeTestHelpers.ResetScene();
-
             int numSteps = 2;
             SequenceTrigger trigger = getSequenceTrigger(numSteps, cycle: true);
             trigger.CurrentStep = trigger.StepTriggers.Length - 1;
@@ -116,8 +103,6 @@ namespace UnityUtil.Test.EditMode.Triggers
         [Test]
         public void StepBackwardCanCycle()
         {
-            EditModeTestHelpers.ResetScene();
-
             int numSteps = 2;
             SequenceTrigger trigger = getSequenceTrigger(numSteps, cycle: true);
             trigger.CurrentStep = 1;
@@ -135,8 +120,6 @@ namespace UnityUtil.Test.EditMode.Triggers
         [Test]
         public void CanTrigger()
         {
-            EditModeTestHelpers.ResetScene();
-
             string affectedTxt = "";
             SequenceTrigger trigger = getSequenceTrigger(2);
             trigger.CurrentStep = 0;
@@ -152,8 +135,6 @@ namespace UnityUtil.Test.EditMode.Triggers
         [Test]
         public void CanTriggerMultipleTimes()
         {
-            EditModeTestHelpers.ResetScene();
-
             int affectedNum = 0;
             SequenceTrigger trigger = getSequenceTrigger(1);
             trigger.CurrentStep = 0;
@@ -171,8 +152,6 @@ namespace UnityUtil.Test.EditMode.Triggers
         [Test]
         public void CanStepAndTrigger()
         {
-            EditModeTestHelpers.ResetScene();
-
             string affectedTxt = "";
             SequenceTrigger trigger = getSequenceTrigger(2);
             trigger.CurrentStep = 0;
@@ -195,8 +174,6 @@ namespace UnityUtil.Test.EditMode.Triggers
         [Test]
         public void TriggerHandlesNullEvents()
         {
-            EditModeTestHelpers.ResetScene();
-
             SequenceTrigger trigger = getSequenceTrigger(1);
 
             Assert.DoesNotThrow(trigger.Trigger);

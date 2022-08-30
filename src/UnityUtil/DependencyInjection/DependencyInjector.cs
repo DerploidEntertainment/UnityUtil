@@ -167,7 +167,6 @@ public class DependencyInjector
 
     #region Resolving client dependencies
 
-
     /// <summary>
     /// <para>
     /// Use these rules to cache commonly resolved dependencies, speeding up Scene load times.

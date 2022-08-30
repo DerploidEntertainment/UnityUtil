@@ -3,18 +3,15 @@ using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityUtil.Editor;
 using UnityUtil.Math;
 
 namespace UnityUtil.Test.EditMode.Math
 {
-    public class MoreMathTest
+    public class MoreMathTest : BaseEditModeTestFixture
     {
         [Test]
         public void RandomWeightedIndex_Fails_NoWeights()
         {
-            EditModeTestHelpers.ResetScene();
-
             Assert.Throws<ArgumentException>(() =>
                 MoreMath.RandomWeightedIndex(Array.Empty<float>(), getRandomNumberGenerator())
             );
@@ -29,8 +26,6 @@ namespace UnityUtil.Test.EditMode.Math
         [TestCase(new[] { 0.2f, 0.5f })]
         public void RandomWeightedIndex_Fails_WeightsDontSumToOne(float[] indexWeights)
         {
-            EditModeTestHelpers.ResetScene();
-
             Debug.Log($"Index weights: {string.Join(',', indexWeights)}");
             Assert.Throws<InvalidOperationException>(() =>
                 MoreMath.RandomWeightedIndex(indexWeights, getRandomNumberGenerator())
@@ -44,8 +39,6 @@ namespace UnityUtil.Test.EditMode.Math
         [TestCase(new[] { 0.5f, -0.25f, 0.75f })]
         public void RandomWeightedIndex_Fails_NegativeWeights(float[] indexWeights)
         {
-            EditModeTestHelpers.ResetScene();
-
             Debug.Log($"Index weights: {string.Join(',', indexWeights)}");
             Assert.Throws<InvalidOperationException>(() =>
                 MoreMath.RandomWeightedIndex(indexWeights, getRandomNumberGenerator())
@@ -58,8 +51,6 @@ namespace UnityUtil.Test.EditMode.Math
         [TestCase(new[] { -1f, 2f })]
         public void RandomWeightedIndex_Fails_WeightsOverOne(float[] indexWeights)
         {
-            EditModeTestHelpers.ResetScene();
-
             Debug.Log($"Index weights: {string.Join(',', indexWeights)}");
             Assert.Throws<InvalidOperationException>(() =>
                 MoreMath.RandomWeightedIndex(indexWeights, getRandomNumberGenerator())
@@ -94,8 +85,6 @@ namespace UnityUtil.Test.EditMode.Math
         [TestCaseSource(nameof(yieldCorrectIndexTestCases))]
         public void RandomWeightedIndex_ReturnsCorrectIndex(double randomValue, float[] indexWeights, int expectedIndex)
         {
-            EditModeTestHelpers.ResetScene();
-
             Debug.Log($"Index weights: {string.Join(',', indexWeights)}");
             IRandomNumberGenerator randomNumberGenerator = Mock.Of<IRandomNumberGenerator>(x => x.NextDouble() == randomValue);
             int index = MoreMath.RandomWeightedIndex(indexWeights, randomNumberGenerator);

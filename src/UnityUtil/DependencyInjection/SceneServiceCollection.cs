@@ -23,6 +23,10 @@ public class InspectorService
     public string Tag = "";
 }
 
+/// <summary>
+/// Encapsulates a collection in which scene-specific service instances can be registered.
+/// Inheriting classes can override <see cref="Awake"/> to register additional scene-specific services via type-specific fields.
+/// </summary>
 public class SceneServiceCollection : MonoBehaviour, IEnumerable<InspectorService>
 {
     [Tooltip(
@@ -39,8 +43,11 @@ public class SceneServiceCollection : MonoBehaviour, IEnumerable<InspectorServic
     [TableList(AlwaysExpanded = true, ShowIndexLabels = false)]
     public InspectorService[] Services = Array.Empty<InspectorService>();
 
+    /// <summary>
+    /// Inheriting classes can override this method to register additional scene-specific services.
+    /// </summary>
     [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
-    private void Awake()
+    protected virtual void Awake()
     {
         for (int s = 0; s < Services.Length; ++s) {
             InspectorService service = Services[s];
