@@ -46,7 +46,6 @@ public class SceneServiceCollection : MonoBehaviour, IEnumerable<InspectorServic
     /// <summary>
     /// Inheriting classes can override this method to register additional scene-specific services.
     /// </summary>
-    [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
     protected virtual void Awake()
     {
         for (int s = 0; s < Services.Length; ++s) {
