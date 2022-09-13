@@ -117,12 +117,12 @@ public class LegalAcceptManager : Configurable, ILegalAcceptManager
     [Button, Conditional("DEBUG")]
     public void ClearAcceptance()
     {
+        // Use PlayerPrefs in case this is being run from the Inspector outside Play mode
         if (_localPreferences == null) {
             for (int d = 0; d < Documents.Length; ++d)
                 PlayerPrefs.DeleteKey(Documents[d].PreferencesKey);
         }
 
-        // Use PlayerPrefs in case this is being run from the Inspector outside Play mode
         else {
             for (int d = 0; d < Documents.Length; ++d)
                 _localPreferences.DeleteKey(Documents[d].PreferencesKey);
