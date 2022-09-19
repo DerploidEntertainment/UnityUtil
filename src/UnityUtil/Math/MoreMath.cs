@@ -82,9 +82,7 @@ public static class MoreMath
         for (int r = 0; r < count; ++r) {
             int s = randomNumberGenerator.Range(0, sourceCount - r);
             resultIndices[r] = sourceIndices[s];
-            int temp = sourceIndices[s];
-            sourceIndices[s] = sourceIndices[sourceCount - r - 1];
-            sourceIndices[sourceCount - r - 1] = temp;
+            (sourceIndices[sourceCount - r - 1], sourceIndices[s]) = (sourceIndices[s], sourceIndices[sourceCount - r - 1]);
         }
 
         return resultIndices;
