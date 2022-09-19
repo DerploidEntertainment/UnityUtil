@@ -4,5 +4,6 @@ public enum DataConsentState
 {
     NotRequired,
     StillRequired,
-    Acknowledged,
+    Given,
+    Denied,
 }
