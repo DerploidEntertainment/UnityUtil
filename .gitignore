@@ -16,6 +16,7 @@ Library/
 Logs/
 Temp/
 UserSettings/
+CodeCoverage/
 
 UnityUtil/Assets/BuildReports/
 UnityUtil/Assets/BuildReports.meta
