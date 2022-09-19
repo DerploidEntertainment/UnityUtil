@@ -1,12 +1,14 @@
 using Sirenix.OdinInspector;
 using System;
 using System.Diagnostics;
+using UnityEngine;
 using UnityEngine.Logging;
 using UnityEngine.Networking;
 using UnityEngine.Storage;
 using UnityEngine.UI;
+using U = UnityEngine;
 
-namespace UnityEngine.Legal;
+namespace UnityUtil.Legal;
 
 public class LegalAcceptManager : Configurable, ILegalAcceptManager
 {
@@ -129,7 +131,7 @@ public class LegalAcceptManager : Configurable, ILegalAcceptManager
                 _localPreferences.DeleteKey(Documents[d].PreferencesKey);
         }
 
-        ILogger logger = (_logger ?? Debug.unityLogger);    // Use debug logger in case this is being run from the Inspector outside Play mode
+        ILogger logger = (_logger ?? U.Debug.unityLogger);    // Use debug logger in case this is being run from the Inspector outside Play mode
         logger.Log($"Accepted tags for all legal documents have been cleared.", context: this);
     }
 

@@ -5,13 +5,14 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
+using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.DependencyInjection;
 using UnityEngine.Events;
 using UnityEngine.Logging;
 using UnityEngine.Storage;
 
-namespace UnityEngine.Legal;
+namespace UnityUtil.Legal;
 
 /// <summary>
 /// Manages the gathering and persisting of a user's consent to share their personal data with registered <see cref="IInitializableWithConsent"/>s.

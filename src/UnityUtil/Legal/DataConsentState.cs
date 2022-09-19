@@ -1,4 +1,4 @@
-﻿namespace UnityEngine.Legal;
+﻿namespace UnityUtil.Legal;
 
 public enum DataConsentState
 {

@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace UnityEngine.Legal;
+namespace UnityUtil.Legal;
 
 public interface IInitializableWithConsent
 {

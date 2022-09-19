@@ -5,9 +5,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.Legal;
 using UnityEngine.Logging;
 using UnityEngine.Storage;
+using UnityUtil.Legal;
 using S = System.Threading.Tasks;
 using U = UnityEngine;
 
