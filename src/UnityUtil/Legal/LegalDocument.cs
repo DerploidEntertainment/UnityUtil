@@ -1,8 +1,9 @@
 ﻿using Sirenix.OdinInspector;
+using UnityEngine;
 
-namespace UnityEngine.Legal;
+namespace UnityUtil.Legal;
 
-[CreateAssetMenu(menuName = $"{nameof(UnityUtil)}/{nameof(UnityEngine.Legal)}/{nameof(LegalDocument)}", fileName = "policy.asset")]
+[CreateAssetMenu(menuName = $"{nameof(UnityUtil)}/{nameof(UnityUtil.Legal)}/{nameof(LegalDocument)}", fileName = "policy.asset")]
 public class LegalDocument : ScriptableObject
 {
     [Tooltip(

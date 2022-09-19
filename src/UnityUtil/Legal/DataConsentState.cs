@@ -1,8 +1,9 @@
-﻿namespace UnityEngine.Legal;
+﻿namespace UnityUtil.Legal;
 
 public enum DataConsentState
 {
     NotRequired,
     StillRequired,
-    Acknowledged,
+    Given,
+    Denied,
 }

@@ -1,16 +1,18 @@
 ﻿using Sirenix.OdinInspector;
 using System;
 using System.Globalization;
+using UnityEngine;
 using UnityEngine.UI;
+using UD = UnityEngine.Device;
 
-namespace UnityEngine.Legal;
+namespace UnityUtil.Legal;
 
 public class CopyrightText : Configurable
 {
     [Tooltip(
         $"This string is used to populate {nameof(Text)}. " +
         $"'{{0}}' will be replaced with the current date (in user's culture) and " +
-        $"'{{1}}' will be replaced with {nameof(Device.Application)}.{nameof(Device.Application.companyName)}, " +
+        $"'{{1}}' will be replaced with {nameof(UD.Application)}.{nameof(UD.Application.companyName)}, " +
         $"using .NET composite formatting. For example, '{{0:yyyy}}' would be replaced with just the current 4-digit year. " +
         $"See here for details: https://docs.microsoft.com/en-us/dotnet/standard/base-types/composite-formatting"
     )]
@@ -24,6 +26,6 @@ public class CopyrightText : Configurable
     {
         base.Awake();
 
-        Text!.text = string.Format(CultureInfo.CurrentCulture, FormatString, DateTime.Now, Device.Application.companyName);
+        Text!.text = string.Format(CultureInfo.CurrentCulture, FormatString, DateTime.Now, UD.Application.companyName);
     }
 }

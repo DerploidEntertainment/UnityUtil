@@ -1,12 +1,14 @@
 using Sirenix.OdinInspector;
 using System;
 using System.Diagnostics;
+using UnityEngine;
 using UnityEngine.Logging;
 using UnityEngine.Networking;
 using UnityEngine.Storage;
 using UnityEngine.UI;
+using U = UnityEngine;
 
-namespace UnityEngine.Legal;
+namespace UnityUtil.Legal;
 
 public class LegalAcceptManager : Configurable, ILegalAcceptManager
 {
@@ -36,7 +38,7 @@ public class LegalAcceptManager : Configurable, ILegalAcceptManager
     internal void CheckForUpdate(int documentIndex, Action<LegalAcceptance> callback, DownloadHandler? downloadHandler = null, UploadHandler? uploadHandler = null)
     {
         if (downloadHandler is null ^ uploadHandler is null)
-            throw new InvalidOperationException();
+            throw new InvalidOperationException($"{nameof(downloadHandler)} and {nameof(uploadHandler)} must be both null or both non-null");
 
         // Get the last accepted tag from preferences (will be empty if none stored yet)
         LegalDocument doc = Documents[documentIndex];
@@ -106,12 +108,13 @@ public class LegalAcceptManager : Configurable, ILegalAcceptManager
 
     public void Accept()
     {
-        for (int v = 0; v < _latestVersionTags.Length; ++v)
+        for (int v = 0; v < _latestVersionTags.Length; ++v) {
             _localPreferences!.SetString(Documents[v].PreferencesKey, _latestVersionTags[v].ToString());
+            _logger!.Log($"Legal document with latest '{Documents[v].TagHeader}' header is now accepted by user and saved to local preferences at '{Documents[v].PreferencesKey}', so user won't need to accept it again.", context: this);
+        }
 
         HasAccepted = true;
 
-        _logger!.Log($"User has accepted latest versions of all legal documents.", context: this);
     }
 
     [Button, Conditional("DEBUG")]
@@ -128,7 +131,7 @@ public class LegalAcceptManager : Configurable, ILegalAcceptManager
                 _localPreferences.DeleteKey(Documents[d].PreferencesKey);
         }
 
-        ILogger logger = (_logger ?? Debug.unityLogger);    // Use debug logger in case this is being run from the Inspector outside Play mode
+        ILogger logger = (_logger ?? U.Debug.unityLogger);    // Use debug logger in case this is being run from the Inspector outside Play mode
         logger.Log($"Accepted tags for all legal documents have been cleared.", context: this);
     }
 

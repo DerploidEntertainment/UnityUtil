@@ -1,6 +1,6 @@
 using System;
 
-namespace UnityEngine.Legal;
+namespace UnityUtil.Legal;
 
 public enum LegalAcceptance
 {
