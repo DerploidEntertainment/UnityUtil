@@ -158,7 +158,8 @@ public class SingleDialogConsentManager : MonoBehaviour
     /// One or more of the <see cref="IInitializableWithConsent.InitializeAsync(bool)"/> calls failed.
     /// See this exception's <see cref="AggregateException.InnerExceptions"/> collection for more details.
     /// </exception>
-    public void Initialize()
+    [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Async suffix doesn't really look great on async void methods")]
+    public async void Initialize()
     {
         _logger!.Log($"Initializing all data consent managers in parallel...", context: this);
 
@@ -166,13 +167,16 @@ public class SingleDialogConsentManager : MonoBehaviour
             _initializablesWithConsent!.Select((x, index) => x.InitializeAsync(_consents![index].hasConsent))
         );
 
-        // We don't use await here b/c when code awaits a faulted task, only the first exception in the AggregateException is rethrown.
-        // See https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/async/#asynchronous-exceptions.
-        // Plus, if we await, then the method must be async void, which means any exceptions would just be swallowed by the SynchronizationContext anyway.
-        task.Wait();
-
-        if (task.IsFaulted)
-            throw task.Exception.Flatten();
+        // In async void methods, exceptions are swallowed by the SynchronizationContext, so just log them and continue.
+        // When code awaits a faulted task, only the first exception in the AggregateException is rethrown,
+        // so instead we're squashing that exception and logging the more informative AggregateException from the Task object itself.
+        // We have to `await` because Unity freezes if we use Task.Wait() for some reason (maybe a deadlock on the Unity thread?).
+        try {
+            await task.ConfigureAwait(true);
+        }
+        catch {
+            _logger!.LogException(task.Exception.Flatten(), context: this);
+        }
     }
 
     /// <summary>

@@ -4,9 +4,11 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.Logging;
 using UnityEngine.Storage;
+using UnityEngine.TestTools;
 using UnityUtil.Legal;
 using S = System.Threading.Tasks;
 using U = UnityEngine;
@@ -18,7 +20,6 @@ namespace UnityUtil.Test.EditMode.Legal
         private const string CONSENT_PREF_KEY_PREFIX = "TEST_CONSENT_";
         private static IEnumerable<TestCaseData> getConsentStateTestCases() =>
             new TestCaseData[] {
-                // legalDocsAccepted, consents[]
                 new(LegalAcceptance.Unprovided, new bool?[]{ null }),
                 new(LegalAcceptance.Unprovided, new bool?[]{ true }),
                 new(LegalAcceptance.Unprovided, new bool?[]{ false }),
@@ -288,7 +289,7 @@ namespace UnityUtil.Test.EditMode.Legal
         [TestCase(0)]
         [TestCase(1)]
         [TestCase(2)]
-        public void Initialize_Throws_AnyInitializableThrows(int consentCount)
+        public void Initialize_DoesNotThrow_ButLogsExceptions(int consentCount)
         {
             // ARRANGE
             Mock<IInitializableWithConsent>[] initializables = Enumerable
@@ -300,19 +301,33 @@ namespace UnityUtil.Test.EditMode.Legal
                     return initializable;
                 })
                 .ToArray();
+
+            Mock<ILogger> logger = new();
+
             SingleDialogConsentManager singleDialogConsentManager = getSingleDialogConsentManager(
+                loggerProvider: Mock.Of<ILoggerProvider>(x => x.GetLogger(It.IsAny<object>()) == logger.Object),
                 initializablesWithConsent: initializables.Select(x => x.Object).ToArray()
             );
 
-            // ACT / ASSERT
+            Exception? loggedException = null;
+            logger.Setup(x => x.Log(LogType.Log, It.IsAny<object>(), It.IsAny<U.Object>()))
+                .Callback((LogType logType, object message, U.Object context) => U.Debug.Log(message, context));
+            logger.Setup(x => x.LogException(It.IsAny<Exception>(), singleDialogConsentManager))
+                .Callback((Exception ex, U.Object context) => { U.Debug.LogException(ex, context); loggedException = ex; });
+
+            // ACT
             singleDialogConsentManager.ShowDialogIfNeeded();
             singleDialogConsentManager.GiveConsent();
-            if (consentCount == 0)
-                Assert.DoesNotThrow(singleDialogConsentManager.Initialize);
+            singleDialogConsentManager.Initialize();
+
+            // ASSERT
+            if (consentCount == 0) {
+                logger.Verify(x => x.LogException(It.IsAny<AggregateException>(), It.IsAny<U.Object>()), Times.Never);
+            }
             else {
-                AggregateException aggrEx = Assert.Throws<AggregateException>(singleDialogConsentManager.Initialize);
-                Assert.That(aggrEx.InnerExceptions, Has.Count.EqualTo(consentCount));
-                Assert.That(aggrEx.InnerExceptions, Has.None.TypeOf<AggregateException>()); // AggregateException has been flattened
+                logger.Verify(x => x.LogException(It.IsAny<AggregateException>(), singleDialogConsentManager), Times.Once);
+                Assert.That(((AggregateException)loggedException!).InnerExceptions, Has.None.TypeOf<AggregateException>()); // AggregateException has been flattened
+                LogAssert.Expect(LogType.Exception, new Regex(nameof(InvalidOperationException)));
             }
         }
 
