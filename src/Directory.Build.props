@@ -14,7 +14,7 @@
     <When Condition="'$(SolutionName)'=='UnityUtil'">
       <PropertyGroup>
         <UnityUtilSolutionDir>$(SolutionDir)</UnityUtilSolutionDir>
-        <UnityUtilProjectPath>$(UnityUtilSolutionDir)\UnityUtil</UnityUtilProjectPath>
+        <UnityUtilProjectPath>$(UnityUtilSolutionDir)\..\UnityUtil</UnityUtilProjectPath>
         <UnityProjectPath>$(UnityUtilProjectPath)</UnityProjectPath>
         <SirenixAssembliesPath>$(UnityProjectPath)\$(SirenixAssembliesDir)</SirenixAssembliesPath>
     </PropertyGroup>
