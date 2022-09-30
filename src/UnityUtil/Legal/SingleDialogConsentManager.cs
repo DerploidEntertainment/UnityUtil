@@ -18,7 +18,7 @@ namespace UnityUtil.Legal;
 /// Manages the gathering and persisting of a user's consent to share their personal data with registered <see cref="IInitializableWithConsent"/>s.
 /// Consent is expected to be gathered after showing a single UI dialog during the First-Time User Experience (FTUE).
 /// </summary>
-public class SingleDialogConsentManager : MonoBehaviour
+public class SingleDialogConsentManager : MonoBehaviour, IConsentManager
 {
     private ILogger? _logger;
     private ILegalAcceptManager? _legalAcceptManager;
@@ -52,7 +52,7 @@ public class SingleDialogConsentManager : MonoBehaviour
         "This flag has no effect when actually running on a device."
     )]
     [field: SerializeField, LabelText(nameof(ForceConsentBehavior))]
-    public bool ForceConsentBehavior { get; set; }
+    public bool ForceConsentBehavior { get; internal set; }
 
     [Tooltip("Raised when the initial consent dialog is necessary. I.e., when consents have not been given/denied or the legal docs have not been accepted.")]
     public UnityEvent InitialConsentRequired = new();
@@ -177,6 +177,12 @@ public class SingleDialogConsentManager : MonoBehaviour
         catch {
             _logger!.LogException(task.Exception.Flatten(), context: this);
         }
+    }
+
+    public void OptOut(IInitializableWithConsent initializableWithConsent)
+    {
+        _logger!.Log($"Opting out of data consent for initializable with preferences key '{initializableWithConsent.ConsentPreferenceKey}'. This cannot be undone.", context: this);
+        _localPreferences!.SetInt(initializableWithConsent.ConsentPreferenceKey, 0);
     }
 
     /// <summary>

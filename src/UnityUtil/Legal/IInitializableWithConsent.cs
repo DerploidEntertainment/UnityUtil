@@ -6,4 +6,5 @@ public interface IInitializableWithConsent
 {
     string ConsentPreferenceKey { get; }
     Task InitializeAsync(bool hasConsent);
+    void OptOut();
 }
