@@ -32,6 +32,9 @@ public class ModifiableRectTransform : MonoBehaviour
     public void SetSizeDeltaX(float value) { if (!hasRect()) return; Vector2 curr = RectTransform.sizeDelta; curr.x = value; RectTransform.sizeDelta = curr; }
     public void SetSizeDeltaY(float value) { if (!hasRect()) return; Vector2 curr = RectTransform.sizeDelta; curr.y = value; RectTransform.sizeDelta = curr; }
 
+    public void SetLocalScaleX(float value) { if (!hasRect()) return; Vector2 curr = RectTransform.localScale; curr.x = value; RectTransform.localScale = curr; }
+    public void SetLocalScaleY(float value) { if (!hasRect()) return; Vector2 curr = RectTransform.localScale; curr.y = value; RectTransform.localScale = curr; }
+
     private bool hasRect()
     {
         if (RectTransform == null) {
