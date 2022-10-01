@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file copied from Pim de Witte's original repo on GitHub: https://github.com/PimDeWitte/UnityMainThreadDispatcher
  * That repo is licensed under the Apache License 2.0: https://spdx.org/licenses/Apache-2.0.html
  * That license requires me to document changes, so... 
@@ -64,11 +64,9 @@ public class UnityMainThreadDispatcher : IUnityMainThreadDispatcher
                 tcs.TrySetResult(true);
             }
 
-#pragma warning disable CA1031 // Do not catch general exception types
             catch (Exception ex) {
                 tcs.TrySetException(ex);
             }
-#pragma warning restore CA1031 // Do not catch general exception types
         });
 
         return tcs.Task;
