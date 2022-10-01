@@ -1,24 +1,25 @@
-﻿using UnityUtil.Updating;
+using UnityEngine;
+using UnityUtil.Updating;
 
-namespace UnityEngine;
+namespace UnityUtil.Movement;
 
 public class LookAt : Updatable
 {
 
     [Tooltip(
-        $"This Transform will be rotated to look at the {nameof(LookAt.TransformToRotate)} or {nameof(LookAt.TagToLookAt)} " +
+        $"This Transform will be rotated to look at the {nameof(TransformToRotate)} or {nameof(TagToLookAt)} " +
         "depending on which is provided."
     )]
     public Transform? TransformToRotate;
 
     [Tooltip(
-        $"The {nameof(LookAt.TransformToRotate)} will be rotated to look at this Transform. " +
-        $"This value overrides the {nameof(LookAt.TagToLookAt)} field."
+        $"The {nameof(TransformToRotate)} will be rotated to look at this Transform. " +
+        $"This value overrides the {nameof(TagToLookAt)} field."
     )]
     public Transform? TransformToLookAt;
 
     [Tooltip(
-        $"The {nameof(LookAt.TransformToRotate)} will be rotated to look at the first GameObject with this Tag. " +
+        $"The {nameof(TransformToRotate)} will be rotated to look at the first GameObject with this Tag. " +
         "Useful for when the object/transform to be looked at will change at runtime."
     )]
     public string? TagToLookAt = null;
@@ -37,7 +38,7 @@ public class LookAt : Updatable
         if (TransformToRotate == null || (TransformToLookAt == null && TagToLookAt is null))
             return;
 
-        Transform? target = (TagToLookAt is null) ? TransformToLookAt : GameObject.FindWithTag(TagToLookAt)?.transform;
+        Transform? target = TagToLookAt is null ? TransformToLookAt : GameObject.FindWithTag(TagToLookAt)?.transform;
         if (target != null) {
             TransformToRotate.LookAt(target, -Physics.gravity);
             if (FlipOnLocalY)

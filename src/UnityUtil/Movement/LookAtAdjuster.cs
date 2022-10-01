@@ -1,14 +1,15 @@
 ﻿using System;
+using UnityEngine;
 using UnityUtil.Updating;
 
-namespace UnityEngine;
+namespace UnityUtil.Movement;
 
 /// <summary>
-/// Tells all associated <see cref="UnityEngine.LookAt"/> components when to look at a new <see cref="Transform"/>.
+/// Tells all associated <see cref="LookAt"/> components when to look at a new <see cref="Transform"/>.
 /// </summary>
 public class LookAtAdjuster : Updatable
 {
-    [Tooltip($"These are the {nameof(UnityEngine.LookAt)} components that will be told what new Transforms to look at.")]
+    [Tooltip($"These are the {nameof(LookAt)} components that will be told what new Transforms to look at.")]
     public LookAt[] AssociatedLookAts = Array.Empty<LookAt>();
 
     /// <summary>

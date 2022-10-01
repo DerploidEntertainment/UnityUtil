@@ -1,7 +1,8 @@
 ﻿using Sirenix.OdinInspector;
+using UnityEngine;
 using UnityUtil.Updating;
 
-namespace UnityEngine.Movement;
+namespace UnityUtil.Movement;
 
 public class TargetFlyer : Updatable
 {
@@ -69,7 +70,7 @@ public class TargetFlyer : Updatable
         // Add a Force to move towards the target position at constant velocity
         Vector3 toward = (targetPosition - transform.position).normalized;
         var vToward = Vector3.Project(FlyingRigidbody!.velocity, toward);
-        float factor = (vToward.normalized == toward) ? Mathf.Sign(MoveSpeed * MoveSpeed - vToward.sqrMagnitude) : 1;
+        float factor = vToward.normalized == toward ? Mathf.Sign(MoveSpeed * MoveSpeed - vToward.sqrMagnitude) : 1;
         netForce += factor * MoveAccel * toward;
 
         // Add a Force to reduce any velocity in the normal direction
@@ -87,8 +88,8 @@ public class TargetFlyer : Updatable
         // Add a Force to rotate around the target direction at constant angular velocity
         Vector3 toward = (targetPosition - transform.position).normalized;
         var wToward = Vector3.Project(FlyingRigidbody!.angularVelocity, toward);
-        float factor = (wToward.normalized == toward) ? Mathf.Sign(RotateSpeed * RotateSpeed - wToward.sqrMagnitude) : 1;
-        factor *= (RotateClockWise ? 1 : -1);
+        float factor = wToward.normalized == toward ? Mathf.Sign(RotateSpeed * RotateSpeed - wToward.sqrMagnitude) : 1;
+        factor *= RotateClockWise ? 1 : -1;
         netTorque += factor * RotateAccel * toward;
 
         // Add a Force to reduce any angular velocity around the normal direction

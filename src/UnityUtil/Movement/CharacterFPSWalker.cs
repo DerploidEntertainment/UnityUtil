@@ -1,9 +1,10 @@
 ﻿using Sirenix.OdinInspector;
+using UnityEngine;
 using UnityUtil.Inputs;
 using UnityUtil.Math;
 using UnityUtil.Updating;
 
-namespace UnityEngine.Movement;
+namespace UnityUtil.Movement;
 
 public class CharacterFPSWalker : Updatable
 {
@@ -82,12 +83,12 @@ public class CharacterFPSWalker : Updatable
 
         return jumpV;
     }
-    private void crouch(bool crouching) => ControllerToMove!.height = (crouching ? CrouchHeight : _oldHeight);
+    private void crouch(bool crouching) => ControllerToMove!.height = crouching ? CrouchHeight : _oldHeight;
     private Vector3 moveComponent(float horz, float vert, bool sprinting, bool crouching)
     {
         // Determine the slope of the ground
         bool hitGround = Physics.Raycast(transform.position, Vector3.down, out RaycastHit hitInfo, float.PositiveInfinity);
-        float slopeAngle = (hitGround ? Vector3.Angle(Vector3.up, hitInfo.normal) : 0f);
+        float slopeAngle = hitGround ? Vector3.Angle(Vector3.up, hitInfo.normal) : 0f;
 
         // Get the target movement vector (speed + direction)
         float targetSpeed = getTargetSpeed(horz, vert, sprinting, crouching, slopeAngle);
@@ -110,7 +111,7 @@ public class CharacterFPSWalker : Updatable
             speed = CrouchSpeed;
 
         // Account for diagonal motion
-        bool isDiagonal = (horz != 0f && vert != 0f);
+        bool isDiagonal = horz != 0f && vert != 0f;
         if (isDiagonal && LimitDiagonalSpeed)
             speed /= MoreMath.Sqrt2;
 

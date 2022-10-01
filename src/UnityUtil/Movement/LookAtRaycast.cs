@@ -1,8 +1,9 @@
 using System.Diagnostics.CodeAnalysis;
+using UnityEngine;
 using UnityEngine.Inventories;
 using UnityUtil.Updating;
 
-namespace UnityEngine;
+namespace UnityUtil.Movement;
 
 public class LookAtRaycast : Updatable
 {
@@ -14,7 +15,7 @@ public class LookAtRaycast : Updatable
     public Transform? TransformToRotate;
 
     private const string TOOLTIP_TRANSFORM_ROTATE =
-        $"The {nameof(LookAtRaycast.TransformToRotate)} will always rotate to look at whatever the {nameof(RaycastingTransform)} is looking at. " +
+        $"The {nameof(TransformToRotate)} will always rotate to look at whatever the {nameof(RaycastingTransform)} is looking at. " +
         $"This point is at most {nameof(Range)} units ahead, but will be closer if an object matching {nameof(LayerMask)} is closer.";
     private const string TOOLTIP_WEAPONINFO = $"If a {nameof(WeaponInfo)} is provided, then its values will be given priority over this value.";
 
@@ -29,14 +30,14 @@ public class LookAtRaycast : Updatable
     public LayerMask LayerMask;
 
     [Tooltip(
-        $"If the {nameof(LookAtRaycast.RaycastingTransform)} is associated with a {nameof(UnityEngine.Inventories.Weapon)}, " +
+        $"If the {nameof(RaycastingTransform)} is associated with a {nameof(Weapon)}, " +
         $"then providing its {nameof(UnityEngine.Inventories.WeaponInfo)} here will override {nameof(Range)} and {nameof(LayerMask)}, " +
         $"which might be less error-prone during development."
     )]
     public WeaponInfo? WeaponInfo;
 
     [Tooltip(
-        $"This upward direction will be used by the {nameof(LookAtRaycast.TransformToRotate)} to rotate toward " +
+        $"This upward direction will be used by the {nameof(TransformToRotate)} to rotate toward " +
         $"whatever the {nameof(RaycastingTransform)} is looking at."
     )]
     public AxisDirection UpwardDirectionType = AxisDirection.OppositeGravity;
