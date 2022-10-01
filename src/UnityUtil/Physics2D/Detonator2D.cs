@@ -1,7 +1,9 @@
 ﻿using System;
+using UnityEngine;
 using UnityEngine.Events;
+using U = UnityEngine;
 
-namespace UnityEngine;
+namespace UnityUtil.Physics2D;
 
 [Serializable]
 public class DetonateEvent2D : UnityEvent<Collider2D[]> { }
@@ -23,7 +25,7 @@ public class Detonator2D : MonoBehaviour
 
         // Do an OverlapSphere into the scene on the given Affect Layer
         // Raise the Detonated event, allowing other components to select which targets to affect
-        Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, ExplosionRadius, AffectLayerMask);
+        Collider2D[] hits = U.Physics2D.OverlapCircleAll(transform.position, ExplosionRadius, AffectLayerMask);
         Detonated.Invoke(hits);
     }
 
