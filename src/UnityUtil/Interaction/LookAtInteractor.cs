@@ -4,6 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
 using UnityEngine.Triggers;
 using UnityUtil.Updating;
+using U = UnityEngine;
 
 namespace UnityUtil.Interaction;
 
@@ -75,11 +76,11 @@ public class LookAtInteractor : Updatable
         // Raycast for Colliders to look at
         RaycastHit[] hits = Array.Empty<RaycastHit>();
         if (InteractWithAllInRange || MaxInteractions > 1) {
-            RaycastHit[] allHits = Physics.RaycastAll(transform.position, transform.forward, Range, InteractLayerMask);
+            RaycastHit[] allHits = U.Physics.RaycastAll(transform.position, transform.forward, Range, InteractLayerMask);
             hits = allHits;
         }
         else if (MaxInteractions == 1) {
-            bool somethingHit = Physics.Raycast(transform.position, transform.forward, out RaycastHit hit, Range, InteractLayerMask);
+            bool somethingHit = U.Physics.Raycast(transform.position, transform.forward, out RaycastHit hit, Range, InteractLayerMask);
             if (somethingHit)
                 hits = new[] { hit };
         }

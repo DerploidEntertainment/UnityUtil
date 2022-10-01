@@ -1,6 +1,7 @@
 ﻿using Sirenix.OdinInspector;
+using UnityEngine;
 
-namespace UnityEngine;
+namespace UnityUtil.Physics;
 
 [DisallowMultipleComponent]
 [RequireComponent(typeof(Collider))]

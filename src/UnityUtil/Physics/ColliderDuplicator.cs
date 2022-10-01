@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using UnityEngine;
 using UnityUtil.DependencyInjection;
 using UnityUtil.Logging;
 
-namespace UnityEngine;
+namespace UnityUtil.Physics;
 
 public enum ChildColliderDuplicateMode
 {
@@ -96,7 +97,7 @@ public class ColliderDuplicator : MonoBehaviour
         // Get Colliders on immediate children
         IEnumerable<Collider> childColls = gameObject
             .GetComponentsInChildren<Collider>()
-            .Where(c => c.transform.parent == this.transform);
+            .Where(c => c.transform.parent == transform);
 
         // Duplicate each Collider on its own new GameObject
         List<Transform> dupls = new();

@@ -1,4 +1,6 @@
-﻿namespace UnityEngine;
+﻿using UnityEngine;
+
+namespace UnityUtil.Physics;
 
 public static class Physics2DExtensions
 {

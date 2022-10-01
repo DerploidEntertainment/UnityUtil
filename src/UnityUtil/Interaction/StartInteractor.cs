@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.Triggers;
 using UnityUtil.Inputs;
 using UnityUtil.Updating;
+using U = UnityEngine;
 
 namespace UnityUtil.Interaction;
 
@@ -34,7 +35,7 @@ public class StartInteractor : Updatable
     private void raycast(float deltaTime)
     {
         if (Input!.Started()) {
-            bool somethingHit = Physics.Raycast(transform.position, transform.forward, out RaycastHit hitInfo, Range, InteractLayerMask, QueryTriggerInteraction);
+            bool somethingHit = U.Physics.Raycast(transform.position, transform.forward, out RaycastHit hitInfo, Range, InteractLayerMask, QueryTriggerInteraction);
             if (somethingHit) {
                 SimpleTrigger? st = hitInfo.collider.GetComponent<SimpleTrigger>();
                 st?.Trigger();

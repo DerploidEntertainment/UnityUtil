@@ -26,7 +26,7 @@ public class CursorInteractor : Updatable
     {
         if (Input!.Started()) {
             Ray ray = Camera.main.ScreenPointToRay(U.Input.mousePosition);
-            if (Physics.Raycast(ray, out RaycastHit hitInfo, Mathf.Infinity, InteractLayerMask))
+            if (U.Physics.Raycast(ray, out RaycastHit hitInfo, Mathf.Infinity, InteractLayerMask))
                 hitInfo.collider.GetComponent<SimpleTrigger>()?.Trigger();
         }
     }

@@ -1,6 +1,8 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using UnityEngine;
+using U = UnityEngine;
 
-namespace UnityEngine;
+namespace UnityUtil.Physics;
 
 public class TorqueStabilizer : MonoBehaviour
 {
@@ -9,7 +11,7 @@ public class TorqueStabilizer : MonoBehaviour
 
     [Tooltip(
         "The maximum torque that can be applied to stabilize the associated Rigidbody about the upward direction. " +
-        $"That is, if a larger torque than this is applied to the Rigidbody, this {nameof(UnityEngine.TorqueStabilizer)} " +
+        $"That is, if a larger torque than this is applied to the Rigidbody, this {nameof(TorqueStabilizer)} " +
         "will not be able to stabilize against it."
     )]
     [Min(0f)]
@@ -37,8 +39,8 @@ public class TorqueStabilizer : MonoBehaviour
     /// <returns>The unit vector in which this <see cref="HoverForce"/> will attempt to hover.</returns>
     public Vector3 GetUpwardUnitVector() =>
         UpwardDirectionType switch {
-            AxisDirection.WithGravity => Physics.gravity.normalized,
-            AxisDirection.OppositeGravity => -Physics.gravity.normalized,
+            AxisDirection.WithGravity => U.Physics.gravity.normalized,
+            AxisDirection.OppositeGravity => -U.Physics.gravity.normalized,
             AxisDirection.CustomWorldSpace => CustomUpwardDirection.normalized,
             AxisDirection.CustomLocalSpace => RigidbodyToStabilize!.transform.TransformDirection(CustomUpwardDirection.normalized),
             _ => throw UnityObjectExtensions.SwitchDefaultException(UpwardDirectionType),

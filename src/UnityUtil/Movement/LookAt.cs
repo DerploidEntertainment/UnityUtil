@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityUtil.Updating;
+using U = UnityEngine;
 
 namespace UnityUtil.Movement;
 
@@ -40,7 +41,7 @@ public class LookAt : Updatable
 
         Transform? target = TagToLookAt is null ? TransformToLookAt : GameObject.FindWithTag(TagToLookAt)?.transform;
         if (target != null) {
-            TransformToRotate.LookAt(target, -Physics.gravity);
+            TransformToRotate.LookAt(target, -U.Physics.gravity);
             if (FlipOnLocalY)
                 TransformToRotate.localRotation *= Quaternion.Euler(180f * Vector3.up);
         }

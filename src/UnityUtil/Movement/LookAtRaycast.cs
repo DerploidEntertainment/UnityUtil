@@ -1,7 +1,9 @@
 using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
 using UnityEngine.Inventories;
+using UnityUtil.Physics;
 using UnityUtil.Updating;
+using U = UnityEngine;
 
 namespace UnityUtil.Movement;
 
@@ -51,8 +53,8 @@ public class LookAtRaycast : Updatable
     /// <returns>The unit vector that this <see cref="FollowVisionModule"/> will use to rotate towards what its associated <see cref="FollowVisionModule.VisionModule"/> is looking at.</returns>
     public Vector3 GetUpwardUnitVector() =>
         UpwardDirectionType switch {
-            AxisDirection.WithGravity => Physics.gravity.normalized,
-            AxisDirection.OppositeGravity => -Physics.gravity.normalized,
+            AxisDirection.WithGravity => U.Physics.gravity.normalized,
+            AxisDirection.OppositeGravity => -U.Physics.gravity.normalized,
             AxisDirection.CustomWorldSpace => CustomUpwardDirection.normalized,
             AxisDirection.CustomLocalSpace => TransformToRotate!.TransformDirection(CustomUpwardDirection.normalized),
             _ => throw UnityObjectExtensions.SwitchDefaultException(UpwardDirectionType),
@@ -83,7 +85,7 @@ public class LookAtRaycast : Updatable
         // May be a point on an actual collider up ahead, or just a point out at its max range.
         float range = WeaponInfo?.Range ?? Range;
         LayerMask layerMask = WeaponInfo?.AttackLayerMask ?? LayerMask;
-        bool somethingHit = Physics.Raycast(RaycastingTransform.position, RaycastingTransform.forward, out RaycastHit hitInfo, range, layerMask);
+        bool somethingHit = U.Physics.Raycast(RaycastingTransform.position, RaycastingTransform.forward, out RaycastHit hitInfo, range, layerMask);
         Vector3 targetPos = somethingHit ? hitInfo.point : RaycastingTransform.TransformPoint(range * Vector3.forward);
 
         // Look at that point using the specified UpwardDirectionType

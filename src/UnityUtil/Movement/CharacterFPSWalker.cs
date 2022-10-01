@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityUtil.Inputs;
 using UnityUtil.Math;
 using UnityUtil.Updating;
+using U = UnityEngine;
 
 namespace UnityUtil.Movement;
 
@@ -73,7 +74,7 @@ public class CharacterFPSWalker : Updatable
     {
         // Account for gravity
         Vector3 jumpV = Vector3.zero;
-        float g = Physics.gravity.magnitude * Mass;
+        float g = U.Physics.gravity.magnitude * Mass;
 
         // Account for jumping (if it is allowed and the button was pressed)
         if (jumping && ControllerToMove!.isGrounded)
@@ -87,7 +88,7 @@ public class CharacterFPSWalker : Updatable
     private Vector3 moveComponent(float horz, float vert, bool sprinting, bool crouching)
     {
         // Determine the slope of the ground
-        bool hitGround = Physics.Raycast(transform.position, Vector3.down, out RaycastHit hitInfo, float.PositiveInfinity);
+        bool hitGround = U.Physics.Raycast(transform.position, Vector3.down, out RaycastHit hitInfo, float.PositiveInfinity);
         float slopeAngle = hitGround ? Vector3.Angle(Vector3.up, hitInfo.normal) : 0f;
 
         // Get the target movement vector (speed + direction)

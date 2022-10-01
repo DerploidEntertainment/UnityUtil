@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Triggers;
 using UnityUtil.Updating;
+using U = UnityEngine;
 
 namespace UnityUtil.Interaction;
 
@@ -21,7 +22,7 @@ public class TapInteractor : Updatable
     {
         if (Input.touchCount == 1) {
             Ray ray = Camera.main.ScreenPointToRay(Input.touches[0].position);
-            if (Physics.Raycast(ray, out RaycastHit hitInfo, Mathf.Infinity, InteractLayerMask))
+            if (U.Physics.Raycast(ray, out RaycastHit hitInfo, Mathf.Infinity, InteractLayerMask))
                 hitInfo.collider.GetComponent<SimpleTrigger>()?.Trigger();
         }
     }

@@ -1,8 +1,10 @@
 ﻿using Sirenix.OdinInspector;
 using System;
 using System.Diagnostics.CodeAnalysis;
+using UnityEngine;
+using U = UnityEngine;
 
-namespace UnityEngine;
+namespace UnityUtil.Physics;
 
 [RequireComponent(typeof(Collider))]
 public class CollisionSounds : MonoBehaviour
@@ -32,6 +34,6 @@ public class CollisionSounds : MonoBehaviour
     /// Get the next AudioClip to be played (random or in order)
     /// </summary>
     /// <returns></returns>
-    private int nextClip() => _clip = RandomizeClips ? Random.Range(0, AudioClips.Length) : (_clip + 1) % AudioClips.Length;
+    private int nextClip() => _clip = RandomizeClips ? U.Random.Range(0, AudioClips.Length) : (_clip + 1) % AudioClips.Length;
 
 }
