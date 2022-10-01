@@ -1,10 +1,11 @@
 ﻿using Sirenix.OdinInspector;
+using UnityEngine;
 using UnityEngine.Triggers;
 using UnityUtil.Inputs;
 using UnityUtil.Updating;
 using U = UnityEngine;
 
-namespace UnityEngine.Inputs;
+namespace UnityUtil.Interaction;
 
 public class CursorInteractor : Updatable
 {

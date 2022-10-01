@@ -1,10 +1,11 @@
 ﻿using Sirenix.OdinInspector;
+using UnityEngine;
 using UnityEngine.Triggers;
 using UnityUtil.Inputs;
 using UnityUtil.Updating;
 using U = UnityEngine;
 
-namespace UnityEngine.Inputs;
+namespace UnityUtil.Interaction;
 
 public class CursorInteractor2D : Updatable
 {
@@ -25,7 +26,7 @@ public class CursorInteractor2D : Updatable
     {
         if (Input!.Started()) {
             Ray ray = Camera.main.ScreenPointToRay(U.Input.mousePosition);
-            RaycastHit2D hit = Physics2D.Raycast(ray.origin, ray.direction, Mathf.Infinity, InteractLayerMask);
+            RaycastHit2D hit = U.Physics2D.Raycast(ray.origin, ray.direction, Mathf.Infinity, InteractLayerMask);
             hit.collider?.GetComponent<SimpleTrigger>()?.Trigger();
         }
     }

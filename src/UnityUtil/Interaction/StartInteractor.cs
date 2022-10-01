@@ -1,10 +1,11 @@
 ﻿using Sirenix.OdinInspector;
 using System;
+using UnityEngine;
 using UnityEngine.Triggers;
 using UnityUtil.Inputs;
 using UnityUtil.Updating;
 
-namespace UnityEngine.Inputs;
+namespace UnityUtil.Interaction;
 
 public class InteractionEventArgs : EventArgs
 {

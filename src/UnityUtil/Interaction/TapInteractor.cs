@@ -1,7 +1,8 @@
-﻿using UnityEngine.Triggers;
+﻿using UnityEngine;
+using UnityEngine.Triggers;
 using UnityUtil.Updating;
 
-namespace UnityEngine.Inputs;
+namespace UnityUtil.Interaction;
 
 public class TapInteractor : Updatable
 {
