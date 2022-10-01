@@ -1,7 +1,7 @@
 using System.Collections;
 using Unity.RemoteConfig;
 using UnityEngine;
-using UnityEngine.Logging;
+using UnityUtil.Logging;
 
 namespace UnityUtil.Configuration;
 

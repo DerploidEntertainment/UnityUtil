@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using UnityEngine.Logging;
 using UnityEngine.Triggers;
 using UnityUtil.DependencyInjection;
+using UnityUtil.Logging;
 
 namespace UnityEngine.UI;
 

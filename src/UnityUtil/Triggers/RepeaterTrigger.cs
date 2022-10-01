@@ -1,6 +1,6 @@
 ﻿using System;
 using UnityEngine.Events;
-using UnityEngine.Logging;
+using UnityUtil.Logging;
 
 namespace UnityEngine.Triggers;
 

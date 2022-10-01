@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Text;
+using UnityEngine;
 using UnityUtil.Configuration;
 
-namespace UnityEngine.Logging;
+namespace UnityUtil.Logging;
 
 public class DebugLoggerProvider : Configurable, ILoggerProvider
 {

@@ -2,8 +2,8 @@
 using System;
 using System.Globalization;
 using UnityEngine;
-using UnityEngine.Logging;
 using UnityUtil.Configuration;
+using UnityUtil.Logging;
 using S = System;
 
 namespace UnityUtil.Math;

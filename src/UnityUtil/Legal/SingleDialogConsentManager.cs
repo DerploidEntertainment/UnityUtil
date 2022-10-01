@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Events;
-using UnityEngine.Logging;
 using UnityEngine.Storage;
 using UnityUtil.DependencyInjection;
+using UnityUtil.Logging;
 
 namespace UnityUtil.Legal;
 

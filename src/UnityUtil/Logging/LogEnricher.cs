@@ -1,4 +1,6 @@
-﻿namespace UnityEngine.Logging;
+﻿using UnityEngine;
+
+namespace UnityUtil.Logging;
 
 public abstract class LogEnricher : ScriptableObject, ILogEnricher
 {

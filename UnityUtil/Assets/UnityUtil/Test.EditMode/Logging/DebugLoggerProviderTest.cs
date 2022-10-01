@@ -2,9 +2,9 @@
 using NUnit.Framework;
 using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
-using UnityEngine.Logging;
 using UnityUtil.Configuration;
 using UnityUtil.Editor;
+using UnityUtil.Logging;
 
 namespace UnityUtil.Test.EditMode.Logging
 {

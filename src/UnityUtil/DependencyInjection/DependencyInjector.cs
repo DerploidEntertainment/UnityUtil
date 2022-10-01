@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
-using UnityEngine.Logging;
 using UnityEngine.SceneManagement;
+using UnityUtil.Logging;
 using U = UnityEngine;
 
 namespace UnityUtil.DependencyInjection;

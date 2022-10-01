@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using UnityEngine;
-using UnityEngine.Logging;
 using UnityEngine.SceneManagement;
+using UnityUtil.Logging;
 using Application = UnityEngine.Device.Application;
 
 namespace UnityUtil.Editor;

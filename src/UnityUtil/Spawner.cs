@@ -1,7 +1,7 @@
 ﻿using Sirenix.OdinInspector;
 using System.Diagnostics.CodeAnalysis;
-using UnityEngine.Logging;
 using UnityUtil.DependencyInjection;
+using UnityUtil.Logging;
 using UnityUtil.Math;
 using U = UnityEngine;
 

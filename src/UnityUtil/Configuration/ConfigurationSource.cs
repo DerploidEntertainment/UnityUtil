@@ -3,7 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Logging;
+using UnityUtil.Logging;
 
 namespace UnityUtil.Configuration;
 

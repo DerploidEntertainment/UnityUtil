@@ -3,8 +3,8 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using UnityEngine.Events;
-using UnityEngine.Logging;
 using UnityUtil.DependencyInjection;
+using UnityUtil.Logging;
 
 namespace UnityEngine.Triggers;
 

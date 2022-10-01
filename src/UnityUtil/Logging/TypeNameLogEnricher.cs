@@ -1,8 +1,9 @@
 ﻿using System.Globalization;
+using UnityEngine;
 
-namespace UnityEngine.Logging;
+namespace UnityUtil.Logging;
 
-[CreateAssetMenu(menuName = $"{nameof(UnityUtil)}/{nameof(UnityEngine.Logging)}/{nameof(TypeNameLogEnricher)}", fileName = "type-name-log-enricher")]
+[CreateAssetMenu(menuName = $"{nameof(UnityUtil)}/{nameof(UnityUtil.Logging)}/{nameof(TypeNameLogEnricher)}", fileName = "type-name-log-enricher")]
 public class TypeNameLogEnricher : LogEnricher
 {
     [Tooltip(

@@ -1,8 +1,9 @@
 ﻿using System.Globalization;
+using UnityEngine;
 
-namespace UnityEngine.Logging;
+namespace UnityUtil.Logging;
 
-[CreateAssetMenu(menuName = $"{nameof(UnityUtil)}/{nameof(UnityEngine.Logging)}/{nameof(FrameCountLogEnricher)}", fileName = "frame-count-log-enricher")]
+[CreateAssetMenu(menuName = $"{nameof(UnityUtil)}/{nameof(UnityUtil.Logging)}/{nameof(FrameCountLogEnricher)}", fileName = "frame-count-log-enricher")]
 public class FrameCountLogEnricher : LogEnricher
 {
     [Tooltip(

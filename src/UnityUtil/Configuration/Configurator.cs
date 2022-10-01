@@ -8,8 +8,8 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using UnityEngine;
-using UnityEngine.Logging;
 using UnityUtil.DependencyInjection;
+using UnityUtil.Logging;
 using U = UnityEngine;
 
 namespace UnityUtil.Configuration;

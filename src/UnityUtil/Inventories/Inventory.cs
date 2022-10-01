@@ -5,8 +5,8 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using UnityEngine.Assertions;
 using UnityEngine.Events;
-using UnityEngine.Logging;
 using UnityUtil.DependencyInjection;
+using UnityUtil.Logging;
 
 namespace UnityEngine.Inventories;
 
