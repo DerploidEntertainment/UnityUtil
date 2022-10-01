@@ -26,4 +26,14 @@ public static class Rigidbody2DExtension
         float upliftForceMag = explosionForce * (1 - upliftModifier / explosionRadius);
         body.AddForce(-U.Physics2D.gravity.normalized * upliftForceMag, mode);
     }
+
+    public static void AddForce(this Rigidbody2D body, Vector2 force, ForceMode mode = ForceMode.Force)
+    {
+        switch (mode) {
+            case ForceMode.Force: body.AddForce(force); break;
+            case ForceMode.Impulse: body.AddForce(force / Time.fixedDeltaTime); break;
+            case ForceMode.Acceleration: body.AddForce(force * body.mass); break;
+            case ForceMode.VelocityChange: body.AddForce(force * body.mass / Time.fixedDeltaTime); break;
+        }
+    }
 }
