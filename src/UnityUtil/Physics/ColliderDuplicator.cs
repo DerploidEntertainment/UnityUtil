@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using UnityEngine.DependencyInjection;
 using UnityEngine.Logging;
+using UnityUtil.DependencyInjection;
 
 namespace UnityEngine;
 

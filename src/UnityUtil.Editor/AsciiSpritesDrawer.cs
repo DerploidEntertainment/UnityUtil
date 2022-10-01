@@ -4,8 +4,8 @@ using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.DependencyInjection;
 using UnityEngine.Logging;
+using UnityUtil.DependencyInjection;
 using E = UnityEditor;
 
 namespace UnityUtil.Editor;

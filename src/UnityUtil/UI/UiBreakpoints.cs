@@ -2,9 +2,9 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using UnityEngine.DependencyInjection;
 using UnityEngine.Events;
 using UnityEngine.Logging;
+using UnityUtil.DependencyInjection;
 
 namespace UnityEngine.UI;
 

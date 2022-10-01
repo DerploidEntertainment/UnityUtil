@@ -2,10 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using UnityEngine;
 using UnityEngine.Logging;
 using UnityEngine.SceneManagement;
+using U = UnityEngine;
 
-namespace UnityEngine.DependencyInjection;
+namespace UnityUtil.DependencyInjection;
 
 public class DependencyResolutionCounts
 {
@@ -27,7 +29,7 @@ public class DependencyInjector
 
     private const int DEFAULT_SCENE_HANDLE = -1;
 
-    public static readonly DependencyInjector Instance = new(Array.Empty<Type>()) { RecordingResolutions = Device.Application.isEditor };
+    public static readonly DependencyInjector Instance = new(Array.Empty<Type>()) { RecordingResolutions = U.Device.Application.isEditor };
 
     private ILogger _logger = Debug.unityLogger;
     private ITypeMetadataProvider? _typeMetadataProvider;
@@ -303,7 +305,7 @@ public class DependencyInjector
             if (injectMethod is null)
                 goto ContinueHierarchy;
 
-            string clientName = (client as MonoBehaviour)?.GetHierarchyNameWithType() ?? (client as Object)?.name ?? $"{injectMethod.DeclaringType.FullName} instance";
+            string clientName = (client as MonoBehaviour)?.GetHierarchyNameWithType() ?? (client as U.Object)?.name ?? $"{injectMethod.DeclaringType.FullName} instance";
             object[] dependencies = getDependeciesOfMethod(clientName, injectMethod);
             if (dependencies.Length == 0)
                 goto ContinueHierarchy;

@@ -3,14 +3,16 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using UnityEngine;
+using U = UnityEngine;
 
-namespace UnityEngine.DependencyInjection;
+namespace UnityUtil.DependencyInjection;
 
 [Serializable]
 public class InspectorService
 {
     [Required]
-    public Object? Instance;
+    public U.Object? Instance;
 
     [Tooltip(
         "Optional. All services are associated with a System.Type. This Type can be any Type in the service's inheritance hierarchy. " +

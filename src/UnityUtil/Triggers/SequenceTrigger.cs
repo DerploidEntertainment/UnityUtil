@@ -2,9 +2,9 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
-using UnityEngine.DependencyInjection;
 using UnityEngine.Events;
 using UnityEngine.Logging;
+using UnityUtil.DependencyInjection;
 
 namespace UnityEngine.Triggers;
 

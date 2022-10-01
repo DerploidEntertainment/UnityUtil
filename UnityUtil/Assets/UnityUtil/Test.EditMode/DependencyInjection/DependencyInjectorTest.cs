@@ -6,9 +6,9 @@ using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using UnityEditor.SceneManagement;
 using UnityEngine;
-using UnityEngine.DependencyInjection;
 using UnityEngine.Logging;
 using UnityEngine.SceneManagement;
+using UnityUtil.DependencyInjection;
 using UnityUtil.Test.EditMode.Logging;
 
 namespace UnityUtil.Test.EditMode.DependencyInjection

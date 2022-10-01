@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
-using UnityEngine.DependencyInjection;
 using UnityEngine.Logging;
+using UnityUtil.DependencyInjection;
 
 namespace UnityUtil.Configuration;
 

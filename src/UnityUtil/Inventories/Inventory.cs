@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using UnityEngine.Assertions;
-using UnityEngine.DependencyInjection;
 using UnityEngine.Events;
 using UnityEngine.Logging;
+using UnityUtil.DependencyInjection;
 
 namespace UnityEngine.Inventories;
 

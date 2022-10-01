@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.DependencyInjection;
+using UnityUtil.DependencyInjection;
 
 namespace UnityUtil.Editor;
 
