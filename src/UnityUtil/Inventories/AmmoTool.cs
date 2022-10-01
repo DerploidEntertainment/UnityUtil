@@ -1,11 +1,12 @@
 ﻿using Sirenix.OdinInspector;
 using System;
+using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Events;
 using UnityUtil.Inputs;
 using UnityUtil.Updating;
 
-namespace UnityEngine.Inventories;
+namespace UnityUtil.Inventories;
 
 /// <summary>
 /// Type arguments are (int oldClipAmmo, int oldBackupAmmo, int newClipAmmo, int newBackupAmmo)
@@ -54,7 +55,7 @@ public class AmmoTool : Updatable
     {
         base.Awake();
 
-        Assert.IsTrue(Info!.StartingAmmo <= Info.MaxClipAmmo * (Info.MaxBackupClips + 1), $"{this.GetHierarchyNameWithType()} was started with {nameof(this.Info.StartingAmmo)} ammo but it can only store a max of {this.Info.MaxClipAmmo} * ({this.Info.MaxClipAmmo * (this.Info.MaxBackupClips + 1)}!");
+        Assert.IsTrue(Info!.StartingAmmo <= Info.MaxClipAmmo * (Info.MaxBackupClips + 1), $"{this.GetHierarchyNameWithType()} was started with {nameof(Info.StartingAmmo)} ammo but it can only store a max of {Info.MaxClipAmmo} * ({Info.MaxClipAmmo * (Info.MaxBackupClips + 1)}!");
 
         // Initialize ammo
         doLoad(Info.StartingAmmo);
@@ -62,7 +63,7 @@ public class AmmoTool : Updatable
         // Register Tool events
         _tool = GetComponent<Tool>();
         _tool.Using.AddListener(() =>
-            _tool.Using.Cancel = (CurrentClipAmmo == 0));
+            _tool.Using.Cancel = CurrentClipAmmo == 0);
         _tool.Used.AddListener(() => {
             int oldClip = CurrentClipAmmo;
             CurrentClipAmmo -= 1;

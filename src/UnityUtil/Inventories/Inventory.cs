@@ -3,12 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Events;
 using UnityUtil.DependencyInjection;
 using UnityUtil.Logging;
 
-namespace UnityEngine.Inventories;
+namespace UnityUtil.Inventories;
 
 [Serializable]
 public class InventoryItemEvent : UnityEvent<InventoryCollectible> { }

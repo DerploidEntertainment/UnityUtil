@@ -1,4 +1,6 @@
-﻿namespace UnityEngine.Inventories;
+﻿using UnityEngine;
+
+namespace UnityUtil.Inventories;
 
 public enum PhysicsCastShape
 {
@@ -8,7 +10,7 @@ public enum PhysicsCastShape
     Capsule
 }
 
-[CreateAssetMenu(fileName = "weapon", menuName = $"{nameof(UnityUtil)}/{nameof(UnityEngine.Inventories)}/{nameof(UnityEngine.Inventories.WeaponInfo)}")]
+[CreateAssetMenu(fileName = "weapon", menuName = $"{nameof(UnityUtil)}/{nameof(UnityUtil.Inventories)}/{nameof(WeaponInfo)}")]
 public class WeaponInfo : ScriptableObject
 {
 
@@ -19,21 +21,21 @@ public class WeaponInfo : ScriptableObject
     public float Range;
 
     [Tooltip(
-        $"If true, then all colliders within {nameof(WeaponInfo.Range)} and on the {nameof(WeaponInfo.AttackLayerMask)} will be attacked " +
+        $"If true, then all colliders within {nameof(Range)} and on the {nameof(AttackLayerMask)} will be attacked " +
         $"(using the relatively expensive Physics.RaycastAll() method). " +
-        $"If false, then only {nameof(WeaponInfo.MaxAttacks)} colliders will be attacked."
+        $"If false, then only {nameof(MaxAttacks)} colliders will be attacked."
     )]
     public bool AttackAllInRange = false;
 
     [Tooltip(
-        $"The maximum number of colliders within {nameof(WeaponInfo.Range)} and on the {nameof(WeaponInfo.AttackLayerMask)} to attack. " +
+        $"The maximum number of colliders within {nameof(Range)} and on the {nameof(AttackLayerMask)} to attack. " +
         $"If this value is 1, then Physics.Raycast() will be used to find colliders to attack, otherwise the relatively expensive " +
-        $"Physics.RaycastAll() will be used (with only the {nameof(WeaponInfo.MaxAttacks)} closest colliders actually being attacked)."
+        $"Physics.RaycastAll() will be used (with only the {nameof(MaxAttacks)} closest colliders actually being attacked)."
     )]
     [Min(1f)]
     public uint MaxAttacks = 1u;
 
-    [Tooltip($"Determines the shape of the 'shot' or 'blast' created by associated {nameof(UnityEngine.Inventories.Weapon)}s.")]
+    [Tooltip($"Determines the shape of the 'shot' or 'blast' created by associated {nameof(Weapon)}s.")]
     public PhysicsCastShape PhysicsCastShape = PhysicsCastShape.Ray;
 
 
@@ -65,9 +67,9 @@ public class WeaponInfo : ScriptableObject
     [Header("Accuracy")]
 
     private const string TOOLTIP_ACCURACY =
-        $"For automatic {nameof(UnityEngine.Inventories.Weapon)}s, the accuracy cone's half angle will interpolate linearly " +
-        $"from {nameof(WeaponInfo.InitialConeHalfAngle)} to {nameof(WeaponInfo.FinalConeHalfAngle)} in {nameof(WeaponInfo.AccuracyLerpTime)} seconds. " +
-        $"Casts of all {nameof(WeaponInfo.PhysicsCastShape)}s will be performed along a random direction in this cone.";
+        $"For automatic {nameof(Weapon)}s, the accuracy cone's half angle will interpolate linearly " +
+        $"from {nameof(InitialConeHalfAngle)} to {nameof(FinalConeHalfAngle)} in {nameof(AccuracyLerpTime)} seconds. " +
+        $"Casts of all {nameof(PhysicsCastShape)}s will be performed along a random direction in this cone.";
 
     [Tooltip(TOOLTIP_ACCURACY)]
     [Range(0f, 90f)]

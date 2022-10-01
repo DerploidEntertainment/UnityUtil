@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
+using UnityEngine;
 using UnityEngine.Events;
 
-namespace UnityEngine.Inventories;
+namespace UnityUtil.Inventories;
 
 /// <summary>
 /// Type arguments are (Collector collector, Collectible collectible)
