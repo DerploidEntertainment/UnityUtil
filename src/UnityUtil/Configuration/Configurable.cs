@@ -1,8 +1,9 @@
 ﻿using System;
+using UnityEngine;
 using UnityEngine.DependencyInjection;
 using UnityEngine.Logging;
 
-namespace UnityEngine;
+namespace UnityUtil.Configuration;
 
 public abstract class Configurable : MonoBehaviour
 {

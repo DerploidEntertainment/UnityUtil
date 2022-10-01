@@ -1,5 +1,6 @@
 ﻿using Sirenix.OdinInspector;
 using System.Globalization;
+using UnityUtil.Configuration;
 
 namespace UnityEngine.UI;
 

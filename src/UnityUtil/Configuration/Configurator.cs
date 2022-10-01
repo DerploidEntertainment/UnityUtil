@@ -7,10 +7,12 @@ using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using UnityEngine;
 using UnityEngine.DependencyInjection;
 using UnityEngine.Logging;
+using U = UnityEngine;
 
-namespace UnityEngine;
+namespace UnityUtil.Configuration;
 
 public class ConfigurationCounts
 {
@@ -131,9 +133,9 @@ public class Configurator : IConfigurator
         return cfgSourcesToLoad;
     }
     private static ConfigurationLoadContext getCurrentConfigurationLoadContext() =>
-        Device.Application.isEditor
-            ? (Device.Application.isPlaying ? ConfigurationLoadContext.PlayMode : ConfigurationLoadContext.BuildScript)
-            : (Debug.isDebugBuild ? ConfigurationLoadContext.DebugBuild : ConfigurationLoadContext.ReleaseBuild);
+        U.Device.Application.isEditor
+            ? (U.Device.Application.isPlaying ? ConfigurationLoadContext.PlayMode : ConfigurationLoadContext.BuildScript)
+            : (U.Debug.isDebugBuild ? ConfigurationLoadContext.DebugBuild : ConfigurationLoadContext.ReleaseBuild);
     private void finishLoading(IEnumerable<ConfigurationSource> configurationSources)
     {
         // Once all config sources have been loaded, deduplicate keys in the order provided
@@ -182,7 +184,7 @@ public class Configurator : IConfigurator
         Expression? clientParam = cache ? Expression.Convert(clientObjParam, clientType) : null;
 
         // Set all fields on this client for which there is a config value
-        string? clientName = (client is not Object clientObj) ? null : (client is Component component ? component.GetHierarchyName() : clientObj.name);
+        string? clientName = (client is not U.Object clientObj) ? null : (client is Component component ? component.GetHierarchyName() : clientObj.name);
         string? quotedClientName = clientName is null ? null : $"'{clientName}' ";
         FieldInfo[] fields = clientType.GetFields(BINDING_FLAGS);
         for (int f = 0; f < fields.Length; ++f) {
@@ -224,10 +226,8 @@ public class Configurator : IConfigurator
             if (_recording)
                 _cachedConfigCounts[(clientType, key)] = 1;
         }
-        else {
-            if (_recording)
-                _uncachedConfigCounts[(clientType, key)] = _uncachedConfigCounts.TryGetValue((clientType, key), out int count) ? count + 1 : 1;
-        }
+        else if (_recording)
+            _uncachedConfigCounts[(clientType, key)] = _uncachedConfigCounts.TryGetValue((clientType, key), out int count) ? count + 1 : 1;
     }
 
     /// <summary>

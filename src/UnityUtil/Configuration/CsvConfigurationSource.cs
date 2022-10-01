@@ -2,9 +2,10 @@ using System;
 using System.Collections;
 using System.IO;
 using System.Linq;
+using UnityEngine;
 using UnityEngine.Logging;
 
-namespace UnityEngine;
+namespace UnityUtil.Configuration;
 
 [CreateAssetMenu(menuName = $"{nameof(UnityUtil)}/Configuration/{nameof(CsvConfigurationSource)}", fileName = DefaultResourceName + ".csv.asset")]
 public class CsvConfigurationSource : ConfigurationSource

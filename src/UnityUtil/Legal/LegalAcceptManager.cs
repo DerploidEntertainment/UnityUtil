@@ -6,6 +6,7 @@ using UnityEngine.Logging;
 using UnityEngine.Networking;
 using UnityEngine.Storage;
 using UnityEngine.UI;
+using UnityUtil.Configuration;
 using U = UnityEngine;
 
 namespace UnityUtil.Legal;

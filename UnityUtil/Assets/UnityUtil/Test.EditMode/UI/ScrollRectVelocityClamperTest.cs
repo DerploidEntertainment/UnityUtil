@@ -2,6 +2,7 @@
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityUtil.Configuration;
 using UnityUtil.Test.EditMode.Logging;
 
 namespace UnityUtil.Test.EditMode.UI

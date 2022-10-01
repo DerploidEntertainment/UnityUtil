@@ -3,6 +3,7 @@ using System;
 using System.Globalization;
 using UnityEngine;
 using UnityEngine.Logging;
+using UnityUtil.Configuration;
 using S = System;
 
 namespace UnityUtil.Math;

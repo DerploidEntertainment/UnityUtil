@@ -3,6 +3,7 @@ using System;
 using System.Globalization;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityUtil.Configuration;
 using UD = UnityEngine.Device;
 
 namespace UnityUtil.Legal;

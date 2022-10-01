@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 
-namespace UnityEngine;
+namespace UnityUtil.Configuration;
 
 [CreateAssetMenu(menuName = $"{nameof(UnityUtil)}/Configuration/{nameof(ConfigurationSourceCollection)}", fileName = "configuration-sources.asset")]
 public class ConfigurationSourceCollection : ScriptableObject, IEnumerable<ConfigurationSource>

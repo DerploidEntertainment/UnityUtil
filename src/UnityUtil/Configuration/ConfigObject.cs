@@ -1,8 +1,9 @@
 using Sirenix.OdinInspector;
 using System;
 using System.Diagnostics.CodeAnalysis;
+using UnityEngine;
 
-namespace UnityEngine;
+namespace UnityUtil.Configuration;
 
 [SuppressMessage("Naming", "CA1720:Identifier contains type name", Justification = "The point of these members is to be type names...")]
 public enum ConfigValueType
@@ -51,7 +52,7 @@ public class Config
     public Color ColorValue;
 
     [ShowIf(nameof(Type), ConfigValueType.ObjectReference)]
-    public Object? ObjectValue;
+    public UnityEngine.Object? ObjectValue;
 
     [ShowIf(nameof(Type), ConfigValueType.LayerMask)]
     public LayerMask LayerMaskValue;
@@ -91,8 +92,6 @@ public class Config
 
     [ShowIf(nameof(Type), ConfigValueType.BoundsInt)]
     public BoundsInt BoundsIntValue;
-
-#pragma warning restore CA2235 // Mark all non-serializable fields
 
     public object GetValue()
     {

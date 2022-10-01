@@ -1,8 +1,9 @@
 using System.Collections;
 using Unity.RemoteConfig;
+using UnityEngine;
 using UnityEngine.Logging;
 
-namespace UnityEngine;
+namespace UnityUtil.Configuration;
 
 [CreateAssetMenu(menuName = $"{nameof(UnityUtil)}/Configuration/{nameof(RemoteConfigConfigurationSource)}", fileName = "remote-config")]
 public class RemoteConfigConfigurationSource : ConfigurationSource

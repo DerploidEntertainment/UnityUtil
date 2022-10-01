@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using UnityEngine.Events;
 using UnityEngine.Logging;
+using UnityUtil.Configuration;
 
 namespace UnityEngine.Triggers;
 

@@ -1,9 +1,10 @@
 using System.Collections;
 using System.IO;
 using System.Linq;
+using UnityEngine;
 using UnityEngine.Logging;
 
-namespace UnityEngine;
+namespace UnityUtil.Configuration;
 
 [CreateAssetMenu(menuName = $"{nameof(UnityUtil)}/Configuration/{nameof(ScriptableObjectConfigurationSource)}", fileName = DefaultResourceName + ".cfgsource.asset")]
 public class ScriptableObjectConfigurationSource : ConfigurationSource
