@@ -1,4 +1,4 @@
-﻿namespace UnityEngine.Storage;
+﻿namespace UnityUtil.Storage;
 
 public interface ILocalPreferences
 {
