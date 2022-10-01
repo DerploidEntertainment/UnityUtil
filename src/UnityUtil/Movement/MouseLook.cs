@@ -1,5 +1,5 @@
 ﻿using Sirenix.OdinInspector;
-using UnityEngine.Inputs;
+using UnityUtil.Inputs;
 
 namespace UnityEngine.Movement;
 

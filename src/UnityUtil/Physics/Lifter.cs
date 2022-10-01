@@ -2,8 +2,8 @@
 using System;
 using UnityEngine.Assertions;
 using UnityEngine.Events;
-using UnityEngine.Inputs;
 using UnityEngine.Triggers;
+using UnityUtil.Inputs;
 
 namespace UnityEngine;
 

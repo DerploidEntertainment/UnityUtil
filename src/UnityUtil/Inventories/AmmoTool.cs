@@ -2,7 +2,7 @@
 using System;
 using UnityEngine.Assertions;
 using UnityEngine.Events;
-using UnityEngine.Inputs;
+using UnityUtil.Inputs;
 
 namespace UnityEngine.Inventories;
 

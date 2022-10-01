@@ -1,6 +1,8 @@
-﻿namespace UnityEngine.Inputs;
+﻿using UnityEngine;
 
-[CreateAssetMenu(fileName = "key-code-input", menuName = $"{nameof(UnityUtil)}/{nameof(UnityEngine.Inputs)}/{nameof(UnityEngine.Inputs.KeyCodeInput)}")]
+namespace UnityUtil.Inputs;
+
+[CreateAssetMenu(fileName = "key-code-input", menuName = $"{nameof(UnityUtil)}/{nameof(UnityUtil.Inputs)}/{nameof(KeyCodeInput)}")]
 public sealed class KeyCodeInput : StartStopInput
 {
     public KeyCode KeyCode;

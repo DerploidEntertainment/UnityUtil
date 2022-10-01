@@ -1,6 +1,7 @@
 ﻿using Sirenix.OdinInspector;
 using System;
 using UnityEngine.Triggers;
+using UnityUtil.Inputs;
 
 namespace UnityEngine.Inputs;
 

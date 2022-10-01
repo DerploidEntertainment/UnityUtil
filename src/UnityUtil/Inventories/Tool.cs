@@ -1,7 +1,7 @@
 ﻿using Sirenix.OdinInspector;
 using System.Collections;
 using UnityEngine.Events;
-using UnityEngine.Inputs;
+using UnityUtil.Inputs;
 
 namespace UnityEngine.Inventories;
 

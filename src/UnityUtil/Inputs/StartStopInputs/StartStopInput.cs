@@ -1,4 +1,6 @@
-﻿namespace UnityEngine.Inputs;
+﻿using UnityEngine;
+
+namespace UnityUtil.Inputs;
 
 public abstract class StartStopInput : ScriptableObject
 {
