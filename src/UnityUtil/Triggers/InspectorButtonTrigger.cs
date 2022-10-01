@@ -1,5 +1,6 @@
 ﻿using Sirenix.OdinInspector;
 using UnityEngine.Events;
+using UnityUtil.Updating;
 
 namespace UnityEngine.Triggers;
 

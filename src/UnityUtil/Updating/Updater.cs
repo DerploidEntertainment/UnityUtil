@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
+using UnityEngine;
 
-namespace UnityEngine;
+namespace UnityUtil.Updating;
 
 [DisallowMultipleComponent]
 public class Updater : MonoBehaviour, IUpdater

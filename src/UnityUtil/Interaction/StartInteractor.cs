@@ -2,6 +2,7 @@
 using System;
 using UnityEngine.Triggers;
 using UnityUtil.Inputs;
+using UnityUtil.Updating;
 
 namespace UnityEngine.Inputs;
 

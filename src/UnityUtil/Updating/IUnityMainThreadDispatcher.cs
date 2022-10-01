@@ -12,7 +12,7 @@
 using System;
 using System.Threading.Tasks;
 
-namespace UnityEngine;
+namespace UnityUtil.Updating;
 
 /// <summary>
 /// Original author: Pim de Witte (pimdewitte.com) and contributors, https://github.com/PimDeWitte/UnityMainThreadDispatcher.

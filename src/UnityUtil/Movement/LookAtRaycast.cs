@@ -1,5 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 using UnityEngine.Inventories;
+using UnityUtil.Updating;
 
 namespace UnityEngine;
 

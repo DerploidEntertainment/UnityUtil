@@ -1,4 +1,4 @@
-﻿/*
+/*
  * This file copied from Pim de Witte's original repo on GitHub: https://github.com/PimDeWitte/UnityMainThreadDispatcher
  * That repo is licensed under the Apache License 2.0: https://spdx.org/licenses/Apache-2.0.html
  * That license requires me to document changes, so... 
@@ -12,8 +12,9 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using UnityEngine;
 
-namespace UnityEngine;
+namespace UnityUtil.Updating;
 
 /// <summary>
 /// Original author: Pim de Witte (pimdewitte.com) and contributors, https://github.com/PimDeWitte/UnityMainThreadDispatcher.

@@ -4,6 +4,7 @@ using UnityEngine.Assertions;
 using UnityEngine.Events;
 using UnityEngine.Triggers;
 using UnityUtil.Inputs;
+using UnityUtil.Updating;
 
 namespace UnityEngine;
 

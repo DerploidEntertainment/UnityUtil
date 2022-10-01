@@ -1,4 +1,6 @@
-﻿namespace UnityEngine;
+﻿using UnityUtil.Updating;
+
+namespace UnityEngine;
 
 public class LookAt : Updatable
 {

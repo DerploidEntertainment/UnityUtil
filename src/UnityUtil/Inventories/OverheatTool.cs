@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using UnityEngine.Assertions;
 using UnityEngine.Events;
+using UnityUtil.Updating;
 
 namespace UnityEngine.Inventories;
 
