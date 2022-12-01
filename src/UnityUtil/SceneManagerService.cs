@@ -1,7 +1,8 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace UnityEngine;
+namespace UnityUtil;
 
 public class SceneManagerService : MonoBehaviour
 {

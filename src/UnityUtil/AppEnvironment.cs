@@ -1,6 +1,7 @@
 ﻿using Sirenix.OdinInspector;
+using UnityEngine;
 
-namespace UnityEngine;
+namespace UnityUtil;
 
 [CreateAssetMenu(menuName = $"{nameof(UnityUtil)}/{nameof(AppEnvironment)}", fileName = "environment")]
 public class AppEnvironment : ScriptableObject, IAppEnvironment

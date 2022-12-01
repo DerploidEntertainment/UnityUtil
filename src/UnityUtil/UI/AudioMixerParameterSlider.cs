@@ -3,6 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using UnityEngine.Assertions;
 using UnityEngine.Audio;
 using UnityEngine.EventSystems;
+using UnityUtil;
 using UnityUtil.Configuration;
 using UnityUtil.Logging;
 using UnityUtil.Storage;
@@ -114,8 +115,10 @@ public class AudioMixerParameterSlider : Configurable
                 _localPreferences!.SetFloat(FinalPreferencesKey, newVal);
                 _logger!.Log($"Saved new value ({newVal}) of exposed parameter '{ExposedParameterName}' of {nameof(Audio.AudioMixer)} '{AudioMixer.name}' to local preferences", context: this);
             }
+#pragma warning disable IDE0031 // Use null propagation. C# doesn't allow overloading null-coalescing operators, so they don't work with Unity Objects' custom null logic...
             if (TestAudio != null)
-                TestAudio.Play();   // Don't know why the F*CK a null-coalescing operator isn't working here...
+                TestAudio.Play();
+#pragma warning restore IDE0031 // Use null propagation
         });
         eventTrigger.triggers.Add(pointerUpEvent);
     }

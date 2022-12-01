@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using UnityEngine;
 using UnityUtil.Logging;
 
-namespace UnityEngine;
+namespace UnityUtil;
 
 public delegate Task AsyncAction(CancellationToken cancellationToken);
 

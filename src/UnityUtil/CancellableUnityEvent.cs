@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine.Events;
 
-namespace UnityEngine;
+namespace UnityUtil;
 
 [Serializable]
 public class CancellableUnityEvent : UnityEvent

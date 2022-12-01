@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
-namespace UnityEngine;
+namespace UnityUtil;
 
 /// <summary>
 /// Represents a strongly typed list of objects with constant-time insertion, removal, and duplicate checks,

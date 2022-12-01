@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using UnityEngine;
 
-namespace UnityEngine;
+namespace UnityUtil;
 
 public class DontDestroyOnLoad : MonoBehaviour
 {

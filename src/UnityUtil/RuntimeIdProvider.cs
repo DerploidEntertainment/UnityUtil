@@ -1,4 +1,4 @@
-﻿namespace UnityEngine;
+﻿namespace UnityUtil;
 
 /// <inheritdoc/>
 public class RuntimeIdProvider : IRuntimeIdProvider

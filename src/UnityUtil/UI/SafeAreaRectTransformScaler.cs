@@ -1,5 +1,6 @@
 ﻿using Sirenix.OdinInspector;
 using System.Diagnostics.CodeAnalysis;
+using UnityUtil;
 using UnityUtil.DependencyInjection;
 using UnityUtil.Logging;
 

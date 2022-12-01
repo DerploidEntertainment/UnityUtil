@@ -1,4 +1,4 @@
-﻿namespace UnityEngine;
+﻿namespace UnityUtil;
 
 /// <summary>
 /// Provides methods for getting a unique identifier at runtime

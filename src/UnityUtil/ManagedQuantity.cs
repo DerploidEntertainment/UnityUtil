@@ -1,7 +1,8 @@
 ﻿using System;
+using UnityEngine;
 using UnityEngine.Events;
 
-namespace UnityEngine;
+namespace UnityUtil;
 
 /// <summary>
 /// Type arguments are (float oldValue, float newValue)

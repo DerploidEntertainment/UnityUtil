@@ -2,9 +2,10 @@
 using System.Diagnostics;
 using System.Globalization;
 using System.Text;
+using UnityEngine;
 using UnityEngine.Assertions;
 
-namespace UnityEngine;
+namespace UnityUtil;
 
 public static class UnityObjectExtensions
 {
