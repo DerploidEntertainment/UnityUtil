@@ -10,25 +10,10 @@
   </PropertyGroup>
 
   <!-- Set paths to Unity project assemblies (depending on whether we're currently in the UnityUtil solution) -->
-  <Choose>
-    <When Condition="'$(SolutionName)'=='UnityUtil'">
-      <PropertyGroup>
-        <UnityUtilSolutionDir>$(SolutionDir)</UnityUtilSolutionDir>
-        <UnityUtilProjectPath>$(UnityUtilSolutionDir)\..\UnityUtil</UnityUtilProjectPath>
-        <UnityProjectPath>$(UnityUtilProjectPath)</UnityProjectPath>
-        <SirenixAssembliesPath>$(UnityProjectPath)\$(SirenixAssembliesDir)</SirenixAssembliesPath>
-    </PropertyGroup>
-    </When>
-    <Otherwise>
-      <PropertyGroup>
-        <UnityUtilSolutionDir>$(SolutionDir)\..\..\UnityUtil</UnityUtilSolutionDir>
-        <UnityUtilProjectPath>$(UnityUtilSolutionDir)\UnityUtil</UnityUtilProjectPath>
-        <UnityProjectPath>$(SolutionDir)\..\$(SolutionName)</UnityProjectPath>
-        <SirenixAssembliesPath>$(UnityProjectPath)\$(SirenixAssembliesDir)</SirenixAssembliesPath>
-        <SirenixAssembliesPath Condition="!Exists('$(SirenixAssembliesPath)')">$(UnityUtilProjectPath)\$(SirenixAssembliesDir)</SirenixAssembliesPath>
-      </PropertyGroup>
-    </Otherwise>
-  </Choose>
+    <PropertyGroup>
+      <UnityProjectPath>$(SolutionDir)\..\UnityUtil</UnityProjectPath>
+      <SirenixAssembliesPath>$(UnityProjectPath)\$(SirenixAssembliesDir)</SirenixAssembliesPath>
+  </PropertyGroup>
 
   <!-- Make internals visible to test projects (and Moq) in non-test projects -->
   <PropertyGroup>
@@ -61,7 +46,7 @@
   Run `nuget pack <nuspec|csproj> -OutputDirectory <path>` to pack a dependency and output its .nupkg to the folder below.
   -->
   <PropertyGroup>
-    <RestoreAdditionalProjectSources>$(UnityUtilSolutionDir)\..\lib</RestoreAdditionalProjectSources>
+    <RestoreAdditionalProjectSources>$(SolutionDir)\..\lib</RestoreAdditionalProjectSources>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Unity3D" Version="2.0.1" />

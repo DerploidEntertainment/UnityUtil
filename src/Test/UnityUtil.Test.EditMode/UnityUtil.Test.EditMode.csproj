@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <UnityScriptsDir>$(UnityUtilProjectPath)\Assets\UnityUtil\Test.EditMode</UnityScriptsDir>
+    <UnityScriptsDir>$(UnityProjectPath)\Assets\UnityUtil\Test.EditMode</UnityScriptsDir>
   </PropertyGroup>
 
   <ItemGroup>

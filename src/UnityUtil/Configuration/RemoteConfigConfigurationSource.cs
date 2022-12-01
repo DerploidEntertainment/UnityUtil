@@ -68,6 +68,7 @@ public class RemoteConfigConfigurationSource : ConfigurationSource
                 for (int x = 0; x < keys.Length; ++x)
                     LoadedConfigsHidden.Add(keys[x], ConfigManager.appConfig.GetString(keys[x]));
                 break;
+
         }
     }
 
