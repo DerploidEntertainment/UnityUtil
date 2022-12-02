@@ -2,12 +2,12 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using UnityEngine;
 using UnityEngine.Events;
-using UnityUtil;
 using UnityUtil.DependencyInjection;
 using UnityUtil.Logging;
 
-namespace UnityEngine.UI;
+namespace UnityUtil.UI;
 
 [RequireComponent(typeof(RectTransform))]   // So the OnRectTransformDimensionsChange message gets called
 [ExecuteAlways]                             // So the OnRectTransformDimensionsChange message gets called in the Editor too...kind of a necessity for UI tweaking
@@ -108,13 +108,11 @@ public class UiBreakpoints : MonoBehaviour
         if (!RecheckMatchesOnResize)
             return;
 
-        if (Device.Application.isEditor) {
-            _currentDimensions =
-                IsScreenMode ? new Vector2(Device.Screen.width, Device.Screen.height) :
-                IsSafeAreaMode ? new Vector2(Device.Screen.safeArea.width, Device.Screen.safeArea.height) :
-                Camera != null ? new Vector2(Camera.pixelWidth, Camera.pixelHeight) :
-                Vector2.zero;
-        }
+        if (Application.isEditor) _currentDimensions =
+            IsScreenMode ? new Vector2(Screen.width, Screen.height) :
+            IsSafeAreaMode ? new Vector2(Screen.safeArea.width, Screen.safeArea.height) :
+            Camera != null ? new Vector2(Camera.pixelWidth, Camera.pixelHeight) :
+            Vector2.zero;
         _currentValue = getModeValue(Mode);
 
         InvokeMatchingBreakpoints(_currentValue);
@@ -133,13 +131,11 @@ public class UiBreakpoints : MonoBehaviour
             return true;
 
         // Make sure breakpoint values are sorted strictly ascending (no duplicates)
-        for (int b = 1; b < breakpoints.Length; ++b) {
-            if (
+        for (int b = 1; b < breakpoints.Length; ++b) if (
                 breakpoints[b].Enabled && breakpoints[b - 1].Enabled &&
                 breakpoints[b].Value <= breakpoints[b - 1].Value
             )
                 return false;
-        }
 
         return true;
     }
@@ -147,13 +143,13 @@ public class UiBreakpoints : MonoBehaviour
     private float getModeValue(BreakpointMode mode)
     {
         return mode switch {
-            BreakpointMode.ScreenWidth => Device.Screen.width,
-            BreakpointMode.ScreenHeight => Device.Screen.height,
-            BreakpointMode.ScreenAspectRatio => (float)Device.Screen.width / Device.Screen.height,
+            BreakpointMode.ScreenWidth => Screen.width,
+            BreakpointMode.ScreenHeight => Screen.height,
+            BreakpointMode.ScreenAspectRatio => (float)Screen.width / Screen.height,
 
-            BreakpointMode.SafeAreaWidth => Device.Screen.safeArea.width,
-            BreakpointMode.SafeAreaHeight => Device.Screen.safeArea.height,
-            BreakpointMode.SafeAreaAspectRatio => Device.Screen.safeArea.width / Device.Screen.safeArea.height,
+            BreakpointMode.SafeAreaWidth => Screen.safeArea.width,
+            BreakpointMode.SafeAreaHeight => Screen.safeArea.height,
+            BreakpointMode.SafeAreaAspectRatio => Screen.safeArea.width / Screen.safeArea.height,
 
             BreakpointMode.CameraWidth => Camera?.pixelWidth ?? throw getNullCameraException(),
             BreakpointMode.CameraHeight => Camera?.pixelHeight ?? throw getNullCameraException(),
@@ -184,10 +180,10 @@ public class UiBreakpoints : MonoBehaviour
         if (Breakpoints.Length == 0)
             return;
 
-        bool log = (Device.Application.isEditor && LogDimensionsInEditor) || (!Device.Application.isEditor && LogDimensionsInPlayer);
+        bool log = Application.isEditor && LogDimensionsInEditor || !Application.isEditor && LogDimensionsInPlayer;
         if (log) {
             _logger.Log(
-                $"Current screen dimensions (width x height) are {Device.Screen.width} x {Device.Screen.height} (screen) and {Device.Screen.safeArea.width} x {Device.Screen.safeArea.height} (safe area). " +
+                $"Current screen dimensions (width x height) are {Screen.width} x {Screen.height} (screen) and {Screen.safeArea.width} x {Screen.safeArea.height} (safe area). " +
                 $"Updating breakpoints with {nameof(Mode)} {Mode} and {nameof(MatchMode)} {MatchMode}..."
             , context: this);
         }
@@ -210,10 +206,10 @@ public class UiBreakpoints : MonoBehaviour
                     continue;
 
                 bool invoke =
-                    (breakpoint.Value < modeValue && MatchMode == BreakpointMatchMode.AnyEqualOrLess)
+                    breakpoint.Value < modeValue && MatchMode == BreakpointMatchMode.AnyEqualOrLess
                     || breakpoint.Value == modeValue
-                    || (breakpoint.Value > modeValue && (MatchMode == BreakpointMatchMode.AnyEqualOrGreater || MatchMode == BreakpointMatchMode.MinEqualOrGreater));
-                bool earlyBreak = (breakpoint.Value >= modeValue && MatchMode == BreakpointMatchMode.MinEqualOrGreater);
+                    || breakpoint.Value > modeValue && (MatchMode == BreakpointMatchMode.AnyEqualOrGreater || MatchMode == BreakpointMatchMode.MinEqualOrGreater);
+                bool earlyBreak = breakpoint.Value >= modeValue && MatchMode == BreakpointMatchMode.MinEqualOrGreater;
 
                 if (invoke)
                     invokeBreakpoint(breakpoint);

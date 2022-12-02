@@ -1,8 +1,9 @@
 ﻿using Sirenix.OdinInspector;
 using System;
+using UnityEngine;
 using UnityEngine.Events;
 
-namespace UnityEngine.UI;
+namespace UnityUtil.UI;
 
 public class UiBreakpointsTrigger : MonoBehaviour
 {

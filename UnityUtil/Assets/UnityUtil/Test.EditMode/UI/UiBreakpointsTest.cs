@@ -3,7 +3,7 @@ using NUnit.Framework.Constraints;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.UI;
+using UnityUtil.UI;
 using UA = UnityEngine.Assertions;
 
 namespace UnityUtil.Test.EditMode.UI

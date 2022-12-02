@@ -1,4 +1,6 @@
-﻿namespace UnityEngine.UI;
+﻿using UnityEngine;
+
+namespace UnityUtil.UI;
 
 [RequireComponent(typeof(RectTransform))]
 public class ModifiableRectTransform : MonoBehaviour

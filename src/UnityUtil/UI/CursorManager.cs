@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using UnityEngine;
 
-namespace UnityEngine.UI;
+namespace UnityUtil.UI;
 
 public class CursorManager
 {

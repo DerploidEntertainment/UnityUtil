@@ -1,4 +1,7 @@
-namespace UnityEngine.UI;
+using UnityEngine;
+using UnityEngine.UI;
+
+namespace UnityUtil.UI;
 
 [RequireComponent(typeof(Graphic))]
 public class ModifiableGraphic : MonoBehaviour

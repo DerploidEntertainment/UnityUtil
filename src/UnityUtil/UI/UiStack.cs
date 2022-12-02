@@ -1,10 +1,11 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using UnityEngine;
 using UnityEngine.Triggers;
 using UnityUtil.DependencyInjection;
 using UnityUtil.Logging;
 
-namespace UnityEngine.UI;
+namespace UnityUtil.UI;
 
 [SuppressMessage("Naming", "CA1711:Identifiers should not have incorrect suffix", Justification = "This is pretty familiar terminology")]
 public class UiStack : MonoBehaviour

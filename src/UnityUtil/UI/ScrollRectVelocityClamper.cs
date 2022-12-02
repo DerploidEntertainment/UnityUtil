@@ -1,8 +1,10 @@
 ﻿using Sirenix.OdinInspector;
 using System.Diagnostics.CodeAnalysis;
+using UnityEngine;
+using UnityEngine.UI;
 using UnityUtil.Updating;
 
-namespace UnityEngine.UI;
+namespace UnityUtil.UI;
 
 public class ScrollRectVelocityClamper : Updatable
 {

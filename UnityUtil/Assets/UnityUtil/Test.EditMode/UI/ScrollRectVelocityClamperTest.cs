@@ -1,9 +1,9 @@
 ﻿using Moq;
 using NUnit.Framework;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityUtil.Configuration;
 using UnityUtil.Test.EditMode.Logging;
+using UnityUtil.UI;
 using UnityUtil.Updating;
 
 namespace UnityUtil.Test.EditMode.UI
