@@ -1,30 +1,31 @@
 ﻿using System;
+using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.Logging;
+using UnityUtil.Logging;
 
-namespace UnityEngine.Triggers;
+namespace UnityUtil.Triggers;
 
 [Serializable]
 public class CountEvent : UnityEvent<uint> { }
 
 public class RepeaterTrigger : StartStoppable
 {
-    [Tooltip($"The time, in seconds, before the next (or first) {nameof(RepeaterTrigger.Tick)} event.")]
+    [Tooltip($"The time, in seconds, before the next (or first) {nameof(Tick)} event.")]
     public float TimeBeforeTick = 1f;
 
-    [Tooltip($"The time, in seconds, that has passed since the previous {nameof(RepeaterTrigger.Tick)} event.")]
+    [Tooltip($"The time, in seconds, that has passed since the previous {nameof(Tick)} event.")]
     public float TimeSincePreviousTick = 0f;
 
-    [Tooltip($"How many {nameof(RepeaterTrigger.Tick)}s should be raised before stopping? Ignored if {nameof(RepeaterTrigger.TickForever)} is true.")]
+    [Tooltip($"How many {nameof(Tick)}s should be raised before stopping? Ignored if {nameof(TickForever)} is true.")]
     public uint NumTicks = 1u;
 
     [Tooltip(
-        $"If true, then this {nameof(Triggers.RepeaterTrigger)} will raise {nameof(RepeaterTrigger.Tick)} events forever. " +
-        $"If false, then it will only {nameof(RepeaterTrigger.Tick)} {nameof(RepeaterTrigger.NumTicks)} times."
+        $"If true, then this {nameof(RepeaterTrigger)} will raise {nameof(Tick)} events forever. " +
+        $"If false, then it will only {nameof(Tick)} {nameof(NumTicks)} times."
     )]
     public bool TickForever = false;
 
-    [Tooltip($"Number of {nameof(RepeaterTrigger.Tick)} events that have already been raised.")]
+    [Tooltip($"Number of {nameof(Tick)} events that have already been raised.")]
     public uint NumPassedTicks = 0u;
 
     public bool Logging;

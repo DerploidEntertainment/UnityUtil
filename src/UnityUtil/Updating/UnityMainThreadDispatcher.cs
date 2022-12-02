@@ -12,8 +12,9 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using UnityEngine;
 
-namespace UnityEngine;
+namespace UnityUtil.Updating;
 
 /// <summary>
 /// Original author: Pim de Witte (pimdewitte.com) and contributors, https://github.com/PimDeWitte/UnityMainThreadDispatcher.
@@ -63,11 +64,9 @@ public class UnityMainThreadDispatcher : IUnityMainThreadDispatcher
                 tcs.TrySetResult(true);
             }
 
-#pragma warning disable CA1031 // Do not catch general exception types
             catch (Exception ex) {
                 tcs.TrySetException(ex);
             }
-#pragma warning restore CA1031 // Do not catch general exception types
         });
 
         return tcs.Task;

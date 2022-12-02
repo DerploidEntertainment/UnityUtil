@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace UnityEngine;
+namespace UnityUtil.Updating;
 
 public interface IUpdater
 {

@@ -1,13 +1,14 @@
 ﻿using Sirenix.OdinInspector;
+using UnityEngine;
 
-namespace UnityEngine;
+namespace UnityUtil;
 
 [CreateAssetMenu(menuName = $"{nameof(UnityUtil)}/{nameof(AppVersion)}", fileName = "version")]
 public class AppVersion : ScriptableObject, IAppVersion
 {
     [ReadOnly, ShowInInspector, LabelText(nameof(Version))]
     [PropertyTooltip("This is the version set under Project Settings > Player")]
-    public string Version => Device.Application.version;
+    public string Version => UnityEngine.Device.Application.version;
 
     [field: SerializeField, ShowInInspector, LabelText(nameof(Description))]
     [field: Tooltip(

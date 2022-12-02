@@ -1,8 +1,12 @@
 ﻿using Sirenix.OdinInspector;
 using System;
-using UnityEngine.Triggers;
+using UnityEngine;
+using UnityUtil.Inputs;
+using UnityUtil.Triggers;
+using UnityUtil.Updating;
+using U = UnityEngine;
 
-namespace UnityEngine.Inputs;
+namespace UnityUtil.Interaction;
 
 public class InteractionEventArgs : EventArgs
 {
@@ -31,7 +35,7 @@ public class StartInteractor : Updatable
     private void raycast(float deltaTime)
     {
         if (Input!.Started()) {
-            bool somethingHit = Physics.Raycast(transform.position, transform.forward, out RaycastHit hitInfo, Range, InteractLayerMask, QueryTriggerInteraction);
+            bool somethingHit = U.Physics.Raycast(transform.position, transform.forward, out RaycastHit hitInfo, Range, InteractLayerMask, QueryTriggerInteraction);
             if (somethingHit) {
                 SimpleTrigger? st = hitInfo.collider.GetComponent<SimpleTrigger>();
                 st?.Trigger();

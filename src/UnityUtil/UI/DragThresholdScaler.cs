@@ -1,7 +1,10 @@
 ﻿using Sirenix.OdinInspector;
+using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
+using UnityUtil.Configuration;
 
-namespace UnityEngine.UI;
+namespace UnityUtil.UI;
 
 /// <summary>
 /// This class is used to automatically scale an <see cref="EventSystem"/>'s <see cref="EventSystem.pixelDragThreshold"/> with respect to a <see cref="Canvas"/>.
@@ -12,9 +15,9 @@ namespace UnityEngine.UI;
 public class DragThresholdScaler : Configurable
 {
     private const string TOOLTIP =
-        $"{nameof(EventSystem)}'s {nameof(EventSystems.EventSystem.pixelDragThreshold)} will be scaled by the product of " +
-        $"{nameof(DragThresholdFactor)} and {nameof(CanvasScaler)}'s {nameof(UI.CanvasScaler.scaleFactor)}. " +
-        $"This means that the {nameof(EventSystems.EventSystem.pixelDragThreshold)} will scale as needed on screens with different pixel densities.";
+        $"{nameof(EventSystem)}'s {nameof(UnityEngine.EventSystems.EventSystem.pixelDragThreshold)} will be scaled by the product of " +
+        $"{nameof(DragThresholdFactor)} and {nameof(CanvasScaler)}'s {nameof(UnityEngine.UI.CanvasScaler.scaleFactor)}. " +
+        $"This means that the {nameof(UnityEngine.EventSystems.EventSystem.pixelDragThreshold)} will scale as needed on screens with different pixel densities.";
 
     [Tooltip(TOOLTIP), Required]
     public EventSystem? EventSystem;

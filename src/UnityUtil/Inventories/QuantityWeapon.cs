@@ -1,8 +1,9 @@
 ﻿using Sirenix.OdinInspector;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using UnityEngine;
 
-namespace UnityEngine.Inventories;
+namespace UnityUtil.Inventories;
 
 [RequireComponent(typeof(Weapon))]
 public class QuantityWeapon : MonoBehaviour

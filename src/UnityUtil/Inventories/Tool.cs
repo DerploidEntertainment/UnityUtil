@@ -1,9 +1,11 @@
-﻿using Sirenix.OdinInspector;
+using Sirenix.OdinInspector;
 using System.Collections;
+using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.Inputs;
+using UnityUtil.Inputs;
+using UnityUtil.Updating;
 
-namespace UnityEngine.Inventories;
+namespace UnityUtil.Inventories;
 
 public class Tool : Updatable
 {

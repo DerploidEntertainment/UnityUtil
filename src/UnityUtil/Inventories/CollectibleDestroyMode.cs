@@ -1,4 +1,6 @@
-﻿namespace UnityEngine.Inventories;
+﻿using UnityEngine;
+
+namespace UnityUtil.Inventories;
 
 /// <summary>
 /// Determines under what circumstances, if any, a Collectible's <see cref="GameObject"/> will be destroyed.

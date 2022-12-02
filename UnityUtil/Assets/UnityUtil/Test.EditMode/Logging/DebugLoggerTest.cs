@@ -2,8 +2,8 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
-using UnityEngine.Logging;
 using UnityUtil.Editor;
+using UnityUtil.Logging;
 using static System.Globalization.CultureInfo;
 
 namespace UnityUtil.Test.EditMode.Logging

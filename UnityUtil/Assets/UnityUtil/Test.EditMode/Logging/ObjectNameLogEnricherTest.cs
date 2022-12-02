@@ -1,6 +1,6 @@
 ﻿using NUnit.Framework;
 using UnityEngine;
-using UnityEngine.Logging;
+using UnityUtil.Logging;
 
 namespace UnityUtil.Test.EditMode.Logging
 {

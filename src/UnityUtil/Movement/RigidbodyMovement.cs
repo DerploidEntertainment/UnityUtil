@@ -1,4 +1,6 @@
-﻿namespace UnityEngine.Movement;
+﻿using UnityEngine;
+
+namespace UnityUtil.Movement;
 
 public abstract class RigidbodyMovement : MonoBehaviour
 {

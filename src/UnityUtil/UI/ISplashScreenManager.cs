@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
-namespace UnityEngine.UI;
+namespace UnityUtil.UI;
 
 public interface ISplashScreenManager
 {

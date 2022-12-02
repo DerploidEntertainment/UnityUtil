@@ -1,4 +1,4 @@
-﻿namespace UnityEngine;
+﻿namespace UnityUtil.Physics;
 
 public enum AxisDirection
 {

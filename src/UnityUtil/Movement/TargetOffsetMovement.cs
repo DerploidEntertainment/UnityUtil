@@ -1,6 +1,8 @@
 ﻿using Sirenix.OdinInspector;
+using UnityEngine;
+using UnityUtil.Updating;
 
-namespace UnityEngine.Movement;
+namespace UnityUtil.Movement;
 
 public class TargetOffsetMovement : Updatable
 {

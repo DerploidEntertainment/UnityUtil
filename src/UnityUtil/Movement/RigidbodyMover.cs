@@ -1,7 +1,8 @@
 ﻿using Sirenix.OdinInspector;
 using System.Diagnostics.CodeAnalysis;
+using UnityEngine;
 
-namespace UnityEngine.Movement;
+namespace UnityUtil.Movement;
 
 public class RigidbodyMover : MonoBehaviour
 {

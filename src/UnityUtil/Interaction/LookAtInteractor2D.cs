@@ -1,6 +1,9 @@
-﻿using UnityEngine.Triggers;
+﻿using UnityEngine;
+using UnityUtil.Triggers;
+using UnityUtil.Updating;
+using U = UnityEngine;
 
-namespace UnityEngine.Inputs;
+namespace UnityUtil.Interaction;
 
 public class LookAtInteractor2D : Updatable
 {
@@ -20,7 +23,7 @@ public class LookAtInteractor2D : Updatable
 
     private void look(float deltaTime)
     {
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, transform.forward, Range, InteractLayerMask);
+        RaycastHit2D hit = U.Physics2D.Raycast(transform.position, transform.forward, Range, InteractLayerMask);
         ToggleTrigger? trigger = hit.collider?.GetComponent<ToggleTrigger>();
         if (trigger is null)
             _trigger?.TurnOff();

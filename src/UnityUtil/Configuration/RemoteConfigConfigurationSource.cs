@@ -1,8 +1,9 @@
 using System.Collections;
 using Unity.RemoteConfig;
-using UnityEngine.Logging;
+using UnityEngine;
+using UnityUtil.Logging;
 
-namespace UnityEngine;
+namespace UnityUtil.Configuration;
 
 [CreateAssetMenu(menuName = $"{nameof(UnityUtil)}/Configuration/{nameof(RemoteConfigConfigurationSource)}", fileName = "remote-config")]
 public class RemoteConfigConfigurationSource : ConfigurationSource
@@ -67,6 +68,7 @@ public class RemoteConfigConfigurationSource : ConfigurationSource
                 for (int x = 0; x < keys.Length; ++x)
                     LoadedConfigsHidden.Add(keys[x], ConfigManager.appConfig.GetString(keys[x]));
                 break;
+
         }
     }
 

@@ -1,14 +1,16 @@
-﻿using Sirenix.OdinInspector;
+using Sirenix.OdinInspector;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using UnityEngine.DependencyInjection;
+using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.Logging;
+using UnityUtil.DependencyInjection;
+using UnityUtil.Logging;
 using UnityUtil.Math;
+using U = UnityEngine;
 
-namespace UnityEngine.Inventories;
+namespace UnityUtil.Inventories;
 
 [Serializable]
 public class AttackEvent : UnityEvent<Ray, RaycastHit[]> { }
@@ -66,8 +68,8 @@ public class Weapon : MonoBehaviour
     {
 
         // Get a random Ray within the accuracy cone
-        float z = Random.Range(Mathf.Cos(Mathf.Deg2Rad * AccuracyConeHalfAngle), 1f);
-        float theta = Random.Range(0f, MoreMath.TwoPi);
+        float z = U.Random.Range(Mathf.Cos(Mathf.Deg2Rad * AccuracyConeHalfAngle), 1f);
+        float theta = U.Random.Range(0f, MoreMath.TwoPi);
         float sqrtPart = Mathf.Sqrt(1 - z * z);
         var dir = new Vector3(sqrtPart * Mathf.Cos(theta), sqrtPart * Mathf.Sin(theta), z);
         var ray = new Ray(transform.position, transform.TransformDirection(dir));
@@ -96,11 +98,11 @@ public class Weapon : MonoBehaviour
 
             // Raycast into the scene with the given LayerMask, collecting the desired number of hitInfos
             if (Info.AttackAllInRange || Info.MaxAttacks > 1) {
-                RaycastHit[] allHits = Physics.RaycastAll(ray.origin, ray.direction, Info.Range, Info.AttackLayerMask);
+                RaycastHit[] allHits = U.Physics.RaycastAll(ray.origin, ray.direction, Info.Range, Info.AttackLayerMask);
                 rayHits = allHits;
             }
             else if (Info.MaxAttacks == 1) {
-                bool somethingHit = Physics.Raycast(ray.origin, ray.direction, out RaycastHit hit, Info.Range, Info.AttackLayerMask);
+                bool somethingHit = U.Physics.Raycast(ray.origin, ray.direction, out RaycastHit hit, Info.Range, Info.AttackLayerMask);
                 if (somethingHit)
                     rayHits = new[] { hit };
             }
@@ -113,11 +115,11 @@ public class Weapon : MonoBehaviour
 
             // Boxcast into the scene with the given LayerMask, collecting the desired number of hitInfos
             if (Info.AttackAllInRange || Info.MaxAttacks > 1) {
-                RaycastHit[] allHits = Physics.BoxCastAll(ray.origin, Info.HalfExtents, ray.direction, Info.Orientation, Info.Range, Info.AttackLayerMask);
+                RaycastHit[] allHits = U.Physics.BoxCastAll(ray.origin, Info.HalfExtents, ray.direction, Info.Orientation, Info.Range, Info.AttackLayerMask);
                 boxHits = allHits;
             }
             else if (Info.MaxAttacks == 1) {
-                bool somethingHit = Physics.BoxCast(ray.origin, Info.HalfExtents, ray.direction, out RaycastHit hit, Info.Orientation, Info.Range, Info.AttackLayerMask);
+                bool somethingHit = U.Physics.BoxCast(ray.origin, Info.HalfExtents, ray.direction, out RaycastHit hit, Info.Orientation, Info.Range, Info.AttackLayerMask);
                 if (somethingHit)
                     boxHits = new[] { hit };
             }
@@ -130,11 +132,11 @@ public class Weapon : MonoBehaviour
 
             // Spherecast into the scene with the given LayerMask, collecting the desired number of hitInfos
             if (Info.AttackAllInRange || Info.MaxAttacks > 1) {
-                RaycastHit[] allHits = Physics.SphereCastAll(ray.origin, Info.Radius, ray.direction, Info.Range, Info.AttackLayerMask);
+                RaycastHit[] allHits = U.Physics.SphereCastAll(ray.origin, Info.Radius, ray.direction, Info.Range, Info.AttackLayerMask);
                 sphereHits = allHits;
             }
             else if (Info.MaxAttacks == 1) {
-                bool somethingHit = Physics.SphereCast(ray.origin, Info.Radius, ray.direction, out RaycastHit hit, Info.Range, Info.AttackLayerMask);
+                bool somethingHit = U.Physics.SphereCast(ray.origin, Info.Radius, ray.direction, out RaycastHit hit, Info.Range, Info.AttackLayerMask);
                 if (somethingHit)
                     sphereHits = new[] { hit };
             }
@@ -149,11 +151,11 @@ public class Weapon : MonoBehaviour
             Vector3 p1 = ray.origin + Info.Point1;
             Vector3 p2 = ray.origin + Info.Point2;
             if (Info.AttackAllInRange || Info.MaxAttacks > 1) {
-                RaycastHit[] allHits = Physics.CapsuleCastAll(p1, p2, Info.Radius, ray.direction, Info.Range, Info.AttackLayerMask);
+                RaycastHit[] allHits = U.Physics.CapsuleCastAll(p1, p2, Info.Radius, ray.direction, Info.Range, Info.AttackLayerMask);
                 capsuleHits = allHits;
             }
             else if (Info.MaxAttacks == 1) {
-                bool somethingHit = Physics.CapsuleCast(p1, p2, Info.Radius, ray.direction, out RaycastHit hit, Info.Range, Info.AttackLayerMask);
+                bool somethingHit = U.Physics.CapsuleCast(p1, p2, Info.Radius, ray.direction, out RaycastHit hit, Info.Range, Info.AttackLayerMask);
                 if (somethingHit)
                     capsuleHits = new[] { hit };
             }

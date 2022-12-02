@@ -1,7 +1,11 @@
-﻿using Sirenix.OdinInspector;
-using UnityEngine.Inputs;
+using Sirenix.OdinInspector;
+using UnityEngine;
+using UnityUtil.Inputs;
+using UnityUtil.Physics;
+using UnityUtil.Updating;
+using U = UnityEngine;
 
-namespace UnityEngine.Movement;
+namespace UnityUtil.Movement;
 
 public class MouseLook : Updatable
 {
@@ -42,8 +46,8 @@ public class MouseLook : Updatable
 
     public Vector3 GetUpwardUnitVector(Transform relativeTransform) =>
         AxisDirectionType switch {
-            AxisDirection.WithGravity => Physics.gravity.normalized,
-            AxisDirection.OppositeGravity => -Physics.gravity.normalized,
+            AxisDirection.WithGravity => U.Physics.gravity.normalized,
+            AxisDirection.OppositeGravity => -U.Physics.gravity.normalized,
             AxisDirection.CustomWorldSpace => CustomAxisDirection.normalized,
             AxisDirection.CustomLocalSpace => relativeTransform.TransformDirection(CustomAxisDirection.normalized),
             _ => throw UnityObjectExtensions.SwitchDefaultException(AxisDirectionType),

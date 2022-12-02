@@ -1,11 +1,12 @@
 ﻿using Sirenix.OdinInspector;
 using System.Diagnostics.CodeAnalysis;
-using UnityEngine.DependencyInjection;
-using UnityEngine.Logging;
+using UnityEngine;
+using UnityUtil.DependencyInjection;
+using UnityUtil.Logging;
 using UnityUtil.Math;
 using U = UnityEngine;
 
-namespace UnityEngine;
+namespace UnityUtil;
 
 /// <summary>
 /// Determines the direction in which <see cref="Spawner.Prefab"/> instances spawned by a <see cref="UnityEngine.Spawner"/> are launched.
@@ -65,7 +66,7 @@ public class Spawner : MonoBehaviour
     private const string TOOLTIP_LAUNCH_SPEED =
         $"All spawned {nameof(Spawner.Prefab)} instances will be launched in the {nameof(Spawner.SpawnDirection)}, " +
         $"with at least this speed. Setting both {nameof(Spawner.MinSpeed)} and {nameof(Spawner.MaxSpeed)} to zero will " +
-        $"spawn instances right at this {nameof(UnityEngine.Spawner)}'s position, without any launching.";
+        $"spawn instances right at this {nameof(Spawner)}'s position, without any launching.";
 
     [Tooltip(TOOLTIP_LAUNCH_SPEED)]
     public float MinSpeed = 0f;

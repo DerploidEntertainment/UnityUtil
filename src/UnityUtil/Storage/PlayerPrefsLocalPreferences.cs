@@ -1,6 +1,7 @@
-﻿using UnityEngine.Scripting;
+﻿using UnityEngine;
+using UnityEngine.Scripting;
 
-namespace UnityEngine.Storage;
+namespace UnityUtil.Storage;
 
 public class PlayerPrefsLocalPreferences : ILocalPreferences
 {

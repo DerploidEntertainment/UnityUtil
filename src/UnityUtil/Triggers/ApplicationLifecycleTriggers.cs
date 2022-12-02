@@ -1,8 +1,10 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.Logging;
+using UnityUtil.Configuration;
+using UnityUtil.Logging;
 
-namespace UnityEngine.Triggers;
+namespace UnityUtil.Triggers;
 
 public class ApplicationLifecycleTriggers : Configurable
 {

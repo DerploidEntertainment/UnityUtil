@@ -1,8 +1,11 @@
 ﻿using Sirenix.OdinInspector;
-using UnityEngine.Triggers;
+using UnityEngine;
+using UnityUtil.Inputs;
+using UnityUtil.Triggers;
+using UnityUtil.Updating;
 using U = UnityEngine;
 
-namespace UnityEngine.Inputs;
+namespace UnityUtil.Interaction;
 
 public class CursorInteractor : Updatable
 {
@@ -23,7 +26,7 @@ public class CursorInteractor : Updatable
     {
         if (Input!.Started()) {
             Ray ray = Camera.main.ScreenPointToRay(U.Input.mousePosition);
-            if (Physics.Raycast(ray, out RaycastHit hitInfo, Mathf.Infinity, InteractLayerMask))
+            if (U.Physics.Raycast(ray, out RaycastHit hitInfo, Mathf.Infinity, InteractLayerMask))
                 hitInfo.collider.GetComponent<SimpleTrigger>()?.Trigger();
         }
     }

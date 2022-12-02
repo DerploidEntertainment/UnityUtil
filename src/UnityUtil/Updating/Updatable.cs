@@ -1,6 +1,8 @@
 using System;
+using UnityEngine;
+using UnityUtil.Configuration;
 
-namespace UnityEngine;
+namespace UnityUtil.Updating;
 
 public abstract class Updatable : Configurable
 {
@@ -10,7 +12,7 @@ public abstract class Updatable : Configurable
     public int InstanceId { get; private set; }
 
     /// <summary>
-    /// If <see langword="true"/>, then this <see cref="UnityEngine.Updatable"/> will have its Update actions registered/unregistered automatically when it is enabled/disabled.
+    /// If <see langword="true"/>, then this <see cref="Updatable"/> will have its Update actions registered/unregistered automatically when it is enabled/disabled.
     /// If <see langword="false"/>, then the Update actions must be registered/unregistered manually (best for when updates are only meant to be registered under specific/rare circumstances).
     /// <summary>
     protected bool RegisterUpdatesAutomatically;

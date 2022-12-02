@@ -1,5 +1,5 @@
 ﻿using NUnit.Framework;
-using UnityEngine.Triggers;
+using UnityUtil.Triggers;
 
 namespace UnityUtil.Test.EditMode.Triggers
 {

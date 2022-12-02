@@ -1,7 +1,8 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using UnityEngine;
 
-namespace UnityEngine;
+namespace UnityUtil.Physics;
 
 [RequireComponent(typeof(Detonator))]
 public class HurtDetonator : MonoBehaviour
@@ -9,12 +10,12 @@ public class HurtDetonator : MonoBehaviour
     private Detonator? _detonator;
 
     [Tooltip(
-        $"Nearby {nameof(UnityEngine.ManagedQuantity)}s will be changed by this amount, at most. " +
-        $"How this amount is applied depends on the value of {nameof(ChangeMode)}, and the distance from this {nameof(UnityEngine.Detonator)}."
+        $"Nearby {nameof(ManagedQuantity)}s will be changed by this amount, at most. " +
+        $"How this amount is applied depends on the value of {nameof(ChangeMode)}, and the distance from this {nameof(Detonator)}."
     )]
     public float MaxAmount = 10f;
 
-    [Tooltip($"Determines how the value of {nameof(MaxAmount)} is used to change nearby {nameof(UnityEngine.ManagedQuantity)}s.")]
+    [Tooltip($"Determines how the value of {nameof(MaxAmount)} is used to change nearby {nameof(ManagedQuantity)}s.")]
     public ManagedQuantity.ChangeMode ChangeMode = ManagedQuantity.ChangeMode.Absolute;
 
     [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]

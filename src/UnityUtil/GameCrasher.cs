@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
+using UnityEngine;
 using UnityEngine.Diagnostics;
 
-namespace UnityEngine;
+namespace UnityUtil;
 
 public class GameCrasher : MonoBehaviour
 {

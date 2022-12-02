@@ -1,7 +1,8 @@
 ﻿using Sirenix.OdinInspector;
 using System.Diagnostics.CodeAnalysis;
+using UnityEngine;
 
-namespace UnityEngine.Inventories;
+namespace UnityUtil.Inventories;
 
 [RequireComponent(typeof(Collector))]
 public class QuantityCollector : MonoBehaviour

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace UnityEngine.DependencyInjection;
+namespace UnityUtil.DependencyInjection;
 
 internal readonly struct Service
 {

@@ -1,4 +1,4 @@
-﻿namespace UnityEngine;
+﻿namespace UnityUtil;
 
 public interface IAppEnvironment
 {

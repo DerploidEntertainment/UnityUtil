@@ -1,7 +1,8 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using UnityEngine;
 using UnityEngine.Events;
 
-namespace UnityEngine.Triggers;
+namespace UnityUtil.Triggers;
 
 public class ColliderEnterTrigger2D : ColliderTriggerBase2D
 {

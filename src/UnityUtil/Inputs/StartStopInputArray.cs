@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Linq;
+using UnityEngine;
 
-namespace UnityEngine.Inputs;
+namespace UnityUtil.Inputs;
 
-[CreateAssetMenu(fileName = "start-stop-input-array", menuName = $"{nameof(UnityUtil)}/{nameof(UnityEngine.Inputs)}/{nameof(UnityEngine.Inputs.StartStopInputArray)}")]
+[CreateAssetMenu(fileName = "start-stop-input-array", menuName = $"{nameof(UnityUtil)}/{nameof(UnityUtil.Inputs)}/{nameof(StartStopInputArray)}")]
 public class StartStopInputArray : ScriptableObject
 {
     public StartStopInput[] Inputs = Array.Empty<StartStopInput>();

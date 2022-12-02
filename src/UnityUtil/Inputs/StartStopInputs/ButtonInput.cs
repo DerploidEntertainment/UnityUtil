@@ -1,6 +1,8 @@
-﻿namespace UnityEngine.Inputs;
+﻿using UnityEngine;
 
-[CreateAssetMenu(fileName = "button-input", menuName = $"{nameof(UnityUtil)}/{nameof(UnityEngine.Inputs)}/{nameof(UnityEngine.Inputs.ButtonInput)}")]
+namespace UnityUtil.Inputs;
+
+[CreateAssetMenu(fileName = "button-input", menuName = $"{nameof(UnityUtil)}/{nameof(UnityUtil.Inputs)}/{nameof(ButtonInput)}")]
 public sealed class ButtonInput : StartStopInput
 {
     public string ButtonName = "";

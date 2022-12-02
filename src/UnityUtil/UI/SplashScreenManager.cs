@@ -1,7 +1,8 @@
-﻿using UnityEngine.Events;
+﻿using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.Rendering;
 
-namespace UnityEngine.UI;
+namespace UnityUtil.UI;
 
 public class SplashScreenManager : MonoBehaviour, ISplashScreenManager
 {

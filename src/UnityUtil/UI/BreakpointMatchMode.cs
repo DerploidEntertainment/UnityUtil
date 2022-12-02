@@ -1,4 +1,4 @@
-﻿namespace UnityEngine.UI;
+﻿namespace UnityUtil.UI;
 
 public enum BreakpointMatchMode
 {

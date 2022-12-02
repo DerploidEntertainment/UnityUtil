@@ -1,7 +1,9 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using UnityEngine;
+using U = UnityEngine;
 
-namespace UnityEngine;
+namespace UnityUtil.Physics2D;
 
 [RequireComponent(typeof(Detonator2D))]
 public class PushDetonator2D : MonoBehaviour
@@ -36,7 +38,7 @@ public class PushDetonator2D : MonoBehaviour
             .ToArray();
         for (int rb = 0; rb < rigidbodies.Length; ++rb) {
             Rigidbody2D rigidbody = rigidbodies[rb];
-            Vector2 explosionPos = (Vector2)_detonator!.transform.position + ExplosionUpwardsModifier * Physics2D.gravity.normalized;
+            Vector2 explosionPos = (Vector2)_detonator!.transform.position + ExplosionUpwardsModifier * U.Physics2D.gravity.normalized;
             rigidbody.AddExplosionForce(ExplosionForce, explosionPos, _detonator.ExplosionRadius, 0f, ForceMode2D.Impulse);
         }
     }

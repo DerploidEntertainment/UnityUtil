@@ -1,4 +1,6 @@
-﻿namespace UnityEngine;
+﻿using UnityEngine;
+
+namespace UnityUtil.Physics;
 
 [DisallowMultipleComponent]
 public class Liftable : MonoBehaviour

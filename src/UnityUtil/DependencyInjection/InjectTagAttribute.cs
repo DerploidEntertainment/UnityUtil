@@ -1,6 +1,7 @@
 ﻿using System;
+using UnityEngine;
 
-namespace UnityEngine.DependencyInjection;
+namespace UnityUtil.DependencyInjection;
 
 /// <summary>
 /// Inject the service configured with this field's <see cref="Type"/> and an optional Inspector tag.

@@ -1,9 +1,10 @@
 ﻿using Sirenix.OdinInspector;
 using System;
+using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Events;
 
-namespace UnityEngine.UI;
+namespace UnityUtil.UI;
 
 [Serializable]
 public class UiBreakpoint

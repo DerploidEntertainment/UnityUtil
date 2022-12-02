@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Linq;
+using UnityEngine;
 
-namespace UnityEngine.Inputs;
+namespace UnityUtil.Inputs;
 
-[CreateAssetMenu(fileName = "value-input-array", menuName = $"{nameof(UnityUtil)}/{nameof(UnityEngine.Inputs)}/{nameof(UnityEngine.Inputs.ValueInputArray)}")]
+[CreateAssetMenu(fileName = "value-input-array", menuName = $"{nameof(UnityUtil)}/{nameof(UnityUtil.Inputs)}/{nameof(ValueInputArray)}")]
 public class ValueInputArray : ScriptableObject
 {
     public ValueInput[] Inputs = Array.Empty<ValueInput>();

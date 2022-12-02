@@ -1,4 +1,4 @@
-﻿namespace UnityEngine;
+﻿namespace UnityUtil.Configuration;
 
 public interface IConfigurator
 {

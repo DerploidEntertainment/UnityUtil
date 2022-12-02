@@ -1,7 +1,8 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using UnityEngine;
 using UnityEngine.Events;
 
-namespace UnityEngine;
+namespace UnityUtil;
 
 [RequireComponent(typeof(Collider))]
 public class DestroyZone : MonoBehaviour

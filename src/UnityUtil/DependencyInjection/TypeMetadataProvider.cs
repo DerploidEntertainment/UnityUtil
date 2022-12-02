@@ -4,7 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace UnityEngine.DependencyInjection;
+namespace UnityUtil.DependencyInjection;
 
 internal class TypeMetadataProvider : ITypeMetadataProvider
 {

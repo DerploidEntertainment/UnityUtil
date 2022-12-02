@@ -3,9 +3,10 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using UnityEngine;
 using UnityEngine.Events;
 
-namespace UnityEngine.Triggers;
+namespace UnityUtil.Triggers;
 
 [Serializable]
 public class NamedAnimationEvent
@@ -32,7 +33,7 @@ public class AnimationEventTrigger : MonoBehaviour
     /// Warning! This method is not meant to be called programmatically.
     /// Instead, create an <see cref="AnimationClip"/> with an <see cref="AnimationEvent"/> that calls this method.
     /// </summary>
-    /// <param name="eventName">Name of the event that was raised by the <see cref="UnityEngine.Animator"/></param>
+    /// <param name="eventName">Name of the event that was raised by the <see cref="Animator"/></param>
     public void Trigger(string eventName)
     {
         if (!_triggerDict.TryGetValue(eventName, out UnityEvent trigger)) {

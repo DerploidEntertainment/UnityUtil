@@ -2,8 +2,8 @@
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.Triggers;
 using UnityUtil.Test.EditMode.Logging;
+using UnityUtil.Triggers;
 
 namespace UnityUtil.Test.EditMode.Triggers
 {

@@ -1,4 +1,4 @@
-﻿namespace UnityEngine.Logging;
+﻿namespace UnityUtil.Logging;
 
 public interface ILogEnricher
 {

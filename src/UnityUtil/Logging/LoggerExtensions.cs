@@ -1,4 +1,6 @@
-namespace UnityEngine.Logging;
+using UnityEngine;
+
+namespace UnityUtil.Logging;
 
 public static class LoggerExtensions
 {

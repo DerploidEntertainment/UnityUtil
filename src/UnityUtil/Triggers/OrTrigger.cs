@@ -1,4 +1,4 @@
-﻿namespace UnityEngine.Triggers;
+﻿namespace UnityUtil.Triggers;
 
 public class OrTrigger : MultiConditionalTrigger
 {

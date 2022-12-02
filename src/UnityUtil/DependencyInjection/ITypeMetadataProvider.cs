@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 
-namespace UnityEngine.DependencyInjection;
+namespace UnityUtil.DependencyInjection;
 
 /// <summary>
 /// This type is used internally by the DI system. You should never need to implement it in your own code.

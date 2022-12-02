@@ -1,8 +1,9 @@
 ﻿using System;
+using UnityEngine;
 
-namespace UnityEngine;
+namespace UnityUtil;
 
-[CreateAssetMenu(menuName = $"{nameof(UnityUtil)}/{nameof(UnityEngine.AsciiSprites)}", fileName = "ascii-sprites")]
+[CreateAssetMenu(menuName = $"{nameof(UnityUtil)}/{nameof(AsciiSprites)}", fileName = "ascii-sprites")]
 public class AsciiSprites : ScriptableObject
 {
     public static readonly int NumPrintables = 95;

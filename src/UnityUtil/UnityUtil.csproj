@@ -8,7 +8,7 @@
 
     <RemoteConfigAssembly>$(UnityScriptAssembliesDir)\Unity.Services.RemoteConfig.dll</RemoteConfigAssembly>
     <UnityRemoteConfigPath>$(UnityProjectPath)\$(RemoteConfigAssembly)</UnityRemoteConfigPath>
-    <UnityRemoteConfigPath Condition="!Exists('$(UnityRemoteConfigPath)')">$(UnityUtilProjectPath)\$(RemoteConfigAssembly)</UnityRemoteConfigPath>
+    <UnityRemoteConfigPath Condition="!Exists('$(UnityRemoteConfigPath)')">$(UnityProjectPath)\$(RemoteConfigAssembly)</UnityRemoteConfigPath>
   </PropertyGroup>
 
   <ItemGroup>
@@ -31,7 +31,7 @@
       <ProjectOutput Include="$(OutDir)/$(ProjectName).pdb" />
     </ItemGroup>
     <Message Importance="high" Text="Moving $(ProjectName) outputs into appropriate subfolders of '$([System.IO.Path]::GetFullPath($(UnityProjectPath)))\Assets'" />
-    <Copy SourceFiles="%(ProjectOutput.Identity)" DestinationFolder="$(UnityUtilProjectPath)\Assets\UnityUtil\Plugins" />
+    <Copy SourceFiles="%(ProjectOutput.Identity)" DestinationFolder="$(UnityProjectPath)\Assets\UnityUtil\Plugins" />
   </Target>
 
 </Project>

@@ -1,11 +1,14 @@
-﻿using Sirenix.OdinInspector;
+using Sirenix.OdinInspector;
 using System;
+using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Events;
-using UnityEngine.Inputs;
-using UnityEngine.Triggers;
+using UnityUtil.Inputs;
+using UnityUtil.Triggers;
+using UnityUtil.Updating;
+using U = UnityEngine;
 
-namespace UnityEngine;
+namespace UnityUtil.Physics;
 
 /// <summary>
 /// Represents the means by which a <see cref="Liftable"/> came to be released from a <see cref="Lifter"/>.
@@ -75,8 +78,8 @@ public class Lifter : Updatable
         Assert.IsTrue(
             (LiftUsingPhysics && LiftingJoint != null) ||
             (!LiftUsingPhysics && LiftingObject != null),
-            $"{this.GetHierarchyNameWithType()} must have a {nameof(this.LiftingJoint)} if {nameof(this.LiftUsingPhysics)} is set to true, " +
-            $"or a {nameof(this.LiftingObject)} if {nameof(this.LiftUsingPhysics)} is set to false."
+            $"{this.GetHierarchyNameWithType()} must have a {nameof(LiftingJoint)} if {nameof(LiftUsingPhysics)} is set to true, " +
+            $"or a {nameof(LiftingObject)} if {nameof(LiftUsingPhysics)} is set to false."
         );
 
         RegisterUpdatesAutomatically = true;
@@ -116,7 +119,7 @@ public class Lifter : Updatable
         // Check if a physical object that's not too heavy is within range
         // If not, then just return
         Rigidbody? rb = null;
-        bool loadAhead = Physics.Raycast(transform.position, transform.forward, out RaycastHit hitInfo, Reach, LiftableLayerMask);
+        bool loadAhead = U.Physics.Raycast(transform.position, transform.forward, out RaycastHit hitInfo, Reach, LiftableLayerMask);
         if (loadAhead) {
             rb = hitInfo.collider.attachedRigidbody;
             if (rb != null && rb.mass <= MaxMass) {

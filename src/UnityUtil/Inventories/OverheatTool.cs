@@ -1,10 +1,12 @@
 ﻿using Sirenix.OdinInspector;
 using System;
 using System.Collections;
+using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Events;
+using UnityUtil.Updating;
 
-namespace UnityEngine.Inventories;
+namespace UnityUtil.Inventories;
 
 /// <summary>
 /// Type arguments are (bool isOverheated)
@@ -28,7 +30,7 @@ public class OverheatTool : Updatable
     {
         base.Awake();
 
-        Assert.IsTrue(Info!.StartingHeat <= Info.MaxHeat, $"{this.GetHierarchyNameWithType()} was started with {nameof(this.Info.StartingHeat)} heat but it can only store a max of {this.Info.MaxHeat}!");
+        Assert.IsTrue(Info!.StartingHeat <= Info.MaxHeat, $"{this.GetHierarchyNameWithType()} was started with {nameof(Info.StartingHeat)} heat but it can only store a max of {Info.MaxHeat}!");
 
         BetterUpdate = doUpdate;
         RegisterUpdatesAutomatically = true;

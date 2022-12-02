@@ -1,12 +1,15 @@
 ﻿using Sirenix.OdinInspector;
 using System.Diagnostics.CodeAnalysis;
+using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Audio;
 using UnityEngine.EventSystems;
-using UnityEngine.Logging;
-using UnityEngine.Storage;
+using UnityEngine.UI;
+using UnityUtil.Configuration;
+using UnityUtil.Logging;
+using UnityUtil.Storage;
 
-namespace UnityEngine.UI;
+namespace UnityUtil.UI;
 
 public enum AudioSliderTransformation
 {
@@ -20,7 +23,7 @@ public enum AudioSliderTransformation
 [TypeInfoBox(
     $"Make sure this component is enabled (and its {nameof(GameObject)} is active) on startup, " +
     $"otherwise initialization of {nameof(AudioMixer)} from local preferences will not work correctly." +
-    $"\n\nNote that an {nameof(EventTrigger)} component will be attached to {nameof(UI.Slider)} (if one isn't attached already), " +
+    $"\n\nNote that an {nameof(EventTrigger)} component will be attached to {nameof(UnityEngine.UI.Slider)} (if one isn't attached already), " +
     $"so that we can listen for {nameof(EventTriggerType.PointerUp)} events to play {nameof(TestAudio)} and save to local preferences. " +
     $"This will make the {nameof(Slider)}'s {nameof(GameObject)} intercept all events, " +
     $"and no event bubbling will occur from that object!"
@@ -38,7 +41,7 @@ public class AudioMixerParameterSlider : Configurable
     public string ExposedParameterName = "Volume";
 
     [Tooltip(
-        $"The value of this {nameof(UI.Slider)} will be used to update the exposed parameter of {nameof(AudioMixer)}. " +
+        $"The value of this {nameof(UnityEngine.UI.Slider)} will be used to update the exposed parameter of {nameof(AudioMixer)}. " +
         $"Its value will be transformed according to {nameof(SliderTransformation)}."
     )]
     [Required]
@@ -72,7 +75,7 @@ public class AudioMixerParameterSlider : Configurable
         $"{nameof(Coefficient)} * Log (base {nameof(LogBase)}) of ({nameof(Slider)} value). " +
         $"\nWhen transforming volumes, you will want to use {nameof(AudioSliderTransformation.Logarithmic)} with a " +
         $"{nameof(LogBase)} of 10 and a {nameof(Coefficient)} of 20 " +
-        $"(and your slider should have a {nameof(UI.Slider.minValue)} and {nameof(UI.Slider.maxValue)} of 0.0001 and 1, respectively)."
+        $"(and your slider should have a {nameof(UnityEngine.UI.Slider.minValue)} and {nameof(UnityEngine.UI.Slider.maxValue)} of 0.0001 and 1, respectively)."
     )]
     public AudioSliderTransformation SliderTransformation = AudioSliderTransformation.Linear;
 
@@ -111,10 +114,12 @@ public class AudioMixerParameterSlider : Configurable
             if (StoreParameterInPreferences) {
                 float newVal = transformValue(Slider.value);
                 _localPreferences!.SetFloat(FinalPreferencesKey, newVal);
-                _logger!.Log($"Saved new value ({newVal}) of exposed parameter '{ExposedParameterName}' of {nameof(Audio.AudioMixer)} '{AudioMixer.name}' to local preferences", context: this);
+                _logger!.Log($"Saved new value ({newVal}) of exposed parameter '{ExposedParameterName}' of {nameof(UnityEngine.Audio.AudioMixer)} '{AudioMixer.name}' to local preferences", context: this);
             }
+#pragma warning disable IDE0031 // Use null propagation. C# doesn't allow overloading null-coalescing operators, so they don't work with Unity Objects' custom null logic...
             if (TestAudio != null)
-                TestAudio.Play();   // Don't know why the F*CK a null-coalescing operator isn't working here...
+                TestAudio.Play();
+#pragma warning restore IDE0031 // Use null propagation
         });
         eventTrigger.triggers.Add(pointerUpEvent);
     }
@@ -129,11 +134,11 @@ public class AudioMixerParameterSlider : Configurable
         string prefsKey = FinalPreferencesKey;
         if (StoreParameterInPreferences && _localPreferences!.HasKey(prefsKey)) {
             val = _localPreferences.GetFloat(prefsKey);
-            logMsg = $"Loaded value ({val}) of exposed parameter '{ExposedParameterName}' of {nameof(Audio.AudioMixer)} '{AudioMixer!.name}' from preferences";
+            logMsg = $"Loaded value ({val}) of exposed parameter '{ExposedParameterName}' of {nameof(UnityEngine.Audio.AudioMixer)} '{AudioMixer!.name}' from preferences";
         }
         else {
             AudioMixer!.GetFloat(ExposedParameterName, out val);
-            logMsg = $"Not using preferences or key '{prefsKey}' could not be found. Loaded value of exposed parameter '{ExposedParameterName}' ({val}) from {nameof(Audio.AudioMixer)} '{AudioMixer.name}' instead";
+            logMsg = $"Not using preferences or key '{prefsKey}' could not be found. Loaded value of exposed parameter '{ExposedParameterName}' ({val}) from {nameof(UnityEngine.Audio.AudioMixer)} '{AudioMixer.name}' instead";
         }
 
         Slider!.value = untransformValue(val);   // This will trigger onValueChanged and thus initialize the AudioMixer as well
