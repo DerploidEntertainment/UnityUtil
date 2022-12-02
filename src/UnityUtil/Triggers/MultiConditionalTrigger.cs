@@ -1,7 +1,8 @@
 using Sirenix.OdinInspector;
 using System;
+using UnityEngine;
 
-namespace UnityEngine.Triggers;
+namespace UnityUtil.Triggers;
 
 public abstract class MultiConditionalTrigger : ConditionalTrigger
 {

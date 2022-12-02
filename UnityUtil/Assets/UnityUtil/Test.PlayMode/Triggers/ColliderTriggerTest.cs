@@ -3,7 +3,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.TestTools;
-using UnityEngine.Triggers;
+using UnityUtil.Triggers;
 
 namespace UnityUtil.Test.PlayMode
 {

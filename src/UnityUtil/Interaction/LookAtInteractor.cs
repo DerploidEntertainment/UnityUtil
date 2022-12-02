@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
-using UnityEngine.Triggers;
+using UnityUtil.Triggers;
 using UnityUtil.Updating;
 using U = UnityEngine;
 

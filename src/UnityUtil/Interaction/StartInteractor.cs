@@ -1,8 +1,8 @@
 ﻿using Sirenix.OdinInspector;
 using System;
 using UnityEngine;
-using UnityEngine.Triggers;
 using UnityUtil.Inputs;
+using UnityUtil.Triggers;
 using UnityUtil.Updating;
 using U = UnityEngine;
 

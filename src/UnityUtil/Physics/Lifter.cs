@@ -3,8 +3,8 @@ using System;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Events;
-using UnityEngine.Triggers;
 using UnityUtil.Inputs;
+using UnityUtil.Triggers;
 using UnityUtil.Updating;
 using U = UnityEngine;
 

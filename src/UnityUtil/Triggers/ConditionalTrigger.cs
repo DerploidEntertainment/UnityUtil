@@ -1,7 +1,8 @@
 ﻿using Sirenix.OdinInspector;
+using UnityEngine;
 using UnityEngine.Events;
 
-namespace UnityEngine.Triggers;
+namespace UnityUtil.Triggers;
 
 public abstract class ConditionalTrigger : MonoBehaviour
 {

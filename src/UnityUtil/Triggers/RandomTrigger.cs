@@ -1,7 +1,8 @@
 ﻿using Sirenix.OdinInspector;
 using System;
+using UnityEngine;
 
-namespace UnityEngine.Triggers;
+namespace UnityUtil.Triggers;
 
 public class RandomTrigger : MonoBehaviour
 {
@@ -10,7 +11,7 @@ public class RandomTrigger : MonoBehaviour
     [Button]
     public void Trigger()
     {
-        int t = Random.Range(0, Triggers.Length);
+        int t = UnityEngine.Random.Range(0, Triggers.Length);
         Triggers[t].Trigger();
     }
 

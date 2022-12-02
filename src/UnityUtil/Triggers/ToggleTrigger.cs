@@ -1,7 +1,8 @@
 ﻿using Sirenix.OdinInspector;
 using System.Diagnostics.CodeAnalysis;
+using UnityEngine;
 
-namespace UnityEngine.Triggers;
+namespace UnityUtil.Triggers;
 
 public class ToggleTrigger : ConditionalTrigger
 {

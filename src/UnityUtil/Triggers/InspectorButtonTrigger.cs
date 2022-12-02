@@ -1,8 +1,9 @@
 ﻿using Sirenix.OdinInspector;
+using UnityEngine;
 using UnityEngine.Events;
 using UnityUtil.Updating;
 
-namespace UnityEngine.Triggers;
+namespace UnityUtil.Triggers;
 
 public class InspectorButtonTrigger : Updatable
 {

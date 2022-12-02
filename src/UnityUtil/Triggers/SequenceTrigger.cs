@@ -2,11 +2,12 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
+using UnityEngine;
 using UnityEngine.Events;
 using UnityUtil.DependencyInjection;
 using UnityUtil.Logging;
 
-namespace UnityEngine.Triggers;
+namespace UnityUtil.Triggers;
 
 public class SequenceTrigger : MonoBehaviour
 {
@@ -56,7 +57,7 @@ public class SequenceTrigger : MonoBehaviour
     private void doStep(int step, bool thenTrigger)
     {
         int newStep = Cycle
-            ? (CurrentStep + StepTriggers.Length + (step % StepTriggers.Length)) % StepTriggers.Length
+            ? (CurrentStep + StepTriggers.Length + step % StepTriggers.Length) % StepTriggers.Length
             : Mathf.Clamp(CurrentStep + step, 0, StepTriggers.Length - 1);
 
         CurrentStep = newStep;

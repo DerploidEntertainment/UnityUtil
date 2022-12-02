@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using UnityEngine.Triggers;
+using UnityUtil.Triggers;
 using UnityUtil.Updating;
 using U = UnityEngine;
 

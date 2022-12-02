@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
+using UnityEngine;
 using UnityEngine.Events;
-using UnityUtil;
 
-namespace UnityEngine.Triggers;
+namespace UnityUtil.Triggers;
 
 public enum IntTriggerMode
 {

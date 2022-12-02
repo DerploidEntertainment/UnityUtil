@@ -1,8 +1,8 @@
 using Sirenix.OdinInspector;
-using UnityUtil;
+using UnityEngine;
 using UnityUtil.Updating;
 
-namespace UnityEngine.Triggers;
+namespace UnityUtil.Triggers;
 
 public enum EnableDisableBehavior
 {

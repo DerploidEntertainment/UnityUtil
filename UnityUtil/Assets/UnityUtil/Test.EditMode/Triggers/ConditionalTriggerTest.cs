@@ -1,7 +1,7 @@
 ﻿using NUnit.Framework;
 using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
-using UnityEngine.Triggers;
+using UnityUtil.Triggers;
 
 namespace UnityUtil.Test.EditMode.Triggers
 {

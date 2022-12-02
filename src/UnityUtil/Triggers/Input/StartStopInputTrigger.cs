@@ -3,7 +3,7 @@ using UnityEngine.Events;
 using UnityUtil.Inputs;
 using UnityUtil.Updating;
 
-namespace UnityEngine.Triggers.Input;
+namespace UnityUtil.Triggers.Input;
 
 public class StartStopInputTrigger : Updatable
 {

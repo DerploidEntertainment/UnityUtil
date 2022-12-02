@@ -1,9 +1,10 @@
 using Sirenix.OdinInspector;
 using System;
 using System.Diagnostics.CodeAnalysis;
+using UnityEngine;
 using UnityEngine.Events;
 
-namespace UnityEngine.Triggers;
+namespace UnityUtil.Triggers;
 
 [Serializable]
 public class JointEvent : UnityEvent<Joint> { }
