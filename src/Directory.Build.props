@@ -20,8 +20,8 @@
     <IsTestProject Condition="$(MSBuildProjectName.Contains('.Test'))">true</IsTestProject>
   </PropertyGroup>
   <ItemGroup>
-    <InternalsVisibleTo Condition="'$(IsTestProject)'!='true'" Include="UnityUtil.Test.EditMode" />
-    <InternalsVisibleTo Condition="'$(IsTestProject)'!='true'" Include="UnityUtil.Test.PlayMode" />
+    <InternalsVisibleTo Condition="'$(IsTestProject)'!='true'" Include="UnityUtil.Editor.Tests" />
+    <InternalsVisibleTo Condition="'$(IsTestProject)'!='true'" Include="UnityUtil.Tests" />
     <InternalsVisibleTo Condition="'$(IsTestProject)'!='true'" Include="DynamicProxyGenAssembly2" />
   </ItemGroup>
 

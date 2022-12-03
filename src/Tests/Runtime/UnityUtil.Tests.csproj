@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <UnityScriptsDir>$(UnityProjectPath)\Assets\UnityUtil\Tests\Runtime</UnityScriptsDir>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="$(UnityModulesPath)\UnityEngine.CoreModule.dll" Private="false" />
+    <Reference Include="$(UnityModulesPath)\UnityEngine.PhysicsModule.dll" Private="false" />
+    <Reference Include="$(UnityModulesPath)\UnityEngine.Physics2DModule.dll" Private="false" />
+  </ItemGroup>
+
+</Project>

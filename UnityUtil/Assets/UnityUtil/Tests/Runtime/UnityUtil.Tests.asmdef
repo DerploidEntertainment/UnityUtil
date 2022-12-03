@@ -1,0 +1,23 @@
+{
+    "name": "UnityUtil.Tests",
+    "rootNamespace": "UnityUtil.Tests",
+    "references": [
+        "UnityEngine.TestRunner",
+        "UnityEditor.TestRunner"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "UnityUtil.dll",
+        "nunit.framework.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS",
+        "UNITY_ASSERTIONS"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

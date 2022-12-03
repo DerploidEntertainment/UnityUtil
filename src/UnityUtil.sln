@@ -16,14 +16,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		OtherUnityAssemblies.props = OtherUnityAssemblies.props
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{8B1B879E-5692-4B6B-979A-42E0D2C1BD29}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{8B1B879E-5692-4B6B-979A-42E0D2C1BD29}"
 	ProjectSection(SolutionItems) = preProject
-		Test\Directory.Build.props = Test\Directory.Build.props
+		Tests\Directory.Build.props = Tests\Directory.Build.props
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnityUtil.Test.PlayMode", "Test\UnityUtil.Test.PlayMode\UnityUtil.Test.PlayMode.csproj", "{7A19D1B9-3D19-4EB2-9BEB-ACFDD07CA491}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnityUtil.Test.PlayMode", "Tests\Runtime\UnityUtil.Tests.csproj", "{7A19D1B9-3D19-4EB2-9BEB-ACFDD07CA491}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnityUtil.Test.EditMode", "Test\UnityUtil.Test.EditMode\UnityUtil.Test.EditMode.csproj", "{8BE7D883-0895-49E6-AAC1-9BA109E108AD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnityUtil.Test.EditMode", "Tests\Editor\UnityUtil.Editor.Tests.csproj", "{8BE7D883-0895-49E6-AAC1-9BA109E108AD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
