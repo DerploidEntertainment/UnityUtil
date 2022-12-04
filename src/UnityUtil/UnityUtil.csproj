@@ -17,7 +17,6 @@
     <Reference Include="$(UnityModulesPath)\UnityEngine.AudioModule.dll" Private="false" />
     <Reference Include="$(UnityModulesPath)\UnityEngine.CoreModule.dll" Private="false" />
     <Reference Include="$(UnityModulesPath)\UnityEngine.InputLegacyModule.dll" Private="false" />
-    <Reference Include="$(UnityModulesPath)\UnityEngine.ParticleSystemModule.dll" Private="false" />
     <Reference Include="$(UnityModulesPath)\UnityEngine.Physics2DModule.dll" Private="false" />
     <Reference Include="$(UnityModulesPath)\UnityEngine.PhysicsModule.dll" Private="false" />
     <Reference Include="$(UnityModulesPath)\UnityEngine.UnityWebRequestModule.dll" Private="false" />
