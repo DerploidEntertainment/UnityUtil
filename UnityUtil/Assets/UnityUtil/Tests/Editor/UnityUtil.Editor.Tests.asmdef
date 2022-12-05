@@ -15,7 +15,8 @@
         "UnityUtil.dll",
         "UnityUtil.Editor.dll",
         "Moq.dll",
-        "nunit.framework.dll"
+        "nunit.framework.dll",
+        "Microsoft.Extensions.Logging.Abstractions.dll"
     ],
     "autoReferenced": false,
     "defineConstraints": [
