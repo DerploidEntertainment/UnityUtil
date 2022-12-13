@@ -1,6 +1,10 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <Import Project="../OtherUnityAssemblies.props"/>
+
+  <PropertyGroup>
+    <RootNamespace>UnityUtil.Editor</RootNamespace>
+  </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\UnityUtil\UnityUtil.csproj" />
