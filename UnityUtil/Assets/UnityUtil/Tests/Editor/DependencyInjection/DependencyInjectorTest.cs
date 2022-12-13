@@ -1,3 +1,5 @@
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -8,7 +10,6 @@ using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityUtil.DependencyInjection;
-using UnityUtil.Editor.Tests.Logging;
 using UnityUtil.Logging;
 
 namespace UnityUtil.Editor.Tests.DependencyInjection
@@ -121,9 +122,9 @@ namespace UnityUtil.Editor.Tests.DependencyInjection
         public void Cannot_Initialize_MultipleTimes()
         {
             var dependencyInjector = new DependencyInjector(Array.Empty<Type>());
-            dependencyInjector.Initialize(new TestLoggerProvider());
+            dependencyInjector.Initialize(new NullLoggerFactory(), ScriptableObject.CreateInstance<ObjectNameLogEnrichSettings>());
 
-            Assert.Throws<InvalidOperationException>(() => dependencyInjector.Initialize(new TestLoggerProvider()));
+            Assert.Throws<InvalidOperationException>(() => dependencyInjector.Initialize(new NullLoggerFactory(), ScriptableObject.CreateInstance<ObjectNameLogEnrichSettings>()));
         }
 
         [Test]
@@ -134,7 +135,7 @@ namespace UnityUtil.Editor.Tests.DependencyInjection
 
             Assert.Throws<InvalidOperationException>(() => dependencyInjector.RegisterService(testService));
 
-            dependencyInjector.Initialize(new TestLoggerProvider());
+            dependencyInjector.Initialize(new NullLoggerFactory(), ScriptableObject.CreateInstance<ObjectNameLogEnrichSettings>());
             Assert.DoesNotThrow(() => dependencyInjector.RegisterService(testService));
         }
 
@@ -146,7 +147,7 @@ namespace UnityUtil.Editor.Tests.DependencyInjection
 
             Assert.Throws<InvalidOperationException>(() => dependencyInjector.UnregisterSceneServices(testScene));
 
-            dependencyInjector.Initialize(new TestLoggerProvider());
+            dependencyInjector.Initialize(new NullLoggerFactory(), ScriptableObject.CreateInstance<ObjectNameLogEnrichSettings>());
             Assert.DoesNotThrow(() => dependencyInjector.UnregisterSceneServices(testScene));
         }
 
@@ -158,7 +159,7 @@ namespace UnityUtil.Editor.Tests.DependencyInjection
 
             Assert.Throws<InvalidOperationException>(() => dependencyInjector.ResolveDependenciesOf(testClient));
 
-            dependencyInjector.Initialize(new TestLoggerProvider());
+            dependencyInjector.Initialize(new NullLoggerFactory(), ScriptableObject.CreateInstance<ObjectNameLogEnrichSettings>());
             Assert.DoesNotThrow(() => dependencyInjector.ResolveDependenciesOf(testClient));
         }
 
@@ -501,44 +502,41 @@ namespace UnityUtil.Editor.Tests.DependencyInjection
         [Test]
         public void Resolve_Warns_SameTypeNoTags()
         {
-            var loggerProvider = new Mock<ILoggerProvider>();
-            var testLogger = new TestLogger();
-            loggerProvider.Setup(x => x.GetLogger(It.IsAny<object>())).Returns(testLogger);
-            DependencyInjector dependencyInjector = getDependencyInjector(loggerProvider: loggerProvider.Object);
+            int warnCount = 0;
+            ILoggerFactory loggerFactory = new LogLevelCountLoggerFactory(LogLevel.Warning, () => ++warnCount);
+            DependencyInjector dependencyInjector = getDependencyInjector(loggerFactory: loggerFactory);
             dependencyInjector.RegisterService(getComponentService<TestComponent>());
 
             dependencyInjector.ResolveDependenciesOf(new SameTypeNoTagsClient());
 
-            Assert.That(testLogger.NumWarnings, Is.EqualTo(1));
+            Assert.That(warnCount, Is.EqualTo(1));
         }
 
         [Test]
         public void Resolve_DoesNotWarn_SameTypeDifferentTags()
         {
-            var loggerProvider = new Mock<ILoggerProvider>();
-            var testLogger = new TestLogger();
-            loggerProvider.Setup(x => x.GetLogger(It.IsAny<object>())).Returns(testLogger);
-            DependencyInjector dependencyInjector = getDependencyInjector(loggerProvider: loggerProvider.Object);
+            int warnCount = 0;
+            ILoggerFactory loggerFactory = new LogLevelCountLoggerFactory(LogLevel.Warning, () => ++warnCount);
+            DependencyInjector dependencyInjector = getDependencyInjector(loggerFactory: loggerFactory);
             dependencyInjector.RegisterService(getComponentService<TestComponent>(tag: "test"));
             dependencyInjector.RegisterService(getComponentService<TestComponent>(tag: "not-test"));
 
             dependencyInjector.ResolveDependenciesOf(new SameTypeDifferentTagsClient());
 
-            Assert.That(testLogger.NumWarnings, Is.EqualTo(0));
+            Assert.That(warnCount, Is.EqualTo(0));
         }
 
         [Test]
         public void Resolve_Warns_SameTypeSameTags()
         {
-            var loggerProvider = new Mock<ILoggerProvider>();
-            var testLogger = new TestLogger();
-            loggerProvider.Setup(x => x.GetLogger(It.IsAny<object>())).Returns(testLogger);
-            DependencyInjector dependencyInjector = getDependencyInjector(loggerProvider: loggerProvider.Object);
+            int warnCount = 0;
+            ILoggerFactory loggerFactory = new LogLevelCountLoggerFactory(LogLevel.Warning, () => ++warnCount);
+            DependencyInjector dependencyInjector = getDependencyInjector(loggerFactory: loggerFactory);
             dependencyInjector.RegisterService(getComponentService<TestComponent>(tag: "test"));
 
             dependencyInjector.ResolveDependenciesOf(new SameTypeSameTagsClient());
 
-            Assert.That(testLogger.NumWarnings, Is.EqualTo(1));
+            Assert.That(warnCount, Is.EqualTo(1));
         }
 
         #endregion
@@ -628,44 +626,41 @@ namespace UnityUtil.Editor.Tests.DependencyInjection
         [Test]
         public void Construct_Warns_SameTypeNoTags()
         {
-            var loggerProvider = new Mock<ILoggerProvider>();
-            var testLogger = new TestLogger();
-            loggerProvider.Setup(x => x.GetLogger(It.IsAny<object>())).Returns(testLogger);
-            DependencyInjector dependencyInjector = getDependencyInjector(loggerProvider: loggerProvider.Object);
+            int warnCount = 0;
+            ILoggerFactory loggerFactory = new LogLevelCountLoggerFactory(LogLevel.Warning, () => ++warnCount);
+            DependencyInjector dependencyInjector = getDependencyInjector(loggerFactory: loggerFactory);
             dependencyInjector.RegisterService(getComponentService<TestComponent>());
 
             dependencyInjector.Construct<ConstructorSameTypeNoTagsClient>();
 
-            Assert.That(testLogger.NumWarnings, Is.EqualTo(1));
+            Assert.That(warnCount, Is.EqualTo(1));
         }
 
         [Test]
         public void Construct_DoesNotWarn_SameTypeDifferentTags()
         {
-            var loggerProvider = new Mock<ILoggerProvider>();
-            var testLogger = new TestLogger();
-            loggerProvider.Setup(x => x.GetLogger(It.IsAny<object>())).Returns(testLogger);
-            DependencyInjector dependencyInjector = getDependencyInjector(loggerProvider: loggerProvider.Object);
+            int warnCount = 0;
+            ILoggerFactory loggerFactory = new LogLevelCountLoggerFactory(LogLevel.Warning, () => ++warnCount);
+            DependencyInjector dependencyInjector = getDependencyInjector(loggerFactory: loggerFactory);
             dependencyInjector.RegisterService(getComponentService<TestComponent>(tag: "test"));
             dependencyInjector.RegisterService(getComponentService<TestComponent>(tag: "not-test"));
 
             dependencyInjector.Construct<ConstructorSameTypeDifferentTagsClient>();
 
-            Assert.That(testLogger.NumWarnings, Is.EqualTo(0));
+            Assert.That(warnCount, Is.EqualTo(0));
         }
 
         [Test]
         public void Construct_Warns_SameTypeSameTags()
         {
-            var loggerProvider = new Mock<ILoggerProvider>();
-            var testLogger = new TestLogger();
-            loggerProvider.Setup(x => x.GetLogger(It.IsAny<object>())).Returns(testLogger);
-            DependencyInjector dependencyInjector = getDependencyInjector(loggerProvider: loggerProvider.Object);
+            int warnCount = 0;
+            ILoggerFactory loggerFactory = new LogLevelCountLoggerFactory(LogLevel.Warning, () => ++warnCount);
+            DependencyInjector dependencyInjector = getDependencyInjector(loggerFactory: loggerFactory);
             dependencyInjector.RegisterService(getComponentService<TestComponent>(tag: "test"));
 
             dependencyInjector.Construct<ConstructorSameTypeSameTagsClient>();
 
-            Assert.That(testLogger.NumWarnings, Is.EqualTo(1));
+            Assert.That(warnCount, Is.EqualTo(1));
         }
 
         #endregion
@@ -829,12 +824,17 @@ namespace UnityUtil.Editor.Tests.DependencyInjection
 
         private static DependencyInjector getDependencyInjector(
             Type[]? cachedResolutionTypes = null,
-            ILoggerProvider? loggerProvider = null,
+            ILoggerFactory? loggerFactory = null,
+            ObjectNameLogEnrichSettings? objectNameLogEnrichSettings = null,
             ITypeMetadataProvider? typeMetadataProvider = null
         )
         {
             var dependencyInjector = new DependencyInjector(cachedResolutionTypes ?? Array.Empty<Type>());
-            dependencyInjector.Initialize(loggerProvider ?? new TestLoggerProvider(), typeMetadataProvider ?? new TypeMetadataProvider());
+            dependencyInjector.Initialize(
+                loggerFactory ?? new NullLoggerFactory(),
+                objectNameLogEnrichSettings ?? ScriptableObject.CreateInstance<ObjectNameLogEnrichSettings>(),
+                typeMetadataProvider ?? new TypeMetadataProvider()
+            );
 
             return dependencyInjector;
         }
@@ -865,6 +865,47 @@ namespace UnityUtil.Editor.Tests.DependencyInjection
                     typeMetadataProvider.CompileConstructorCall(constructor, args));
 
             return mock;
+        }
+
+        private class LogLevelCountLoggerFactory : ILoggerFactory
+        {
+            private readonly LogLevel _level;
+            private readonly Action _callback;
+
+            public LogLevelCountLoggerFactory(LogLevel level, Action callback)
+            {
+                _level = level;
+                _callback = callback;
+            }
+
+            public void AddProvider(Microsoft.Extensions.Logging.ILoggerProvider provider) { }
+            public Microsoft.Extensions.Logging.ILogger CreateLogger(string categoryName) => new LogLevelCountLogger(_level, _callback);
+            public void Dispose() { }
+        }
+
+        private class LogLevelCountLogger : Microsoft.Extensions.Logging.ILogger
+        {
+            private readonly LogLevel _level;
+            private readonly Action _callback;
+
+            private class TestScope : IDisposable
+            {
+                public void Dispose() { }
+            }
+
+            public LogLevelCountLogger(LogLevel level, Action callback)
+            {
+                _level = level;
+                _callback = callback;
+            }
+
+            public IDisposable BeginScope<TState>(TState state) => new TestScope();
+            public bool IsEnabled(LogLevel logLevel) => true;
+            public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
+            {
+                if (logLevel == _level)
+                    _callback();
+            }
         }
     }
 }
