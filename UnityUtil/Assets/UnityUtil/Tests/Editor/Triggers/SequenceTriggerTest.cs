@@ -1,8 +1,9 @@
-﻿using NUnit.Framework;
+﻿using Microsoft.Extensions.Logging.Abstractions;
+using NUnit.Framework;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityUtil.Editor.Tests.Logging;
+using UnityUtil.Logging;
 using UnityUtil.Triggers;
 
 namespace UnityUtil.Editor.Tests.Triggers
@@ -183,7 +184,7 @@ namespace UnityUtil.Editor.Tests.Triggers
         {
             var obj = new GameObject("TestTrigger");
             SequenceTrigger trigger = obj.AddComponent<SequenceTrigger>();
-            trigger.Inject(new TestLoggerProvider());
+            trigger.Inject(new NullLoggerFactory(), ScriptableObject.CreateInstance<ObjectNameLogEnrichSettings>());
             trigger.StepTriggers = new UnityEvent[numSteps];
             trigger.Cycle = cycle;
 
