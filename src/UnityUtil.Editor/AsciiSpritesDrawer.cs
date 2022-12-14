@@ -147,6 +147,9 @@ public class AsciiSpritesDrawer : E.Editor
     }
     private void loadSpriteAssets(char firstChar, char lastChar)
     {
+        if (lastChar < firstChar)
+            throw new InvalidOperationException($"{nameof(lastChar)} must be >= {nameof(firstChar)}");
+
         int numLoaded = 0;
 
         if (string.IsNullOrEmpty(_pathProp!.stringValue))
