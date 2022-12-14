@@ -11,8 +11,8 @@ namespace UnityUtil;
 /// <inheritdoc/>
 internal class RootLogger<T> : BaseUnityUtilLogger<T>
 {
-    public RootLogger(ILoggerFactory loggerFactory, ObjectNameLogEnrichSettings objectNameLogEnrichSettings, T context)
-        : base(loggerFactory, objectNameLogEnrichSettings, context, eventIdOffset: 0) { }
+    public RootLogger(ILoggerFactory loggerFactory, T context)
+        : base(loggerFactory, context, eventIdOffset: 0) { }
 
     #region Trace
 

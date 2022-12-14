@@ -6,7 +6,6 @@ using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityUtil.DependencyInjection;
-using UnityUtil.Logging;
 
 namespace UnityUtil.Triggers;
 
@@ -27,10 +26,7 @@ public class SequenceTrigger : MonoBehaviour
     )]
     public UnityEvent[] StepTriggers = Array.Empty<UnityEvent>();
 
-    public void Inject(ILoggerFactory loggerFactory, ObjectNameLogEnrichSettings objectNameLogEnrichSettings)
-    {
-        _logger = new(loggerFactory, objectNameLogEnrichSettings, context: this);
-    }
+    public void Inject(ILoggerFactory loggerFactory) => _logger = new(loggerFactory, context: this);
 
     [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
     [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]

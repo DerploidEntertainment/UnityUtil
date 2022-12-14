@@ -3,7 +3,6 @@ using Sirenix.OdinInspector;
 using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
 using UnityUtil.DependencyInjection;
-using UnityUtil.Logging;
 using UnityUtil.Math;
 using U = UnityEngine;
 
@@ -86,9 +85,9 @@ public class Spawner : MonoBehaviour
     [Range(0f, 90f)]
     public float ConeHalfAngle = 30f;
 
-    public void Inject(ILoggerFactory loggerFactory, ObjectNameLogEnrichSettings objectNameLogEnrichSettings)
+    public void Inject(ILoggerFactory loggerFactory)
     {
-        _logger = new(loggerFactory, objectNameLogEnrichSettings, context: this);
+        _logger = new(loggerFactory, context: this);
     }
 
     [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]

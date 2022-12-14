@@ -5,7 +5,6 @@ using System.Linq;
 using System.Reflection;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityUtil.Logging;
 using U = UnityEngine;
 
 namespace UnityUtil.DependencyInjection;
@@ -61,16 +60,15 @@ public class DependencyInjector
     }
 
     public bool Initialized { get; private set; }
-    public void Initialize(ILoggerFactory loggerFactory, ObjectNameLogEnrichSettings objectNameLogEnrichSettings) =>
-        Initialize(loggerFactory, objectNameLogEnrichSettings, new TypeMetadataProvider());
-    internal void Initialize(ILoggerFactory loggerFactory, ObjectNameLogEnrichSettings objectNameLogEnrichSettings, ITypeMetadataProvider typeMetadataProvider)
+    public void Initialize(ILoggerFactory loggerFactory) => Initialize(loggerFactory, new TypeMetadataProvider());
+    internal void Initialize(ILoggerFactory loggerFactory, ITypeMetadataProvider typeMetadataProvider)
     {
         if (Initialized)
             throw new InvalidOperationException($"Cannot initialize a {nameof(DependencyInjector)} multiple times!");
 
         _typeMetadataProvider = typeMetadataProvider;
         _loggerFactory = loggerFactory;
-        _logger = new(loggerFactory, objectNameLogEnrichSettings, context: this);
+        _logger = new(loggerFactory, context: this);
 
         Initialized = true;
     }

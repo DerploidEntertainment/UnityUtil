@@ -9,8 +9,8 @@ namespace UnityUtil;
 /// <inheritdoc/>
 internal class EditorRootLogger<T> : BaseUnityUtilLogger<T>
 {
-    public EditorRootLogger(ILoggerFactory loggerFactory, ObjectNameLogEnrichSettings objectNameLogEnrichSettings, T context)
-        : base(loggerFactory, objectNameLogEnrichSettings, context, eventIdOffset: 16_000) { }
+    public EditorRootLogger(ILoggerFactory loggerFactory, T context)
+        : base(loggerFactory, context, eventIdOffset: 16_000) { }
 
     #region Trace
 

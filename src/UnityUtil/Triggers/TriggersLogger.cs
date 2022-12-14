@@ -7,8 +7,8 @@ namespace UnityUtil.Triggers;
 /// <inheritdoc/>
 internal class TriggersLogger<T> : BaseUnityUtilLogger<T>
 {
-    public TriggersLogger(ILoggerFactory loggerFactory, ObjectNameLogEnrichSettings objectNameLogEnrichSettings, T context)
-        : base(loggerFactory, objectNameLogEnrichSettings, context, eventIdOffset: 13_000) { }
+    public TriggersLogger(ILoggerFactory loggerFactory, T context)
+        : base(loggerFactory, context, eventIdOffset: 13_000) { }
 
     #region Trace
 

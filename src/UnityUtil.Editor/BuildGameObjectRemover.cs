@@ -2,7 +2,6 @@
 using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityUtil.Logging;
 using Application = UnityEngine.Device.Application;
 
 namespace UnityUtil.Editor;
@@ -11,8 +10,7 @@ public class BuildGameObjectRemover
 {
     private readonly EditorRootLogger<BuildGameObjectRemover> _logger;
 
-    public BuildGameObjectRemover(ILoggerFactory loggerFactory, ObjectNameLogEnrichSettings objectNameLogEnrichSettings) =>
-        _logger = new(loggerFactory, objectNameLogEnrichSettings, context: this);
+    public BuildGameObjectRemover(ILoggerFactory loggerFactory) => _logger = new(loggerFactory, context: this);
 
     public void RemoveGameObjectsFromScene(Scene scene)
     {

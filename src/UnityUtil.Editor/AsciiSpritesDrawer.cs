@@ -6,7 +6,6 @@ using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEngine;
 using UnityUtil.DependencyInjection;
-using UnityUtil.Logging;
 using E = UnityEditor;
 
 namespace UnityUtil.Editor;
@@ -18,8 +17,8 @@ public class AsciiSpritesDrawer : E.Editor
     private SerializedProperty? _pathProp;
     private readonly IDictionary<char, SerializedProperty> _charProps = new Dictionary<char, SerializedProperty>();
 
-    public void Inject(ILoggerFactory loggerFactory, ObjectNameLogEnrichSettings objectNameLogEnrichSettings) =>
-        _logger = new(loggerFactory, objectNameLogEnrichSettings, context: this);
+    public void Inject(ILoggerFactory loggerFactory) =>
+        _logger = new(loggerFactory, context: this);
 
     [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
     [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]

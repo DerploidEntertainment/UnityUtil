@@ -107,7 +107,6 @@ namespace UnityUtil.Logging;
 public abstract class BaseUnityUtilLogger<TCategoryName>
 {
     private readonly ILogger<TCategoryName> _logger;
-    private readonly ObjectNameLogEnrichSettings _objectNameLogEnrichSettings;
     private readonly TCategoryName _context;
     private readonly int _eventIdOffset;
 
@@ -119,7 +118,7 @@ public abstract class BaseUnityUtilLogger<TCategoryName>
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="eventIdOffset"/> is negative, not a multiple of <see cref="ComponentAllowedIdCount"/> greater than the highest allowed offset for a single <see cref="LogLevel"/>
     /// </exception>
-    public BaseUnityUtilLogger(ILoggerFactory loggerFactory, ObjectNameLogEnrichSettings objectNameLogEnrichSettings, TCategoryName context, int eventIdOffset)
+    public BaseUnityUtilLogger(ILoggerFactory loggerFactory, TCategoryName context, int eventIdOffset)
     {
         int maxOffset = LogLevelAllowedIdCount - ComponentAllowedIdCount;
         if (eventIdOffset < 0 || eventIdOffset >= maxOffset)
@@ -128,7 +127,6 @@ public abstract class BaseUnityUtilLogger<TCategoryName>
             throw new ArgumentOutOfRangeException(nameof(eventIdOffset), $"Must be a multiple of {ComponentAllowedIdCount}");
 
         _logger = loggerFactory.CreateLogger<TCategoryName>();
-        _objectNameLogEnrichSettings = objectNameLogEnrichSettings;
         _context = context;
         _eventIdOffset = eventIdOffset;
     }
@@ -229,19 +227,9 @@ public abstract class BaseUnityUtilLogger<TCategoryName>
             // See https://github.com/KuraiAndras/Serilog.Sinks.Unity3D/blob/master/Serilog.Sinks.Unity3D/Assets/Serilog.Sinks.Unity3D/UnityObjectEnricher.cs
             { "%_DO_NOT_USE_UNITY_ID_DO_NOT_USE%", contextObj },
             { "%_DO_NOT_USE_UNITY_TAG_DO_NOT_USE%", typeof(TCategoryName).Name },
-            { "UnityObjectPath", getUnityObjectPath(contextObj) },
         };
 
         using (_logger.BeginScope(scopeProps))
             _logger.Log(logLevel, eventId, exception, message, args);
     }
-
-    private string getUnityObjectPath(U.Object context) =>
-        context is not Component component
-            ? context.name
-            : component.GetHierarchyName(
-                _objectNameLogEnrichSettings!.NumParents,
-                _objectNameLogEnrichSettings!.AncestorNameSeparator,
-                _objectNameLogEnrichSettings!.FormatString
-            );
 }
