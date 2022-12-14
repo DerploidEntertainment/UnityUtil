@@ -1,7 +1,6 @@
 ﻿using System;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityUtil.Logging;
 
 namespace UnityUtil.Triggers;
 
@@ -10,6 +9,8 @@ public class CountEvent : UnityEvent<uint> { }
 
 public class RepeaterTrigger : StartStoppable
 {
+    private TriggersLogger<RepeaterTrigger>? _logger;
+
     [Tooltip($"The time, in seconds, before the next (or first) {nameof(Tick)} event.")]
     public float TimeBeforeTick = 1f;
 
@@ -35,13 +36,21 @@ public class RepeaterTrigger : StartStoppable
     public UnityEvent NumTicksReached = new();
 
     public float PercentProgress => TimeSincePreviousTick / TimeBeforeTick;
+    public float PercentTickProgress => NumPassedTicks / NumTicks;
+
+    protected override void Awake()
+    {
+        base.Awake();
+
+        _logger = new(LoggerFactory!, context: this);
+    }
 
     protected override void DoRestart()
     {
         base.DoRestart();
 
         if (Logging)
-            Logger!.Log("Starting.", context: this);
+            _logger!.RepeaterTriggerStarted();
 
         TimeSincePreviousTick = 0f;
         NumPassedTicks = 0u;
@@ -51,7 +60,7 @@ public class RepeaterTrigger : StartStoppable
         base.DoStop();
 
         if (Logging)
-            Logger!.Log($"Stopped.", context: this);
+            _logger!.RepeaterTriggerStopped();
         Stopped.Invoke();
     }
     protected override void DoPause()
@@ -59,14 +68,14 @@ public class RepeaterTrigger : StartStoppable
         base.DoStop();
 
         if (Logging)
-            Logger!.Log($"Paused.", context: this);
+            _logger!.RepeaterTriggerPaused();
     }
     protected override void DoResume()
     {
         base.DoResume();
 
         if (Logging)
-            Logger!.Log("Resumed.", context: this);
+            _logger!.RepeaterTriggerResumed();
     }
     protected override void DoUpdate(float deltaTime)
     {
@@ -75,8 +84,12 @@ public class RepeaterTrigger : StartStoppable
 
         // If another Tick period has passed, then raise the Tick event
         if (TimeSincePreviousTick >= TimeBeforeTick) {
-            if (Logging)
-                Logger!.Log(TickForever ? "Tick!" : $"Tick {NumPassedTicks} / {NumTicks}", context: this);
+            if (Logging) {
+                if (TickForever)
+                    _logger!.RepeaterTriggerTickForever();
+                else
+                    _logger!.RepeaterTriggerTick(NumPassedTicks, NumTicks);
+            }
             Tick.Invoke(NumPassedTicks);
             TimeSincePreviousTick = 0f;
             ++NumPassedTicks;
@@ -86,7 +99,7 @@ public class RepeaterTrigger : StartStoppable
 
         // If the desired number of ticks was reached, then stop the Timer
         if (Logging)
-            Logger!.Log($"Reached {NumTicks} ticks.", context: this);
+            _logger!.RepeaterTriggerTickCountReached(NumTicks);
         NumTicksReached.Invoke();
         if (Running)   // May now be false if any UnityEvents manually stopped this repeater
             DoStop();

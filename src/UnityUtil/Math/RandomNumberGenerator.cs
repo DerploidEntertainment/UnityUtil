@@ -3,13 +3,14 @@ using System;
 using System.Globalization;
 using UnityEngine;
 using UnityUtil.Configuration;
-using UnityUtil.Logging;
 using S = System;
 
 namespace UnityUtil.Math;
 
 public sealed class RandomNumberGenerator : Configurable, IRandomNumberGenerator
 {
+    private MathLogger<RandomNumberGenerator>? _logger;
+
     [field: Tooltip("Type any string to seed the random number generator, or leave this field blank to use a time-dependent default seed value.")]
     [field: SerializeField, LabelText(nameof(Seed))]
     public string Seed { get; private set; } = "";
@@ -18,13 +19,15 @@ public sealed class RandomNumberGenerator : Configurable, IRandomNumberGenerator
     {
         base.Awake();
 
+        _logger = new(LoggerFactory!, context: this);
+
         (int seed, bool generated) = GetOrGenerateSeed(Seed);
         if (generated) {
             Seed = seed.ToString(CultureInfo.InvariantCulture);
-            Logger!.Log($"Generated time-dependent seed {seed}", context: this);
+            _logger!.SeedRngFromTime(seed);
         }
         else
-            Logger!.Log($"Using configured seed {seed}", context: this);
+            _logger!.SeedRngFromInspector(seed);
 
         UnityEngine.Random.InitState(seed);
         SystemRand = new S.Random(seed);

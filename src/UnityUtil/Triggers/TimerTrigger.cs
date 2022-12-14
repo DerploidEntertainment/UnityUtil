@@ -1,11 +1,12 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
-using UnityUtil.Logging;
 
 namespace UnityUtil.Triggers;
 
 public class TimerTrigger : StartStoppable
 {
+    private TriggersLogger<TimerTrigger>? _logger;
+
     [Tooltip($"The duration, in seconds, before the {nameof(Timeout)} event.")]
     public float Duration = 1f;
     [Tooltip("The time, in seconds, that has passed since the timer started.")]
@@ -17,12 +18,19 @@ public class TimerTrigger : StartStoppable
 
     public float PercentProgress => TimePassed / Duration;
 
+    protected override void Awake()
+    {
+        base.Awake();
+
+        _logger = new(LoggerFactory!, context: this);
+    }
+
     protected override void DoRestart()
     {
         base.DoRestart();
 
         if (Logging)
-            Logger!.Log("Starting", context: this);
+            _logger!.TimerTriggerStarted();
 
         TimePassed = 0f;
     }
@@ -31,7 +39,7 @@ public class TimerTrigger : StartStoppable
         base.DoStop();
 
         if (Logging)
-            Logger!.Log($"Stopped", context: this);
+            _logger!.TimerTriggerStopped();
         Stopped.Invoke();
     }
     protected override void DoPause()
@@ -39,14 +47,14 @@ public class TimerTrigger : StartStoppable
         base.DoStop();
 
         if (Logging)
-            Logger!.Log($"Paused", context: this);
+            _logger!.TimerTriggerPaused();
     }
     protected override void DoResume()
     {
         base.DoResume();
 
         if (Logging)
-            Logger!.Log("Resumed", context: this);
+            _logger!.TimerTriggerResumed();
     }
     protected override void DoUpdate(float deltaTime)
     {
@@ -57,7 +65,7 @@ public class TimerTrigger : StartStoppable
 
         // Once the timer is up, raise the Timeout event
         if (Logging)
-            Logger!.Log("Timed out!", context: this);
+            _logger!.TimerTriggerTimedOut();
         Timeout.Invoke();
         if (Running)   // May now be false if any UnityEvents manually stopped this timer
             DoStop();

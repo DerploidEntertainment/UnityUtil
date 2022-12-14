@@ -140,7 +140,7 @@ namespace UnityUtil.Editor.Tests.Logging
         {
             var obj = new GameObject();
             DebugLoggerProvider loggerProvider = obj.AddComponent<DebugLoggerProvider>();
-            loggerProvider.Inject(Mock.Of<IConfigurator>(), loggerProvider);
+            loggerProvider.Inject(Mock.Of<IConfigurator>(), new UnityDebugLoggerFactory());
             loggerProvider.EnrichedLogSeparator = separator;
             loggerProvider.LogEnrichers = logEnrichers;
 
