@@ -1,5 +1,4 @@
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -122,9 +121,9 @@ namespace UnityUtil.Editor.Tests.DependencyInjection
         public void Cannot_Initialize_MultipleTimes()
         {
             var dependencyInjector = new DependencyInjector(Array.Empty<Type>());
-            dependencyInjector.Initialize(new NullLoggerFactory(), ScriptableObject.CreateInstance<ObjectNameLogEnrichSettings>());
+            dependencyInjector.Initialize(new UnityDebugLoggerFactory());
 
-            Assert.Throws<InvalidOperationException>(() => dependencyInjector.Initialize(new NullLoggerFactory(), ScriptableObject.CreateInstance<ObjectNameLogEnrichSettings>()));
+            Assert.Throws<InvalidOperationException>(() => dependencyInjector.Initialize(new UnityDebugLoggerFactory()));
         }
 
         [Test]
@@ -135,7 +134,7 @@ namespace UnityUtil.Editor.Tests.DependencyInjection
 
             Assert.Throws<InvalidOperationException>(() => dependencyInjector.RegisterService(testService));
 
-            dependencyInjector.Initialize(new NullLoggerFactory(), ScriptableObject.CreateInstance<ObjectNameLogEnrichSettings>());
+            dependencyInjector.Initialize(new UnityDebugLoggerFactory());
             Assert.DoesNotThrow(() => dependencyInjector.RegisterService(testService));
         }
 
@@ -147,7 +146,7 @@ namespace UnityUtil.Editor.Tests.DependencyInjection
 
             Assert.Throws<InvalidOperationException>(() => dependencyInjector.UnregisterSceneServices(testScene));
 
-            dependencyInjector.Initialize(new NullLoggerFactory(), ScriptableObject.CreateInstance<ObjectNameLogEnrichSettings>());
+            dependencyInjector.Initialize(new UnityDebugLoggerFactory());
             Assert.DoesNotThrow(() => dependencyInjector.UnregisterSceneServices(testScene));
         }
 
@@ -159,7 +158,7 @@ namespace UnityUtil.Editor.Tests.DependencyInjection
 
             Assert.Throws<InvalidOperationException>(() => dependencyInjector.ResolveDependenciesOf(testClient));
 
-            dependencyInjector.Initialize(new NullLoggerFactory(), ScriptableObject.CreateInstance<ObjectNameLogEnrichSettings>());
+            dependencyInjector.Initialize(new UnityDebugLoggerFactory());
             Assert.DoesNotThrow(() => dependencyInjector.ResolveDependenciesOf(testClient));
         }
 
@@ -825,14 +824,12 @@ namespace UnityUtil.Editor.Tests.DependencyInjection
         private static DependencyInjector getDependencyInjector(
             Type[]? cachedResolutionTypes = null,
             ILoggerFactory? loggerFactory = null,
-            ObjectNameLogEnrichSettings? objectNameLogEnrichSettings = null,
             ITypeMetadataProvider? typeMetadataProvider = null
         )
         {
             var dependencyInjector = new DependencyInjector(cachedResolutionTypes ?? Array.Empty<Type>());
             dependencyInjector.Initialize(
-                loggerFactory ?? new NullLoggerFactory(),
-                objectNameLogEnrichSettings ?? ScriptableObject.CreateInstance<ObjectNameLogEnrichSettings>(),
+                loggerFactory ?? new UnityDebugLoggerFactory(),
                 typeMetadataProvider ?? new TypeMetadataProvider()
             );
 
