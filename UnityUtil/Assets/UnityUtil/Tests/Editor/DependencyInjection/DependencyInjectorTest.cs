@@ -503,7 +503,7 @@ namespace UnityUtil.Editor.Tests.DependencyInjection
         public void Resolve_Warns_SameTypeNoTags()
         {
             int warnCount = 0;
-            ILoggerFactory loggerFactory = new LogLevelCountLoggerFactory(LogLevel.Warning, () => ++warnCount);
+            ILoggerFactory loggerFactory = new LogLevelCallbackLoggerFactory(LogLevel.Warning, () => ++warnCount);
             DependencyInjector dependencyInjector = getDependencyInjector(loggerFactory: loggerFactory);
             dependencyInjector.RegisterService(getComponentService<TestComponent>());
 
@@ -516,7 +516,7 @@ namespace UnityUtil.Editor.Tests.DependencyInjection
         public void Resolve_DoesNotWarn_SameTypeDifferentTags()
         {
             int warnCount = 0;
-            ILoggerFactory loggerFactory = new LogLevelCountLoggerFactory(LogLevel.Warning, () => ++warnCount);
+            ILoggerFactory loggerFactory = new LogLevelCallbackLoggerFactory(LogLevel.Warning, () => ++warnCount);
             DependencyInjector dependencyInjector = getDependencyInjector(loggerFactory: loggerFactory);
             dependencyInjector.RegisterService(getComponentService<TestComponent>(tag: "test"));
             dependencyInjector.RegisterService(getComponentService<TestComponent>(tag: "not-test"));
@@ -530,7 +530,7 @@ namespace UnityUtil.Editor.Tests.DependencyInjection
         public void Resolve_Warns_SameTypeSameTags()
         {
             int warnCount = 0;
-            ILoggerFactory loggerFactory = new LogLevelCountLoggerFactory(LogLevel.Warning, () => ++warnCount);
+            ILoggerFactory loggerFactory = new LogLevelCallbackLoggerFactory(LogLevel.Warning, () => ++warnCount);
             DependencyInjector dependencyInjector = getDependencyInjector(loggerFactory: loggerFactory);
             dependencyInjector.RegisterService(getComponentService<TestComponent>(tag: "test"));
 
@@ -627,7 +627,7 @@ namespace UnityUtil.Editor.Tests.DependencyInjection
         public void Construct_Warns_SameTypeNoTags()
         {
             int warnCount = 0;
-            ILoggerFactory loggerFactory = new LogLevelCountLoggerFactory(LogLevel.Warning, () => ++warnCount);
+            ILoggerFactory loggerFactory = new LogLevelCallbackLoggerFactory(LogLevel.Warning, () => ++warnCount);
             DependencyInjector dependencyInjector = getDependencyInjector(loggerFactory: loggerFactory);
             dependencyInjector.RegisterService(getComponentService<TestComponent>());
 
@@ -640,7 +640,7 @@ namespace UnityUtil.Editor.Tests.DependencyInjection
         public void Construct_DoesNotWarn_SameTypeDifferentTags()
         {
             int warnCount = 0;
-            ILoggerFactory loggerFactory = new LogLevelCountLoggerFactory(LogLevel.Warning, () => ++warnCount);
+            ILoggerFactory loggerFactory = new LogLevelCallbackLoggerFactory(LogLevel.Warning, () => ++warnCount);
             DependencyInjector dependencyInjector = getDependencyInjector(loggerFactory: loggerFactory);
             dependencyInjector.RegisterService(getComponentService<TestComponent>(tag: "test"));
             dependencyInjector.RegisterService(getComponentService<TestComponent>(tag: "not-test"));
@@ -654,7 +654,7 @@ namespace UnityUtil.Editor.Tests.DependencyInjection
         public void Construct_Warns_SameTypeSameTags()
         {
             int warnCount = 0;
-            ILoggerFactory loggerFactory = new LogLevelCountLoggerFactory(LogLevel.Warning, () => ++warnCount);
+            ILoggerFactory loggerFactory = new LogLevelCallbackLoggerFactory(LogLevel.Warning, () => ++warnCount);
             DependencyInjector dependencyInjector = getDependencyInjector(loggerFactory: loggerFactory);
             dependencyInjector.RegisterService(getComponentService<TestComponent>(tag: "test"));
 
@@ -865,47 +865,6 @@ namespace UnityUtil.Editor.Tests.DependencyInjection
                     typeMetadataProvider.CompileConstructorCall(constructor, args));
 
             return mock;
-        }
-
-        private class LogLevelCountLoggerFactory : ILoggerFactory
-        {
-            private readonly LogLevel _level;
-            private readonly Action _callback;
-
-            public LogLevelCountLoggerFactory(LogLevel level, Action callback)
-            {
-                _level = level;
-                _callback = callback;
-            }
-
-            public void AddProvider(Microsoft.Extensions.Logging.ILoggerProvider provider) { }
-            public Microsoft.Extensions.Logging.ILogger CreateLogger(string categoryName) => new LogLevelCountLogger(_level, _callback);
-            public void Dispose() { }
-        }
-
-        private class LogLevelCountLogger : Microsoft.Extensions.Logging.ILogger
-        {
-            private readonly LogLevel _level;
-            private readonly Action _callback;
-
-            private class TestScope : IDisposable
-            {
-                public void Dispose() { }
-            }
-
-            public LogLevelCountLogger(LogLevel level, Action callback)
-            {
-                _level = level;
-                _callback = callback;
-            }
-
-            public IDisposable BeginScope<TState>(TState state) => new TestScope();
-            public bool IsEnabled(LogLevel logLevel) => true;
-            public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
-            {
-                if (logLevel == _level)
-                    _callback();
-            }
         }
     }
 }
