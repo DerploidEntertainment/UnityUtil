@@ -10,14 +10,6 @@ internal class TriggersLogger<T> : BaseUnityUtilLogger<T>
     public TriggersLogger(ILoggerFactory loggerFactory, T context)
         : base(loggerFactory, context, eventIdOffset: 13_000) { }
 
-    #region Trace
-
-    #endregion
-
-    #region Debug
-
-    #endregion
-
     #region Information
 
     public void RepeaterTriggerStarted() =>
@@ -56,6 +48,15 @@ internal class TriggersLogger<T> : BaseUnityUtilLogger<T>
     public void TimerTriggerTimedOut() =>
         Log(id: 11, nameof(TimerTriggerTimedOut), Information, "Timed out");
 
+    public void ApplicationFocusChanged(bool isFocused) =>
+        Log(id: 12, nameof(ApplicationFocusChanged), Information, $"Application focus updated to {{{nameof(isFocused)}}}", isFocused);
+
+    public void ApplicationPauseChanged(bool isPaused) =>
+        Log(id: 13, nameof(ApplicationPauseChanged), Information, $"Application pause state updated to {{{nameof(isPaused)}}}", isPaused);
+
+    public void ApplicationQuitting() =>
+        Log(id: 14, nameof(ApplicationQuitting), Information, "Application quitting...");
+
     #endregion
 
     #region Warning
@@ -66,10 +67,6 @@ internal class TriggersLogger<T> : BaseUnityUtilLogger<T>
     #endregion
 
     #region Error
-
-    #endregion
-
-    #region Critical
 
     #endregion
 }

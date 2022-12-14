@@ -1,14 +1,13 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using UnityEngine;
+﻿using Microsoft.Extensions.Logging;
+using System.Diagnostics.CodeAnalysis;
 using UnityEngine.Events;
 using UnityUtil.Configuration;
-using UnityUtil.Logging;
 
 namespace UnityUtil.Triggers;
 
 public class ApplicationLifecycleTriggers : Configurable
 {
-    private ILogger? _logger;
+    private TriggersLogger<ApplicationLifecycleTriggers>? _logger;
 
     public UnityEvent Focused = new();
     public UnityEvent Unfocused = new();
@@ -16,13 +15,13 @@ public class ApplicationLifecycleTriggers : Configurable
     public UnityEvent Unpaused = new();
     public UnityEvent Quitting = new();
 
-    public void Inject(ILoggerProvider loggerProvider) => _logger = loggerProvider.GetLogger(this);
+    public void Inject(ILoggerFactory loggerFactory) => _logger = new(loggerFactory!, context: this);
 
     [SuppressMessage("Code Quality", "IDE0051:Remove unused private members", Justification = "Unity message")]
     [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
     private void OnApplicationFocus(bool hasFocus)
     {
-        _logger!.Log($"Application {(hasFocus ? "focused" : "blurred")}", context: this);
+        _logger!.ApplicationFocusChanged(hasFocus);
         (hasFocus ? Focused : Unfocused).Invoke();
     }
 
@@ -30,7 +29,7 @@ public class ApplicationLifecycleTriggers : Configurable
     [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
     private void OnApplicationPause(bool pauseStatus)
     {
-        _logger!.Log($"Application {(pauseStatus ? "" : "un")}paused", context: this);
+        _logger!.ApplicationPauseChanged(pauseStatus);
         (pauseStatus ? Paused : Unpaused).Invoke();
     }
 
@@ -38,7 +37,7 @@ public class ApplicationLifecycleTriggers : Configurable
     [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
     private void OnApplicationQuit()
     {
-        _logger!.Log($"Application quitting...", context: this);
+        _logger!.ApplicationQuitting();
         Quitting.Invoke();
     }
 }

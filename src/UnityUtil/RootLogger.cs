@@ -14,14 +14,6 @@ internal class RootLogger<T> : BaseUnityUtilLogger<T>
     public RootLogger(ILoggerFactory loggerFactory, T context)
         : base(loggerFactory, context, eventIdOffset: 0) { }
 
-    #region Trace
-
-    #endregion
-
-    #region Debug
-
-    #endregion
-
     #region Information
 
     public void RegisteredService(Service service, Scene? scene)
@@ -59,9 +51,8 @@ internal class RootLogger<T> : BaseUnityUtilLogger<T>
 
     #region Error
 
-    #endregion
-
-    #region Critical
+    public void AsyncCallerDisposeFail(Exception exception) =>
+        Log(id: 0, nameof(AsyncCallerDisposeFail), Error, exception, "Threw an exception during Dispose");
 
     #endregion
 }
