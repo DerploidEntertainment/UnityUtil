@@ -1,4 +1,4 @@
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using System;
 using System.Reflection;
 using UnityEngine.SceneManagement;
@@ -41,6 +41,9 @@ internal class RootLogger<T> : BaseUnityUtilLogger<T>
 
     public void ResolvedMethodServiceParameter(string clientName, string tag, ParameterInfo parameter) =>
         Log(id: 4, nameof(ResolvedMethodServiceParameter), Information, $"{{{nameof(clientName)}}} had dependency of Type {{serviceType}}{(string.IsNullOrEmpty(tag) ? "" : $" with tag {{{nameof(tag)}}}")} injected into {{{nameof(parameter)}}}", clientName, parameter.ParameterType.FullName, tag, parameter.Name);
+
+    public void Spawning(string spawnedObjectName) =>
+        Log(id: 5, nameof(Spawning), Information, $"Spawning {{{nameof(spawnedObjectName)}}}", spawnedObjectName);
 
     #endregion
 
