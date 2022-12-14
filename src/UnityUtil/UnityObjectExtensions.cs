@@ -10,7 +10,7 @@ namespace UnityUtil;
 public static class UnityObjectExtensions
 {
     public const uint DefaultNumParents = 1u;
-    public const string DefaultAncestorSeparator = ">";
+    public const string DefaultAncestorSeparator = "/";
     public const string DefaultHierarchyNameFormatString = "'{0}'";
     public const string DefaultHierarchyNameWithTypeFormatString = "{0} '{1}'";
 

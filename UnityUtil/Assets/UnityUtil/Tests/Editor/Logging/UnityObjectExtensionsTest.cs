@@ -19,10 +19,10 @@ namespace UnityUtil.Editor.Tests.Logging
             Assert.That(name, Is.EqualTo("'test'"));
 
             name = UnityObjectExtensions.GetHierarchyName(obj, numParents: 1);
-            Assert.That(name, Is.EqualTo("'parent4>test'"));
+            Assert.That(name, Is.EqualTo("'parent4/test'"));
 
             name = UnityObjectExtensions.GetHierarchyName(obj, numParents: 2);
-            Assert.That(name, Is.EqualTo("'parent3>parent4>test'"));
+            Assert.That(name, Is.EqualTo("'parent3/parent4/test'"));
         }
 
         [Test]
@@ -51,13 +51,13 @@ namespace UnityUtil.Editor.Tests.Logging
             Assert.That(name, Is.EqualTo(""));
 
             name = UnityObjectExtensions.GetHierarchyName(obj, numParents: 1, formatString: "{0}");
-            Assert.That(name, Is.EqualTo("parent0>test"));
+            Assert.That(name, Is.EqualTo("parent0/test"));
 
             name = UnityObjectExtensions.GetHierarchyName(obj, numParents: 1, formatString: "'{0}'");
-            Assert.That(name, Is.EqualTo("'parent0>test'"));
+            Assert.That(name, Is.EqualTo("'parent0/test'"));
 
             name = UnityObjectExtensions.GetHierarchyName(obj, numParents: 1, formatString: "<{0}>");
-            Assert.That(name, Is.EqualTo("<parent0>test>"));
+            Assert.That(name, Is.EqualTo("<parent0/test>"));
         }
 
         [Test]
@@ -67,13 +67,13 @@ namespace UnityUtil.Editor.Tests.Logging
             string name;
 
             name = UnityObjectExtensions.GetHierarchyName(obj, numParents: 2);
-            Assert.That(name, Is.EqualTo("'parent0>parent1>test'"));
+            Assert.That(name, Is.EqualTo("'parent0/parent1/test'"));
 
             name = UnityObjectExtensions.GetHierarchyName(obj, numParents: 3);
-            Assert.That(name, Is.EqualTo("'parent0>parent1>test'"));
+            Assert.That(name, Is.EqualTo("'parent0/parent1/test'"));
 
             name = UnityObjectExtensions.GetHierarchyName(obj, numParents: 10);
-            Assert.That(name, Is.EqualTo("'parent0>parent1>test'"));
+            Assert.That(name, Is.EqualTo("'parent0/parent1/test'"));
         }
 
         [Test]
@@ -85,15 +85,15 @@ namespace UnityUtil.Editor.Tests.Logging
 
             component = obj.transform;
             name = UnityObjectExtensions.GetHierarchyName(component, numParents: 1);
-            Assert.That(name, Is.EqualTo("'parent0>test'"));
+            Assert.That(name, Is.EqualTo("'parent0/test'"));
 
             component = obj.AddComponent<AudioSource>();
             name = UnityObjectExtensions.GetHierarchyName(component, numParents: 1);
-            Assert.That(name, Is.EqualTo("'parent0>test'"));
+            Assert.That(name, Is.EqualTo("'parent0/test'"));
 
             component = obj.AddComponent<Animator>();
             name = UnityObjectExtensions.GetHierarchyName(component, numParents: 1);
-            Assert.That(name, Is.EqualTo("'parent0>test'"));
+            Assert.That(name, Is.EqualTo("'parent0/test'"));
         }
 
         [Test]
@@ -105,15 +105,15 @@ namespace UnityUtil.Editor.Tests.Logging
 
             component = obj.transform;
             name = UnityObjectExtensions.GetHierarchyNameWithType(component, numParents: 1);
-            Assert.That(name, Is.EqualTo("Transform 'parent0>test'"));
+            Assert.That(name, Is.EqualTo("Transform 'parent0/test'"));
 
             component = obj.AddComponent<AudioSource>();
             name = UnityObjectExtensions.GetHierarchyNameWithType(component, numParents: 1);
-            Assert.That(name, Is.EqualTo("AudioSource 'parent0>test'"));
+            Assert.That(name, Is.EqualTo("AudioSource 'parent0/test'"));
 
             component = obj.AddComponent<Animator>();
             name = UnityObjectExtensions.GetHierarchyNameWithType(component, numParents: 1);
-            Assert.That(name, Is.EqualTo("Animator 'parent0>test'"));
+            Assert.That(name, Is.EqualTo("Animator 'parent0/test'"));
         }
 
         [Test]
@@ -129,13 +129,13 @@ namespace UnityUtil.Editor.Tests.Logging
             Assert.That(name, Is.EqualTo("Transform"));
 
             name = UnityObjectExtensions.GetHierarchyNameWithType(obj.transform, numParents: 1, formatString: "{1}");
-            Assert.That(name, Is.EqualTo("parent0>test"));
+            Assert.That(name, Is.EqualTo("parent0/test"));
 
             name = UnityObjectExtensions.GetHierarchyNameWithType(obj.transform, numParents: 1, formatString: "{0}{1}");
-            Assert.That(name, Is.EqualTo("Transformparent0>test"));
+            Assert.That(name, Is.EqualTo("Transformparent0/test"));
 
             name = UnityObjectExtensions.GetHierarchyNameWithType(obj.transform, numParents: 1, formatString: "component '{1}' (type {0})");
-            Assert.That(name, Is.EqualTo("component 'parent0>test' (type Transform)"));
+            Assert.That(name, Is.EqualTo("component 'parent0/test' (type Transform)"));
         }
 
         [Test]
