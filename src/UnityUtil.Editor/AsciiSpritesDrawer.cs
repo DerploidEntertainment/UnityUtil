@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -13,11 +14,12 @@ namespace UnityUtil.Editor;
 [CustomEditor(typeof(AsciiSprites))]
 public class AsciiSpritesDrawer : E.Editor
 {
-    private ILogger? _logger;
+    private EditorRootLogger<AsciiSpritesDrawer>? _logger;
     private SerializedProperty? _pathProp;
     private readonly IDictionary<char, SerializedProperty> _charProps = new Dictionary<char, SerializedProperty>();
 
-    public void Inject(ILoggerProvider loggerProvider) => _logger = loggerProvider.GetLogger(this);
+    public void Inject(ILoggerFactory loggerFactory, ObjectNameLogEnrichSettings objectNameLogEnrichSettings) =>
+        _logger = new(loggerFactory, objectNameLogEnrichSettings, context: this);
 
     [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
     [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
@@ -125,22 +127,22 @@ public class AsciiSpritesDrawer : E.Editor
 
     private void loadAllSpriteAssets()
     {
-        _logger!.Log($"Loading character Sprites using path template '{_pathProp!.stringValue}'...", context: this);
+        _logger!.LoadingAsciiCharacterSprites(_pathProp!.stringValue);
         loadSpriteAssets(' ', '~');
     }
     private void loadNumberSpriteAssets()
     {
-        _logger!.Log($"Loading number Sprites using path template '{_pathProp!.stringValue}'...", context: this);
+        _logger!.LoadingAsciiNumberSprites(_pathProp!.stringValue);
         loadSpriteAssets('0', '9');
     }
     private void loadUppercaseSpriteAssets()
     {
-        _logger!.Log($"Loading uppercase letter Sprites using path template '{_pathProp!.stringValue}'...", context: this);
+        _logger!.LoadingAsciiUppercaseSprites(_pathProp!.stringValue);
         loadSpriteAssets('A', 'Z');
     }
     private void loadLowercaseSpriteAssets()
     {
-        _logger!.Log($"Loading lowercase letter Sprites using path template '{_pathProp!.stringValue}'...", context: this);
+        _logger!.LoadingAsciiLowercaseSprites(_pathProp!.stringValue);
         loadSpriteAssets('a', 'z');
     }
     private void loadSpriteAssets(char firstChar, char lastChar)
@@ -157,7 +159,7 @@ public class AsciiSpritesDrawer : E.Editor
             string assetFileName = GetAssetName(ch, _pathProp.stringValue);
             Sprite? sprite = AssetDatabase.LoadAssetAtPath<Sprite>(assetFileName);
             if (sprite == null)
-                _logger!.LogWarning($"Could not locate Sprite for character '{ch}' (expected at '{assetFileName}').", context: this);
+                _logger!.LoadingAsciiSpriteFailed(ch, assetFileName);
             else {
                 _charProps[ch].objectReferenceValue = sprite;
                 ++numLoaded;
@@ -165,13 +167,11 @@ public class AsciiSpritesDrawer : E.Editor
         }
 
         // Log success/warnings
-        string msg;
         int numAttempted = lastChar - firstChar + 1;
-        msg =
-            numLoaded == 0 ? $"Character Sprites were not loaded. See warnings above." :
-            numLoaded < numAttempted ? $"Loaded {numLoaded} / {numAttempted} character Sprites. See warnings above." :
-            $"Successfully loaded all {numAttempted} character Sprites!";
-        _logger!.Log(msg, context: this);
+        if (numLoaded < numAttempted)
+            _logger!.LoadedAsciiSpritesWithWarnings(numLoaded, numAttempted);
+        else
+            _logger!.LoadedAsciiSprites(numLoaded);
     }
     internal static string GetAssetName(char character, string templateFileName)
     {

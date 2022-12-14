@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using Microsoft.Extensions.Logging;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityUtil.Logging;
@@ -8,9 +9,10 @@ namespace UnityUtil.Editor;
 
 public class BuildGameObjectRemover
 {
-    private readonly ILogger _logger;
+    private readonly EditorRootLogger<BuildGameObjectRemover> _logger;
 
-    public BuildGameObjectRemover(ILoggerProvider loggerProvider) => _logger = loggerProvider.GetLogger(this);
+    public BuildGameObjectRemover(ILoggerFactory loggerFactory, ObjectNameLogEnrichSettings objectNameLogEnrichSettings) =>
+        _logger = new(loggerFactory, objectNameLogEnrichSettings, context: this);
 
     public void RemoveGameObjectsFromScene(Scene scene)
     {
@@ -46,10 +48,10 @@ public class BuildGameObjectRemover
             }
 
             if (removableTargets.Length > 0)
-                _logger.Log($"Removed {targetsToRemove.Length} GameObjects out of {removableTargets.Length} marked for contextual removal under root object '{root.name}' in scene '{scene.name}'.");
+                _logger.ContextualGameObjectsRemoved(targetsToRemove, removableTargets, root, scene);
         }
 
         if (numRemoveTargets == 0)
-            _logger.Log($"No GameObjects marked for contextual removal in scene '{scene.name}'.");
+            _logger.ContextualGameObjectsNotRemoved(scene);
     }
 }
