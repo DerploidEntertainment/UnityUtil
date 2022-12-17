@@ -1,4 +1,5 @@
-﻿using Sirenix.OdinInspector;
+﻿using Microsoft.Extensions.Logging;
+using Sirenix.OdinInspector;
 using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -31,7 +32,7 @@ public enum AudioSliderTransformation
 public class AudioMixerParameterSlider : Configurable
 {
 
-    private ILogger? _logger;
+    private UiLogger<AudioMixerParameterSlider>? _logger;
     private ILocalPreferences? _localPreferences;
 
     [Required]
@@ -88,9 +89,9 @@ public class AudioMixerParameterSlider : Configurable
 
     public string FinalPreferencesKey => string.IsNullOrEmpty(PreferencesKey) ? ExposedParameterName : PreferencesKey;
 
-    public void Inject(ILoggerProvider loggerProvider, ILocalPreferences localPreferences)
+    public void Inject(ILoggerFactory loggerFactory, ILocalPreferences localPreferences)
     {
-        _logger = loggerProvider.GetLogger(this);
+        _logger = new(loggerFactory, context: this);
         _localPreferences = localPreferences;
     }
     protected override void Awake()
@@ -114,7 +115,7 @@ public class AudioMixerParameterSlider : Configurable
             if (StoreParameterInPreferences) {
                 float newVal = transformValue(Slider.value);
                 _localPreferences!.SetFloat(FinalPreferencesKey, newVal);
-                _logger!.Log($"Saved new value ({newVal}) of exposed parameter '{ExposedParameterName}' of {nameof(UnityEngine.Audio.AudioMixer)} '{AudioMixer.name}' to local preferences", context: this);
+                _logger!.AudioMixerParameterValueSaved(newVal, ExposedParameterName, AudioMixer, FinalPreferencesKey);
             }
 #pragma warning disable IDE0031 // Use null propagation. C# doesn't allow overloading null-coalescing operators, so they don't work with Unity Objects' custom null logic...
             if (TestAudio != null)
@@ -129,20 +130,17 @@ public class AudioMixerParameterSlider : Configurable
         // Initialize audio parameters from preferences, if requested
         // This must occur in Start, as apparently setting AudioMixer parameters in Awake is undefined behavior... https://fogbugz.unity3d.com/default.asp?1197165_nik4gg1io942ae13#bugevent_1071843210
         float val;
-        string logMsg;
-
         string prefsKey = FinalPreferencesKey;
         if (StoreParameterInPreferences && _localPreferences!.HasKey(prefsKey)) {
             val = _localPreferences.GetFloat(prefsKey);
-            logMsg = $"Loaded value ({val}) of exposed parameter '{ExposedParameterName}' of {nameof(UnityEngine.Audio.AudioMixer)} '{AudioMixer!.name}' from preferences";
+            _logger!.AudioMixerParameterFromPrefs(val, ExposedParameterName, AudioMixer!, prefsKey);
         }
         else {
             AudioMixer!.GetFloat(ExposedParameterName, out val);
-            logMsg = $"Not using preferences or key '{prefsKey}' could not be found. Loaded value of exposed parameter '{ExposedParameterName}' ({val}) from {nameof(UnityEngine.Audio.AudioMixer)} '{AudioMixer.name}' instead";
+            _logger!.AudioMixerParameterFromInspector(val, ExposedParameterName, AudioMixer!, prefsKey);
         }
 
         Slider!.value = untransformValue(val);   // This will trigger onValueChanged and thus initialize the AudioMixer as well
-        _logger!.Log(logMsg, context: this);
     }
 
     private float untransformValue(float transformedValue) =>
@@ -168,8 +166,8 @@ public class AudioMixerParameterSlider : Configurable
             _localPreferences.DeleteKey(prefsKey);
 
         // Use debug logger in case this is being run from the Inspector outside Play mode
-        _logger ??= Debug.unityLogger;
-        Debug.Log($"Deleted preferences key '{prefsKey}'.", context: this);
+        _logger ??= new(new UnityDebugLoggerFactory(), context: this);
+        _logger.AudioMixerParameterPrefDeleted(prefsKey);
     }
 
 }
