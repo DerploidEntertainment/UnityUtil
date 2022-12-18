@@ -502,7 +502,7 @@ namespace UnityUtil.Editor.Tests.DependencyInjection
         public void Resolve_Warns_SameTypeNoTags()
         {
             int warnCount = 0;
-            ILoggerFactory loggerFactory = new LogLevelCallbackLoggerFactory(LogLevel.Warning, () => ++warnCount);
+            ILoggerFactory loggerFactory = new LogLevelCallbackLoggerFactory(LogLevel.Warning, (_, _, _, _) => ++warnCount);
             DependencyInjector dependencyInjector = getDependencyInjector(loggerFactory: loggerFactory);
             dependencyInjector.RegisterService(getComponentService<TestComponent>());
 
@@ -515,7 +515,7 @@ namespace UnityUtil.Editor.Tests.DependencyInjection
         public void Resolve_DoesNotWarn_SameTypeDifferentTags()
         {
             int warnCount = 0;
-            ILoggerFactory loggerFactory = new LogLevelCallbackLoggerFactory(LogLevel.Warning, () => ++warnCount);
+            ILoggerFactory loggerFactory = new LogLevelCallbackLoggerFactory(LogLevel.Warning, (_, _, _, _) => ++warnCount);
             DependencyInjector dependencyInjector = getDependencyInjector(loggerFactory: loggerFactory);
             dependencyInjector.RegisterService(getComponentService<TestComponent>(tag: "test"));
             dependencyInjector.RegisterService(getComponentService<TestComponent>(tag: "not-test"));
@@ -529,7 +529,7 @@ namespace UnityUtil.Editor.Tests.DependencyInjection
         public void Resolve_Warns_SameTypeSameTags()
         {
             int warnCount = 0;
-            ILoggerFactory loggerFactory = new LogLevelCallbackLoggerFactory(LogLevel.Warning, () => ++warnCount);
+            ILoggerFactory loggerFactory = new LogLevelCallbackLoggerFactory(LogLevel.Warning, (_, _, _, _) => ++warnCount);
             DependencyInjector dependencyInjector = getDependencyInjector(loggerFactory: loggerFactory);
             dependencyInjector.RegisterService(getComponentService<TestComponent>(tag: "test"));
 
@@ -626,7 +626,7 @@ namespace UnityUtil.Editor.Tests.DependencyInjection
         public void Construct_Warns_SameTypeNoTags()
         {
             int warnCount = 0;
-            ILoggerFactory loggerFactory = new LogLevelCallbackLoggerFactory(LogLevel.Warning, () => ++warnCount);
+            ILoggerFactory loggerFactory = new LogLevelCallbackLoggerFactory(LogLevel.Warning, (_, _, _, _) => ++warnCount);
             DependencyInjector dependencyInjector = getDependencyInjector(loggerFactory: loggerFactory);
             dependencyInjector.RegisterService(getComponentService<TestComponent>());
 
@@ -639,7 +639,7 @@ namespace UnityUtil.Editor.Tests.DependencyInjection
         public void Construct_DoesNotWarn_SameTypeDifferentTags()
         {
             int warnCount = 0;
-            ILoggerFactory loggerFactory = new LogLevelCallbackLoggerFactory(LogLevel.Warning, () => ++warnCount);
+            ILoggerFactory loggerFactory = new LogLevelCallbackLoggerFactory(LogLevel.Warning, (_, _, _, _) => ++warnCount);
             DependencyInjector dependencyInjector = getDependencyInjector(loggerFactory: loggerFactory);
             dependencyInjector.RegisterService(getComponentService<TestComponent>(tag: "test"));
             dependencyInjector.RegisterService(getComponentService<TestComponent>(tag: "not-test"));
@@ -653,7 +653,7 @@ namespace UnityUtil.Editor.Tests.DependencyInjection
         public void Construct_Warns_SameTypeSameTags()
         {
             int warnCount = 0;
-            ILoggerFactory loggerFactory = new LogLevelCallbackLoggerFactory(LogLevel.Warning, () => ++warnCount);
+            ILoggerFactory loggerFactory = new LogLevelCallbackLoggerFactory(LogLevel.Warning, (_, _, _, _) => ++warnCount);
             DependencyInjector dependencyInjector = getDependencyInjector(loggerFactory: loggerFactory);
             dependencyInjector.RegisterService(getComponentService<TestComponent>(tag: "test"));
 
