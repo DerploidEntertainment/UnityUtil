@@ -47,7 +47,8 @@ internal class UiLogger<T> : BaseUnityUtilLogger<T>
             $"Current screen dimensions are ({{screenWidth}} x {{screenHeight}}) (screen), ({{safeAreaWidth}} x {{safeAreaHeight}}) (safe area). " +
             $"Updating breakpoints with {{{nameof(mode)}}} and {{{nameof(matchMode)}}}...",
             Screen.width, Screen.height,
-            Screen.safeArea.width, Screen.safeArea.height
+            Screen.safeArea.width, Screen.safeArea.height,
+            mode, matchMode
         );
 
     #endregion

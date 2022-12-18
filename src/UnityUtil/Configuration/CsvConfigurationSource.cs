@@ -1,9 +1,9 @@
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections;
 using System.IO;
 using System.Linq;
 using UnityEngine;
-using UnityUtil.Logging;
 
 namespace UnityUtil.Configuration;
 
@@ -11,6 +11,8 @@ namespace UnityUtil.Configuration;
 public class CsvConfigurationSource : ConfigurationSource
 {
     public const string DefaultResourceName = "appsettings";
+
+    private ConfigurationLogger<CsvConfigurationSource>? _logger;
 
     [Tooltip(
         "Path to a CSV file under a Resources/ folder. " +
@@ -22,12 +24,19 @@ public class CsvConfigurationSource : ConfigurationSource
 
     public override ConfigurationSourceLoadBehavior LoadBehavior => ConfigurationSourceLoadBehavior.SyncAndAsync;
 
+    public override void Inject(ILoggerFactory loggerFactory)
+    {
+        base.Inject(loggerFactory);
+
+        _logger = new(loggerFactory, context: this);
+    }
+
     public override void Load()
     {
         base.Load();
 
         string resFileName = $"{ResourceName}.csv";
-        Logger!.Log($"Loading configs synchronously from CSV configuration file '{resFileName}'...", context: this);
+        _logger!.CsvConfigLoadingSync(resFileName);
 
         TextAsset txt = Resources.Load<TextAsset>(ResourceName);
         finishLoading(txt, resFileName);
@@ -38,7 +47,7 @@ public class CsvConfigurationSource : ConfigurationSource
         yield return base.LoadAsync();
 
         string resFileName = $"{ResourceName}.csv";
-        Logger!.Log($"Loading configs asynchronously from CSV configuration file '{resFileName}'...", context: this);
+        _logger!.CsvConfigLoadingAsync(resFileName);
 
         ResourceRequest req = Resources.LoadAsync<TextAsset>(ResourceName);
         while (!req.isDone)
@@ -51,10 +60,9 @@ public class CsvConfigurationSource : ConfigurationSource
     private void finishLoading(TextAsset txt, string resFileName)
     {
         if (txt == null) {
-            string notFoundMsg = $"CSV configuration file ('{resFileName}') could not be found. If this was not expected, make sure that the file exists and is not locked by another application.";
             if (Required)
-                throw new FileNotFoundException(notFoundMsg, ResourceName);
-            Logger!.Log(notFoundMsg, context: this);
+                throw new FileNotFoundException($"CSV configuration file ('{resFileName}') could not be found. If this was not expected, make sure that the file exists and is not locked by another application.", ResourceName);
+            _logger!.CsvConfigLoadFailMissingFile(resFileName);
             return;
         }
 
@@ -73,11 +81,11 @@ public class CsvConfigurationSource : ConfigurationSource
         foreach (var cfgGrp in configGrps) {
             var keyVals = cfgGrp.ToArray();
             if (keyVals.Length > 1)
-                Logger!.LogWarning($"Duplicate config key ('{cfgGrp.Key}') detected in CSV configuration file '{resFileName}'. Keeping the last value...", context: this);
+                _logger!.CsvConfigDuplicateKey(cfgGrp.Key, resFileName);
             LoadedConfigsHidden.Add(cfgGrp.Key, keyVals[^1].Value);
         }
 #pragma warning restore IDE0008 // Use explicit type
 
-        Logger!.Log($"Successfully loaded {LoadedConfigs.Count} configs from CSV configuration file '{resFileName}'.", context: this);
+        _logger!.CsvConfigLoadSuccess(resFileName, LoadedConfigs.Count);
     }
 }

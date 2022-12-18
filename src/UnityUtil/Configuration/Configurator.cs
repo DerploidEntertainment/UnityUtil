@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,7 +10,6 @@ using System.Linq.Expressions;
 using System.Reflection;
 using UnityEngine;
 using UnityUtil.DependencyInjection;
-using UnityUtil.Logging;
 using U = UnityEngine;
 
 namespace UnityUtil.Configuration;
@@ -32,7 +32,7 @@ public class Configurator : IConfigurator
 {
     private const BindingFlags BINDING_FLAGS = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
 
-    private readonly ILogger _logger;
+    private readonly ConfigurationLogger<Configurator> _logger;
 
     private bool _loading;
     private bool _recording;
@@ -60,7 +60,7 @@ public class Configurator : IConfigurator
     /// </remarks>
     public IReadOnlyCollection<(Type, string ConfigKey)> CachedConfigurations => _cachedConfigurations;
 
-    public Configurator(ILoggerProvider loggerProvider) => _logger = loggerProvider.GetLogger(this);
+    public Configurator(ILoggerFactory loggerFactory) => _logger = new(loggerFactory, context: this);
 
     #region Loading configuration sources
 
@@ -114,12 +114,12 @@ public class Configurator : IConfigurator
                 (async && cfgSrc.LoadBehavior == ConfigurationSourceLoadBehavior.SyncOnly) ||
                 (!async && cfgSrc.LoadBehavior == ConfigurationSourceLoadBehavior.AsyncOnly)
             ) {
-                _logger.Log($"{nameof(ConfigurationSource)} '{cfgSrc.name}' will not be loaded because it does not support {(async ? "a" : "")}synchronous loading");
+                _logger.ConfigSourceUnsupportedSynchronicity(cfgSrc, async);
                 continue;
             }
 
             if ((cfgSrc.LoadContext & currLoadContext) == 0) {
-                _logger.Log($"{nameof(ConfigurationSource)} '{cfgSrc.name}' will not be loaded because it was not set to load in the context '{currLoadContext}'");
+                _logger.ConfigSourceUnsupportedLoadContext(cfgSrc, currLoadContext);
                 continue;
             }
 
@@ -183,34 +183,27 @@ public class Configurator : IConfigurator
         ParameterExpression? clientObjParam = cache ? Expression.Parameter(typeof(object), nameof(client)) : null;
         Expression? clientParam = cache ? Expression.Convert(clientObjParam, clientType) : null;
 
-        // Set all fields on this client for which there is a config value
+        // Set all fields/properties on this client for which there is a config value
         string? clientName = (client is not U.Object clientObj) ? null : (client is Component component ? component.GetHierarchyName() : clientObj.name);
-        string? quotedClientName = clientName is null ? null : $"'{clientName}' ";
-        FieldInfo[] fields = clientType.GetFields(BINDING_FLAGS);
-        for (int f = 0; f < fields.Length; ++f) {
-            FieldInfo field = fields[f];
-            string fieldKey = $"{key}.{field.Name}";
-            if (tryGetTypedValue(fieldKey, field.FieldType, out object? val)) {
-                if (cache)
-                    memberAssigns!.Add(Expression.Assign(Expression.MakeMemberAccess(clientParam, field), Expression.Constant(val, field.FieldType)));
-                else
-                    field.SetValue(client, val);
-
-                _logger.Log($"Field '{field.Name}' of {clientType.Name} client {quotedClientName}with config key '{key}' will be configured with value '{val}'");
-            }
-        }
-
-        // Set all properties on this client for which there is a config value
-        PropertyInfo[] props = clientType.GetProperties(BINDING_FLAGS);
-        for (int p = 0; p < props.Length; ++p) {
-            PropertyInfo prop = props[p];
-            string propKey = $"{key}.{prop.Name}";
-            if (tryGetTypedValue(propKey, prop.PropertyType, out object? val)) {
-                if (cache)
-                    memberAssigns!.Add(Expression.Assign(Expression.MakeMemberAccess(clientParam, prop), Expression.Constant(val, prop.PropertyType)));
-                else
-                    prop.SetValue(client, val);
-                _logger.Log($"Property '{prop.Name}' of {clientType.Name} client {quotedClientName}with config key '{key}' will be configured with value '{val}'");
+        setMembers(clientType.GetFields, field => field.FieldType, (field, val) => field.SetValue(client, val));
+        setMembers(clientType.GetProperties, prop => prop.PropertyType, (prop, val) => prop.SetValue(client, val));
+        void setMembers<TMember>(
+            Func<BindingFlags, TMember[]> memberProvider,
+            Func<TMember, Type> typeGetter,
+            Action<TMember, object?> memberSetter
+        ) where TMember : MemberInfo
+        {
+            TMember[] members = memberProvider(BINDING_FLAGS);
+            foreach (TMember member in members) {
+                string memberKey = $"{key}.{member.Name}";
+                Type memberType = typeGetter(member);
+                if (tryGetTypedValue(memberKey, memberType, out object? val)) {
+                    if (cache)
+                        memberAssigns!.Add(Expression.Assign(Expression.MakeMemberAccess(clientParam, member), Expression.Constant(val, memberType)));
+                    else
+                        memberSetter(member, val);
+                    _logger.ConfiguredMember(member, clientType, clientName, key, val);
+                }
             }
         }
 
@@ -245,7 +238,7 @@ public class Configurator : IConfigurator
                 _uncachedConfigCounts.Clear();
             }
 
-            _logger?.Log($"{(_recording ? "Started" : "Stopped")} recording configurations");
+            _logger?.ConfigurationRecordingToggled(_recording);
         }
     }
 
@@ -276,7 +269,7 @@ public class Configurator : IConfigurator
         catch (OverflowException ex) { errMsg = ex.Message; }
 
         if (errMsg is not null) {
-            _logger.LogWarning($"Error converting value '{configVal}' to type '{memberType.FullName}' for member '{memberKey}': {errMsg} This config will be skipped.");
+            _logger.ConfiguringMemberAsTypeFailed(configVal, memberType, memberKey, errMsg);
             return false;
         }
 
