@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -38,12 +39,7 @@ public class RepeaterTrigger : StartStoppable
     public float PercentProgress => TimeSincePreviousTick / TimeBeforeTick;
     public float PercentTickProgress => NumPassedTicks / NumTicks;
 
-    protected override void Awake()
-    {
-        base.Awake();
-
-        _logger = new(LoggerFactory!, context: this);
-    }
+    public void Inject(ILoggerFactory loggerFactory) => _logger = new(loggerFactory, context: this);
 
     protected override void DoRestart()
     {

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Microsoft.Extensions.Logging;
+using UnityEngine;
 using UnityEngine.Events;
 
 namespace UnityUtil.Triggers;
@@ -18,12 +19,7 @@ public class TimerTrigger : StartStoppable
 
     public float PercentProgress => TimePassed / Duration;
 
-    protected override void Awake()
-    {
-        base.Awake();
-
-        _logger = new(LoggerFactory!, context: this);
-    }
+    public void Inject(ILoggerFactory loggerFactory) => _logger = new(loggerFactory, context: this);
 
     protected override void DoRestart()
     {

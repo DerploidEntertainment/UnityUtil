@@ -8,7 +8,6 @@ namespace UnityUtil.Configuration;
 public abstract class Configurable : MonoBehaviour
 {
     protected IConfigurator? Configurator;
-    protected ILoggerFactory? LoggerFactory;
 
     [Tooltip(
         "The key by which to look up configuration for this Component. " +
@@ -35,7 +34,6 @@ public abstract class Configurable : MonoBehaviour
     public void Inject(IConfigurator configurator, ILoggerFactory loggerFactory)
     {
         Configurator = configurator;
-        LoggerFactory = loggerFactory;
     }
 
     public static string DefaultConfigKey(Type clientType) => clientType.FullName;

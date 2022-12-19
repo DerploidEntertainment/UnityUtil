@@ -1,4 +1,5 @@
-﻿using Sirenix.OdinInspector;
+﻿using Microsoft.Extensions.Logging;
+using Sirenix.OdinInspector;
 using System;
 using System.Globalization;
 using UnityEngine;
@@ -19,8 +20,6 @@ public sealed class RandomNumberGenerator : Configurable, IRandomNumberGenerator
     {
         base.Awake();
 
-        _logger = new(LoggerFactory!, context: this);
-
         (int seed, bool generated) = GetOrGenerateSeed(Seed);
         if (generated) {
             Seed = seed.ToString(CultureInfo.InvariantCulture);
@@ -32,6 +31,8 @@ public sealed class RandomNumberGenerator : Configurable, IRandomNumberGenerator
         UnityEngine.Random.InitState(seed);
         SystemRand = new S.Random(seed);
     }
+
+    public void Inject(ILoggerFactory loggerFactory) => _logger = new(loggerFactory, context: this);
 
     public S.Random? SystemRand { get; private set; }
 
