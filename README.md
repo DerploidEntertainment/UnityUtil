@@ -2,6 +2,17 @@
 
 A set of utility classes and components useful to any Unity project, 2D or 3D.
 
+## Contents
+
+- [Installing](#installing)
+  - [Updating](#updating)
+- [Features](#features)
+  - [Dependency Injection](#dependency-injection)
+  - [Logging](#logging)
+- [Support](#support)
+- [Contributing](#contributing)
+- [License](#license)
+
 ## Installing
 
 1. Make sure you have both [Git](https://git-scm.com/) and [Git LFS](https://git-lfs.github.com/) installed before adding this package to your Unity project.
@@ -28,7 +39,7 @@ There are also some things to note when updating the following dependencies:
 - Odin Inspector: don't forget to repeat the process above to make Odin an _embedded UPM package_, not just a folder under `Assets/`.
     You must also bump the `version` field in the `odininspector` package's' `package.json`.
 
-## Documentation
+## Features
 
 **Work in progress!**
 
