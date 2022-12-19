@@ -1,10 +1,10 @@
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityUtil.Logging;
 using U = UnityEngine;
 
 namespace UnityUtil.DependencyInjection;
@@ -31,8 +31,9 @@ public class DependencyInjector
 
     public static readonly DependencyInjector Instance = new(Array.Empty<Type>()) { RecordingResolutions = U.Device.Application.isEditor };
 
-    private ILogger _logger = Debug.unityLogger;
+    private ILoggerFactory? _loggerFactory;
     private ITypeMetadataProvider? _typeMetadataProvider;
+    private RootLogger<DependencyInjector>? _logger;
 
     private readonly Dictionary<int, Dictionary<Type, Dictionary<string, Service>>> _services = new();
 
@@ -59,14 +60,15 @@ public class DependencyInjector
     }
 
     public bool Initialized { get; private set; }
-    public void Initialize(ILoggerProvider loggerProvider) => Initialize(loggerProvider, new TypeMetadataProvider());
-    internal void Initialize(ILoggerProvider loggerProvider, ITypeMetadataProvider typeMetadataProvider)
+    public void Initialize(ILoggerFactory loggerFactory) => Initialize(loggerFactory, new TypeMetadataProvider());
+    internal void Initialize(ILoggerFactory loggerFactory, ITypeMetadataProvider typeMetadataProvider)
     {
         if (Initialized)
             throw new InvalidOperationException($"Cannot initialize a {nameof(DependencyInjector)} multiple times!");
 
         _typeMetadataProvider = typeMetadataProvider;
-        _logger = loggerProvider.GetLogger(this);
+        _loggerFactory = loggerFactory;
+        _logger = new(loggerFactory, context: this);
 
         Initialized = true;
     }
@@ -133,10 +135,8 @@ public class DependencyInjector
         throwIfUninitialized(nameof(RegisterService));
 
         // Check if the provided service is for logging
-        if (service.ServiceType == typeof(ILoggerProvider) && _logger == null)
-            _logger = ((ILoggerProvider)service.Instance).GetLogger(this);
-        else if (service.ServiceType == typeof(ILogger) && _logger == null)
-            _logger = (ILogger)service.Instance;
+        if (service.ServiceType == typeof(ILoggerFactory) && _loggerFactory == null)
+            _loggerFactory = (ILoggerFactory)service.Instance;
 
         // Register this service with the provided scene (if one was provided), so that it can be unloaded later if the scene is unloaded
         // Show an error if provided service's type/tag match those of an already registered service
@@ -156,12 +156,11 @@ public class DependencyInjector
 #pragma warning restore IDE0008 // Use explicit type
 
         bool tagAdded = typedServices.ContainsKey(service.Tag);
-        string fromSceneMsg = scene.HasValue ? $" from scene '{scene.Value.name}'" : "";
         if (tagAdded)
-            throw new InvalidOperationException($"Attempt to register multiple services with Type '{service.ServiceType.Name}' and tag '{service.Tag}'{fromSceneMsg}");
+            throw new InvalidOperationException($"Attempt to register multiple services with Type '{service.ServiceType.Name}' and tag '{service.Tag}'{(scene.HasValue ? $" from scene '{scene.Value.name}'" : "")}");
         else {
             typedServices.Add(service.Tag, service);
-            _logger.Log($"Successfully registered service of type '{service.ServiceType.Name}' and tag '{service.Tag}'{fromSceneMsg}");
+            _logger?.RegisteredService(service, scene);
         }
     }
 
@@ -199,7 +198,7 @@ public class DependencyInjector
                 _uncachedResolutionCounts.Clear();
             }
 
-            _logger?.Log($"{(_recording ? "Started" : "Stopped")} recording dependency resolutions");
+            _logger?.ToggledRecordingDependencyResolution(_recording);
         }
     }
 
@@ -344,14 +343,14 @@ public class DependencyInjector
         throwIfUninitialized(nameof(UnregisterSceneServices));
 
         if (!_services.ContainsKey(scene.handle)) {
-            _logger.LogWarning($"Cannot unregister services from scene '{scene.name}', as none have been registered. Are you trying to destroy multiple service collections from the same scene?");
+            _logger?.UnregisterMissingSceneService(scene);
             return;
         }
 
-        _logger.Log($"Unregistering services from scene '{scene.name}'...");
-        int numSceneServices = _services[scene.handle].Sum(x => x.Value.Values.Count);
+        _logger?.UnregisteringSceneServices(scene);
+        int sceneServiceCount = _services[scene.handle].Sum(x => x.Value.Values.Count);
         _services.Remove(scene.handle);
-        _logger.Log($"Successfully unregistered all {numSceneServices} services from scene '{scene.name}'.");
+        _logger?.UnregisteredAllSceneServices(scene, sceneServiceCount);
     }
 
     /// <summary>
@@ -378,12 +377,12 @@ public class DependencyInjector
             // Warn if a dependency with this Type and tag has already been injected
             bool firstInjection = _injectedTypes.Add((paramType, tag));
             if (!firstInjection)
-                _logger.LogWarning($"{clientName} has multiple dependencies of Type '{paramType.FullName}' with tag '{tag}'.");
+                _logger?.MethodHasMultipleDependenciesOfType(clientName, paramType, tag);
 
             TryGetService(paramType, tag, clientName, out Service service);
             dependencies[p] = service.Instance;
 
-            _logger.Log($"{clientName} had dependency of Type '{paramType.FullName}'{(untagged ? "" : $" with tag '{tag}'")} injected into parameter '{parameters[p].Name}'.");
+            _logger?.ResolvedMethodServiceParameter(clientName, tag, parameters[p]);
         }
 
         return dependencies;

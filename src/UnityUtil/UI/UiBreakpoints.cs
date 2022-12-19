@@ -1,4 +1,5 @@
-﻿using Sirenix.OdinInspector;
+﻿using Microsoft.Extensions.Logging;
+using Sirenix.OdinInspector;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -18,7 +19,7 @@ namespace UnityUtil.UI;
 )]
 public class UiBreakpoints : MonoBehaviour
 {
-    private ILogger? _logger;
+    private UiLogger<UiBreakpoints>? _logger;
 
     private bool _noMatch;
 
@@ -86,7 +87,7 @@ public class UiBreakpoints : MonoBehaviour
             DependencyInjector.Instance.ResolveDependenciesOf(this);
     }
 
-    public void Inject(ILoggerProvider loggerProvider) => _logger = loggerProvider.GetLogger(this);
+    public void Inject(ILoggerFactory loggerFactory) => _logger = new(loggerFactory, context: this);
 
     [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
     private void Start()
@@ -165,14 +166,12 @@ public class UiBreakpoints : MonoBehaviour
             );
     }
 
-    internal const string MsgNegativeModeValue = "UI breakpoints can only be matched against non-negative values. You can ignore this warning if you just restarted the Editor.";
-
     internal void InvokeMatchingBreakpoints(float modeValue)
     {
-        _logger ??= Debug.unityLogger;
+        _logger ??= new(new UnityDebugLoggerFactory(), context: this);
 
         if (modeValue < 0f) {
-            _logger.LogWarning(MsgNegativeModeValue);
+            _logger.UiBreakpointNegativeModeValue();
             return;
         }
 
@@ -180,13 +179,9 @@ public class UiBreakpoints : MonoBehaviour
         if (Breakpoints.Length == 0)
             return;
 
-        bool log = Application.isEditor && LogDimensionsInEditor || !Application.isEditor && LogDimensionsInPlayer;
-        if (log) {
-            _logger.Log(
-                $"Current screen dimensions (width x height) are {Screen.width} x {Screen.height} (screen) and {Screen.safeArea.width} x {Screen.safeArea.height} (safe area). " +
-                $"Updating breakpoints with {nameof(Mode)} {Mode} and {nameof(MatchMode)} {MatchMode}..."
-            , context: this);
-        }
+        bool shouldLog = Application.isEditor && LogDimensionsInEditor || !Application.isEditor && LogDimensionsInPlayer;
+        if (shouldLog)
+            _logger.UiBreakpointUpdating(Mode, MatchMode);
 
         // Reset all UI breakpoints to not-matched state
         _noMatch = true;

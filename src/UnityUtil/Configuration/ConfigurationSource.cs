@@ -1,9 +1,9 @@
+using Microsoft.Extensions.Logging;
 using Sirenix.OdinInspector;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityUtil.Logging;
 
 namespace UnityUtil.Configuration;
 
@@ -30,7 +30,7 @@ public abstract class ConfigurationSource : ScriptableObject
 {
     public static readonly IReadOnlyDictionary<string, object> EmptyConfigs = new Dictionary<string, object>();
 
-    protected ILogger? Logger;
+    private ConfigurationLogger<ConfigurationSource>? _logger;
 
     protected readonly Dictionary<string, object> LoadedConfigsHidden = new();
 
@@ -49,7 +49,7 @@ public abstract class ConfigurationSource : ScriptableObject
 
     public abstract ConfigurationSourceLoadBehavior LoadBehavior { get; }
 
-    public void Inject(ILoggerProvider loggerProvider) => Logger = loggerProvider.GetLogger(this);
+    public virtual void Inject(ILoggerFactory loggerFactory) => _logger = new(loggerFactory, context: this);
 
     public virtual void Load() => LoadedConfigsHidden.Clear();
     public virtual IEnumerator LoadAsync() { LoadedConfigsHidden.Clear(); yield return null; }

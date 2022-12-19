@@ -1,8 +1,8 @@
-﻿using Sirenix.OdinInspector;
+﻿using Microsoft.Extensions.Logging;
+using Sirenix.OdinInspector;
 using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
 using UnityUtil.DependencyInjection;
-using UnityUtil.Logging;
 using UnityUtil.Math;
 using U = UnityEngine;
 
@@ -36,7 +36,8 @@ public enum SpawnDirection
 
 public class Spawner : MonoBehaviour
 {
-    private ILogger? _logger;
+    private RootLogger<Spawner>? _logger;
+
     private GameObject? _previous;
     private long _count;
 
@@ -47,25 +48,25 @@ public class Spawner : MonoBehaviour
     [Required]
     public GameObject? Prefab;
 
-    [Tooltip($"All spawned instances of {nameof(Spawner.Prefab)} will be parented to this Transform.")]
+    [Tooltip($"All spawned instances of {nameof(Prefab)} will be parented to this Transform.")]
     public Transform? SpawnParent;
 
     [Tooltip(
-        $"All spawned {nameof(Spawner.Prefab)} instances will be given this name, along with a numeric suffix. " +
-        $"If {nameof(Spawner.DestroyPrevious)} is true, then the numeric suffix will not be added."
+        $"All spawned {nameof(Prefab)} instances will be given this name, along with a numeric suffix. " +
+        $"If {nameof(DestroyPrevious)} is true, then the numeric suffix will not be added."
     )]
     public string BaseName = "Object";
 
     [Tooltip(
-        $"If true, then previously spawned {nameof(Spawner.Prefab)} instances will be destroyed before " +
+        $"If true, then previously spawned {nameof(Prefab)} instances will be destroyed before " +
         "the next instance is spawned, so there will only ever be one spawned instance in existence. " +
         "If false, then multiple instances may be spawned."
     )]
     public bool DestroyPrevious;
 
     private const string TOOLTIP_LAUNCH_SPEED =
-        $"All spawned {nameof(Spawner.Prefab)} instances will be launched in the {nameof(Spawner.SpawnDirection)}, " +
-        $"with at least this speed. Setting both {nameof(Spawner.MinSpeed)} and {nameof(Spawner.MaxSpeed)} to zero will " +
+        $"All spawned {nameof(Prefab)} instances will be launched in the {nameof(SpawnDirection)}, " +
+        $"with at least this speed. Setting both {nameof(MinSpeed)} and {nameof(MaxSpeed)} to zero will " +
         $"spawn instances right at this {nameof(Spawner)}'s position, without any launching.";
 
     [Tooltip(TOOLTIP_LAUNCH_SPEED)]
@@ -74,17 +75,20 @@ public class Spawner : MonoBehaviour
     [Tooltip(TOOLTIP_LAUNCH_SPEED)]
     public float MaxSpeed = 10f;
 
-    [Tooltip($"Defines the direction in which spawned {nameof(Spawner.Prefab)} instances will be launched.")]
+    [Tooltip($"Defines the direction in which spawned {nameof(Prefab)} instances will be launched.")]
     public SpawnDirection SpawnDirection = SpawnDirection.Straight;
 
     [Tooltip(
-        $"If {nameof(Spawner.SpawnDirection)} is set to {nameof(SpawnDirection.ConeRandom)} or {nameof(SpawnDirection.ConeBoundary)}, " +
+        $"If {nameof(SpawnDirection)} is set to {nameof(SpawnDirection.ConeRandom)} or {nameof(SpawnDirection.ConeBoundary)}, " +
         "then this value determines the half-angle of that cone. Otherwise, this value is ignored."
     )]
     [Range(0f, 90f)]
     public float ConeHalfAngle = 30f;
 
-    public void Inject(ILoggerProvider loggerProvider) => _logger = loggerProvider.GetLogger(this);
+    public void Inject(ILoggerFactory loggerFactory)
+    {
+        _logger = new(loggerFactory, context: this);
+    }
 
     [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
     private void Awake() => DependencyInjector.Instance.ResolveDependenciesOf(this);
@@ -96,7 +100,7 @@ public class Spawner : MonoBehaviour
             Destroy(_previous);
 
         string newName = $"{BaseName}{(DestroyPrevious ? "" : "_" + _count)}";
-        _logger!.Log($"Spawning {newName}", context: this);
+        _logger!.Spawning(newName);
 
         // Instantiating a Prefab can sometimes give a GameObject or a Transform...we want the GameObject
         GameObject obj = (SpawnParent == null) ?

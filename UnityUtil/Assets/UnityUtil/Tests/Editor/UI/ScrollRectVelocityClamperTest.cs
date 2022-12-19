@@ -2,7 +2,7 @@
 using NUnit.Framework;
 using UnityEngine;
 using UnityUtil.Configuration;
-using UnityUtil.Editor.Tests.Logging;
+using UnityUtil.Logging;
 using UnityUtil.UI;
 using UnityUtil.Updating;
 
@@ -144,7 +144,7 @@ namespace UnityUtil.Editor.Tests.UI
             var clamperObj = new GameObject("test");
             ScrollRectVelocityClamper clamper = clamperObj.AddComponent<ScrollRectVelocityClamper>();
             clamper.Inject(Mock.Of<IUpdater>(), Mock.Of<IRuntimeIdProvider>());
-            clamper.Inject(Mock.Of<IConfigurator>(), new TestLoggerProvider());
+            clamper.Inject(Mock.Of<IConfigurator>(), new UnityDebugLoggerFactory());
 
             return clamper;
         }

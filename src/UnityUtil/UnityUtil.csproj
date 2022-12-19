@@ -3,7 +3,7 @@
   <Import Project="../OtherUnityAssemblies.props" />
 
   <PropertyGroup>
-    <RootNamespace>UnityEngine</RootNamespace>
+    <RootNamespace>UnityUtil</RootNamespace>
     <DebugSymbols>true</DebugSymbols> <!-- Always emit debug symbols, even in Release. We can decide in Unity whether they're then included in a game build. -->
 
     <RemoteConfigAssembly>$(UnityScriptAssembliesDir)\Unity.Services.RemoteConfig.dll</RemoteConfigAssembly>

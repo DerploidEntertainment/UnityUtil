@@ -1,14 +1,13 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using UnityEngine;
 using UnityUtil.DependencyInjection;
-using UnityUtil.Logging;
 
 namespace UnityUtil.Configuration;
 
 public abstract class Configurable : MonoBehaviour
 {
     protected IConfigurator? Configurator;
-    protected ILogger? Logger;
 
     [Tooltip(
         "The key by which to look up configuration for this Component. " +
@@ -32,12 +31,10 @@ public abstract class Configurable : MonoBehaviour
         Configurator!.Configure(this, ConfigKey);
     }
 
-    public void Inject(IConfigurator configurator, ILoggerProvider loggerProvider)
+    public void Inject(IConfigurator configurator, ILoggerFactory loggerFactory)
     {
         Configurator = configurator;
-        Logger = loggerProvider.GetLogger(this);
     }
 
     public static string DefaultConfigKey(Type clientType) => clientType.FullName;
-
 }

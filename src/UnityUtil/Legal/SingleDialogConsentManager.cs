@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using Sirenix.OdinInspector;
 using System;
 using System.Collections.Generic;
@@ -20,7 +21,7 @@ namespace UnityUtil.Legal;
 /// </summary>
 public class SingleDialogConsentManager : MonoBehaviour, IConsentManager
 {
-    private ILogger? _logger;
+    private LegalLogger<SingleDialogConsentManager>? _logger;
     private ILegalAcceptManager? _legalAcceptManager;
     private ILocalPreferences? _localPreferences;
     private IEnumerable<IInitializableWithConsent>? _initializablesWithConsent;
@@ -33,13 +34,13 @@ public class SingleDialogConsentManager : MonoBehaviour, IConsentManager
     private void Awake() => DependencyInjector.Instance.ResolveDependenciesOf(this);
 
     public void Inject(
-        ILoggerProvider loggerProvider,
+        ILoggerFactory loggerFactory,
         ILegalAcceptManager legalAcceptManager,
         ILocalPreferences localPreferences,
         IEnumerable<IInitializableWithConsent> initializablesWithConsent
     )
     {
-        _logger = loggerProvider.GetLogger(this);
+        _logger = new(loggerFactory, context: this);
         _legalAcceptManager = legalAcceptManager;
         _localPreferences = localPreferences;
         _initializablesWithConsent = initializablesWithConsent;
@@ -88,18 +89,18 @@ public class SingleDialogConsentManager : MonoBehaviour, IConsentManager
         {
             if (Array.FindIndex(_consents, x => x.isConsentRequired) > -1 || legalAcceptance == LegalAcceptance.Unprovided) {
                 _legalAcceptanceRequired = legalAcceptance == LegalAcceptance.Unprovided;
-                _logger!.Log("At least one consent still needs requested. Activating initial consent UI...", context: this);
+                _logger!.ConsentNeedsRequested();
                 InitialConsentRequired.Invoke();
             }
 
             else if (legalAcceptance == LegalAcceptance.Stale) {
                 _legalAcceptanceRequired = true;
-                _logger!.Log("All consents already requested, but at least one legal doc has been updated. Activating UI to get updated legal acceptance...", context: this);
+                _logger!.ConsentRequestedLegalDocUpdated();
                 LegalUpdateRequired.Invoke();
             }
 
             else {
-                _logger!.Log("All consents already requested or not required. Skipping consent UI...", context: this);
+                _logger!.ConsentAlreadyRequested();
                 NoUiRequired.Invoke();
             }
         }
@@ -109,16 +110,16 @@ public class SingleDialogConsentManager : MonoBehaviour, IConsentManager
     {
         if (_localPreferences!.HasKey(initializableWithConsent.ConsentPreferenceKey)) {
             DataConsentState dataConsentState = _localPreferences.GetInt(initializableWithConsent.ConsentPreferenceKey) == 1 ? DataConsentState.Given : DataConsentState.Denied;
-            _logger!.Log($"Consent for {name} already {dataConsentState}.", context: this);
+            _logger!.InitializableConsentAlreadyRequested(name, dataConsentState);
             return dataConsentState;
         }
 
         if (Application.isEditor && !ForceConsentBehavior) {
-            _logger!.Log($"Consent for {name} does not need need to be requested in the Unity Editor when not forcing consent behavior.", context: this);
+            _logger!.InitializableConsentNotRequired(name);
             return DataConsentState.NotRequired;
         }
 
-        _logger!.Log($"Consent for {name} will need to be requested.", context: this);
+        _logger!.InitializableConsentNeedsRequested(name);
         return DataConsentState.StillRequired;
     }
 
@@ -132,14 +133,14 @@ public class SingleDialogConsentManager : MonoBehaviour, IConsentManager
             // TODO: Request SKAdNetwork permissions on iOS 14.5+
         }
 
-        _logger!.Log($"Giving data consent to all managers for which consent had not yet been requested...", context: this);
+        _logger!.ConsentGiveAll();
 
         // Store that consents were given, so we don't request consent again every startup
         int index = 0;
         foreach (IInitializableWithConsent initializableWithConsent in _initializablesWithConsent!) {
             (bool isConsentRequired, bool hasConsent) = _consents![index];
             if (isConsentRequired) {
-                _logger!.Log($"Saving consent to local preferences at '{initializableWithConsent.ConsentPreferenceKey}' so we don't need to request it again...", context: this);
+                _logger!.InitializableConsentSaving(initializableWithConsent);
                 _localPreferences!.SetInt(initializableWithConsent.ConsentPreferenceKey, 1);
                 hasConsent = true;
             }
@@ -161,7 +162,7 @@ public class SingleDialogConsentManager : MonoBehaviour, IConsentManager
     [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Async suffix doesn't really look great on async void methods")]
     public async void Initialize()
     {
-        _logger!.Log($"Initializing all data consent managers in parallel...", context: this);
+        _logger!.ConsentInitializingAll();
 
         var task = Task.WhenAll(
             _initializablesWithConsent!.Select((x, index) => x.InitializeAsync(_consents![index].hasConsent))
@@ -175,13 +176,13 @@ public class SingleDialogConsentManager : MonoBehaviour, IConsentManager
             await task.ConfigureAwait(true);
         }
         catch {
-            _logger!.LogException(task.Exception.Flatten(), context: this);
+            _logger!.ConsentInitializingAllFailed(task.Exception);
         }
     }
 
     public void OptOut(IInitializableWithConsent initializableWithConsent)
     {
-        _logger!.Log($"Opting out of data consent for initializable with preferences key '{initializableWithConsent.ConsentPreferenceKey}'. This cannot be undone.", context: this);
+        _logger!.ConsentOptingOut(initializableWithConsent);
         _localPreferences!.SetInt(initializableWithConsent.ConsentPreferenceKey, 0);
     }
 
@@ -197,7 +198,7 @@ public class SingleDialogConsentManager : MonoBehaviour, IConsentManager
             _localPreferences!.DeleteKey(initializableWithConsent.ConsentPreferenceKey);
 
         // Log success (use debug logger in case this is being run from the Inspector outside Play mode)
-        _logger ??= UnityEngine.Debug.unityLogger;
-        _logger.Log($"Cleared all data consents from preferences", context: this);
+        _logger ??= new(new UnityDebugLoggerFactory(), context: this);
+        _logger.ConsentCleared();
     }
 }

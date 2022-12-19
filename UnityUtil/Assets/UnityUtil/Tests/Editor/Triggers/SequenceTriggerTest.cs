@@ -2,7 +2,7 @@
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityUtil.Editor.Tests.Logging;
+using UnityUtil.Logging;
 using UnityUtil.Triggers;
 
 namespace UnityUtil.Editor.Tests.Triggers
@@ -183,7 +183,7 @@ namespace UnityUtil.Editor.Tests.Triggers
         {
             var obj = new GameObject("TestTrigger");
             SequenceTrigger trigger = obj.AddComponent<SequenceTrigger>();
-            trigger.Inject(new TestLoggerProvider());
+            trigger.Inject(new UnityDebugLoggerFactory());
             trigger.StepTriggers = new UnityEvent[numSteps];
             trigger.Cycle = cycle;
 

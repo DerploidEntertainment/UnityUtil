@@ -1,10 +1,10 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using UnityEngine;
 using UnityUtil.DependencyInjection;
-using UnityUtil.Logging;
 
 namespace UnityUtil.Physics;
 
@@ -24,7 +24,7 @@ public enum ChangeTriggerMode
 
 public class ColliderDuplicator : MonoBehaviour
 {
-    private ILogger? _logger;
+    private PhysicsLogger<ColliderDuplicator>? _logger;
 
     private List<Transform> _duplicates = new();
 
@@ -54,7 +54,7 @@ public class ColliderDuplicator : MonoBehaviour
     [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
     private void Awake() => DependencyInjector.Instance.ResolveDependenciesOf(this);
 
-    public void Inject(ILoggerProvider loggerProvider) => _logger = loggerProvider.GetLogger(this);
+    public void Inject(ILoggerFactory loggerFactory) => _logger = new(loggerFactory, context: this);
 
     [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
     [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
@@ -188,7 +188,7 @@ public class ColliderDuplicator : MonoBehaviour
         }
 
         else {
-            _logger!.LogWarning($"Collider {collider.GetHierarchyName()} is not a BoxCollider, SphereCollider, or CapsuleCollider, so it will not be duplicated.", context: this);
+            _logger!.DuplicateColliderFail(collider);
             return;
         }
 

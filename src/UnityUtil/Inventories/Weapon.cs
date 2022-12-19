@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using Sirenix.OdinInspector;
 using System;
 using System.Collections.Generic;
@@ -6,7 +7,6 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityUtil.DependencyInjection;
-using UnityUtil.Logging;
 using UnityUtil.Math;
 using U = UnityEngine;
 
@@ -18,7 +18,7 @@ public class AttackEvent : UnityEvent<Ray, RaycastHit[]> { }
 [RequireComponent(typeof(Tool))]
 public class Weapon : MonoBehaviour
 {
-    private ILogger? _logger;
+    private InventoriesLogger<Weapon>? _logger;
     private Tool? _tool;
     private float _accuracyLerpT;
 
@@ -29,7 +29,7 @@ public class Weapon : MonoBehaviour
 
     public float AccuracyConeHalfAngle => Mathf.LerpAngle(Info!.InitialConeHalfAngle, Info.FinalConeHalfAngle, _accuracyLerpT);
 
-    public void Inject(ILoggerProvider loggerProvider) => _logger = loggerProvider.GetLogger(this);
+    public void Inject(ILoggerFactory loggerFactory) => _logger = new(loggerFactory, context: this);
 
     [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
     [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
@@ -60,7 +60,9 @@ public class Weapon : MonoBehaviour
                 Gizmos.DrawWireSphere(transform.position + Info.Range * transform.forward, Info.Radius);
                 break;
 
-            default: _logger!.LogWarning("Could not draw Gizmos. " + UnityObjectExtensions.SwitchDefaultException(Info.PhysicsCastShape).Message, context: this); break;
+            default:
+                _logger!.WeaponGizmosUnknownPhysicsCastShape(Info.PhysicsCastShape);
+                break;
         }
     }
 

@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using Sirenix.OdinInspector;
 using System;
 using System.Diagnostics;
@@ -7,25 +8,24 @@ using UnityEngine.UI;
 using UnityUtil.Configuration;
 using UnityUtil.Logging;
 using UnityUtil.Storage;
-using U = UnityEngine;
 
 namespace UnityUtil.Legal;
 
 public class LegalAcceptManager : Configurable, ILegalAcceptManager
 {
-    private ILogger? _logger;
+    private LegalLogger<LegalAcceptManager>? _logger;
     private ILocalPreferences? _localPreferences;
 
     private string[] _latestVersionTags = Array.Empty<string>();
     private bool _acceptRequired;
-    private bool _acceptUpdate;
+    private bool _acceptOutdated;
     private int _numTagsFetched;
 
     public LegalDocument[] Documents = Array.Empty<LegalDocument>();
 
-    public void Inject(ILoggerProvider loggerProvider, ILocalPreferences localPreferences)
+    public void Inject(ILoggerFactory loggerFactory, ILocalPreferences localPreferences)
     {
-        _logger = loggerProvider.GetLogger(this);
+        _logger = new(loggerFactory, context: this);
         _localPreferences = localPreferences;
     }
 
@@ -58,7 +58,7 @@ public class LegalAcceptManager : Configurable, ILegalAcceptManager
             reqOp.completed += op => onRequestCompleted(req);   // Request must be explicitly disposed in here
         }
         catch {
-            _logger!.LogWarning($"Unable to fetch latest version of legal document with URI '{doc.LatestVersionUri!.Uri}'. Error received: {req?.error ?? ""}", context: this);
+            _logger!.LegalDocumentFetchLatesetFailed(doc, req);
             req?.Dispose();
         }
 
@@ -68,7 +68,7 @@ public class LegalAcceptManager : Configurable, ILegalAcceptManager
             // Parse the tag from the response
             string? webTag = null;
             if (request.result != UnityWebRequest.Result.Success)
-                _logger!.LogWarning($"Unable to fetch latest version of legal document with URI '{doc.LatestVersionUri.Uri}'. Error received: {request.error}", context: this);
+                _logger!.LegalDocumentFetchLatesetErrorCode(doc, request);
             else
                 webTag = request.GetResponseHeader(doc.TagHeader);
 
@@ -78,12 +78,12 @@ public class LegalAcceptManager : Configurable, ILegalAcceptManager
             // Use a random GUID as the tag (shouldn't collide with an existing accepted tag), unless user has already accepted this document once before
             if (string.IsNullOrEmpty(webTag)) {
                 if (firstTime) {
-                    _logger!.LogWarning($"Document tag from '{doc.TagHeader}' header was empty or could not be parsed. Using random GUID '{webTag}' instead.", context: this);
                     webTag = Guid.NewGuid().ToString();
+                    _logger!.LegalDocumentHeaderParseFailedFirstTime(doc.TagHeader, webTag);
                 }
                 else {
-                    _logger!.LogWarning($"Document tag from '{doc.TagHeader}' header was empty or could not be parsed. User has already accepted a previous version, so acceptance won't be required again.", context: this);
                     webTag = acceptedTag;
+                    _logger!.LegalDocumentHeaderParseFailed(doc.TagHeader);
                 }
             }
 
@@ -92,14 +92,14 @@ public class LegalAcceptManager : Configurable, ILegalAcceptManager
             // If the tag from the web does not match the version in preferences, then
             // Show the "accept" text or the "accept an update" text, depending on whether preferences tag existed
             _acceptRequired |= (webTag != acceptedTag);
-            _acceptUpdate |= (_acceptRequired && !firstTime);
+            _acceptOutdated |= (_acceptRequired && !firstTime);
             if (++_numTagsFetched == Documents.Length) {
                 if (_acceptRequired) {
-                    _logger!.Log($"User must accept latest versions of all legal documents {(_acceptUpdate ? "because the versions that they last accepted are out of date" : "for the first time")}.", context: this);
-                    callback(_acceptUpdate ? LegalAcceptance.Stale : LegalAcceptance.Unprovided);
+                    _logger!.LegalAcceptRequired(_acceptOutdated);
+                    callback(_acceptOutdated ? LegalAcceptance.Stale : LegalAcceptance.Unprovided);
                 }
                 else {
-                    _logger!.Log($"User already accepted latest versions of all legal documents.", context: this);
+                    _logger!.LegalAcceptAlreadyAcceptedAll();
                     callback(LegalAcceptance.Current);
                 }
             }
@@ -111,7 +111,7 @@ public class LegalAcceptManager : Configurable, ILegalAcceptManager
     {
         for (int v = 0; v < _latestVersionTags.Length; ++v) {
             _localPreferences!.SetString(Documents[v].PreferencesKey, _latestVersionTags[v].ToString());
-            _logger!.Log($"Legal document with latest '{Documents[v].TagHeader}' header is now accepted by user and saved to local preferences at '{Documents[v].PreferencesKey}', so user won't need to accept it again.", context: this);
+            _logger!.LegalDocumentAccepted(Documents[v]);
         }
 
         HasAccepted = true;
@@ -132,8 +132,8 @@ public class LegalAcceptManager : Configurable, ILegalAcceptManager
                 _localPreferences.DeleteKey(Documents[d].PreferencesKey);
         }
 
-        ILogger logger = (_logger ?? U.Debug.unityLogger);    // Use debug logger in case this is being run from the Inspector outside Play mode
-        logger.Log($"Accepted tags for all legal documents have been cleared.", context: this);
+        _logger ??= new(new UnityDebugLoggerFactory(), context: this);    // Use debug logger in case this is being run from the Inspector outside Play mode
+        _logger.LegalAcceptCleared();
     }
 
 }

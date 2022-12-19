@@ -3,6 +3,7 @@ using NUnit.Framework.Constraints;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityUtil.Logging;
 using UnityUtil.UI;
 using UA = UnityEngine.Assertions;
 
@@ -616,6 +617,7 @@ namespace UnityUtil.Editor.Tests.UI
         {
             // Create the instance
             UiBreakpoints uiBreakpoints = new GameObject().AddComponent<UiBreakpoints>();
+            uiBreakpoints.Inject(new UnityDebugLoggerFactory());
             uiBreakpoints.Mode = mode;
             uiBreakpoints.MatchMode = matchMode;
             uiBreakpoints.Breakpoints = breakpoints;

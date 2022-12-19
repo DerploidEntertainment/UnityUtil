@@ -1,8 +1,7 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
-using UnityEngine;
-using UnityUtil.Logging;
 
 namespace UnityUtil;
 
@@ -10,12 +9,12 @@ public delegate Task AsyncAction(CancellationToken cancellationToken);
 
 public sealed class AsyncCaller : IDisposable
 {
-    private readonly ILogger _logger;
+    private readonly RootLogger<AsyncCaller> _logger;
     private readonly CancellationTokenSource _cts = new();
 
-    public AsyncCaller(ILoggerProvider loggerProvider)
+    public AsyncCaller(ILoggerFactory loggerFactory)
     {
-        _logger = loggerProvider.GetLogger(this);
+        _logger = new(loggerFactory, context: this);
     }
 
     public async void CallAsync(AsyncAction action) => await action.Invoke(_cts.Token).ConfigureAwait(false);
@@ -24,7 +23,7 @@ public sealed class AsyncCaller : IDisposable
     {
         try { _cts.Cancel(); }
         catch (Exception ex) {
-            _logger.LogError($"Threw an exception during Dispose: {ex}");
+            _logger.AsyncCallerDisposeFail(ex);
         }
 
         _cts.Dispose();

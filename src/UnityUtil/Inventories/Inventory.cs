@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -7,7 +8,6 @@ using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Events;
 using UnityUtil.DependencyInjection;
-using UnityUtil.Logging;
 
 namespace UnityUtil.Inventories;
 
@@ -16,7 +16,7 @@ public class InventoryItemEvent : UnityEvent<InventoryCollectible> { }
 
 public class Inventory : MonoBehaviour
 {
-    private ILogger? _logger;
+    private InventoriesLogger<Inventory>? _logger;
     private readonly HashSet<InventoryCollectible> _collectibles = new();
 
     public int MaxItems = 10;
@@ -28,7 +28,7 @@ public class Inventory : MonoBehaviour
     public InventoryItemEvent ItemCollected = new();
     public InventoryItemEvent ItemDropped = new();
 
-    public void Inject(ILoggerProvider loggerProvider) => _logger = loggerProvider.GetLogger(this);
+    public void Inject(ILoggerFactory loggerFactory) => _logger = new(loggerFactory, context: this);
 
     [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
     [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
@@ -58,7 +58,7 @@ public class Inventory : MonoBehaviour
         _collectibles.Add(collectible);
 
         // Raise the item collected event
-        _logger!.Log($"Collected {collectible.ItemRoot?.GetHierarchyName()}", context: this);
+        _logger!.Collected(collectible);
         ItemCollected.Invoke(collectible);
 
         return true;
@@ -90,7 +90,7 @@ public class Inventory : MonoBehaviour
         _collectibles.Remove(collectible);
 
         // Raise the item dropped event
-        _logger!.Log($"Dropped {collectible.ItemRoot.GetHierarchyName()}", context: this);
+        _logger!.Dropped(collectible);
         ItemDropped.Invoke(collectible);
 
         // Prevent its re-collection for the requested duration

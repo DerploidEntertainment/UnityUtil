@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -302,18 +303,22 @@ namespace UnityUtil.Editor.Tests.Legal
                 })
                 .ToArray();
 
-            Mock<ILogger> logger = new();
-
+            Exception? loggedException = null;
             SingleDialogConsentManager singleDialogConsentManager = getSingleDialogConsentManager(
-                loggerProvider: Mock.Of<ILoggerProvider>(x => x.GetLogger(It.IsAny<object>()) == logger.Object),
+                loggerFactory: new LogLevelCallbackLoggerFactory(LogLevel.Error, (_, _, ex, _) => loggedException = ex, log),
                 initializablesWithConsent: initializables.Select(x => x.Object).ToArray()
             );
 
-            Exception? loggedException = null;
-            logger.Setup(x => x.Log(LogType.Log, It.IsAny<object>(), It.IsAny<U.Object>()))
-                .Callback((LogType logType, object message, U.Object context) => U.Debug.Log(message, context));
-            logger.Setup(x => x.LogException(It.IsAny<Exception>(), singleDialogConsentManager))
-                .Callback((Exception ex, U.Object context) => { U.Debug.LogException(ex, context); loggedException = ex; });
+            static void log(LogLevel logLevel, EventId eventId, Exception exception, string message)
+            {
+                LogType logType = logLevel switch {
+                    LogLevel.None or LogLevel.Trace or LogLevel.Debug or LogLevel.Information => LogType.Log,
+                    LogLevel.Warning => LogType.Warning,
+                    LogLevel.Error or LogLevel.Critical => LogType.Error,
+                    _ => throw UnityObjectExtensions.SwitchDefaultException(logLevel),
+                };
+                U.Debug.unityLogger.Log(logType, message);
+            }
 
             // ACT
             singleDialogConsentManager.ShowDialogIfNeeded();
@@ -322,12 +327,12 @@ namespace UnityUtil.Editor.Tests.Legal
 
             // ASSERT
             if (consentCount == 0) {
-                logger.Verify(x => x.LogException(It.IsAny<AggregateException>(), It.IsAny<U.Object>()), Times.Never);
+                Assert.That(loggedException, Is.Null);
             }
             else {
-                logger.Verify(x => x.LogException(It.IsAny<AggregateException>(), singleDialogConsentManager), Times.Once);
+                Assert.That(loggedException, Is.Not.Null);
                 Assert.That(((AggregateException)loggedException!).InnerExceptions, Has.None.TypeOf<AggregateException>()); // AggregateException has been flattened
-                LogAssert.Expect(LogType.Exception, new Regex(nameof(InvalidOperationException)));
+                LogAssert.Expect(LogType.Error, new Regex(".+"));
             }
         }
 
@@ -341,7 +346,7 @@ namespace UnityUtil.Editor.Tests.Legal
             );
 
         private static SingleDialogConsentManager getSingleDialogConsentManager(
-            ILoggerProvider? loggerProvider = null,
+            ILoggerFactory? loggerFactory = null,
             ILegalAcceptManager? legalAcceptManager = null,
             ILocalPreferences? localPreferences = null,
             IEnumerable<IInitializableWithConsent>? initializablesWithConsent = null
@@ -349,7 +354,7 @@ namespace UnityUtil.Editor.Tests.Legal
         {
             SingleDialogConsentManager singleDialogConsentManager = new GameObject().AddComponent<SingleDialogConsentManager>();
             singleDialogConsentManager.Inject(
-                loggerProvider ?? new DebugLoggerProvider(),
+                loggerFactory ?? new UnityDebugLoggerFactory(),
                 legalAcceptManager ?? getLegalAcceptManager(LegalAcceptance.Unprovided).Object,
                 localPreferences ?? getLocalPreferences().Object,
                 initializablesWithConsent ?? Array.Empty<IInitializableWithConsent>()

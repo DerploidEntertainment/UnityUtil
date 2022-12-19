@@ -1,17 +1,17 @@
-﻿using Sirenix.OdinInspector;
+﻿using Microsoft.Extensions.Logging;
+using Sirenix.OdinInspector;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityUtil.DependencyInjection;
-using UnityUtil.Logging;
 
 namespace UnityUtil.Triggers;
 
 public class SequenceTrigger : MonoBehaviour
 {
-    private ILogger? _logger;
+    private TriggersLogger<SequenceTrigger>? _logger;
 
     [Tooltip($"The current step; i.e., the index (0-based) of {nameof(StepTriggers)} that will be invoked the next time {nameof(Trigger)} is called.")]
     public int CurrentStep = 0;
@@ -26,7 +26,7 @@ public class SequenceTrigger : MonoBehaviour
     )]
     public UnityEvent[] StepTriggers = Array.Empty<UnityEvent>();
 
-    public void Inject(ILoggerProvider loggerProvider) => _logger = loggerProvider.GetLogger(this);
+    public void Inject(ILoggerFactory loggerFactory) => _logger = new(loggerFactory, context: this);
 
     [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
     [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
@@ -48,10 +48,12 @@ public class SequenceTrigger : MonoBehaviour
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Trigger()
     {
-        if (StepTriggers[CurrentStep] is null)
-            _logger!.LogWarning($"Triggered at step {CurrentStep}, but the trigger was null!", context: this);
-        else
-            StepTriggers[CurrentStep]?.Invoke();
+        if (StepTriggers[CurrentStep] is null) {
+            _logger!.SequenceTriggerNullStep(CurrentStep);
+            return;
+        }
+
+        StepTriggers[CurrentStep]?.Invoke();
     }
 
     private void doStep(int step, bool thenTrigger)
