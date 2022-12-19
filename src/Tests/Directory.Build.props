@@ -6,14 +6,12 @@
 
   <PropertyGroup>
     <LangVersion>9.0</LangVersion>
-    <MoqPath>$(UnityProjectPath)\Assets\$(SolutionName)\logic\Editor\Moq\Moq.dll</MoqPath>
-    <MoqPath Condition="!Exists('$(MoqPath)')">$(UnityProjectPath)\Assets\Editor\Moq\Moq.dll</MoqPath>
   </PropertyGroup>
 
   <!-- Dependencies -->
   <ItemGroup>
     <Reference Include="$(NunitPath)" Private="false" />
-    <Reference Include="$(MoqPath)" Private="false" />
+    <Reference Include="$(UnityPackageCachePath)\org.nuget.moq%40*\netstandard2.1\Moq.dll" Private="false" />
     <PackageReference Include="NUnit.Analyzers" Version="3.2.0" />
     <ProjectReference Include="..\..\UnityUtil\UnityUtil.csproj" />
     <Reference Include="$(UnityScriptAssembliesPath)\UnityEngine.TestRunner.dll" Private="false" />
