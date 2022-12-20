@@ -5,14 +5,13 @@
     <Nullable>enable</Nullable>
     <LangVersion>latest</LangVersion>
     <DefineConstants Condition="'$(Configuration)'=='Debug'">UNITY_ASSERTIONS;UNITY_EDITOR</DefineConstants>
-
-    <SirenixAssembliesDir>Assets\Plugins\Sirenix\Assemblies</SirenixAssembliesDir>
   </PropertyGroup>
 
   <!-- Set paths to Unity project assemblies (depending on whether we're currently in the UnityUtil solution) -->
-    <PropertyGroup>
-      <UnityProjectPath>$(SolutionDir)\..\UnityUtil</UnityProjectPath>
-      <SirenixAssembliesPath>$(UnityProjectPath)\$(SirenixAssembliesDir)</SirenixAssembliesPath>
+  <PropertyGroup>
+    <UnityProjectPath>$(SolutionDir)\..\UnityUtil</UnityProjectPath>
+    <SirenixAssembliesDir>Packages\odininspector\Sirenix\Assemblies</SirenixAssembliesDir>
+    <SirenixAssembliesPath>$(UnityProjectPath)\$(SirenixAssembliesDir)</SirenixAssembliesPath>
   </PropertyGroup>
 
   <!-- Make internals visible to test projects (and Moq) in non-test projects -->
