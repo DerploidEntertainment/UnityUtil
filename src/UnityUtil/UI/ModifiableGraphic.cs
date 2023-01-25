@@ -1,8 +1,10 @@
 using UnityEngine;
+using UnityEngine.Scripting;
 using UnityEngine.UI;
 
 namespace UnityUtil.UI;
 
+[Preserve]
 [RequireComponent(typeof(Graphic))]
 public class ModifiableGraphic : MonoBehaviour
 {
