@@ -20,7 +20,7 @@ public abstract class Configurable : MonoBehaviour
     public string ConfigKey = "";
 
 #if UNITY_EDITOR
-    protected virtual void Reset() => ConfigKey = DefaultConfigKey(GetType());
+    protected virtual void Reset() => ConfigKey = "";
 #endif
 
     protected virtual void Awake()
