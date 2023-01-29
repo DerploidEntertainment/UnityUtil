@@ -1,9 +1,7 @@
 ﻿using UnityEngine;
-using UnityEngine.Scripting;
 
 namespace UnityUtil.UI;
 
-[Preserve]
 [RequireComponent(typeof(RectTransform))]
 public class ModifiableRectTransform : MonoBehaviour
 {

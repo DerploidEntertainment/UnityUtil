@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine.Scripting;
 
 namespace UnityUtil.Math;
 
@@ -53,7 +52,6 @@ public class UniformBatchedRandomishOptionChooser : IRandomishOptionChooser
     private IReadOnlyList<int>? _batch;
     private int _currBatchIndex;
 
-    [Preserve]
     public UniformBatchedRandomishOptionChooser(IRandomNumberGenerator randomNumberGenerator, UniformBatchedRandomishOptionChooserConfig config)
     {
         _randomNumberGenerator = randomNumberGenerator;

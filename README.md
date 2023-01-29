@@ -59,6 +59,15 @@ There are also some things to note when updating the following dependencies:
 This package has been under open-source development since ~2017, but only since late 2022 has it been seriously considered for "usability" by 3rd parties,
 so documentation content/organization are still in development.
 
+### General notes
+
+Sometimes, you need to preserve code elements from [managed code stripping](https://docs.unity3d.com/Manual/ManagedCodeStripping.html) during builds.
+For example, your app may produce runtime code that doesn't exist when Unity performs the static analysis, e.g. through reflection and/or dependency injection.
+You can use Unity's `PreserveAttribute` mechansim to preserve these elements in your own code;
+however, UnityUtil intentionally does _not_ annotate any code with `[Preserve]` so that you have total control over the size of your builds.
+Therefore, if you need to preserve UnityUtil code elements (types, methods, etc.),
+then you must use the [`link.xml` approach](https://docs.unity3d.com/Manual/ManagedCodeStripping.html#LinkXMLAnnotation) described in the Unity Manual.
+
 ### Configuration
 
 **Docs coming soon!**

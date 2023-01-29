@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine.Scripting;
 
 namespace UnityUtil.Math;
 
@@ -35,7 +34,6 @@ public class MaxRepeatsRandomishOptionChooser : IRandomishOptionChooser
     private readonly int[] _repeatRingBuffer;
     private int _repeatRingBufferIndex = -1;
 
-    [Preserve]
     public MaxRepeatsRandomishOptionChooser(IRandomNumberGenerator randomNumberGenerator, MaxRepeatsRandomishOptionChooserConfig config)
     {
         _randomNumberGenerator = randomNumberGenerator;
