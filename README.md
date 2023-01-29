@@ -7,8 +7,20 @@ A set of utility classes and components useful to any Unity project, 2D or 3D.
 - [Installing](#installing)
   - [Updating](#updating)
 - [Features](#features)
+  - [Configuration](#configuration)
   - [Dependency Injection](#dependency-injection)
+  - [Inputs](#inputs)
+  - [Interaction](#interaction)
+  - [Inventories](#inventories)
+  - [Legal](#legal)
   - [Logging](#logging)
+  - [Math](#math)
+  - [Movement](#movement)
+  - [Physics](#physics)
+  - [Physics2D](#physics2d)
+  - [Storage](#storage)
+  - [Triggers](#triggers)
+  - [UI](#ui)
 - [Support](#support)
 - [Contributing](#contributing)
 - [License](#license)
@@ -18,7 +30,7 @@ A set of utility classes and components useful to any Unity project, 2D or 3D.
 1. Make sure you have both [Git](https://git-scm.com/) and [Git LFS](https://git-lfs.github.com/) installed before adding this package to your Unity project.
 2. Add the [UnityNuGet](https://github.com/xoofx/UnityNuGet) scoped registry so that you can install NuGet packages through the Unity Package Manager.
 3. Install dependencies in your Unity project. This is an opinionated list of 3rd party assets/packages that UnityUtil leverages for certain features.
-    Unfortunately, some of these assets cost money. In the future, I will break apart UnityUtil's features into separate packages,
+    Unfortunately, some of these assets cost money. In the future, UnityUtil's features will be broken up into separate packages,
     so that users can ignore specific packages and not spend money on their Asset Store dependencies.
     - [Odin Inspector](https://odininspector.com/) (v3.0.12 or above).
         After installing, close the Editor and copy the `Sirenix/` folder from `Assets/` to a new `odininspector/` folder under `Packages/`.
@@ -31,8 +43,9 @@ A set of utility classes and components useful to any Unity project, 2D or 3D.
 
 ### Updating
 
-To keep this package updated, you'll just have to check this repo every now and then.
-As the API stabilizes, I will move this package to [OpenUPM](https://openupm.com/) so that the Package Manager window will display available updates more obviously.
+You can update this package from Unity's Package Manager window, even when it is imported as a git repo.
+Doing so will update the commit from which changes are imported.
+As the API stabilizes, I will move this package to [OpenUPM](https://openupm.com/) and add a changelog to make its versioning more clear.
 
 There are also some things to note when updating the following dependencies:
 
@@ -46,9 +59,29 @@ There are also some things to note when updating the following dependencies:
 This package has been under open-source development since ~2017, but only since late 2022 has it been seriously considered for "usability" by 3rd parties,
 so documentation content/organization are still in development.
 
+### Configuration
+
+**Docs coming soon!**
+
 ### Dependency Injection
 
-**Coming soon!**
+**Docs coming soon!**
+
+### Inputs
+
+**Docs coming soon!**
+
+### Interaction
+
+**Docs coming soon!**
+
+### Inventories
+
+**Docs coming soon!**
+
+### Legal
+
+**Docs coming soon!**
 
 ### Logging
 
@@ -192,6 +225,34 @@ so that other authors know not collide with _your_ library's IDs!
 - `UnityUtil.UI`: 14,000
 - `UnityUtil.Updating`: 15,000
 - `UnityUtil.Editor`: 16,000
+
+### Math
+
+**Docs coming soon!**
+
+### Movement
+
+**Docs coming soon!**
+
+### Physics
+
+**Docs coming soon!**
+
+### Physics2D
+
+**Docs coming soon!**
+
+### Storage
+
+**Docs coming soon!**
+
+### Triggers
+
+**Docs coming soon!**
+
+### UI
+
+**Docs coming soon!**
 
 ## Support
 
