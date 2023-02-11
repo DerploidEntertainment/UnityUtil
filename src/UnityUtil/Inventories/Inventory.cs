@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.Assertions;
 using UnityEngine.Events;
 using UnityUtil.DependencyInjection;
 
@@ -38,8 +37,8 @@ public class Inventory : MonoBehaviour
     public GameObject[] GetItems() => _collectibles.Select(c => c.ItemRoot!).ToArray();
     public bool Collect(InventoryCollectible collectible)
     {
-        // Make sure an actual Collectible was provided, and that there is room for it
-        Assert.IsNotNull(collectible, $"{this.GetHierarchyNameWithType()} cannot collect null!");
+        if (collectible == null)
+            throw new ArgumentNullException(nameof(collectible), $"{this.GetHierarchyNameWithType()} cannot collect null");
 
         // If there is no room for the item, then just return that it wasn't collected
         if (_collectibles.Count == MaxItems)
@@ -65,9 +64,12 @@ public class Inventory : MonoBehaviour
     }
     public void Drop(InventoryCollectible collectible)
     {
+        if (collectible == null)
+            throw new ArgumentNullException(nameof(collectible), $"{this.GetHierarchyNameWithType()} cannot drop null");
+
         // Make sure a valid collectible was provided
-        Assert.IsNotNull(collectible, $"{this.GetHierarchyNameWithType()} cannot drop null!");
-        Assert.IsTrue(_collectibles.Contains(collectible), $"{this.GetHierarchyNameWithType()} was told to drop an {typeof(InventoryCollectible).Name} that it never collected!");
+        if (!_collectibles.Contains(collectible))
+            throw new InvalidOperationException($"{this.GetHierarchyNameWithType()} was told to drop an {typeof(InventoryCollectible).Name} that it never collected!");
 
         StartCoroutine(doDrop(collectible));
     }

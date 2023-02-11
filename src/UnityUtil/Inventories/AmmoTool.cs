@@ -39,7 +39,8 @@ public class AmmoTool : Updatable
     /// <returns>The amount of left-over ammo that could not be stored in the <see cref="AmmoTool"/>'s clips.  Will always be >= 0.</returns>
     public int Load(int ammo)
     {
-        Assert.IsTrue(ammo >= 0, $"Cannot load {this.GetHierarchyNameWithType()} with a negative amount of ammo!");
+        if (ammo < 0)
+            throw new ArgumentOutOfRangeException(nameof(ammo), $"Cannot load {this.GetHierarchyNameWithType()} with a negative amount of ammo!");
         return doLoad(ammo);
     }
 
@@ -55,7 +56,8 @@ public class AmmoTool : Updatable
     {
         base.Awake();
 
-        Assert.IsTrue(Info!.StartingAmmo <= Info.MaxClipAmmo * (Info.MaxBackupClips + 1), $"{this.GetHierarchyNameWithType()} was started with {nameof(Info.StartingAmmo)} ammo but it can only store a max of {Info.MaxClipAmmo} * ({Info.MaxClipAmmo * (Info.MaxBackupClips + 1)}!");
+        if (Info!.StartingAmmo > Info.MaxClipAmmo * (Info.MaxBackupClips + 1))
+            throw new InvalidOperationException($"{this.GetHierarchyNameWithType()} was started with {nameof(Info.StartingAmmo)} ammo but it can only store a max of {Info.MaxClipAmmo} * ({Info.MaxClipAmmo * (Info.MaxBackupClips + 1)}!");
 
         // Initialize ammo
         doLoad(Info.StartingAmmo);

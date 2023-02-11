@@ -1,7 +1,6 @@
 ﻿using Sirenix.OdinInspector;
 using System;
 using UnityEngine;
-using UnityEngine.Assertions;
 using UnityEngine.Events;
 
 namespace UnityUtil.UI;
@@ -47,7 +46,8 @@ public class UiBreakpoint
     }
     public UiBreakpoint(float value, bool enabled = true) : this()
     {
-        Assert.IsTrue(value >= 0f, "UI breakpoints can only be defined for non-negative values");
+        if (value < 0f)
+            throw new ArgumentOutOfRangeException(nameof(value), "UI breakpoints can only be defined for non-negative values");
         Value = value;
         Enabled = enabled;
     }

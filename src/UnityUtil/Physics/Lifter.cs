@@ -1,7 +1,6 @@
 using Sirenix.OdinInspector;
 using System;
 using UnityEngine;
-using UnityEngine.Assertions;
 using UnityEngine.Events;
 using UnityUtil.Inputs;
 using UnityUtil.Triggers;
@@ -75,12 +74,12 @@ public class Lifter : Updatable
     {
         base.Awake();
 
-        Assert.IsTrue(
-            (LiftUsingPhysics && LiftingJoint != null) ||
-            (!LiftUsingPhysics && LiftingObject != null),
-            $"{this.GetHierarchyNameWithType()} must have a {nameof(LiftingJoint)} if {nameof(LiftUsingPhysics)} is set to true, " +
-            $"or a {nameof(LiftingObject)} if {nameof(LiftUsingPhysics)} is set to false."
-        );
+        if ((LiftUsingPhysics && LiftingJoint == null) || (!LiftUsingPhysics && LiftingObject == null)) {
+            throw new InvalidOperationException(
+                $"{this.GetHierarchyNameWithType()} must have a {nameof(LiftingJoint)} if {nameof(LiftUsingPhysics)} is set to true, " +
+                $"or a {nameof(LiftingObject)} if {nameof(LiftUsingPhysics)} is set to false."
+            );
+        }
 
         RegisterUpdatesAutomatically = true;
         BetterUpdate = doUpdate;

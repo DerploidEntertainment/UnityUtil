@@ -7,7 +7,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.Assertions;
 using UnityEngine.Events;
 using UnityUtil.DependencyInjection;
 using UnityUtil.Logging;
@@ -192,7 +191,8 @@ public class SingleDialogConsentManager : MonoBehaviour, IConsentManager
     [Button, Conditional("UNITY_EDITOR")]
     public void ClearConsentPreferences()
     {
-        Assert.IsTrue(Application.isPlaying, "Consent can only be cleared in Play Mode, so that initializable dependencies are registered.");
+        if (!Application.isPlaying)
+            throw new InvalidOperationException("Consent can only be cleared in Play Mode, so that initializable dependencies are registered.");
 
         foreach (IInitializableWithConsent initializableWithConsent in _initializablesWithConsent!)
             _localPreferences!.DeleteKey(initializableWithConsent.ConsentPreferenceKey);

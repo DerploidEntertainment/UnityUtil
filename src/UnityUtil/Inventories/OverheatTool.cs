@@ -2,7 +2,6 @@
 using System;
 using System.Collections;
 using UnityEngine;
-using UnityEngine.Assertions;
 using UnityEngine.Events;
 using UnityUtil.Updating;
 
@@ -30,7 +29,8 @@ public class OverheatTool : Updatable
     {
         base.Awake();
 
-        Assert.IsTrue(Info!.StartingHeat <= Info.MaxHeat, $"{this.GetHierarchyNameWithType()} was started with {nameof(Info.StartingHeat)} heat but it can only store a max of {Info.MaxHeat}!");
+        if (Info!.StartingHeat > Info.MaxHeat)
+            throw new InvalidOperationException($"{this.GetHierarchyNameWithType()} was started with {nameof(Info.StartingHeat)} heat but it can only store a max of {Info.MaxHeat}");
 
         BetterUpdate = doUpdate;
         RegisterUpdatesAutomatically = true;

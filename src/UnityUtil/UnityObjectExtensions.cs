@@ -3,7 +3,6 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Text;
 using UnityEngine;
-using UnityEngine.Assertions;
 
 namespace UnityUtil;
 
@@ -43,8 +42,10 @@ public static class UnityObjectExtensions
     [Conditional("UNITY_ASSERTIONS")]
     public static void AssertActiveAndEnabled(this Behaviour behaviour, string verbMessage = "use")
     {
-        Assert.IsTrue(behaviour.gameObject.activeInHierarchy, $"Cannot {verbMessage} {behaviour.GetHierarchyNameWithType()} because its GameObject is inactive!");
-        Assert.IsTrue(behaviour.enabled, $"Cannot {verbMessage} {behaviour.GetHierarchyNameWithType()} because it is disabled!");
+        if (!behaviour.gameObject.activeInHierarchy)
+            throw new InvalidOperationException($"Cannot {verbMessage} {behaviour.GetHierarchyNameWithType()} because its GameObject is inactive");
+        if (!behaviour.enabled)
+            throw new InvalidOperationException($"Cannot {verbMessage} {behaviour.GetHierarchyNameWithType()} because it is disabled");
     }
 
     public static InvalidOperationException SwitchDefaultException<T>(T value) where T : Enum =>

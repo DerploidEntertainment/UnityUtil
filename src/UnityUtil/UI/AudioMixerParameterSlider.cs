@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
 using Sirenix.OdinInspector;
+using System;
 using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
-using UnityEngine.Assertions;
 using UnityEngine.Audio;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -99,7 +99,8 @@ public class AudioMixerParameterSlider : Configurable
         base.Awake();
 
         bool paramExposed = AudioMixer!.GetFloat(ExposedParameterName, out _);
-        Assert.IsTrue(paramExposed, $"{nameof(AudioMixer)} must expose a parameter with the name specified by {nameof(ExposedParameterName)} ('{ExposedParameterName}')");
+        if (!paramExposed)
+            throw new InvalidOperationException($"{nameof(AudioMixer)} must expose a parameter with the name specified by {nameof(ExposedParameterName)} ('{ExposedParameterName}')");
 
         // Update AudioMixer and preferences (if requested) whenever slider changes
         Slider!.onValueChanged.AddListener(sliderValue => {
