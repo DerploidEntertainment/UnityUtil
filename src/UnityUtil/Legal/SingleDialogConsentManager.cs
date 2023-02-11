@@ -188,7 +188,7 @@ public class SingleDialogConsentManager : MonoBehaviour, IConsentManager
     /// <summary>
     /// Clear consent saved in in local preferences for all registered <see cref="IInitializableWithConsent"/>s.
     /// </summary>
-    [Button, Conditional("UNITY_EDITOR")]
+    [Button]
     public void ClearConsentPreferences()
     {
         if (!Application.isPlaying)
