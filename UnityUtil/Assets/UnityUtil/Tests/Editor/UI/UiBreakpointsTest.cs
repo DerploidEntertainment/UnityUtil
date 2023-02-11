@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using NUnit.Framework.Constraints;
+using System;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
@@ -161,8 +162,8 @@ namespace UnityUtil.Editor.Tests.UI
         [Test]
         public void CannotConstructUiBreakpoint_NegativeValue()
         {
-            Assert.Throws<UA.AssertionException>(() => new UiBreakpoint(-2f));
-            Assert.Throws<UA.AssertionException>(() => new UiBreakpoint(-1f));
+            Assert.Throws<ArgumentOutOfRangeException>(() => new UiBreakpoint(-2f));
+            Assert.Throws<ArgumentOutOfRangeException>(() => new UiBreakpoint(-1f));
             Assert.DoesNotThrow(() => new UiBreakpoint(0f));
             Assert.DoesNotThrow(() => new UiBreakpoint(1f));
         }
