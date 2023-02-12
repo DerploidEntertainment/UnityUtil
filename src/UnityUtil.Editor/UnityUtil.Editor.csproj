@@ -3,12 +3,12 @@
   <Import Project="../OtherUnityAssemblies.props"/>
 
   <PropertyGroup>
-    <RootNamespace>UnityUtil.Editor</RootNamespace>
+    <RootNamespace>$(SolutionName).Editor</RootNamespace>
     <DebugSymbols>true</DebugSymbols> <!-- Always emit debug symbols, even in Release. We can decide in Unity whether they're then included in a game build. -->
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\UnityUtil\UnityUtil.csproj" />
+    <ProjectReference Include="..\$(SolutionName)\UnityUtil.csproj" />
 
     <Reference Include="$(SirenixAssembliesPath)\Sirenix.OdinInspector.Editor.dll" Private="false" />
     <Reference Include="$(UnityEditorPath)" Private="false" />
@@ -25,7 +25,7 @@
       <ProjectOutput Include="$(OutDir)/$(ProjectName)*.pdb" />
     </ItemGroup>
     <Message Importance="high" Text="Moving $(ProjectName) outputs into appropriate subfolders of '$([System.IO.Path]::GetFullPath($(UnityProjectPath)))\Assets'" />
-    <Copy SourceFiles="%(ProjectOutput.Identity)" DestinationFolder="$(UnityProjectPath)\Assets\UnityUtil\Editor" />
+    <Copy SourceFiles="%(ProjectOutput.Identity)" DestinationFolder="$(UnityProjectPath)\Assets\$(SolutionName)\Editor" />
   </Target>
 
 </Project>
