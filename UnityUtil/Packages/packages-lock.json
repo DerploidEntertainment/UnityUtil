@@ -164,6 +164,13 @@
       },
       "url": "https://unitynuget-registry.azurewebsites.net"
     },
+    "org.nuget.serilog": {
+      "version": "2.12.0",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://unitynuget-registry.azurewebsites.net"
+    },
     "org.nuget.system.diagnostics.eventlog": {
       "version": "4.7.0",
       "depth": 2,
