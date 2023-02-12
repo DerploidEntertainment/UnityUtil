@@ -24,6 +24,10 @@
     <Reference Include="$(UnityRemoteConfigPath)" Private="false" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="$(UnityProjectPath)\Assets\$(SolutionName)\package.json" />
+  </ItemGroup>
+
   <Target Name="CopyOutputs" AfterTargets="AfterBuild">
     <ItemGroup>
       <ProjectOutput Include="$(OutDir)/$(ProjectName).dll" />

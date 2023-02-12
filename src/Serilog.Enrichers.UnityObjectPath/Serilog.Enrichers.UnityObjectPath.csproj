@@ -11,6 +11,10 @@
     <PackageReference Include="SerilogAnalyzer" Version="0.15.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="$(UnityProjectPath)\Assets\$(ProjectName)\package.json" />
+  </ItemGroup>
+
   <Target Name="CopyOutputs" AfterTargets="AfterBuild">
     <ItemGroup>
       <ProjectOutput Include="$(OutDir)/$(ProjectName).dll" />
