@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.1</TargetFramework>
     <Nullable>enable</Nullable>
     <LangVersion>latest</LangVersion>
-    <DefineConstants Condition="'$(Configuration)'=='Debug'">UNITY_ASSERTIONS;UNITY_EDITOR</DefineConstants>
+    <DefineConstants>UNITY_EDITOR</DefineConstants> <!-- Always set, so that Odin drawers still work for Release-built DLLs -->
   </PropertyGroup>
 
   <!-- Set paths to Unity project assemblies (depending on whether we're currently in the UnityUtil solution) -->
