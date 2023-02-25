@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
 using UnityUtil.Logging;
-using static Microsoft.Extensions.Logging.LogLevel;
 
 namespace UnityUtil.Triggers;
 
@@ -13,60 +12,56 @@ internal class TriggersLogger<T> : BaseUnityUtilLogger<T>
     #region Information
 
     public void RepeaterTriggerStarted() =>
-        Log(id: 0, nameof(RepeaterTriggerStarted), Information, "Started");
+        LogInformation(id: 0, nameof(RepeaterTriggerStarted), "Started");
 
     public void RepeaterTriggerStopped() =>
-        Log(id: 1, nameof(RepeaterTriggerStopped), Information, "Stopped");
+        LogInformation(id: 1, nameof(RepeaterTriggerStopped), "Stopped");
 
     public void RepeaterTriggerPaused() =>
-        Log(id: 2, nameof(RepeaterTriggerPaused), Information, "Paused");
+        LogInformation(id: 2, nameof(RepeaterTriggerPaused), "Paused");
 
     public void RepeaterTriggerResumed() =>
-        Log(id: 3, nameof(RepeaterTriggerResumed), Information, "Resumed");
+        LogInformation(id: 3, nameof(RepeaterTriggerResumed), "Resumed");
 
     public void RepeaterTriggerTickForever() =>
-        Log(id: 4, nameof(RepeaterTriggerTickForever), Information, "Tick");
+        LogInformation(id: 4, nameof(RepeaterTriggerTickForever), "Tick");
 
     public void RepeaterTriggerTick(uint passedCount, uint targetCount) =>
-        Log(id: 5, nameof(RepeaterTriggerTick), Information, $"Tick {{{nameof(passedCount)}}} / {{{nameof(targetCount)}}}");
+        LogInformation(id: 5, nameof(RepeaterTriggerTick), $"Tick {{{nameof(passedCount)}}} / {{{nameof(targetCount)}}}");
 
     public void RepeaterTriggerTickCountReached(uint count) =>
-        Log(id: 6, nameof(RepeaterTriggerTickCountReached), Information, $"Reached {{{nameof(count)}}} ticks", count);
+        LogInformation(id: 6, nameof(RepeaterTriggerTickCountReached), $"Reached {{{nameof(count)}}} ticks", count);
 
     public void TimerTriggerStarted() =>
-        Log(id: 7, nameof(TimerTriggerStarted), Information, "Started");
+        LogInformation(id: 7, nameof(TimerTriggerStarted), "Started");
 
     public void TimerTriggerStopped() =>
-        Log(id: 8, nameof(TimerTriggerStopped), Information, "Stopped");
+        LogInformation(id: 8, nameof(TimerTriggerStopped), "Stopped");
 
     public void TimerTriggerPaused() =>
-        Log(id: 9, nameof(TimerTriggerPaused), Information, "Paused");
+        LogInformation(id: 9, nameof(TimerTriggerPaused), "Paused");
 
     public void TimerTriggerResumed() =>
-        Log(id: 10, nameof(TimerTriggerResumed), Information, "Resumed");
+        LogInformation(id: 10, nameof(TimerTriggerResumed), "Resumed");
 
     public void TimerTriggerTimedOut() =>
-        Log(id: 11, nameof(TimerTriggerTimedOut), Information, "Timed out");
+        LogInformation(id: 11, nameof(TimerTriggerTimedOut), "Timed out");
 
     public void ApplicationFocusChanged(bool isFocused) =>
-        Log(id: 12, nameof(ApplicationFocusChanged), Information, $"Application focus updated to {{{nameof(isFocused)}}}", isFocused);
+        LogInformation(id: 12, nameof(ApplicationFocusChanged), $"Application focus updated to {{{nameof(isFocused)}}}", isFocused);
 
     public void ApplicationPauseChanged(bool isPaused) =>
-        Log(id: 13, nameof(ApplicationPauseChanged), Information, $"Application pause state updated to {{{nameof(isPaused)}}}", isPaused);
+        LogInformation(id: 13, nameof(ApplicationPauseChanged), $"Application pause state updated to {{{nameof(isPaused)}}}", isPaused);
 
     public void ApplicationQuitting() =>
-        Log(id: 14, nameof(ApplicationQuitting), Information, "Application quitting...");
+        LogInformation(id: 14, nameof(ApplicationQuitting), "Application quitting...");
 
     #endregion
 
     #region Warning
 
     public void SequenceTriggerNullStep(int step) =>
-        Log(id: 0, nameof(SequenceTriggerNullStep), Warning, $"Triggered at step {{{nameof(step)}}}, but the trigger was null", step);
-
-    #endregion
-
-    #region Error
+        LogWarning(id: 0, nameof(SequenceTriggerNullStep), $"Triggered at step {{{nameof(step)}}}, but the trigger was null", step);
 
     #endregion
 }

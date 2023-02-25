@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
 using UnityUtil.Logging;
-using static Microsoft.Extensions.Logging.LogLevel;
 
 namespace UnityUtil.Inventories;
 
@@ -13,21 +12,17 @@ internal class InventoriesLogger<T> : BaseUnityUtilLogger<T>
     #region Information
 
     public void Collected(InventoryCollectible collectible) =>
-        Log(id: 0, nameof(Collected), Information, $"Collected {{{nameof(collectible)}}}", collectible.ItemRoot!.GetHierarchyName());
+        LogInformation(id: 0, nameof(Collected), $"Collected {{{nameof(collectible)}}}", collectible.ItemRoot!.GetHierarchyName());
 
     public void Dropped(InventoryCollectible collectible) =>
-        Log(id: 1, nameof(Dropped), Information, $"Dropped {{{nameof(collectible)}}}", collectible.ItemRoot!.GetHierarchyName());
+        LogInformation(id: 1, nameof(Dropped), $"Dropped {{{nameof(collectible)}}}", collectible.ItemRoot!.GetHierarchyName());
 
     #endregion
 
     #region Warning
 
     public void WeaponGizmosUnknownPhysicsCastShape(PhysicsCastShape shape) =>
-        Log(id: 0, nameof(WeaponGizmosUnknownPhysicsCastShape), Warning, $"Could not draw {nameof(Weapon)} Gizmos for {nameof(PhysicsCastShape)} {{{nameof(shape)}}}", shape);
-
-    #endregion
-
-    #region Error
+        LogWarning(id: 0, nameof(WeaponGizmosUnknownPhysicsCastShape), $"Could not draw {nameof(Weapon)} Gizmos for {nameof(PhysicsCastShape)} {{{nameof(shape)}}}", shape);
 
     #endregion
 

@@ -183,7 +183,7 @@ While this "custom logger pattern" is more verbose, it provides a number of bene
 
 However, you still have to ensure that all log events have a unique ID.
 UnityUtil provides a `BaseUnityUtilLogger` class from which you can derive to simplify the custom logger pattern.
-Using it, the `MyAppLogger` example above would becomes:
+Using it, the `MyAppLogger` example above would become:
 
 ```cs
 public void MyAppLogger<T> : BaseUnityUtilLogger<T> {
@@ -191,7 +191,7 @@ public void MyAppLogger<T> : BaseUnityUtilLogger<T> {
         : base(loggerFactory, context, eventIdOffset: 1_000_000) { }
     // ...
     public void DoStuff(int frame) {
-        Log(id: 0, nameof(DoStuff), Information, "Currently doing stuff in {{{nameof(frame)}}}...", frame);
+        LogInformation(id: 0, nameof(DoStuff), "Currently doing stuff in {{{nameof(frame)}}}...", frame);
     }
 }
 ```

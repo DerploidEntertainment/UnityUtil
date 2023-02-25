@@ -178,6 +178,108 @@ public abstract class BaseUnityUtilLogger<TCategoryName>
     public const int BaseEventIdCritical = (int)Critical * LogLevelAllowedIdCount;
 
     /// <summary>
+    /// Formats and writes a log message at <see cref="Trace"/> level,
+    /// with the specified <paramref name="id"/> and <paramref name="name"/>.
+    /// </summary>
+    /// <param name="id">
+    /// Unique ID <i>within the logging namespace</i>.
+    /// The <see cref="Trace"/> and namespace event ID offsets will be automatically appended
+    /// </param>
+    /// <param name="name">
+    /// Distinctive (ideally unique) human-readable name for the log event.
+    /// The name of the custom log method is usually preferrable (using <see langword="nameof"/>).
+    /// </param>
+    /// <param name="message">Format string of the log message.</param>
+    /// <param name="args">An object array that contains zero or more objects to format.</param>
+    protected void LogTrace(int id, string name, string? message, params object?[] args) =>
+        Log(id, name, Trace, exception: null, message, args);
+
+    /// <summary>
+    /// Formats and writes a log message at <see cref="LogLevel.Debug"/> level,
+    /// with the specified <paramref name="id"/> and <paramref name="name"/>.
+    /// </summary>
+    /// <param name="id">
+    /// Unique ID <i>within the logging namespace</i>.
+    /// The <see cref="LogLevel.Debug"/> and namespace event ID offsets will be automatically appended
+    /// </param>
+    /// <param name="name">
+    /// Distinctive (ideally unique) human-readable name for the log event.
+    /// The name of the custom log method is usually preferrable (using <see langword="nameof"/>).
+    /// </param>
+    /// <param name="message">Format string of the log message.</param>
+    /// <param name="args">An object array that contains zero or more objects to format.</param>
+    protected void LogDebug(int id, string name, string? message, params object?[] args) =>
+        Log(id, name, LogLevel.Debug, exception: null, message, args);
+
+    /// <summary>
+    /// Formats and writes a log message at <see cref="Information"/> level,
+    /// with the specified <paramref name="id"/> and <paramref name="name"/>.
+    /// </summary>
+    /// <param name="id">
+    /// Unique ID <i>within the logging namespace</i>.
+    /// The <see cref="Information"/> and namespace event ID offsets will be automatically appended
+    /// </param>
+    /// <param name="name">
+    /// Distinctive (ideally unique) human-readable name for the log event.
+    /// The name of the custom log method is usually preferrable (using <see langword="nameof"/>).
+    /// </param>
+    /// <param name="message">Format string of the log message.</param>
+    /// <param name="args">An object array that contains zero or more objects to format.</param>
+    protected void LogInformation(int id, string name, string? message, params object?[] args) =>
+        Log(id, name, Information, exception: null, message, args);
+
+    /// <summary>
+    /// Formats and writes a log message at <see cref="Warning"/> level,
+    /// with the specified <paramref name="id"/> and <paramref name="name"/>.
+    /// </summary>
+    /// <param name="id">
+    /// Unique ID <i>within the logging namespace</i>.
+    /// The <see cref="Warning"/> and namespace event ID offsets will be automatically appended
+    /// </param>
+    /// <param name="name">
+    /// Distinctive (ideally unique) human-readable name for the log event.
+    /// The name of the custom log method is usually preferrable (using <see langword="nameof"/>).
+    /// </param>
+    /// <param name="message">Format string of the log message.</param>
+    /// <param name="args">An object array that contains zero or more objects to format.</param>
+    protected void LogWarning(int id, string name, string? message, params object?[] args) =>
+        Log(id, name, Warning, exception: null, message, args);
+
+    /// <summary>
+    /// Formats and writes a log message at <see cref="Error"/> level,
+    /// with the specified <paramref name="id"/> and <paramref name="name"/>.
+    /// </summary>
+    /// <param name="id">
+    /// Unique ID <i>within the logging namespace</i>.
+    /// The <see cref="Error"/> and namespace event ID offsets will be automatically appended
+    /// </param>
+    /// <param name="name">
+    /// Distinctive (ideally unique) human-readable name for the log event.
+    /// The name of the custom log method is usually preferrable (using <see langword="nameof"/>).
+    /// </param>
+    /// <param name="message">Format string of the log message.</param>
+    /// <param name="args">An object array that contains zero or more objects to format.</param>
+    protected void LogError(int id, string name, string? message, params object?[] args) =>
+        Log(id, name, Error, exception: null, message, args);
+
+    /// <summary>
+    /// Formats and writes a log message at <see cref="Critical"/> level,
+    /// with the specified <paramref name="id"/> and <paramref name="name"/>.
+    /// </summary>
+    /// <param name="id">
+    /// Unique ID <i>within the logging namespace</i>.
+    /// The <see cref="Critical"/> and namespace event ID offsets will be automatically appended
+    /// </param>
+    /// <param name="name">
+    /// Distinctive (ideally unique) human-readable name for the log event.
+    /// The name of the custom log method is usually preferrable (using <see langword="nameof"/>).
+    /// </param>
+    /// <param name="message">Format string of the log message.</param>
+    /// <param name="args">An object array that contains zero or more objects to format.</param>
+    protected void LogCritical(int id, string name, string? message, params object?[] args) =>
+        Log(id, name, Critical, exception: null, message, args);
+
+    /// <summary>
     /// Formats and writes a log message at the specified <paramref name="logLevel"/>,
     /// with the specified <paramref name="id"/> and <paramref name="name"/>.
     /// </summary>
@@ -196,6 +298,60 @@ public abstract class BaseUnityUtilLogger<TCategoryName>
         Log(id, name, logLevel, exception: null, message, args);
 
     /// <summary>
+    /// Formats and writes a log message at <see cref="Warning"/>,
+    /// with the specified <paramref name="id"/> and <paramref name="name"/>.
+    /// </summary>
+    /// <param name="id">
+    /// Unique ID <i>within the logging namespace</i>.
+    /// The <see cref="Warning"/> and namespace event ID offsets will be automatically appended
+    /// </param>
+    /// <param name="name">
+    /// Distinctive (ideally unique) human-readable name for the log event.
+    /// The name of the custom log method is usually preferrable (using <see langword="nameof"/>).
+    /// </param>
+    /// <param name="exception">The exception to log.</param>
+    /// <param name="message">Format string of the log message.</param>
+    /// <param name="args">An object array that contains zero or more objects to format.</param>
+    protected void LogWarning(int id, string name, Exception? exception, string? message, params object?[] args) =>
+        Log(id, name, Warning, exception, message, args);
+
+    /// <summary>
+    /// Formats and writes a log message at <see cref="Error"/>,
+    /// with the specified <paramref name="id"/> and <paramref name="name"/>.
+    /// </summary>
+    /// <param name="id">
+    /// Unique ID <i>within the logging namespace</i>.
+    /// The <see cref="Error"/> and namespace event ID offsets will be automatically appended
+    /// </param>
+    /// <param name="name">
+    /// Distinctive (ideally unique) human-readable name for the log event.
+    /// The name of the custom log method is usually preferrable (using <see langword="nameof"/>).
+    /// </param>
+    /// <param name="exception">The exception to log.</param>
+    /// <param name="message">Format string of the log message.</param>
+    /// <param name="args">An object array that contains zero or more objects to format.</param>
+    protected void LogError(int id, string name, Exception? exception, string? message, params object?[] args) =>
+        Log(id, name, Error, exception, message, args);
+
+    /// <summary>
+    /// Formats and writes a log message at <see cref="Critical"/>,
+    /// with the specified <paramref name="id"/> and <paramref name="name"/>.
+    /// </summary>
+    /// <param name="id">
+    /// Unique ID <i>within the logging namespace</i>.
+    /// The <see cref="Critical"/> and namespace event ID offsets will be automatically appended
+    /// </param>
+    /// <param name="name">
+    /// Distinctive (ideally unique) human-readable name for the log event.
+    /// The name of the custom log method is usually preferrable (using <see langword="nameof"/>).
+    /// </param>
+    /// <param name="exception">The exception to log.</param>
+    /// <param name="message">Format string of the log message.</param>
+    /// <param name="args">An object array that contains zero or more objects to format.</param>
+    protected void LogCritical(int id, string name, Exception? exception, string? message, params object?[] args) =>
+        Log(id, name, Critical, exception, message, args);
+
+    /// <summary>
     /// Formats and writes a log message at the specified <paramref name="logLevel"/>,
     /// with the specified <paramref name="id"/> and <paramref name="name"/>.
     /// </summary>
@@ -211,7 +367,7 @@ public abstract class BaseUnityUtilLogger<TCategoryName>
     /// <param name="exception">The exception to log.</param>
     /// <param name="message">Format string of the log message.</param>
     /// <param name="args">An object array that contains zero or more objects to format.</param>
-    [SuppressMessage("Usage", "CA2254:Template should be a static expression", Justification = "This method assumes that it has been passed static expressions")]
+    [SuppressMessage("Usage", "CA2254:Template should be a static expression", Justification = "This method assumes that it has been passed static log template expressions")]
     protected void Log(int id, string name, LogLevel logLevel, Exception? exception, string? message, params object?[] args)
     {
         EventId eventId = new((int)logLevel * LogLevelAllowedIdCount + _eventIdOffset + id, name);

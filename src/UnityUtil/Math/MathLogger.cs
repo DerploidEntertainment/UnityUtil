@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
 using UnityUtil.Logging;
-using static Microsoft.Extensions.Logging.LogLevel;
 
 namespace UnityUtil.Math;
 
@@ -13,19 +12,10 @@ internal class MathLogger<T> : BaseUnityUtilLogger<T>
     #region Information
 
     public void SeedRngFromTime(int seed) =>
-        Log(id: 0, nameof(SeedRngFromTime), Information, $"Generated PRNG {{{nameof(seed)}}} from current time", seed);
+        LogInformation(id: 0, nameof(SeedRngFromTime), $"Generated PRNG {{{nameof(seed)}}} from current time", seed);
 
     public void SeedRngFromInspector(int seed) =>
-        Log(id: 1, nameof(SeedRngFromInspector), Information, $"Using PRNG seed {{{nameof(seed)}}} from Inspector", seed);
+        LogInformation(id: 1, nameof(SeedRngFromInspector), $"Using PRNG seed {{{nameof(seed)}}} from Inspector", seed);
 
     #endregion
-
-    #region Warning
-
-    #endregion
-
-    #region Error
-
-    #endregion
-
 }
