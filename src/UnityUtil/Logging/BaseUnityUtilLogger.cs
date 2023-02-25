@@ -191,7 +191,7 @@ public abstract class BaseUnityUtilLogger<TCategoryName>
     /// </param>
     /// <param name="message">Format string of the log message.</param>
     /// <param name="args">An object array that contains zero or more objects to format.</param>
-    protected void LogTrace(int id, string name, string? message, params object?[] args) =>
+    protected void LogTrace(int id, string name, string? message = null, params object?[] args) =>
         Log(id, name, Trace, exception: null, message, args);
 
     /// <summary>
@@ -208,7 +208,7 @@ public abstract class BaseUnityUtilLogger<TCategoryName>
     /// </param>
     /// <param name="message">Format string of the log message.</param>
     /// <param name="args">An object array that contains zero or more objects to format.</param>
-    protected void LogDebug(int id, string name, string? message, params object?[] args) =>
+    protected void LogDebug(int id, string name, string? message = null, params object?[] args) =>
         Log(id, name, LogLevel.Debug, exception: null, message, args);
 
     /// <summary>
@@ -225,7 +225,7 @@ public abstract class BaseUnityUtilLogger<TCategoryName>
     /// </param>
     /// <param name="message">Format string of the log message.</param>
     /// <param name="args">An object array that contains zero or more objects to format.</param>
-    protected void LogInformation(int id, string name, string? message, params object?[] args) =>
+    protected void LogInformation(int id, string name, string? message = null, params object?[] args) =>
         Log(id, name, Information, exception: null, message, args);
 
     /// <summary>
@@ -242,7 +242,7 @@ public abstract class BaseUnityUtilLogger<TCategoryName>
     /// </param>
     /// <param name="message">Format string of the log message.</param>
     /// <param name="args">An object array that contains zero or more objects to format.</param>
-    protected void LogWarning(int id, string name, string? message, params object?[] args) =>
+    protected void LogWarning(int id, string name, string? message = null, params object?[] args) =>
         Log(id, name, Warning, exception: null, message, args);
 
     /// <summary>
@@ -259,7 +259,7 @@ public abstract class BaseUnityUtilLogger<TCategoryName>
     /// </param>
     /// <param name="message">Format string of the log message.</param>
     /// <param name="args">An object array that contains zero or more objects to format.</param>
-    protected void LogError(int id, string name, string? message, params object?[] args) =>
+    protected void LogError(int id, string name, string? message = null, params object?[] args) =>
         Log(id, name, Error, exception: null, message, args);
 
     /// <summary>
@@ -276,7 +276,7 @@ public abstract class BaseUnityUtilLogger<TCategoryName>
     /// </param>
     /// <param name="message">Format string of the log message.</param>
     /// <param name="args">An object array that contains zero or more objects to format.</param>
-    protected void LogCritical(int id, string name, string? message, params object?[] args) =>
+    protected void LogCritical(int id, string name, string? message = null, params object?[] args) =>
         Log(id, name, Critical, exception: null, message, args);
 
     /// <summary>
@@ -312,7 +312,7 @@ public abstract class BaseUnityUtilLogger<TCategoryName>
     /// <param name="exception">The exception to log.</param>
     /// <param name="message">Format string of the log message.</param>
     /// <param name="args">An object array that contains zero or more objects to format.</param>
-    protected void LogWarning(int id, string name, Exception? exception, string? message, params object?[] args) =>
+    protected void LogWarning(int id, string name, Exception? exception, string? message = null, params object?[] args) =>
         Log(id, name, Warning, exception, message, args);
 
     /// <summary>
@@ -330,7 +330,7 @@ public abstract class BaseUnityUtilLogger<TCategoryName>
     /// <param name="exception">The exception to log.</param>
     /// <param name="message">Format string of the log message.</param>
     /// <param name="args">An object array that contains zero or more objects to format.</param>
-    protected void LogError(int id, string name, Exception? exception, string? message, params object?[] args) =>
+    protected void LogError(int id, string name, Exception? exception, string? message = null, params object?[] args) =>
         Log(id, name, Error, exception, message, args);
 
     /// <summary>
@@ -348,7 +348,7 @@ public abstract class BaseUnityUtilLogger<TCategoryName>
     /// <param name="exception">The exception to log.</param>
     /// <param name="message">Format string of the log message.</param>
     /// <param name="args">An object array that contains zero or more objects to format.</param>
-    protected void LogCritical(int id, string name, Exception? exception, string? message, params object?[] args) =>
+    protected void LogCritical(int id, string name, Exception? exception, string? message = null, params object?[] args) =>
         Log(id, name, Critical, exception, message, args);
 
     /// <summary>
@@ -368,7 +368,7 @@ public abstract class BaseUnityUtilLogger<TCategoryName>
     /// <param name="message">Format string of the log message.</param>
     /// <param name="args">An object array that contains zero or more objects to format.</param>
     [SuppressMessage("Usage", "CA2254:Template should be a static expression", Justification = "This method assumes that it has been passed static log template expressions")]
-    protected void Log(int id, string name, LogLevel logLevel, Exception? exception, string? message, params object?[] args)
+    protected void Log(int id, string name, LogLevel logLevel, Exception? exception, string? message = null, params object?[] args)
     {
         EventId eventId = new((int)logLevel * LogLevelAllowedIdCount + _eventIdOffset + id, name);
 
