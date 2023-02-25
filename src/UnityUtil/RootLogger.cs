@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
 using System.Reflection;
+using UnityEngine;
+using UnityEngine.Diagnostics;
 using UnityEngine.SceneManagement;
 using UnityUtil.DependencyInjection;
 using UnityUtil.Logging;
@@ -36,6 +38,30 @@ internal class RootLogger<T> : BaseUnityUtilLogger<T>
     public void Spawning(string spawnedObjectName) =>
         LogInformation(id: 5, nameof(Spawning), $"Spawning {{{nameof(spawnedObjectName)}}}", spawnedObjectName);
 
+    public void GameCrasherUncaughtExceptionClr() =>
+        LogInformation(id: 6, nameof(GameCrasherUncaughtExceptionClr), "Attempting crash via uncaught CLR exception...");
+
+    public void GameCrasherForceCrashAbort() =>
+        LogInformation(id: 7, nameof(GameCrasherForceCrashAbort), $"Attempting crash via {nameof(ForcedCrashCategory)}.{nameof(ForcedCrashCategory.Abort)}...");
+
+    public void GameCrasherForceCrashAccessViolation() =>
+        LogInformation(id: 8, nameof(GameCrasherForceCrashAccessViolation), $"Attempting crash via {nameof(ForcedCrashCategory)}.{nameof(ForcedCrashCategory.AccessViolation)}...");
+
+    public void GameCrasherForceCrashFatalError() =>
+        LogInformation(id: 9, nameof(GameCrasherForceCrashFatalError), $"Attempting crash via {nameof(ForcedCrashCategory)}.{nameof(ForcedCrashCategory.FatalError)}...");
+
+    public void GameCrasherForceCrashPureVirtualFunction() =>
+        LogInformation(id: 10, nameof(GameCrasherForceCrashPureVirtualFunction), $"Attempting crash via {nameof(ForcedCrashCategory)}.{nameof(ForcedCrashCategory.PureVirtualFunction)}...");
+
+    public void GameCrasherNativeAssert() =>
+        LogInformation(id: 11, nameof(GameCrasherNativeAssert), "Attempting crash via native assert...");
+
+    public void GameCrasherNativeError() =>
+        LogInformation(id: 12, nameof(GameCrasherNativeError), "Attempting crash via native error...");
+
+    public void GameCrasherUncaughtExceptionAndroid() =>
+        LogInformation(id: 13, nameof(GameCrasherUncaughtExceptionAndroid), "Attempting crash via uncaught Android exception...");
+
     #endregion
 
     #region Warning
@@ -45,6 +71,11 @@ internal class RootLogger<T> : BaseUnityUtilLogger<T>
 
     public void MethodHasMultipleDependenciesOfType(string clientName, Type serviceType, string tag) =>
         LogWarning(id: 1, nameof(MethodHasMultipleDependenciesOfType), $"{{{nameof(clientName)}}} has multiple dependencies of Type {{{nameof(serviceType)}}} with tag {{{nameof(tag)}}}", clientName, serviceType.FullName, tag);
+
+    public void GameCrasherAndroidExceptionOnNonAndroidPlatform() =>
+        LogWarning(id: 2, nameof(GameCrasherAndroidExceptionOnNonAndroidPlatform), "Can't call the Android uncaught exception handler on non-Android {platform}",
+        Application.platform
+    );
 
     #endregion
 

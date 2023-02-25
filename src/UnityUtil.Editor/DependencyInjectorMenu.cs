@@ -1,15 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Diagnostics.CodeAnalysis;
 using UnityEditor;
-using UnityEngine;
 using UnityUtil.DependencyInjection;
+using UnityUtil.Logging;
 
 namespace UnityUtil.Editor;
 
-public static class DependencyInjectorMenu
+public class DependencyInjectorMenu
 {
+    private static EditorRootLogger<DependencyInjectorMenu>? s_logger;  // Must be static to be used as menu commands in Unity Editor
+
     public const string ItemName = $"{nameof(UnityUtil)}/Record dependency resolutions";
+
+    [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
+    [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
+    private void Awake() => s_logger = new(new UnityDebugLoggerFactory(), context: this);   // Eh, this is an Editor script...so what if we hard-code the LoggerFactory
 
     [MenuItem(ItemName)]
     private static void toggleRecording()
@@ -19,20 +23,7 @@ public static class DependencyInjectorMenu
         if (DependencyInjector.Instance.RecordingResolutions)
             return;
 
-        Debug.Log($@"
-Uncached dependency resolution counts:
-(If any of these counts are greater than 1, consider caching resolutions for that Type on the {nameof(DependencyInjector)} to improve performance)
-{getCountLines(counts.Uncached)}
-
-Cached dependency resolution counts:
-(If any of these counts equal 1, consider NOT caching resolutions for that Type on the {nameof(DependencyInjector)}, to speed up its resolutions and save memory)
-{getCountLines(counts.Cached)}
-            ");
-
-        static string getCountLines(IEnumerable<KeyValuePair<Type, int>> counts) => string.Join(
-            Environment.NewLine,
-            counts.OrderByDescending(x => x.Value).Select(x => $"    {x.Key.FullName}: {x.Value}")
-        );
+        s_logger!.DependencyInjectorPrintRecording(counts.Uncached, counts.Cached);
     }
 
     [MenuItem(ItemName, isValidateFunction: true)]

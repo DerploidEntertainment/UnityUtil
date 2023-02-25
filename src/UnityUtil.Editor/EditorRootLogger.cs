@@ -1,6 +1,10 @@
 ﻿using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityUtil.DependencyInjection;
 using UnityUtil.Logging;
 
 namespace UnityUtil;
@@ -36,6 +40,26 @@ internal class EditorRootLogger<T> : BaseUnityUtilLogger<T>
 
     public void LoadedAsciiSprites(int loadedCount) =>
         LogInformation(id: 7, nameof(LoadedAsciiSprites), $"Successfully loaded all {{{nameof(loadedCount)}}} character Sprites!", loadedCount);
+
+    public void DependencyInjectorPrintRecording(IReadOnlyDictionary<Type, int> uncachedCounts, IReadOnlyDictionary<Type, int> cachedCounts)
+    {
+        LogInformation(id: 8, nameof(DependencyInjectorPrintRecording), $@"
+Uncached dependency resolution counts:
+(If any of these counts are greater than 1, consider caching resolutions for that Type on the {nameof(DependencyInjector)} to improve performance)
+{{countUncached}}
+
+Cached dependency resolution counts:
+(If any of these counts equal 1, consider NOT caching resolutions for that Type on the {nameof(DependencyInjector)}, to speed up its resolutions and save memory)
+{{countCached}}
+            ",
+            getCountLines(uncachedCounts), getCountLines(cachedCounts)
+        );
+
+        static string getCountLines(IEnumerable<KeyValuePair<Type, int>> counts) => string.Join(
+            Environment.NewLine,
+            counts.OrderByDescending(x => x.Value).Select(x => $"    {x.Key.FullName}: {x.Value}")
+        );
+    }
 
     #endregion
 

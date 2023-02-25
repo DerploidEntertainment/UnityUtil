@@ -50,6 +50,15 @@ internal class UiLogger<T> : BaseUnityUtilLogger<T>
             mode, matchMode
         );
 
+    public void SplashScreenInitializing() =>
+        LogInformation(id: 7, nameof(SplashScreenInitializing), "Initializing splash screen...");
+
+    public void SplashScreenDrawing() =>
+        LogInformation(id: 8, nameof(SplashScreenDrawing), "Starting to draw splash screen...");
+
+    public void SplashScreenStopping() =>
+        LogInformation(id: 9, nameof(SplashScreenStopping), "Stopping splash screen...");
+
     #endregion
 
     #region Warning

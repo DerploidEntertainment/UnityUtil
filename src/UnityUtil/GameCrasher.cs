@@ -1,70 +1,72 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
 using UnityEngine.Diagnostics;
+using UnityUtil.DependencyInjection;
 
 namespace UnityUtil;
 
 public class GameCrasher : MonoBehaviour
 {
-    [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "UnityEvents can't call static methods")]
+    private RootLogger<GameCrasher>? _logger;
+
+    [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
+    [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
+    private void Awake() => DependencyInjector.Instance.ResolveDependenciesOf(this);
+
+    public void Inject(ILoggerFactory loggerFactory) => _logger = new(loggerFactory, context: this);
+
     public void UncaughtExceptionClr()
     {
-        Debug.Log("Attempting crash via uncaught CLR exception...");
+        _logger!.GameCrasherUncaughtExceptionClr();
         throw new InvalidOperationException("AAHHH, MANAGED EXCEPTION!!!! JK, everything is fine.");
     }
 
-    [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "UnityEvents can't call static methods")]
     public void ForceCrashAbort()
     {
-        Debug.Log($"Attempting crash via {nameof(ForcedCrashCategory)}.{nameof(ForcedCrashCategory.Abort)}...");
+        _logger!.GameCrasherForceCrashAbort();
         Utils.ForceCrash(ForcedCrashCategory.Abort);
     }
 
-    [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "UnityEvents can't call static methods")]
     public void ForceCrashAccessViolation()
     {
-        Debug.Log($"Attempting crash via {nameof(ForcedCrashCategory)}.{nameof(ForcedCrashCategory.AccessViolation)}...");
+        _logger!.GameCrasherForceCrashAccessViolation();
         Utils.ForceCrash(ForcedCrashCategory.AccessViolation);
     }
 
-    [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "UnityEvents can't call static methods")]
     public void ForceCrashFatalError()
     {
-        Debug.Log($"Attempting crash via {nameof(ForcedCrashCategory)}.{nameof(ForcedCrashCategory.FatalError)}...");
+        _logger!.GameCrasherForceCrashFatalError();
         Utils.ForceCrash(ForcedCrashCategory.FatalError);
     }
 
-    [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "UnityEvents can't call static methods")]
     public void ForceCrashPureVirtualFunction()
     {
-        Debug.Log($"Attempting crash via {nameof(ForcedCrashCategory)}.{nameof(ForcedCrashCategory.PureVirtualFunction)}...");
+        _logger!.GameCrasherForceCrashPureVirtualFunction();
         Utils.ForceCrash(ForcedCrashCategory.PureVirtualFunction);
     }
 
-    [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "UnityEvents can't call static methods")]
     public void NativeAssert()
     {
-        Debug.Log("Attempting crash via native assert...");
+        _logger!.GameCrasherNativeAssert();
         Utils.NativeAssert("AAHHH NATIVE ASSERT!!! JK, everything is fine.");
     }
 
-    [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "UnityEvents can't call static methods")]
     public void NativeError()
     {
-        Debug.Log("Attempting crash via native error...");
+        _logger!.GameCrasherNativeError();
         Utils.NativeError("AAHHH NATIVE ERROR!!! JK, everything is fine.");
     }
 
-    [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "UnityEvents can't call static methods")]
     public void UncaughtExceptionAndroid()
     {
         if (Application.platform != RuntimePlatform.Android) {
-            Debug.LogWarning("Can't call the Android uncaught exception handler on non-Android platform.");
+            _logger!.GameCrasherAndroidExceptionOnNonAndroidPlatform();
             return;
         }
 
-        Debug.Log("Attempting crash via uncaught Android exception...");
+        _logger!.GameCrasherUncaughtExceptionAndroid();
 
         // Copied from Unity Forums: https://forum.unity.com/threads/how-to-force-crash-on-android-to-test-crash-reporting-systems.653845/
         // Itself from StackOverflow: https://stackoverflow.com/questions/17511070/android-force-crash-with-uncaught-exception-in-thread
