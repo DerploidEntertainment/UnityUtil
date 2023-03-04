@@ -1,8 +1,8 @@
 ﻿using Sirenix.OdinInspector;
 using System;
 using System.Globalization;
+using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityUtil.Configuration;
 using UD = UnityEngine.Device;
 
@@ -17,11 +17,11 @@ public class CopyrightText : Configurable
         $"using .NET composite formatting. For example, '{{0:yyyy}}' would be replaced with just the current 4-digit year. " +
         $"See here for details: https://docs.microsoft.com/en-us/dotnet/standard/base-types/composite-formatting"
     )]
-    [Multiline]
+    [MultiLineProperty]
     public string FormatString = "© {0}, {1}";
 
     [Required]
-    public Text? Text;
+    public TMP_Text? Text;
 
     protected override void Awake()
     {

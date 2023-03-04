@@ -1,7 +1,7 @@
 ﻿using Sirenix.OdinInspector;
 using System.Globalization;
+using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityUtil.Configuration;
 
 namespace UnityUtil.UI;
@@ -24,7 +24,7 @@ public class VersionText : Configurable
         $"See {nameof(FormatString)}'s tooltip for a description of those values."
     )]
     [Required]
-    public Text? Text;
+    public TMP_Text? Text;
 
     public void Inject(IAppVersion appVersion) => _appVersion = appVersion;
 
