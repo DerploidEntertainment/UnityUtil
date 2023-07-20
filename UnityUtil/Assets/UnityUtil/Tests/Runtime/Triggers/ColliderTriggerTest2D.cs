@@ -20,7 +20,7 @@ namespace UnityUtil.Tests
             Rigidbody2D collidingRb = testCollider.GetComponent<Rigidbody2D>();
 
             // Position test object near trigger
-            collidingRb.position = 3f * Vector2.up;
+            collidingRb.position = new(collidingRb.position.x, 3f);
             yield return new WaitForFixedUpdate();
             Assert.That(numTriggers, Is.Zero);
 
@@ -39,7 +39,7 @@ namespace UnityUtil.Tests
             Rigidbody2D collidingRb = testCollider.GetComponent<Rigidbody2D>();
 
             // Position test object near trigger-Collider2D
-            collidingRb.position = 3f * Vector2.up;
+            collidingRb.position = new(collidingRb.position.x, 3f);
             yield return new WaitForFixedUpdate();
             Assert.That(numTriggers, Is.Zero);
 
@@ -66,7 +66,7 @@ namespace UnityUtil.Tests
             Assert.That(numTriggers, Is.Zero);
 
             // Move test object out of trigger
-            collidingRb.position = 3f * Vector2.up;
+            collidingRb.position = new(collidingRb.position.x, 3f);
             yield return new WaitForFixedUpdate();
             Assert.That(numTriggers, Is.EqualTo(1));
         }
@@ -80,7 +80,7 @@ namespace UnityUtil.Tests
             Rigidbody2D collidingRb = testCollider.GetComponent<Rigidbody2D>();
 
             // Position test object near trigger-Collider2D (not directly above)
-            collidingRb.position = new Vector2(0.25f, 1.1f);
+            collidingRb.position = new(collidingRb.position.x + 0.25f, collidingRb.position.y + 1.1f);
             yield return new WaitForFixedUpdate();
             Assert.That(numTriggers, Is.Zero);
 
@@ -103,7 +103,7 @@ namespace UnityUtil.Tests
             collidingRb.tag = "not-test";
 
             // Position test object near trigger
-            collidingRb.position = 3f * Vector2.up;
+            collidingRb.position = new(collidingRb.position.x, 3f);
             yield return new WaitForFixedUpdate();
             Assert.That(numTriggers, Is.Zero);
 
@@ -113,7 +113,7 @@ namespace UnityUtil.Tests
             Assert.That(numTriggers, Is.Zero);
 
             // Move test object back out and back into trigger, now with a whitelisted tag
-            collidingRb.position = 3f * Vector2.up;
+            collidingRb.position = new(collidingRb.position.x, 3f);
             collidingRb.tag = "test";
             yield return new WaitForFixedUpdate();
             Assert.That(numTriggers, Is.Zero);
@@ -132,7 +132,7 @@ namespace UnityUtil.Tests
             collidingRb.tag = "not-test";
 
             // Position test object near trigger
-            collidingRb.position = 3f * Vector2.up;
+            collidingRb.position = new(collidingRb.position.x, 3f);
             yield return new WaitForFixedUpdate();
             Assert.That(numTriggers, Is.Zero);
 
@@ -142,7 +142,7 @@ namespace UnityUtil.Tests
             Assert.That(numTriggers, Is.EqualTo(1));
 
             // Move test object back out and back into trigger, now with a blacklisted tag
-            collidingRb.position = 3f * Vector2.up;
+            collidingRb.position = new(collidingRb.position.x, 3f);
             collidingRb.tag = "test";
             yield return new WaitForFixedUpdate();
             Assert.That(numTriggers, Is.EqualTo(1));
@@ -159,7 +159,7 @@ namespace UnityUtil.Tests
             Collider2D testCollider = getCollidingObject(hasRigidbody: false);
 
             // Position test object near trigger
-            testCollider.transform.position = 3f * Vector2.up;
+            testCollider.transform.position = new(testCollider.transform.position.x, 3f);
             yield return new WaitForFixedUpdate();
             Assert.That(numTriggers, Is.Zero);
 
@@ -177,7 +177,7 @@ namespace UnityUtil.Tests
             Collider2D testCollider = getCollidingObject(hasRigidbody: false);
 
             // Position test object below trigger-Collider2D
-            testCollider.transform.position = -3f * Vector2.up;
+            testCollider.transform.position = new(testCollider.transform.position.x, -3f);
             yield return new WaitForFixedUpdate();
             Assert.That(numTriggers, Is.Zero);
 
@@ -199,7 +199,7 @@ namespace UnityUtil.Tests
             testCollider.tag = "test";
 
             // Position test object near trigger
-            testCollider.transform.position = 3f * Vector2.up;
+            testCollider.transform.position = new(testCollider.transform.position.x, 3f);
             yield return new WaitForFixedUpdate();
             Assert.That(numTriggers, Is.Zero);
 
@@ -209,14 +209,9 @@ namespace UnityUtil.Tests
             Assert.That(numTriggers, Is.EqualTo(1));
         }
 
-        private static Collider2D getCollidingObject(bool hasRigidbody = true)
-        {
-            var obj = new GameObject($"test-collider");
-            Collider2D collider = obj.AddComponent<CircleCollider2D>();
-            if (hasRigidbody)
-                obj.AddComponent<Rigidbody2D>();
-            return collider;
-        }
+        private static float s_currentPosX = 0f;
+        private const float TEST_DELTA_X = 5f;
+
         private static T getTriggerObject<T>(
             bool isTrigger,
             UnityAction? listener = null,
@@ -226,6 +221,10 @@ namespace UnityUtil.Tests
         ) where T : ColliderTriggerBase2D
         {
             var obj = new GameObject("test-trigger");
+
+            // Scene is only reset once per test run, so make sure trigger objects don't bump into each other
+            // by shifting the objects for each test by a little bit.
+            obj.transform.position = new(s_currentPosX += TEST_DELTA_X, 0f);
 
             Rigidbody2D rb = obj.AddComponent<Rigidbody2D>();
             rb.gravityScale = useGravity ? 1f : 0f;
@@ -241,6 +240,18 @@ namespace UnityUtil.Tests
                 trigger.Triggered.AddListener(listener);
 
             return trigger;
+        }
+
+        private static Collider2D getCollidingObject(bool hasRigidbody = true)
+        {
+            var obj = new GameObject($"test-collider");
+            obj.transform.position = new(s_currentPosX, 0f);
+
+            Collider2D collider = obj.AddComponent<CircleCollider2D>();
+            if (hasRigidbody)
+                obj.AddComponent<Rigidbody2D>();
+
+            return collider;
         }
 
     }

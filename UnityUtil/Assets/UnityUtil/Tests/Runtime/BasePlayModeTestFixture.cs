@@ -5,14 +5,11 @@ namespace UnityUtil.Tests
 {
     public class BasePlayModeTestFixture
     {
-        [SetUp]
-        public void SetUp()
+        [OneTimeSetUp]
+        public void OneTimeSetUp()
         {
             PlayModeTestHelpers.ResetScene();
-            Debug.Log($"Scene reset by {nameof(BasePlayModeTestFixture)}.{nameof(BasePlayModeTestFixture.SetUp)}");
+            Debug.Log($"Scene reset by {nameof(BasePlayModeTestFixture)}.{nameof(BasePlayModeTestFixture.OneTimeSetUp)}");
         }
-
-        [TearDown]
-        public void TearDown() { }
     }
 }

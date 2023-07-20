@@ -5,14 +5,11 @@ namespace UnityUtil.Editor.Tests
 {
     public class BaseEditModeTestFixture
     {
-        [SetUp]
-        public void SetUp()
+        [OneTimeSetUp]
+        public void OneTimeSetUp()
         {
             EditModeTestHelpers.ResetScene();
-            Debug.Log($"Scene reset by {nameof(BaseEditModeTestFixture)}.{nameof(BaseEditModeTestFixture.SetUp)}");
+            Debug.Log($"Scene reset by {nameof(BaseEditModeTestFixture)}.{nameof(BaseEditModeTestFixture.OneTimeSetUp)}");
         }
-
-        [TearDown]
-        public void TearDown() { }
     }
 }
