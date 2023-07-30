@@ -1,0 +1,24 @@
+{
+  "name": "unityutil.configuration.remoteconfig",
+  "version": "0.1.0",
+  "description": "Unity Remote Config configuration provider implementation to use with Microsoft.Extensions.Configuration.",
+  "displayName": "Remote Config configuration provider",
+  "unity": "2019.4",
+  "author": {
+    "name": "Rabadash8820",
+    "url": "https://github.com/Rabadash8820"
+  },
+  "dependencies": {
+    "org.nuget.microsoft.extensions.configuration": "2.0.0",
+    "com.unity.remote-config": "3.2.2"
+  },
+  "license": "MIT",
+  "keywords": [
+    "nuget",
+    "utility",
+    "configuration",
+    "unity-gaming-services",
+    "remote-config",
+    "microsoft-extensions"
+  ]
+}

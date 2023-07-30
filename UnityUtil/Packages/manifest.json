@@ -9,6 +9,7 @@
     "com.unity.testtools.codecoverage": "1.2.2",
     "com.unity.textmeshpro": "3.0.6",
     "com.unity.ugui": "1.0.0",
+    "org.nuget.microsoft.extensions.configuration": "2.0.0",
     "org.nuget.microsoft.extensions.logging.abstractions": "2.2.0",
     "org.nuget.moq": "4.18.3",
     "org.nuget.serilog": "2.8.0",

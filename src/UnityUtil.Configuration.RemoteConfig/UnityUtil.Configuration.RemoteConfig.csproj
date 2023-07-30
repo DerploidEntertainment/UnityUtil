@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <!-- Always emit debug symbols, even in Release. Consumers can then decide in Unity whether they're then included in a game build. -->
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="$(UnityPackageCachePath)\org.nuget.microsoft.extensions.configuration%40*\Microsoft.Extensions.Configuration.dll" Private="false" />
+    <Reference Include="$(UnityPackageCachePath)\org.nuget.microsoft.extensions.configuration.abstractions%40*\Microsoft.Extensions.Configuration.Abstractions.dll" Private="false" />
+    <Reference Include="$(UnityScriptAssembliesPath)\Unity.Services.Core.dll" Private="false" />
+    <Reference Include="$(UnityScriptAssembliesPath)\Unity.Services.Core.Environments.dll" Private="false" />
+    <Reference Include="$(UnityScriptAssembliesPath)\Unity.Services.Authentication.dll" Private="false" />
+    <Reference Include="$(UnityScriptAssembliesPath)\Unity.Services.RemoteConfig.dll" Private="false" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="$(UnityProjectPath)\Assets\$(ProjectName)\package.json" />
+  </ItemGroup>
+
+  <Target Name="CopyOutputs" AfterTargets="AfterBuild">
+    <ItemGroup>
+      <ProjectOutput Include="$(OutDir)/$(ProjectName).dll" />
+      <ProjectOutput Include="$(OutDir)/$(ProjectName).pdb" />
+    </ItemGroup>
+    <Message Importance="high" Text="Moving $(ProjectName) outputs into appropriate subfolders of '$([System.IO.Path]::GetFullPath($(UnityProjectPath)))\Assets'" />
+    <Copy SourceFiles="%(ProjectOutput.Identity)" DestinationFolder="$(UnityProjectPath)\Assets\$(ProjectName)\Runtime" />
+  </Target>
+
+</Project>
