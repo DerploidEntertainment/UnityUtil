@@ -5,7 +5,7 @@
   <Import Project="../OtherUnityAssemblies.props"/>
 
   <PropertyGroup>
-    <LangVersion>9.0</LangVersion>
+    <LangVersion>9.0</LangVersion>  <!-- Must be <= Unity's C# version. See https://docs.unity3d.com/Manual/CSharpCompiler.html -->
   </PropertyGroup>
 
   <!-- Dependencies -->
