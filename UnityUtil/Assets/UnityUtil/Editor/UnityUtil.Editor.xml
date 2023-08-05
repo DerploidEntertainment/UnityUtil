@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>UnityUtil.Editor</name>
+    </assembly>
+    <members>
+        <member name="T:UnityUtil.EditorRootLogger`1">
+            <inheritdoc/>
+        </member>
+        <member name="T:UnityEngine.CloudBuild.BuildManifestKeys">
+            <summary>
+            Contains strings for retrieving key-values from the Unity Cloud Build manifest.
+            See the Unity Manual for more info: https://docs.unity3d.com/Manual/UnityCloudBuildManifest.html
+            </summary>
+        </member>
+        <member name="F:UnityEngine.CloudBuild.BuildManifestKeys.ScmCommitId">
+            <summary>The commit or changelist that was built.</summary>
+        </member>
+        <member name="F:UnityEngine.CloudBuild.BuildManifestKeys.ScmBranch">
+            <summary>The name of the branch that was built.</summary>
+        </member>
+        <member name="F:UnityEngine.CloudBuild.BuildManifestKeys.BuildNumber">
+            <summary>The Unity Cloud Build "build number" corresponding to this build.</summary>
+        </member>
+        <member name="F:UnityEngine.CloudBuild.BuildManifestKeys.BuildStartTime">
+            <summary>The UTC timestamp when the build process was started.</summary>
+        </member>
+        <member name="F:UnityEngine.CloudBuild.BuildManifestKeys.ProjectId">
+            <summary>The Unity project identifier.</summary>
+        </member>
+        <member name="F:UnityEngine.CloudBuild.BuildManifestKeys.BundleId">
+            <summary>The bundleIdentifier configured in Unity Cloud Build (iOS and Android only".</summary>
+        </member>
+        <member name="F:UnityEngine.CloudBuild.BuildManifestKeys.UnityVersion">
+            <summary>The version of Unity that Unity Cloud Build used to create the build.</summary>
+        </member>
+        <member name="F:UnityEngine.CloudBuild.BuildManifestKeys.XcodeVersion">
+            <summary>The version of XCode used to build the project (iOS only".</summary>
+        </member>
+        <member name="F:UnityEngine.CloudBuild.BuildManifestKeys.CloudBuildTargetName">
+            <summary>The name of the build target that was built.</summary>
+        </member>
+    </members>
+</doc>

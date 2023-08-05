@@ -44,7 +44,7 @@ namespace UnityUtil.Logging;
 ///         <term>99,999,999</term>
 ///     </item>
 ///     <item>
-///         <term><see cref="Debug"/></term>
+///         <term><see cref="LogLevel.Debug"/></term>
 ///         <term>100,000,000</term>
 ///         <term>199,999,999</term>
 ///     </item>
@@ -88,7 +88,7 @@ namespace UnityUtil.Logging;
 /// <b>Note to Inheritors</b>
 /// <para>
 /// Inheriting from this class will make all of the above ID-management easier.
-/// The <see cref="BaseUnityUtilLogger{TCategoryName}.BaseUnityUtilLogger(ILoggerFactory, int)"/> constructor accepts an offset parameter,
+/// The <see cref="BaseUnityUtilLogger{TCategoryName}.BaseUnityUtilLogger(ILoggerFactory, TCategoryName, int)"/> constructor accepts an offset parameter,
 /// and your custom log methods can use it by calling the <see langword="protected"/> <see cref="BaseUnityUtilLogger{TCategoryName}.Log(int, string, LogLevel, string?, object?[])"/> meethod.
 /// That way, your custom log methods can all use simple monotonically increasing event IDs (0, 1, 2, etc.),
 /// and the actual integer value is computed (<see cref="LogLevel"/>- and namespace-offsets added) in one place.
@@ -114,6 +114,7 @@ public abstract class BaseUnityUtilLogger<TCategoryName>
     /// Creates a new instance of <see cref="BaseUnityUtilLogger{TCategoryName}"/>
     /// </summary>
     /// <param name="loggerFactory">Used to create the internal <see cref="ILogger{TCategoryName}"/> instance</param>
+    /// <param name="context">Object to which the log messages apply.</param>
     /// <param name="eventIdOffset">This offset will be added to all logged event IDs, to ensure unique IDs across all systems.</param>
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="eventIdOffset"/> is negative, not a multiple of <see cref="ComponentAllowedIdCount"/> greater than the highest allowed offset for a single <see cref="LogLevel"/>
@@ -153,7 +154,7 @@ public abstract class BaseUnityUtilLogger<TCategoryName>
     public const int BaseEventIdTrace = (int)Trace * LogLevelAllowedIdCount;
 
     /// <summary>
-    /// Base event ID for <see cref="Debug"/> logs.
+    /// Base event ID for <see cref="LogLevel.Debug"/> logs.
     /// </summary>
     public const int BaseEventIdDebug = (int)LogLevel.Debug * LogLevelAllowedIdCount;
 

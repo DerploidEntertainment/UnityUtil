@@ -7,6 +7,7 @@
   <ItemGroup>
     <Reference Include="$(SirenixAssembliesPath)\Sirenix.OdinInspector.Attributes.dll" Private="false"/>
     <Reference Include="$(UnityScriptAssembliesPath)\UnityEngine.UI.dll" Private="false" />
+    <Reference Include="$(UnityModulesPath)\UnityEngine.UIModule.dll" Private="false" />
     <Reference Include="$(UnityScriptAssembliesPath)\Unity.TextMeshPro.dll" Private="false" />
     <Reference Include="$(UnityPackageCachePath)\org.nuget.microsoft.extensions.logging.abstractions%40*\Microsoft.Extensions.Logging.Abstractions.dll" Private="false" />
   </ItemGroup>

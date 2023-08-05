@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
 
 namespace UnityUtil;
@@ -113,7 +114,6 @@ public class AsciiSprites : ScriptableObject
     public Sprite? CurlyBraceClose;
     public Sprite? Tilde;
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1043:Use Integral Or String Argument For Indexers", Justification = "Shouldn't even need suppressed, see https://github.com/dotnet/roslyn-analyzers/issues/5778")]
     public Sprite? this[char charCode] {
         get => spriteRef(charCode);
         set => spriteRef(charCode) = value;

@@ -48,9 +48,9 @@ public class LookAtRaycast : Updatable
     public Vector3 CustomUpwardDirection = Vector3.up;
 
     /// <summary>
-    /// Returns the unit vector that this <see cref="FollowVisionModule"/> will use to rotate towards what its associated <see cref="FollowVisionModule.VisionModule"/> is looking at.
+    /// Returns the unit vector that this <see cref="LookAtRaycast"/> will use to rotate towards what its associated <see cref="RaycastingTransform"/> is looking at.
     /// </summary>
-    /// <returns>The unit vector that this <see cref="FollowVisionModule"/> will use to rotate towards what its associated <see cref="FollowVisionModule.VisionModule"/> is looking at.</returns>
+    /// <returns>The unit vector that this <see cref="LookAtRaycast"/> will use to rotate towards what its associated <see cref="RaycastingTransform"/> is looking at.</returns>
     public Vector3 GetUpwardUnitVector() =>
         UpwardDirectionType switch {
             AxisDirection.WithGravity => U.Physics.gravity.normalized,

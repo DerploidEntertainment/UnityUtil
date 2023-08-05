@@ -40,12 +40,6 @@ public class UniformBatchedRandomishOptionChooserConfig
 /// </summary>
 public class UniformBatchedRandomishOptionChooser : IRandomishOptionChooser
 {
-    /// <summary>
-    /// All <see cref="OptionProbabilities"/> must sum to 1, within this tolerance.
-    /// This accounts for probabilities that cannot be accurately represented with floating point numbers (e.g., 1/9).
-    /// </summary>
-    public const float ProbabilitySumTolerance = 0.000001f;
-
     private readonly IRandomNumberGenerator _randomNumberGenerator;
     private readonly UniformBatchedRandomishOptionChooserConfig _config;
 

@@ -38,7 +38,7 @@ public class DependencyInjector
     private readonly Dictionary<int, Dictionary<Type, Dictionary<string, Service>>> _services = new();
 
     /// <summary>
-    /// This collection is only a field (rather than a local var) so as to reduce allocations in <see cref="loadDependeciesOfInjectMethod(object, MethodInfo)"/>
+    /// This collection is only a field (rather than a local var) so as to reduce allocations in <see cref="getDependeciesOfMethod(string, MethodBase, ParameterInfo[])"/>
     /// </summary>
     private readonly HashSet<(Type type, string? tag)> _injectedTypes = new();
 
@@ -87,9 +87,8 @@ public class DependencyInjector
         if (string.IsNullOrEmpty(serviceTypeName))
             serviceTypeName = instance.GetType().AssemblyQualifiedName;
 
-        var serviceType = Type.GetType(serviceTypeName);
-        if (serviceType is null)
-            throw new InvalidOperationException($"Could not load Type '{serviceTypeName}'. Make sure that you provided its assembly-qualified name and that its assembly is loaded.");
+        Type serviceType = Type.GetType(serviceTypeName)
+            ?? throw new InvalidOperationException($"Could not load Type '{serviceTypeName}'. Make sure that you provided its assembly-qualified name and that its assembly is loaded.");
         if (!serviceType.IsAssignableFrom(instance.GetType()))
             throw new InvalidOperationException($"The service instance registered for Type '{serviceTypeName}' is not actually derived from that Type!");
 
@@ -108,9 +107,8 @@ public class DependencyInjector
         if (string.IsNullOrEmpty(serviceTypeName))
             serviceTypeName = instanceFactory.GetType().AssemblyQualifiedName;
 
-        var serviceType = Type.GetType(serviceTypeName);
-        if (serviceType is null)
-            throw new InvalidOperationException($"Could not load Type '{serviceTypeName}'. Make sure that you provided its assembly-qualified name and that its assembly is loaded.");
+        Type serviceType = Type.GetType(serviceTypeName)
+            ?? throw new InvalidOperationException($"Could not load Type '{serviceTypeName}'. Make sure that you provided its assembly-qualified name and that its assembly is loaded.");
         if (!serviceType.IsAssignableFrom(instanceFactory.GetType()))
             throw new InvalidOperationException($"The service instance registered for Type '{serviceTypeName}' is not actually derived from that Type!");
 
@@ -218,14 +216,14 @@ public class DependencyInjector
     /// </summary>
     /// <typeparam name="T">Type of object to be constructed.</typeparam>
     /// <returns>The constructed instance of <typeparamref name="T"/>.</returns>
-    /// <exception cref="InvalidOperationException">Could not resolve all dependencies (parameters) of any public constructor on <typeparam name="T"/>.</exception>
+    /// <exception cref="InvalidOperationException">Could not resolve all dependencies (parameters) of any public constructor on <typeparamref name="T"/>.</exception>
     public T Construct<T>() => (T)Construct(typeof(T));
 
     /// <summary>
     /// Attempts to construct an instance of <paramref name="clientType"/>, using the constructor with the most parameters that
     /// can all be resolved from registered services. If no constructors can have all parameters resolved, then <see langword="null"/> is returned.
     /// </summary>
-    /// <returns>The constructed instance of <typeparamref name="T"/>.</returns>
+    /// <returns>The constructed instance of <paramref name="clientType"/>.</returns>
     /// <exception cref="InvalidOperationException">Could not resolve all dependencies (parameters) of any public constructor on <paramref name="clientType"/>.</exception>
     public object Construct(Type clientType)
     {
