@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.UI;
 using UnityUtil.DependencyInjection;
 using UnityUtil.Logging;
 using UnityUtil.Storage;
@@ -30,7 +31,19 @@ public class SingleDialogConsentManager : MonoBehaviour, IConsentManager
 
     [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
     [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
-    private void Awake() => DependencyInjector.Instance.ResolveDependenciesOf(this);
+    private void Awake()
+    {
+        DependencyInjector.Instance.ResolveDependenciesOf(this);
+
+        BtnInitialConsent!.onClick.AddListener(continueWithConsent);
+        BtnLegalUpdate!.onClick.AddListener(continueWithConsent);
+
+        void continueWithConsent()
+        {
+            GiveConsent();
+            Initialize();
+        }
+    }
 
     public void Inject(
         ILoggerFactory loggerFactory,
@@ -53,6 +66,11 @@ public class SingleDialogConsentManager : MonoBehaviour, IConsentManager
     )]
     [field: SerializeField, LabelText(nameof(ForceConsentBehavior))]
     public bool ForceConsentBehavior { get; internal set; }
+
+
+    [Header("UI")]
+    [Required] public Button? BtnInitialConsent;
+    [Required] public Button? BtnLegalUpdate;
 
     [Tooltip("Raised when the initial consent dialog is necessary. I.e., when consents have not been given/denied or the legal docs have not been accepted.")]
     public UnityEvent InitialConsentRequired = new();
