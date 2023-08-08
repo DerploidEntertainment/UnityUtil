@@ -1,9 +1,10 @@
 using System;
-using UnityUtil.Configuration;
+using UnityEngine;
+using UnityUtil.DependencyInjection;
 
 namespace UnityUtil.Updating;
 
-public abstract class Updatable : Configurable
+public abstract class Updatable : MonoBehaviour
 {
     protected IUpdater? Updater;
     private IRuntimeIdProvider? _runtimeIdProvider;
@@ -26,9 +27,9 @@ public abstract class Updatable : Configurable
         _runtimeIdProvider = runtimeIdProvider;
     }
 
-    protected override void Awake()
+    protected virtual void Awake()
     {
-        base.Awake();
+        DependencyInjector.Instance.ResolveDependenciesOf(this);
 
         InstanceId = _runtimeIdProvider!.GetId();
     }

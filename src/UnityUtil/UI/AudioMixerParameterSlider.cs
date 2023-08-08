@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using UnityUtil.Configuration;
+using UnityUtil.DependencyInjection;
 using UnityUtil.Logging;
 using UnityUtil.Storage;
 
@@ -29,7 +29,7 @@ public enum AudioSliderTransformation
     $"This will make the {nameof(Slider)}'s {nameof(GameObject)} intercept all events, " +
     $"and no event bubbling will occur from that object!"
 )]
-public class AudioMixerParameterSlider : Configurable
+public class AudioMixerParameterSlider : MonoBehaviour
 {
 
     private UiLogger<AudioMixerParameterSlider>? _logger;
@@ -94,9 +94,11 @@ public class AudioMixerParameterSlider : Configurable
         _logger = new(loggerFactory, context: this);
         _localPreferences = localPreferences;
     }
-    protected override void Awake()
+
+    [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
+    private void Awake()
     {
-        base.Awake();
+        DependencyInjector.Instance.ResolveDependenciesOf(this);
 
         bool paramExposed = AudioMixer!.GetFloat(ExposedParameterName, out _);
         if (!paramExposed)
@@ -125,6 +127,7 @@ public class AudioMixerParameterSlider : Configurable
         });
         eventTrigger.triggers.Add(pointerUpEvent);
     }
+
     [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
     private void Start()
     {

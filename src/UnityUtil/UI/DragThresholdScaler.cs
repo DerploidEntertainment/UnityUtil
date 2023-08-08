@@ -1,8 +1,9 @@
 ﻿using Sirenix.OdinInspector;
+using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using UnityUtil.Configuration;
+using UnityUtil.DependencyInjection;
 
 namespace UnityUtil.UI;
 
@@ -12,7 +13,7 @@ namespace UnityUtil.UI;
 /// <remarks>
 /// See the comments by user @runevision on this Unity forum post for more info: https://forum.unity.com/threads/buttons-within-scroll-rect-are-difficult-to-press-on-mobile.265682/
 /// </remarks>
-public class DragThresholdScaler : Configurable
+public class DragThresholdScaler : MonoBehaviour
 {
     private const string TOOLTIP =
         $"{nameof(EventSystem)}'s {nameof(UnityEngine.EventSystems.EventSystem.pixelDragThreshold)} will be scaled by the product of " +
@@ -28,9 +29,11 @@ public class DragThresholdScaler : Configurable
     [Min(0f), Tooltip(TOOLTIP)]
     public int DragThresholdFactor = 5;
 
-    protected override void Awake()
+    [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
+    [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
+    private void Awake()
     {
-        base.Awake();
+        DependencyInjector.Instance.ResolveDependenciesOf(this);
 
         EventSystem!.pixelDragThreshold = DragThresholdFactor * (int)CanvasScaler!.scaleFactor;
     }

@@ -11,6 +11,7 @@
     "com.unity.ugui": "1.0.0",
     "org.nuget.microsoft.extensions.configuration": "2.0.0",
     "org.nuget.microsoft.extensions.logging.abstractions": "2.2.0",
+    "org.nuget.microsoft.extensions.options": "2.0.0",
     "org.nuget.moq": "4.18.3",
     "org.nuget.serilog": "2.8.0",
     "com.unity.modules.ai": "1.0.0",

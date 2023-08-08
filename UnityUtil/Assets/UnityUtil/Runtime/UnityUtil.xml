@@ -4,39 +4,6 @@
         <name>UnityUtil</name>
     </assembly>
     <members>
-        <member name="T:UnityUtil.Configuration.ConfigurationLogger`1">
-            <inheritdoc/>
-        </member>
-        <member name="P:UnityUtil.Configuration.Configurator.CachedConfigurations">
-            <summary>
-            Use these rules to cache commonly resolved configurations, speeding up Scene load times.
-            We use this whitelist approach because caching ALL configurations could use up significant memory, and could actually
-            worsen performance if many of the configurations were only resolved once.
-            </summary>
-            <remarks>
-            Configuration will be cached for each type/configKey pair.
-            That is, after a class instance with one of these types, and using the matching configKey,
-            has had its fields configured via reflection, the reflected metadata and matching configs will be cached, so that
-            subsequent instances with the same type/configKey will be configured faster.
-            This is useful if you know you will have many configurable components in a scene with the same type/configKey.
-            A blank configKey (default) is equivalent to the fully qualified type name. Leading/trailing whitespace is ignored.
-            That is, if configKey is blank, then class instances of the matching type whose config keys
-            are blank or equal to that type will have their configuration cached.
-            </remarks>
-        </member>
-        <member name="P:UnityUtil.Configuration.Configurator.RecordingConfigurations">
-            <summary>
-            Toggle recording how many times configurations are looked up at runtime, for optimization purposes.
-            </summary>
-        </member>
-        <member name="M:UnityUtil.Configuration.Configurator.GetConfigurationCounts(UnityUtil.Configuration.ConfigurationCounts@)">
-            <summary>
-            Get the number of times that each configuration has been resolved at runtime.
-            There's no reason for this code to be in release builds though, hence the <see cref="T:System.Diagnostics.ConditionalAttribute"/>
-            (which also requires that it return <see langword="void"/> and not have <see langword="out"/> parameters).
-            </summary>
-            <param name="counts">Upon return, will contain the number of times that configurations were resolved.</param>
-        </member>
         <member name="F:UnityUtil.DependencyInjection.DependencyInjector._injectedTypes">
             <summary>
             This collection is only a field (rather than a local var) so as to reduce allocations in <see cref="M:UnityUtil.DependencyInjection.DependencyInjector.getDependeciesOfMethod(System.String,System.Reflection.MethodBase,System.Reflection.ParameterInfo[])"/>

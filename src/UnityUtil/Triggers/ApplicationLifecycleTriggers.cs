@@ -1,11 +1,12 @@
 ﻿using Microsoft.Extensions.Logging;
 using System.Diagnostics.CodeAnalysis;
+using UnityEngine;
 using UnityEngine.Events;
-using UnityUtil.Configuration;
+using UnityUtil.DependencyInjection;
 
 namespace UnityUtil.Triggers;
 
-public class ApplicationLifecycleTriggers : Configurable
+public class ApplicationLifecycleTriggers : MonoBehaviour
 {
     private TriggersLogger<ApplicationLifecycleTriggers>? _logger;
 
@@ -14,6 +15,10 @@ public class ApplicationLifecycleTriggers : Configurable
     public UnityEvent Paused = new();
     public UnityEvent Unpaused = new();
     public UnityEvent Quitting = new();
+
+    [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
+    [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
+    private void Awake() => DependencyInjector.Instance.ResolveDependenciesOf(this);
 
     public void Inject(ILoggerFactory loggerFactory) => _logger = new(loggerFactory!, context: this);
 
