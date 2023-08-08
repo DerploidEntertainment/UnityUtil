@@ -215,25 +215,25 @@ your app can use as many messages as it wants, as long as they use a base `event
 See [`BaseUnityUtilLogger`'s API documentation](./src/UnityUtil/Logging/BaseUnityUtilLogger.cs) for a deeper explanation of how it "partitions" the `EventId` ID space.
 The "registered" `eventIdOffset`s for the UnityUtil namespaces are shown below.
 If you are developing a library to work with UnityUtil, please avoid using these offsets, and/or submit a PR adding your library to this list
-so that other authors know not collide with _your_ library's IDs!
+so that other authors know not to collide with _your_ library's IDs!
 
-- `UnityUtil`: 0
-- `UnityUtil.Configuration`: 1000
-- `UnityUtil.DependencyInjection`: 2000
-- `UnityUtil.Inputs`: 3000
-- `UnityUtil.Interaction`: 4000
-- `UnityUtil.Inventories`: 5000
-- `UnityUtil.Legal`: 6000
-- `UnityUtil.Logging`: 7000
-- `UnityUtil.Math`: 8000
-- `UnityUtil.Movement`: 9000
-- `UnityUtil.Physics`: 10,000
-- `UnityUtil.Physics2D`: 11,000
-- `UnityUtil.Storage`: 12,000
-- `UnityUtil.Triggers`: 13,000
-- `UnityUtil.UI`: 14,000
-- `UnityUtil.Updating`: 15,000
-- `UnityUtil.Editor`: 16,000
+- 0: `UnityUtil`
+- 1000: Reserved
+- 2000: `UnityUtil.DependencyInjection`
+- 3000: `UnityUtil.Inputs`
+- 4000: `UnityUtil.Interaction`
+- 5000: `UnityUtil.Inventories`
+- 6000: `UnityUtil.Legal`
+- 7000: `UnityUtil.Logging`
+- 8000: `UnityUtil.Math`
+- 9000: `UnityUtil.Movement`
+- 10,000: `UnityUtil.Physics`
+- 11,000: `UnityUtil.Physics2D`
+- 12,000: `UnityUtil.Storage`
+- 13,000: `UnityUtil.Triggers`
+- 14,000: `UnityUtil.UI`
+- 15,000: `UnityUtil.Updating`
+- 16,000: `UnityUtil.Editor`
 
 ### Math
 
