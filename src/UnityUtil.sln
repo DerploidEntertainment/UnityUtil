@@ -13,6 +13,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Directory.Build.props = Directory.Build.props
 		Directory.Build.targets = Directory.Build.targets
 		..\LICENSE.md = ..\LICENSE.md
+		Logging.props = Logging.props
 		OtherUnityAssemblies.props = OtherUnityAssemblies.props
 		..\README.md = ..\README.md
 	EndProjectSection
@@ -28,7 +29,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnityUtil.Editor.Tests", "T
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Serilog.Enrichers.UnityObjectPath", "Serilog.Enrichers.UnityObjectPath\Serilog.Enrichers.UnityObjectPath.csproj", "{C5B11C0A-C75E-4904-9987-3EA11FAEC8E8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnityUtil.Configuration.RemoteConfig", "UnityUtil.Configuration.RemoteConfig\UnityUtil.Configuration.RemoteConfig.csproj", "{83CC6E71-4DBF-42C8-8DA1-DEA30707E4F1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnityUtil.Configuration.RemoteConfig", "UnityUtil.Configuration.RemoteConfig\UnityUtil.Configuration.RemoteConfig.csproj", "{83CC6E71-4DBF-42C8-8DA1-DEA30707E4F1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
