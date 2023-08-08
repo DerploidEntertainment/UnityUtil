@@ -4,10 +4,6 @@
 
   <PropertyGroup>
     <UnityDestinationFolder>$(UnityProjectPath)\Assets\$(SolutionName)\Runtime</UnityDestinationFolder>
-    
-    <RemoteConfigAssembly>$(UnityScriptAssembliesDir)\Unity.Services.RemoteConfig.dll</RemoteConfigAssembly>
-    <UnityRemoteConfigPath>$(UnityProjectPath)\$(RemoteConfigAssembly)</UnityRemoteConfigPath>
-    <UnityRemoteConfigPath Condition="!Exists('$(UnityRemoteConfigPath)')">$(UnityProjectPath)\$(RemoteConfigAssembly)</UnityRemoteConfigPath>
   </PropertyGroup>
 
   <ItemGroup>
@@ -20,7 +16,7 @@
     <Reference Include="$(UnityModulesPath)\UnityEngine.PhysicsModule.dll" Private="false" />
     <Reference Include="$(UnityModulesPath)\UnityEngine.UnityWebRequestModule.dll" Private="false" />
 
-    <Reference Include="$(UnityRemoteConfigPath)" Private="false" />
+    <Reference Include="$(UnityScriptAssembliesPath)\Unity.Services.RemoteConfig.dll" Private="false" />
   </ItemGroup>
 
   <ItemGroup>

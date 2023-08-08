@@ -54,11 +54,9 @@ public class LegalAcceptManager : MonoBehaviour, ILegalAcceptManager
         UnityWebRequest? req = null;
         try {
             // Get the latest tag from the web
-#pragma warning disable CA2000 // Dispose objects before losing scope
             req = downloadHandler is null
                 ? new UnityWebRequest(doc.LatestVersionUri!.Uri, UnityWebRequest.kHttpVerbHEAD)
                 : new UnityWebRequest(doc.LatestVersionUri!.Uri, UnityWebRequest.kHttpVerbHEAD, downloadHandler, uploadHandler);
-#pragma warning restore CA2000 // Dispose objects before losing scope
             UnityWebRequestAsyncOperation reqOp = req.SendWebRequest();
             reqOp.completed += op => onRequestCompleted(req);   // Request must be explicitly disposed in here
         }

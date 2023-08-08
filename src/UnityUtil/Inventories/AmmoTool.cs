@@ -37,12 +37,10 @@ public class AmmoTool : Updatable
     /// </summary>
     /// <param name="ammo">The amount of ammo with which to load the <see cref="AmmoTool"/>.</param>
     /// <returns>The amount of left-over ammo that could not be stored in the <see cref="AmmoTool"/>'s clips.  Will always be >= 0.</returns>
-    public int Load(int ammo)
-    {
-        if (ammo < 0)
-            throw new ArgumentOutOfRangeException(nameof(ammo), $"Cannot load {this.GetHierarchyNameWithType()} with a negative amount of ammo!");
-        return doLoad(ammo);
-    }
+    public int Load(int ammo) =>
+        ammo < 0
+            ? throw new ArgumentOutOfRangeException(nameof(ammo), $"Cannot load {this.GetHierarchyNameWithType()} with a negative amount of ammo!")
+            : doLoad(ammo);
 
     /// <summary>
     /// Reload this <see cref="AmmoTool"/>'s current clip from its backup ammo
