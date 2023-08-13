@@ -49,15 +49,14 @@ public static class ConfigurationBuilderExtensions
         where TApp : struct
         where TFilter : struct
     =>
-        builder.Add(new RemoteConfigConfigurationSource<TUser, TApp, TFilter>() {
-            UserAttributes = userAttributes,
-            AppAttributes = appAttributes,
-            FilterAttributes = filterAttributes,
-            ConfigType = configType,
-            InitializeUnityServices = initializeUnityServices,
-            InitializeUnityAuthentication = initializeUnityAuthentication,
-            InitializationOptions = initializationOptions,
-            AuthenticationSignInOptions = authenticationSignInOptions,
-            RemoteConfigInitializer = remoteConfigInitializer,
-        });
+        builder.Add(
+            new RemoteConfigConfigurationSource<TUser, TApp, TFilter>(userAttributes, appAttributes, filterAttributes) {
+                ConfigType = configType,
+                InitializeUnityServices = initializeUnityServices,
+                InitializeUnityAuthentication = initializeUnityAuthentication,
+                InitializationOptions = initializationOptions,
+                AuthenticationSignInOptions = authenticationSignInOptions,
+                RemoteConfigInitializer = remoteConfigInitializer,
+            }
+        );
 }

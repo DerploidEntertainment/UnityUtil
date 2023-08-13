@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using System;
+using System.Threading.Tasks;
 using Unity.Services.Authentication;
 using Unity.Services.Core;
 using Unity.Services.RemoteConfig;
@@ -11,6 +12,12 @@ public class RemoteConfigConfigurationSource<TUser, TApp, TFilter> : IConfigurat
     where TApp : struct
     where TFilter : struct
 {
+    public RemoteConfigConfigurationSource(TUser userAttributes, TApp appAttributes, TFilter filterAttributes) {
+        UserAttributes = userAttributes;
+        AppAttributes = appAttributes;
+        FilterAttributes = filterAttributes;
+    }
+
     // These structs are required in order to fetch configs. See https://docs.unity3d.com/Packages/com.unity.remote-config@2.0/manual/CodeIntegration.html
     public TUser UserAttributes { get; set; }
     public TApp AppAttributes { get; set; }
