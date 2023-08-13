@@ -61,7 +61,7 @@ public class LegalAcceptManager : MonoBehaviour, ILegalAcceptManager
             reqOp.completed += op => onRequestCompleted(req);   // Request must be explicitly disposed in here
         }
         catch {
-            _logger!.LegalDocumentFetchLatesetFailed(doc, req);
+            _logger!.LegalDocumentFetchLatestFailed(doc, req);
             req?.Dispose();
         }
 
@@ -71,7 +71,7 @@ public class LegalAcceptManager : MonoBehaviour, ILegalAcceptManager
             // Parse the tag from the response
             string? webTag = null;
             if (request.result != UnityWebRequest.Result.Success)
-                _logger!.LegalDocumentFetchLatesetErrorCode(doc, request);
+                _logger!.LegalDocumentFetchLatestErrorCode(doc, req);
             else
                 webTag = request.GetResponseHeader(doc.TagHeader);
 

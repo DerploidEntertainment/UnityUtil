@@ -62,11 +62,11 @@ internal class LegalLogger<T> : BaseUnityUtilLogger<T>
 
     #region Warning
 
-    public void LegalDocumentFetchLatesetFailed(LegalDocument legalDocument, UnityWebRequest? webRequest) =>
-        LogWarning(id: 0, nameof(LegalDocumentFetchLatesetFailed), "Unable to fetch latest version of legal document with {uri}. Error received: {error}", legalDocument.LatestVersionUri!.Uri, webRequest?.error ?? "");
+    public void LegalDocumentFetchLatestFailed(LegalDocument legalDocument, UnityWebRequest? webRequest) =>
+        LogWarning(id: 0, nameof(LegalDocumentFetchLatestFailed), "Unable to fetch latest version of legal document with {uri}. Error received: {error}", legalDocument.LatestVersionUri!.Uri, webRequest?.error ?? "");
 
-    public void LegalDocumentFetchLatesetErrorCode(LegalDocument legalDocument, UnityWebRequest? webRequest) =>
-        LogWarning(id: 1, nameof(LegalDocumentFetchLatesetErrorCode), "Unable to fetch latest version of legal document with {uri}. Error received: {error}", legalDocument.LatestVersionUri!.Uri, webRequest?.error ?? "");
+    public void LegalDocumentFetchLatestErrorCode(LegalDocument legalDocument, UnityWebRequest? webRequest) =>
+        LogWarning(id: 1, nameof(LegalDocumentFetchLatestErrorCode), "Unable to fetch latest version of legal document with {uri}. Error received: {error}", legalDocument.LatestVersionUri!.Uri, webRequest?.error ?? "");
 
     public void LegalDocumentHeaderParseFailedFirstTime(string header, string tag) =>
         LogWarning(id: 2, nameof(LegalDocumentHeaderParseFailedFirstTime), $"Document tag from {{{nameof(header)}}} was empty or could not be parsed. Using random GUID {{{nameof(tag)}}} instead.");
