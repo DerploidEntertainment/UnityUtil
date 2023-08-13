@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.TestTools;
 using UnityUtil.Legal;
@@ -59,7 +60,9 @@ namespace UnityUtil.Editor.Tests.Legal
                 new(LegalAcceptance.Current, new bool?[]{ true, true }),
             };
 
-        #region ShowDialogIfNeeded
+        #pragma warning disable IDE1006 // Naming Styles    // Test names don't need the -Async suffix
+
+        #region ShowDialogIfNeededAsync
 
         [Test]
         [TestCase(false, 0)]
@@ -68,7 +71,7 @@ namespace UnityUtil.Editor.Tests.Legal
         [TestCase(true, 0)]
         [TestCase(true, 1)]
         [TestCase(true, 2)]
-        public void ShowDialogIfNeeded_ChecksLocalPrefs_ForEachConsent_IgnoringForceConsentBehavior(bool forceConsentBehavior, int consentCount)
+        public async Task ShowDialogIfNeededAsync_ChecksLocalPrefs_ForEachConsent_IgnoringForceConsentBehavior(bool forceConsentBehavior, int consentCount)
         {
             Mock<IInitializableWithConsent>[] initializables = getInitializablesWithConsent(consentCount);
             SingleDialogConsentManager singleDialogConsentManager = getSingleDialogConsentManager(
@@ -76,7 +79,7 @@ namespace UnityUtil.Editor.Tests.Legal
             );
             singleDialogConsentManager.ForceConsentBehavior = forceConsentBehavior;
 
-            singleDialogConsentManager.ShowDialogIfNeeded();
+            await singleDialogConsentManager.ShowDialogIfNeededAsync();
 
             foreach (Mock<IInitializableWithConsent> initializable in initializables)
                 initializable.Verify(x => x.ConsentPreferenceKey, Times.Once);
@@ -85,20 +88,20 @@ namespace UnityUtil.Editor.Tests.Legal
         [Test]
         [TestCase(false)]
         [TestCase(true)]
-        public void ShowDialogIfNeeded_ChecksLegalAcceptance_IgnoringForceConsentBehavior(bool forceConsentBehavior)
+        public async Task ShowDialogIfNeededAsync_ChecksLegalAcceptance_IgnoringForceConsentBehavior(bool forceConsentBehavior)
         {
             Mock<ILegalAcceptManager> legalAcceptManager = new();
             SingleDialogConsentManager singleDialogConsentManager = getSingleDialogConsentManager(legalAcceptManager: legalAcceptManager.Object);
             singleDialogConsentManager.ForceConsentBehavior = forceConsentBehavior;
 
-            singleDialogConsentManager.ShowDialogIfNeeded();
+            await singleDialogConsentManager.ShowDialogIfNeededAsync();
 
-            legalAcceptManager.Verify(x => x.CheckAcceptance(It.IsAny<Action<LegalAcceptance>>()), Times.Once);
+            legalAcceptManager.Verify(x => x.CheckAcceptanceAsync(), Times.Once);
         }
 
         [Test]
         [TestCaseSource(nameof(getConsentStateTestCases))]
-        public void ShowDialogIfNeeded_ShowsCorrectUi_BasedOnConsents(LegalAcceptance legalAcceptance, bool?[] priorConsents)
+        public async Task ShowDialogIfNeededAsync_ShowsCorrectUi_BasedOnConsents(LegalAcceptance legalAcceptance, bool?[] priorConsents)
         {
             int initialFtueInvokeCount = 0;
             int legalUpdateInvokeCount = 0;
@@ -110,7 +113,7 @@ namespace UnityUtil.Editor.Tests.Legal
             singleDialogConsentManager.LegalUpdateRequired.AddListener(() => ++legalUpdateInvokeCount);
             singleDialogConsentManager.NoUiRequired.AddListener(() => ++noUiInvokeCount);
 
-            singleDialogConsentManager.ShowDialogIfNeeded();
+            await singleDialogConsentManager.ShowDialogIfNeededAsync();
 
             Assert.That(initialFtueInvokeCount, Is.EqualTo(someConsentRequired || legalAcceptance == LegalAcceptance.Unprovided ? 1 : 0));
             Assert.That(legalUpdateInvokeCount, Is.EqualTo(!someConsentRequired && legalAcceptance == LegalAcceptance.Stale ? 1 : 0));
@@ -119,7 +122,7 @@ namespace UnityUtil.Editor.Tests.Legal
 
         [Test]
         [TestCaseSource(nameof(getConsentStateTestCases))]
-        public void ShowDialogIfNeeded_ShowsCorrectUi_DontForceConsentBehavior(LegalAcceptance legalAcceptance, bool?[] priorConsents)
+        public async Task ShowDialogIfNeededAsync_ShowsCorrectUi_DontForceConsentBehavior(LegalAcceptance legalAcceptance, bool?[] priorConsents)
         {
             int initialFtueInvokeCount = 0;
             int legalUpdateInvokeCount = 0;
@@ -131,7 +134,7 @@ namespace UnityUtil.Editor.Tests.Legal
             singleDialogConsentManager.LegalUpdateRequired.AddListener(() => ++legalUpdateInvokeCount);
             singleDialogConsentManager.NoUiRequired.AddListener(() => ++noUiInvokeCount);
 
-            singleDialogConsentManager.ShowDialogIfNeeded();
+            await singleDialogConsentManager.ShowDialogIfNeededAsync();
 
             Assert.That(initialFtueInvokeCount, Is.EqualTo(legalAcceptance == LegalAcceptance.Unprovided ? 1 : 0));
             Assert.That(legalUpdateInvokeCount, Is.EqualTo(legalAcceptance == LegalAcceptance.Stale ? 1 : 0));
@@ -144,7 +147,7 @@ namespace UnityUtil.Editor.Tests.Legal
 
         [Test]
         [TestCaseSource(nameof(getConsentStateTestCases))]
-        public void GiveConsent_OnlySetsUpdatedConsents_ForceConsentBehavior(LegalAcceptance legalAcceptance, bool?[] priorConsents)
+        public async Task GiveConsent_OnlySetsUpdatedConsents_ForceConsentBehavior(LegalAcceptance legalAcceptance, bool?[] priorConsents)
         {
             string consentStrings = string.Join(",", priorConsents.Select(x => x?.ToString() ?? "Null"));
             U.Debug.Log($"Giving consent when legal acceptance is '{legalAcceptance}' and consent states are: {consentStrings}");
@@ -157,7 +160,7 @@ namespace UnityUtil.Editor.Tests.Legal
             );
             singleDialogConsentManager.ForceConsentBehavior = true;
 
-            singleDialogConsentManager.ShowDialogIfNeeded();
+            await singleDialogConsentManager.ShowDialogIfNeededAsync();
             singleDialogConsentManager.GiveConsent();
 
             for (int index = 0; index < priorConsents.Length; index++) {
@@ -171,7 +174,7 @@ namespace UnityUtil.Editor.Tests.Legal
 
         [Test]
         [TestCaseSource(nameof(getConsentStateTestCases))]
-        public void GiveConsent_OnlySetsUpdatedConsents_DontForceConsentBehavior(LegalAcceptance legalAcceptance, bool?[] priorConsents)
+        public async Task GiveConsent_OnlySetsUpdatedConsents_DontForceConsentBehavior(LegalAcceptance legalAcceptance, bool?[] priorConsents)
         {
             string consentStrings = string.Join(",", priorConsents.Select(x => x?.ToString() ?? "Null"));
             U.Debug.Log($"Giving consent when legal acceptance is '{legalAcceptance}' and consent states are: {consentStrings}");
@@ -184,7 +187,7 @@ namespace UnityUtil.Editor.Tests.Legal
             );
             singleDialogConsentManager.ForceConsentBehavior = false;
 
-            singleDialogConsentManager.ShowDialogIfNeeded();
+            await singleDialogConsentManager.ShowDialogIfNeededAsync();
             singleDialogConsentManager.GiveConsent();
 
             foreach (Mock<IInitializableWithConsent> initializable in initializables)
@@ -198,14 +201,14 @@ namespace UnityUtil.Editor.Tests.Legal
         [TestCase(true, LegalAcceptance.Unprovided)]
         [TestCase(true, LegalAcceptance.Stale)]
         [TestCase(true, LegalAcceptance.Current)]
-        public void GiveConsent_SetsLegalAcceptance_IfNotCurrent(bool forceConsentBehavior, LegalAcceptance legalAcceptance)
+        public async Task GiveConsent_SetsLegalAcceptance_IfNotCurrent(bool forceConsentBehavior, LegalAcceptance legalAcceptance)
         {
             U.Debug.Log($"Giving consent when {nameof(forceConsentBehavior)} is {forceConsentBehavior} and {nameof(legalAcceptance)} is '{legalAcceptance}'...");
             Mock<ILegalAcceptManager> legalAcceptManager = getLegalAcceptManager(legalAcceptance);
             SingleDialogConsentManager singleDialogConsentManager = getSingleDialogConsentManager(legalAcceptManager: legalAcceptManager.Object);
             singleDialogConsentManager.ForceConsentBehavior = forceConsentBehavior;
 
-            singleDialogConsentManager.ShowDialogIfNeeded();
+            await singleDialogConsentManager.ShowDialogIfNeededAsync();
             singleDialogConsentManager.GiveConsent();
 
             legalAcceptManager.Verify(x => x.Accept(), legalAcceptance == LegalAcceptance.Current ? Times.Never : Times.Once);
@@ -217,7 +220,7 @@ namespace UnityUtil.Editor.Tests.Legal
 
         [Test]
         [TestCaseSource(nameof(getConsentStateTestCases))]
-        public void Initialize_InitializesAll_WithCorrectConsents_ForceConsentBehavior(LegalAcceptance legalAcceptance, bool?[] priorConsents)
+        public async Task Initialize_InitializesAll_WithCorrectConsents_ForceConsentBehavior(LegalAcceptance legalAcceptance, bool?[] priorConsents)
         {
             string consentStrings = string.Join(",", priorConsents.Select(x => x?.ToString() ?? "Null"));
             U.Debug.Log($"Initializing when legal acceptance is '{legalAcceptance}' and consent states are: {consentStrings}");
@@ -230,7 +233,7 @@ namespace UnityUtil.Editor.Tests.Legal
             );
             singleDialogConsentManager.ForceConsentBehavior = true;
 
-            singleDialogConsentManager.ShowDialogIfNeeded();
+            await singleDialogConsentManager.ShowDialogIfNeededAsync();
             singleDialogConsentManager.GiveConsent();
             singleDialogConsentManager.Initialize();
 
@@ -243,7 +246,7 @@ namespace UnityUtil.Editor.Tests.Legal
 
         [Test]
         [TestCaseSource(nameof(getConsentStateTestCases))]
-        public void Initialize_InitializesAll_WithCorrectConsents_DontForceConsentBehavior(LegalAcceptance legalAcceptance, bool?[] priorConsents)
+        public async Task Initialize_InitializesAll_WithCorrectConsents_DontForceConsentBehavior(LegalAcceptance legalAcceptance, bool?[] priorConsents)
         {
             string consentStrings = string.Join(",", priorConsents.Select(x => x?.ToString() ?? "Null"));
             U.Debug.Log($"Initializing when legal acceptance is '{legalAcceptance}' and consent states are: {consentStrings}");
@@ -256,7 +259,7 @@ namespace UnityUtil.Editor.Tests.Legal
             );
             singleDialogConsentManager.ForceConsentBehavior = false;
 
-            singleDialogConsentManager.ShowDialogIfNeeded();
+            await singleDialogConsentManager.ShowDialogIfNeededAsync();
             singleDialogConsentManager.GiveConsent();
             singleDialogConsentManager.Initialize();
 
@@ -270,14 +273,14 @@ namespace UnityUtil.Editor.Tests.Legal
         [Test]
         [TestCase(10, 10, 10)]
         [TestCase(10, 20, 30)]
-        public void Initialize_InitializesAllInParallel(params int[] initializeDurationsMs)
+        public async Task Initialize_InitializesAllInParallel(params int[] initializeDurationsMs)
         {
             Mock<IInitializableWithConsent>[] initializables = getInitializablesWithConsent(initializeDurationsMs.Length, initializeDurationsMs);
             SingleDialogConsentManager singleDialogConsentManager = getSingleDialogConsentManager(
                 initializablesWithConsent: initializables.Select(x => x.Object).ToArray()
             );
 
-            singleDialogConsentManager.ShowDialogIfNeeded();
+            await singleDialogConsentManager.ShowDialogIfNeededAsync();
             singleDialogConsentManager.GiveConsent();
             var sw = Stopwatch.StartNew();
             singleDialogConsentManager.Initialize();
@@ -290,7 +293,7 @@ namespace UnityUtil.Editor.Tests.Legal
         [TestCase(0)]
         [TestCase(1)]
         [TestCase(2)]
-        public void Initialize_DoesNotThrow_ButLogsExceptions(int consentCount)
+        public async Task Initialize_DoesNotThrow_ButLogsExceptions(int consentCount)
         {
             // ARRANGE
             Mock<IInitializableWithConsent>[] initializables = Enumerable
@@ -321,7 +324,7 @@ namespace UnityUtil.Editor.Tests.Legal
             }
 
             // ACT
-            singleDialogConsentManager.ShowDialogIfNeeded();
+            await singleDialogConsentManager.ShowDialogIfNeededAsync();
             singleDialogConsentManager.GiveConsent();
             singleDialogConsentManager.Initialize();
 
@@ -337,6 +340,8 @@ namespace UnityUtil.Editor.Tests.Legal
         }
 
         #endregion
+
+#pragma warning restore IDE1006 // Naming Styles
 
         private static SingleDialogConsentManager getSingleDialogConsentManagerWithConsents(LegalAcceptance legalAcceptance, bool?[] priorConsents) =>
             getSingleDialogConsentManager(
@@ -365,8 +370,7 @@ namespace UnityUtil.Editor.Tests.Legal
         private static Mock<ILegalAcceptManager> getLegalAcceptManager(LegalAcceptance legalAcceptance)
         {
             Mock<ILegalAcceptManager> legalAcceptManager = new();
-            legalAcceptManager.Setup(x => x.CheckAcceptance(It.IsAny<Action<LegalAcceptance>>()))
-                .Callback<Action<LegalAcceptance>>(action => action(legalAcceptance));
+            legalAcceptManager.Setup(x => x.CheckAcceptanceAsync()).ReturnsAsync(legalAcceptance);
             return legalAcceptManager;
         }
 

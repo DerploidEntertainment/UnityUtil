@@ -85,7 +85,7 @@ public class SingleDialogConsentManager : MonoBehaviour, IConsentManager
     /// Raise the <see cref="InitialConsentRequired"/>, <see cref="LegalUpdateRequired"/>, or <see cref="NoUiRequired"/> events as necessary,
     /// depending on the consents and legal documents acceptance saved in local preferences.
     /// </summary>
-    public void ShowDialogIfNeeded()
+    public async Task ShowDialogIfNeededAsync()
     {
         _consents = _initializablesWithConsent!
             .Select((x, index) => {
@@ -99,27 +99,23 @@ public class SingleDialogConsentManager : MonoBehaviour, IConsentManager
             })
             .ToArray();
 
-        _legalAcceptManager!.CheckAcceptance(legalAcceptanceCallback);
+        LegalAcceptance legalAcceptance = await _legalAcceptManager!.CheckAcceptanceAsync();
 
+        if (Array.FindIndex(_consents, x => x.isConsentRequired) > -1 || legalAcceptance == LegalAcceptance.Unprovided) {
+            _legalAcceptanceRequired = legalAcceptance == LegalAcceptance.Unprovided;
+            _logger!.ConsentNeedsRequested();
+            InitialConsentRequired.Invoke();
+        }
 
-        void legalAcceptanceCallback(LegalAcceptance legalAcceptance)
-        {
-            if (Array.FindIndex(_consents, x => x.isConsentRequired) > -1 || legalAcceptance == LegalAcceptance.Unprovided) {
-                _legalAcceptanceRequired = legalAcceptance == LegalAcceptance.Unprovided;
-                _logger!.ConsentNeedsRequested();
-                InitialConsentRequired.Invoke();
-            }
+        else if (legalAcceptance == LegalAcceptance.Stale) {
+            _legalAcceptanceRequired = true;
+            _logger!.ConsentRequestedLegalDocUpdated();
+            LegalUpdateRequired.Invoke();
+        }
 
-            else if (legalAcceptance == LegalAcceptance.Stale) {
-                _legalAcceptanceRequired = true;
-                _logger!.ConsentRequestedLegalDocUpdated();
-                LegalUpdateRequired.Invoke();
-            }
-
-            else {
-                _logger!.ConsentAlreadyRequested();
-                NoUiRequired.Invoke();
-            }
+        else {
+            _logger!.ConsentAlreadyRequested();
+            NoUiRequired.Invoke();
         }
     }
 

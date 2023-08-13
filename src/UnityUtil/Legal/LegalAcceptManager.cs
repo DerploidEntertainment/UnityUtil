@@ -3,6 +3,8 @@ using Sirenix.OdinInspector;
 using System;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
@@ -11,17 +13,26 @@ using UnityUtil.Logging;
 using UnityUtil.Storage;
 
 namespace UnityUtil.Legal;
+internal class LegalDocumentState
+{
+    public string CurrentTag;
+    public string? AcceptedTag;
+
+    public LegalDocumentState(string currentTag) => CurrentTag = currentTag;
+}
 
 public class LegalAcceptManager : MonoBehaviour, ILegalAcceptManager
 {
+
     private LegalLogger<LegalAcceptManager>? _logger;
     private ILocalPreferences? _localPreferences;
 
-    private string[] _latestVersionTags = Array.Empty<string>();
-    private bool _acceptRequired;
-    private bool _acceptOutdated;
-    private int _numTagsFetched;
+    private DownloadHandler? _downloadHandler;
+    private UploadHandler? _uploadHandler;
 
+    private string[] _latestVersionTags = Array.Empty<string>();
+
+    [DisableInPlayMode]
     public LegalDocument[] Documents = Array.Empty<LegalDocument>();
 
     [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
@@ -34,78 +45,95 @@ public class LegalAcceptManager : MonoBehaviour, ILegalAcceptManager
         _localPreferences = localPreferences;
     }
 
-    public void CheckAcceptance(Action<LegalAcceptance> callback)
+    public void SetHandlers(DownloadHandler downloadHandler, UploadHandler uploadHandler)
     {
-        _latestVersionTags = new string[Documents.Length];
-        for (int d = 0; d < Documents.Length; ++d)
-            CheckForUpdate(d, callback);
+        _downloadHandler = downloadHandler;
+        _uploadHandler = uploadHandler;
     }
 
-    internal void CheckForUpdate(int documentIndex, Action<LegalAcceptance> callback, DownloadHandler? downloadHandler = null, UploadHandler? uploadHandler = null)
+    public async Task<LegalAcceptance> CheckAcceptanceAsync()
     {
-        if (downloadHandler is null ^ uploadHandler is null)
-            throw new InvalidOperationException($"{nameof(downloadHandler)} and {nameof(uploadHandler)} must be both null or both non-null");
+        LegalDocumentState[] legalDocumentStates = await Task.WhenAll(
+            Enumerable.Range(0, Documents.Length).Select(CheckForUpdateAsync)
+        );
+
+        // If the tags from the web do not match the accepted tags in preferences, then
+        // return "unprovided" or "stale" state, depending on whether a tag existed in preferences at all
+        bool acceptRequired = false;
+        bool acceptOutdated = false;
+        _latestVersionTags = new string[Documents.Length];
+        for (int x = 0; x < legalDocumentStates.Length; x++) {
+            LegalDocumentState legalDocumentState = legalDocumentStates[x];
+            acceptRequired |= (legalDocumentState.CurrentTag != legalDocumentState.AcceptedTag);
+            acceptOutdated |= (acceptRequired && !string.IsNullOrEmpty(legalDocumentState.AcceptedTag));
+            _latestVersionTags[x] = legalDocumentState.CurrentTag;
+        }
+
+        if (acceptRequired) {
+            _logger!.LegalAcceptRequired(acceptOutdated);
+            return acceptOutdated ? LegalAcceptance.Stale : LegalAcceptance.Unprovided;
+        }
+        else {
+            _logger!.LegalAcceptAlreadyAcceptedAll();
+            return LegalAcceptance.Current;
+        }
+    }
+
+    internal Task<LegalDocumentState> CheckForUpdateAsync(int documentIndex)
+    {
+        var tcs = new TaskCompletionSource<LegalDocumentState>();
 
         // Get the last accepted tag from preferences (will be empty if none stored yet)
         LegalDocument doc = Documents[documentIndex];
         string acceptedTag = _localPreferences!.GetString(doc.PreferencesKey);
-        bool firstTime = string.IsNullOrEmpty(acceptedTag);
 
-        UnityWebRequest? req = null;
+        UnityWebRequest? req = null;    // Must not be disposed until after we get response values in callback below
         try {
             // Get the latest tag from the web
-            req = downloadHandler is null
+            req = _downloadHandler is null && _uploadHandler is null
                 ? new UnityWebRequest(doc.LatestVersionUri!.Uri, UnityWebRequest.kHttpVerbHEAD)
-                : new UnityWebRequest(doc.LatestVersionUri!.Uri, UnityWebRequest.kHttpVerbHEAD, downloadHandler, uploadHandler);
+                : new UnityWebRequest(doc.LatestVersionUri!.Uri, UnityWebRequest.kHttpVerbHEAD, _downloadHandler, _uploadHandler);
             UnityWebRequestAsyncOperation reqOp = req.SendWebRequest();
-            reqOp.completed += op => onRequestCompleted(req);   // Request must be explicitly disposed in here
+            reqOp.completed += _ => onRequestCompleted();
         }
-        catch {
+        catch (Exception ex) {
             _logger!.LegalDocumentFetchLatestFailed(doc, req);
             req?.Dispose();
+            tcs.SetException(ex);
         }
 
+        return tcs.Task;
 
-        void onRequestCompleted(UnityWebRequest request)
+
+        void onRequestCompleted()
         {
             // Parse the tag from the response
-            string? webTag = null;
-            if (request.result != UnityWebRequest.Result.Success)
+            string? currentTag = null;
+            if (req.result != UnityWebRequest.Result.Success)
                 _logger!.LegalDocumentFetchLatestErrorCode(doc, req);
             else
-                webTag = request.GetResponseHeader(doc.TagHeader);
+                currentTag = req.GetResponseHeader(doc.TagHeader);
 
-            request.Dispose();
+            req!.Dispose();
 
             // If unable to parse tag due to network or server errors, then
-            // Use a random GUID as the tag (shouldn't collide with an existing accepted tag), unless user has already accepted this document once before
-            if (string.IsNullOrEmpty(webTag)) {
-                if (firstTime) {
-                    webTag = Guid.NewGuid().ToString();
-                    _logger!.LegalDocumentHeaderParseFailedFirstTime(doc.TagHeader, webTag);
+            // use a random GUID as the tag (shouldn't collide with an existing accepted tag) or the last accepted tag if one exists
+            if (string.IsNullOrEmpty(currentTag)) {
+                if (string.IsNullOrEmpty(acceptedTag)) {
+                    currentTag = Guid.NewGuid().ToString();
+                    _logger!.LegalDocumentHeaderParseFailedFirstTime(doc.TagHeader, currentTag);
                 }
                 else {
-                    webTag = acceptedTag;
+                    currentTag = acceptedTag;
                     _logger!.LegalDocumentHeaderParseFailed(doc.TagHeader);
                 }
             }
 
-            _latestVersionTags[documentIndex] = webTag;
-
-            // If the tag from the web does not match the version in preferences, then
-            // Show the "accept" text or the "accept an update" text, depending on whether preferences tag existed
-            _acceptRequired |= (webTag != acceptedTag);
-            _acceptOutdated |= (_acceptRequired && !firstTime);
-            if (++_numTagsFetched == Documents.Length) {
-                if (_acceptRequired) {
-                    _logger!.LegalAcceptRequired(_acceptOutdated);
-                    callback(_acceptOutdated ? LegalAcceptance.Stale : LegalAcceptance.Unprovided);
+            tcs.SetResult(
+                new LegalDocumentState(currentTag) {
+                    AcceptedTag = string.IsNullOrEmpty(acceptedTag) ? null : acceptedTag,
                 }
-                else {
-                    _logger!.LegalAcceptAlreadyAcceptedAll();
-                    callback(LegalAcceptance.Current);
-                }
-            }
+            );
         }
     }
     public bool HasAccepted { get; private set; }

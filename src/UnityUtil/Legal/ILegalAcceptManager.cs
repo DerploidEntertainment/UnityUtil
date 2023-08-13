@@ -1,4 +1,4 @@
-using System;
+using System.Threading.Tasks;
 
 namespace UnityUtil.Legal;
 
@@ -11,6 +11,6 @@ public enum LegalAcceptance
 
 public interface ILegalAcceptManager
 {
-    void CheckAcceptance(Action<LegalAcceptance> callback);
+    Task<LegalAcceptance> CheckAcceptanceAsync();
     void Accept();
 }
