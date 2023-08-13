@@ -208,7 +208,7 @@
             Consent is expected to be gathered after showing a single UI dialog during the First-Time User Experience (FTUE).
             </summary>
         </member>
-        <member name="M:UnityUtil.Legal.SingleDialogConsentManager.ShowDialogIfNeeded">
+        <member name="M:UnityUtil.Legal.SingleDialogConsentManager.ShowDialogIfNeededAsync">
             <summary>
             Raise the <see cref="F:UnityUtil.Legal.SingleDialogConsentManager.InitialConsentRequired"/>, <see cref="F:UnityUtil.Legal.SingleDialogConsentManager.LegalUpdateRequired"/>, or <see cref="F:UnityUtil.Legal.SingleDialogConsentManager.NoUiRequired"/> events as necessary,
             depending on the consents and legal documents acceptance saved in local preferences.
@@ -963,41 +963,59 @@
             <summary>
             Removes key and its corresponding value from the preferences.
             </summary>
+            <param name="key"></param>
         </member>
         <member name="M:UnityUtil.Storage.ILocalPreferences.GetFloat(System.String,System.Single)">
             <summary>
-            Returns the value corresponding to key in the preference file if it exists.
+            Returns the value corresponding to key in the preference file if it exists; otherwise, <paramref name="defaultValue"/>.
             </summary>
+            <param name="key"></param>
+            <param name="defaultValue"></param>
+            <returns></returns>
         </member>
         <member name="M:UnityUtil.Storage.ILocalPreferences.GetFloat(System.String)">
             <summary>
-            Returns the value corresponding to key in the preference file if it exists.
+            Returns the value corresponding to key in the preference file if it exists; otherwise, zero.
             </summary>
+            <param name="key"></param>
+            <returns></returns>
         </member>
         <member name="M:UnityUtil.Storage.ILocalPreferences.GetInt(System.String,System.Int32)">
             <summary>
-            Returns the value corresponding to key in the preference file if it exists.
+            Returns the value corresponding to key in the preference file if it exists; otherwise, <paramref name="defaultValue"/>.
             </summary>
+            <param name="key"></param>
+            <param name="defaultValue"></param>
+            <returns></returns>
         </member>
         <member name="M:UnityUtil.Storage.ILocalPreferences.GetInt(System.String)">
             <summary>
-            Returns the value corresponding to key in the preference file if it exists.
+            Returns the value corresponding to key in the preference file if it exists; otherwise, zero.
             </summary>
+            <param name="key"></param>
+            <returns></returns>
         </member>
         <member name="M:UnityUtil.Storage.ILocalPreferences.GetString(System.String,System.String)">
             <summary>
-            Returns the value corresponding to key in the preference file if it exists.
+            Returns the value corresponding to key in the preference file if it exists; otherwise, <paramref name="defaultValue"/>.
             </summary>
+            <param name="key"></param>
+            <param name="defaultValue"></param>
+            <returns></returns>
         </member>
         <member name="M:UnityUtil.Storage.ILocalPreferences.GetString(System.String)">
             <summary>
-            Returns the value corresponding to key in the preference file if it exists.
+            Returns the value corresponding to key in the preference file if it exists; otherwise, <see cref="F:System.String.Empty"/>.
             </summary>
+            <param name="key"></param>
+            <returns></returns>
         </member>
         <member name="M:UnityUtil.Storage.ILocalPreferences.HasKey(System.String)">
             <summary>
             Returns true if key exists in the preferences.
             </summary>
+            <param name="key"></param>
+            <returns></returns>
         </member>
         <member name="M:UnityUtil.Storage.ILocalPreferences.Save">
             <summary>
@@ -1008,16 +1026,22 @@
             <summary>
             Sets the value of the preference identified by key.
             </summary>
+            <param name="key"></param>
+            <param name="value"></param>
         </member>
         <member name="M:UnityUtil.Storage.ILocalPreferences.SetInt(System.String,System.Int32)">
             <summary>
             Sets the value of the preference identified by key.
             </summary>
+            <param name="key"></param>
+            <param name="value"></param>
         </member>
         <member name="M:UnityUtil.Storage.ILocalPreferences.SetString(System.String,System.String)">
             <summary>
             Sets the value of the preference identified by key.
             </summary>
+            <param name="key"></param>
+            <param name="value"></param>
         </member>
         <member name="M:UnityUtil.Triggers.AnimationEventTrigger.Trigger(System.String)">
             <summary>
