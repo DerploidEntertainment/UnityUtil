@@ -25,23 +25,19 @@ public class RemoteConfigConfigurationProvider<TUser, TApp, TFilter> : Configura
                 UnityServices.InitializeAsync(_source.InitializationOptions).Wait();
         }
 
-        if (_source.InitializeUnityAuthentication) {
-            // Remote Config requires authentication for managing environment information
-            if (!AuthenticationService.Instance.IsSignedIn) {
-                if (_source.AuthenticationSignInOptions is null)
-                    AuthenticationService.Instance.SignInAnonymouslyAsync().Wait();
-                else
-                    AuthenticationService.Instance.SignInAnonymouslyAsync(_source.AuthenticationSignInOptions).Wait();
-            }
-        }
+        // Remote Config requires authentication for managing environment information
+        if (_source.InitializeUnityAuthentication && !AuthenticationService.Instance.IsSignedIn)
+            AuthenticationService.Instance.SignInAnonymouslyAsync(_source.AuthenticationSignInOptions).Wait();
 
-        _source.RemoteConfigInitializer?.Invoke(RemoteConfigService.Instance);
+        RemoteConfigService remoteConfig = RemoteConfigService.Instance;
+        _source.RemoteConfigInitializer?.Invoke(remoteConfig);
 
-        RemoteConfigService.Instance.FetchCompleted += fetchCompleted;
+        // DO NOT fetch configs async, even with Task.Wait(), as this will cause a deadlock on the Unity main thread
+        remoteConfig.FetchCompleted += fetchCompleted;
         if (_source.ConfigType is null)
-            RemoteConfigService.Instance.FetchConfigsAsync(_source.UserAttributes, _source.AppAttributes, _source.FilterAttributes).Wait();
+            remoteConfig.FetchConfigs(_source.UserAttributes, _source.AppAttributes, _source.FilterAttributes);
         else
-            RemoteConfigService.Instance.FetchConfigsAsync(_source.ConfigType, _source.UserAttributes, _source.AppAttributes, _source.FilterAttributes).Wait();
+            remoteConfig.FetchConfigs(_source.ConfigType, _source.UserAttributes, _source.AppAttributes, _source.FilterAttributes);
     }
 
     // See https://docs.unity3d.com/Packages/com.unity.remote-config-runtime@3.0/manual/CodeIntegration.html#security
