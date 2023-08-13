@@ -5,4 +5,14 @@
     <Reference Remove="$(UnityEnginePath)" />
   </ItemGroup>
 
+  <Target Name="CopyOutputs" AfterTargets="AfterBuild" Condition="'$(IsTestProject)'!='true'">
+    <ItemGroup>
+      <ProjectOutput Include="$(OutDir)/$(ProjectName).dll" />
+      <ProjectOutput Include="$(OutDir)/$(ProjectName).pdb" />
+      <ProjectOutput Include="$(OutDir)/$(ProjectName).xml" />
+    </ItemGroup>
+    <Message Importance="high" Text="Copying '$(ProjectName)' outputs into '$([System.IO.Path]::GetFullPath($(UnityDestinationFolder)))'" />
+    <Copy SourceFiles="%(ProjectOutput.Identity)" DestinationFolder="$(UnityDestinationFolder)" />
+  </Target>
+
 </Project>

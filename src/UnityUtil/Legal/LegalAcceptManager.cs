@@ -2,16 +2,17 @@ using Microsoft.Extensions.Logging;
 using Sirenix.OdinInspector;
 using System;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
-using UnityUtil.Configuration;
+using UnityUtil.DependencyInjection;
 using UnityUtil.Logging;
 using UnityUtil.Storage;
 
 namespace UnityUtil.Legal;
 
-public class LegalAcceptManager : Configurable, ILegalAcceptManager
+public class LegalAcceptManager : MonoBehaviour, ILegalAcceptManager
 {
     private LegalLogger<LegalAcceptManager>? _logger;
     private ILocalPreferences? _localPreferences;
@@ -22,6 +23,10 @@ public class LegalAcceptManager : Configurable, ILegalAcceptManager
     private int _numTagsFetched;
 
     public LegalDocument[] Documents = Array.Empty<LegalDocument>();
+
+    [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
+    [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
+    private void Awake() => DependencyInjector.Instance.ResolveDependenciesOf(this);
 
     public void Inject(ILoggerFactory loggerFactory, ILocalPreferences localPreferences)
     {
@@ -49,11 +54,9 @@ public class LegalAcceptManager : Configurable, ILegalAcceptManager
         UnityWebRequest? req = null;
         try {
             // Get the latest tag from the web
-#pragma warning disable CA2000 // Dispose objects before losing scope
             req = downloadHandler is null
                 ? new UnityWebRequest(doc.LatestVersionUri!.Uri, UnityWebRequest.kHttpVerbHEAD)
                 : new UnityWebRequest(doc.LatestVersionUri!.Uri, UnityWebRequest.kHttpVerbHEAD, downloadHandler, uploadHandler);
-#pragma warning restore CA2000 // Dispose objects before losing scope
             UnityWebRequestAsyncOperation reqOp = req.SendWebRequest();
             reqOp.completed += op => onRequestCompleted(req);   // Request must be explicitly disposed in here
         }

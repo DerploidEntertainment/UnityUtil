@@ -1,14 +1,14 @@
 ﻿using Sirenix.OdinInspector;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using TMPro;
 using UnityEngine;
-using UnityUtil.Configuration;
 using UD = UnityEngine.Device;
 
 namespace UnityUtil.Legal;
 
-public class CopyrightText : Configurable
+public class CopyrightText : MonoBehaviour
 {
     [Tooltip(
         $"This string is used to populate {nameof(Text)}. " +
@@ -23,10 +23,7 @@ public class CopyrightText : Configurable
     [Required]
     public TMP_Text? Text;
 
-    protected override void Awake()
-    {
-        base.Awake();
-
+    [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
+    private void Awake() =>
         Text!.text = string.Format(CultureInfo.CurrentCulture, FormatString, DateTime.Now, UD.Application.companyName);
-    }
 }

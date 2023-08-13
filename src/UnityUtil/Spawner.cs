@@ -9,22 +9,22 @@ using U = UnityEngine;
 namespace UnityUtil;
 
 /// <summary>
-/// Determines the direction in which <see cref="Spawner.Prefab"/> instances spawned by a <see cref="UnityEngine.Spawner"/> are launched.
+/// Determines the direction in which <see cref="Spawner.Prefab"/> instances spawned by a <see cref="UnityUtil.Spawner"/> are launched.
 /// </summary>
 public enum SpawnDirection
 {
     /// <summary>
-    /// Spawned <see cref="Spawner.Prefab"/> instances will be launched along the <see cref="UnityEngine.Spawner"/>'s forward vector.
+    /// Spawned <see cref="Spawner.Prefab"/> instances will be launched along the <see cref="UnityUtil.Spawner"/>'s forward vector.
     /// </summary>
     Straight,
 
     /// <summary>
-    /// Spawned <see cref="Spawner.Prefab"/> instances will be launched along a random vector within a cone centered around the <see cref="UnityEngine.Spawner"/>'s forward vector.
+    /// Spawned <see cref="Spawner.Prefab"/> instances will be launched along a random vector within a cone centered around the <see cref="UnityUtil.Spawner"/>'s forward vector.
     /// </summary>
     ConeRandom,
 
     /// <summary>
-    /// Spawned <see cref="Spawner.Prefab"/> instances will be launched along a random vector on the boundary of a cone centered around the <see cref="UnityEngine.Spawner"/>'s forward vector.
+    /// Spawned <see cref="Spawner.Prefab"/> instances will be launched along a random vector on the boundary of a cone centered around the <see cref="UnityUtil.Spawner"/>'s forward vector.
     /// </summary>
     ConeBoundary,
 

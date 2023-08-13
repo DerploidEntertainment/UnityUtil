@@ -35,6 +35,7 @@ public static class UnityObjectExtensions
     /// <summary>
     /// Assert that this component is both active and enabled.
     /// </summary>
+    /// <param name="behaviour">The <see cref="Behaviour"/> to assert as active and enabled</param>
     /// <param name="verbMessage">
     /// If this component is either inactive or disabled, then this verb will be used in the logged error message.
     /// Should be present-tense phrase, like "stop", or "perform that action". Padding spaces are not required.

@@ -1,0 +1,1187 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>UnityUtil</name>
+    </assembly>
+    <members>
+        <member name="F:UnityUtil.DependencyInjection.DependencyInjector._injectedTypes">
+            <summary>
+            This collection is only a field (rather than a local var) so as to reduce allocations in <see cref="M:UnityUtil.DependencyInjection.DependencyInjector.getDependeciesOfMethod(System.String,System.Reflection.MethodBase,System.Reflection.ParameterInfo[])"/>
+            </summary>
+        </member>
+        <member name="M:UnityUtil.DependencyInjection.DependencyInjector.#ctor(System.Collections.Generic.IEnumerable{System.Type})">
+            <summary>
+            DO NOT USE THIS CONSTRUCTOR. It exists purely for unit testing
+            </summary>
+        </member>
+        <member name="M:UnityUtil.DependencyInjection.DependencyInjector.registerService(UnityUtil.DependencyInjection.Service,System.Nullable{UnityEngine.SceneManagement.Scene})">
+            <summary>
+            Register <paramref name="service"/> present in <paramref name="scene"/>
+            </summary>
+            <exception cref="T:System.InvalidOperationException">
+            A <see cref="T:UnityUtil.DependencyInjection.Service"/> with the provided <see cref="F:UnityUtil.DependencyInjection.Service.ServiceType"/> and <see cref="F:UnityUtil.DependencyInjection.Service.Tag"/> has already been registered.
+            </exception>
+        </member>
+        <member name="P:UnityUtil.DependencyInjection.DependencyInjector.CachedResolutionTypes">
+            <summary>
+            <para>
+            Use these rules to cache commonly resolved dependencies, speeding up Scene load times.
+            We use this whitelist approach because caching ALL dependency resolutions could use up significant memory, and could actually
+            worsen performance if many of the dependencies were only to be resolved by one client.
+            </para>
+            <para>
+            After a class instance with one of these types has had its dependences resolved via reflection,
+            the reflected metadata and matching services will be cached, so that
+            subsequent clients of the same type will have their dependencies injected much faster.
+            This is useful if you know you will have many client components in a scene with the same type.
+            </para>
+            </summary>
+        </member>
+        <member name="P:UnityUtil.DependencyInjection.DependencyInjector.RecordingResolutions">
+            <summary>
+            Toggles recording how many times service <see cref="T:System.Type"/>s are resolved at runtime, for optimization purposes.
+            </summary>
+        </member>
+        <member name="P:UnityUtil.DependencyInjection.DependencyInjector.ServiceResolutionCounts">
+            <summary>
+            Gets/sets the number of times that each service <see cref="T:System.Type"/> has been resolved at runtime.
+            </summary>
+        </member>
+        <member name="M:UnityUtil.DependencyInjection.DependencyInjector.Construct``1">
+            <summary>
+            Attempts to construct an instance of <typeparamref name="T"/>, using the constructor with the most parameters that
+            can all be resolved from registered services. If no constructors can have all parameters resolved, then <see langword="null"/> is returned.
+            </summary>
+            <typeparam name="T">Type of object to be constructed.</typeparam>
+            <returns>The constructed instance of <typeparamref name="T"/>.</returns>
+            <exception cref="T:System.InvalidOperationException">Could not resolve all dependencies (parameters) of any public constructor on <typeparamref name="T"/>.</exception>
+        </member>
+        <member name="M:UnityUtil.DependencyInjection.DependencyInjector.Construct(System.Type)">
+            <summary>
+            Attempts to construct an instance of <paramref name="clientType"/>, using the constructor with the most parameters that
+            can all be resolved from registered services. If no constructors can have all parameters resolved, then <see langword="null"/> is returned.
+            </summary>
+            <returns>The constructed instance of <paramref name="clientType"/>.</returns>
+            <exception cref="T:System.InvalidOperationException">Could not resolve all dependencies (parameters) of any public constructor on <paramref name="clientType"/>.</exception>
+        </member>
+        <member name="M:UnityUtil.DependencyInjection.DependencyInjector.ResolveDependenciesOf(System.Object)">
+            <summary>
+            Inject all dependencies into the specified client.
+            Can be called at runtime to satisfy dependencies of procedurally generated components, e.g., by a spawner.
+            </summary>
+            <param name="client">A client with service dependencies that need to be resolved.</param>
+        </member>
+        <member name="M:UnityUtil.DependencyInjection.DependencyInjector.getDependeciesOfMethod(System.String,System.Reflection.MethodBase,System.Reflection.ParameterInfo[])">
+            <summary>
+            Resolve the dependencies of <paramref name="method"/>.
+            I.e., get the service that satisfies the <see cref="T:System.Type"/> and (optional) tag of each of <paramref name="method"/>'s parameters.
+            </summary>
+            <param name="clientName">Name of the client object instance on which <paramref name="method"/> can be called</param>
+            <param name="method">The method for which to resolve dependencies.</param>
+            <param name="parameters"><paramref name="method"/>'s parameters, if they have already been loaded via reflection.</param>
+            <returns>The dependencies (parameters) required by <paramref name="method"/>.</returns>
+        </member>
+        <member name="T:UnityUtil.DependencyInjection.InjectTagAttribute">
+            <summary>
+            Inject the service configured with this field's <see cref="T:System.Type"/> and an optional Inspector tag.
+            </summary>
+        </member>
+        <member name="M:UnityUtil.DependencyInjection.InjectTagAttribute.#ctor(System.String)">
+            <summary></summary>
+            <param name="tag">The service <see cref="T:UnityEngine.Object"/> with this tag (set in the Inspector) will be injected.  Use when registering multiple services with the same Type.</param>
+        </member>
+        <member name="P:UnityUtil.DependencyInjection.InjectTagAttribute.Tag">
+            <summary>
+            The service <see cref="T:UnityEngine.Object"/> with this tag (set in the Inspector) will be injected.  Use when registering multiple services with the same Type.
+            </summary>
+        </member>
+        <member name="T:UnityUtil.DependencyInjection.ITypeMetadataProvider">
+            <summary>
+            This type is used internally by the DI system. You should never need to implement it in your own code.
+            </summary>
+        </member>
+        <member name="T:UnityUtil.DependencyInjection.SceneServiceCollection">
+            <summary>
+            Encapsulates a collection in which scene-specific service instances can be registered.
+            Inheriting classes can override <see cref="M:UnityUtil.DependencyInjection.SceneServiceCollection.Awake"/> to register additional scene-specific services via type-specific fields.
+            </summary>
+        </member>
+        <member name="M:UnityUtil.DependencyInjection.SceneServiceCollection.Awake">
+            <summary>
+            Inheriting classes can override this method to register additional scene-specific services.
+            </summary>
+        </member>
+        <member name="M:UnityUtil.DependencyInjection.SceneServiceCollection.OnDestroy">
+            <summary>
+            Unregisters all services from this collection and any others in the scene.
+            There should only be one collection per scene anyway.
+            </summary>
+        </member>
+        <member name="T:UnityUtil.Inventories.AmmoEvent">
+            <summary>
+            Type arguments are (int oldClipAmmo, int oldBackupAmmo, int newClipAmmo, int newBackupAmmo)
+            </summary>
+        </member>
+        <member name="P:UnityUtil.Inventories.AmmoTool.CurrentClipAmmo">
+            <summary>
+            The amount of ammo currently in the main clip.
+            </summary>
+        </member>
+        <member name="P:UnityUtil.Inventories.AmmoTool.CurrentBackupAmmo">
+            <summary>
+            The total amount of ammo in all backup clips.
+            </summary>
+        </member>
+        <member name="M:UnityUtil.Inventories.AmmoTool.Load(System.Int32)">
+            <summary>
+            Load this <see cref="T:UnityUtil.Inventories.AmmoTool"/> with a specified amount of ammo.
+            </summary>
+            <param name="ammo">The amount of ammo with which to load the <see cref="T:UnityUtil.Inventories.AmmoTool"/>.</param>
+            <returns>The amount of left-over ammo that could not be stored in the <see cref="T:UnityUtil.Inventories.AmmoTool"/>'s clips.  Will always be >= 0.</returns>
+        </member>
+        <member name="M:UnityUtil.Inventories.AmmoTool.ReloadClip">
+            <summary>
+            Reload this <see cref="T:UnityUtil.Inventories.AmmoTool"/>'s current clip from its backup ammo
+            </summary>
+        </member>
+        <member name="T:UnityUtil.Inventories.CollectibleDestroyMode">
+            <summary>
+            Determines under what circumstances, if any, a Collectible's <see cref="T:UnityEngine.GameObject"/> will be destroyed.
+            </summary>
+        </member>
+        <member name="F:UnityUtil.Inventories.CollectibleDestroyMode.Never">
+            <summary>
+            Never destroy the Collectible due to detection/collection.
+            </summary>
+        </member>
+        <member name="F:UnityUtil.Inventories.CollectibleDestroyMode.WhenDetected">
+            <summary>
+            Destroy the Collectible anytime it is detected, whehter the Detector uses it or not.
+            </summary>
+        </member>
+        <member name="F:UnityUtil.Inventories.CollectibleDestroyMode.WhenUsed">
+            <summary>
+            Destroy the Collectible only when it is used by the Detector.
+            </summary>
+        </member>
+        <member name="F:UnityUtil.Inventories.CollectibleDestroyMode.WhenEmptied">
+            <summary>
+            Destroy the Collectible only when its contained value is depeleted, potentially allowing multiple collect events.
+            </summary>
+        </member>
+        <member name="T:UnityUtil.Inventories.CollectEvent">
+            <summary>
+            Type arguments are (Collector collector, Collectible collectible)
+            </summary>
+        </member>
+        <member name="T:UnityUtil.Inventories.InventoriesLogger`1">
+            <inheritdoc/>
+        </member>
+        <member name="T:UnityUtil.Inventories.OverheatChangedEvent">
+            <summary>
+            Type arguments are (bool isOverheated)
+            </summary>
+        </member>
+        <member name="P:UnityUtil.Inventories.Tool.CurrentCharge">
+            <summary>
+            The current charge of this <see cref="T:UnityUtil.Inventories.Tool"/>.  0 is completely uncharged, 1 is completely charged.
+            </summary>
+        </member>
+        <member name="T:UnityUtil.IRuntimeIdProvider">
+            <summary>
+            Provides methods for getting a unique identifier at runtime
+            </summary>
+        </member>
+        <member name="M:UnityUtil.IRuntimeIdProvider.GetId">
+            <summary>
+            Get a new, unique identifier. Every call to this method at runtime is guaranteed to return a new integer,
+            but different integers may be generated during each run.
+            </summary>
+            <returns>A new, unique identifier.</returns>
+        </member>
+        <member name="T:UnityUtil.Legal.LegalLogger`1">
+            <inheritdoc/>
+        </member>
+        <member name="T:UnityUtil.Legal.SingleDialogConsentManager">
+            <summary>
+            Manages the gathering and persisting of a user's consent to share their personal data with registered <see cref="T:UnityUtil.Legal.IInitializableWithConsent"/>s.
+            Consent is expected to be gathered after showing a single UI dialog during the First-Time User Experience (FTUE).
+            </summary>
+        </member>
+        <member name="M:UnityUtil.Legal.SingleDialogConsentManager.ShowDialogIfNeeded">
+            <summary>
+            Raise the <see cref="F:UnityUtil.Legal.SingleDialogConsentManager.InitialConsentRequired"/>, <see cref="F:UnityUtil.Legal.SingleDialogConsentManager.LegalUpdateRequired"/>, or <see cref="F:UnityUtil.Legal.SingleDialogConsentManager.NoUiRequired"/> events as necessary,
+            depending on the consents and legal documents acceptance saved in local preferences.
+            </summary>
+        </member>
+        <member name="M:UnityUtil.Legal.SingleDialogConsentManager.GiveConsent">
+            <summary>
+            Give consent to all registered <see cref="T:UnityUtil.Legal.IInitializableWithConsent"/>s that did not already have consent saved in local preferences,
+            and accept the latest legal documents.
+            </summary>
+        </member>
+        <member name="M:UnityUtil.Legal.SingleDialogConsentManager.Initialize">
+            <summary>
+            Initializes all registered <see cref="T:UnityUtil.Legal.IInitializableWithConsent"/>s in parallel, passing them the corresponding flag for consent.
+            </summary>
+            <exception cref="T:System.AggregateException">
+            One or more of the <see cref="M:UnityUtil.Legal.IInitializableWithConsent.InitializeAsync(System.Boolean)"/> calls failed.
+            See this exception's <see cref="P:System.AggregateException.InnerExceptions"/> collection for more details.
+            </exception>
+        </member>
+        <member name="M:UnityUtil.Legal.SingleDialogConsentManager.ClearConsentPreferences">
+            <summary>
+            Clear consent saved in in local preferences for all registered <see cref="T:UnityUtil.Legal.IInitializableWithConsent"/>s.
+            </summary>
+        </member>
+        <member name="T:UnityUtil.Logging.BaseUnityUtilLogger`1">
+            <summary>
+            Base class for custom loggers in <see cref="N:UnityUtil"/> components.
+            Derived types can define methods that provide statically-typed parameters to specific log messages
+            and abstract away their log levels and other log properties.
+            </summary>
+            <typeparam name="TCategoryName">The type that is logging. It's type name will be appended as the "category" of all its log messages.</typeparam>
+            <remarks>
+            <para>
+            Defining all log messages in a single class means that developers only have to look within a single type
+            to find log <see cref="T:Microsoft.Extensions.Logging.EventId"/> conflicts, inconsistent log property names, inconsistent language/grammar, etc.
+            It also provides a single type to modify when migrating log frameworks
+            (though this is less of an issue with the <see cref="N:Microsoft.Extensions.Logging.Abstractions"/> namespace).
+            </para>
+            <para>
+            Each method of a derived class should be referenced by at most one call site;
+            if a method is no longer referenced then it should be deleted, effectively deleting its inner log message.
+            </para>
+            <para>
+            Every log message must have a unique integer ID, so that specific messages can be searched in log files and storage systems.
+            This means that all log events are sharing the same "space" of event IDs, both within components of the <see cref="N:UnityUtil"/> namespaces,
+            and the components of your own application.
+            To prevent conflicts, we divide this space into six "subspaces" or "ranges" for each <see cref="T:Microsoft.Extensions.Logging.LogLevel"/>, with 100,000,000 unique IDs each.
+            </para>
+            These ID ranges are:
+            <list type="table">
+                <listheader>
+                    <term>Log level</term>
+                    <term>ID Range Start</term>
+                    <term>ID Range End</term>
+                </listheader>
+                <item>
+                    <term><see cref="F:Microsoft.Extensions.Logging.LogLevel.Trace"/></term>
+                    <term>0</term>
+                    <term>99,999,999</term>
+                </item>
+                <item>
+                    <term><see cref="F:Microsoft.Extensions.Logging.LogLevel.Debug"/></term>
+                    <term>100,000,000</term>
+                    <term>199,999,999</term>
+                </item>
+                <item>
+                    <term><see cref="F:Microsoft.Extensions.Logging.LogLevel.Information"/></term>
+                    <term>200,000,000</term>
+                    <term>299,999,999</term>
+                </item>
+                <item>
+                    <term><see cref="F:Microsoft.Extensions.Logging.LogLevel.Warning"/></term>
+                    <term>300,000,000</term>
+                    <term>399,999,999</term>
+                </item>
+                <item>
+                    <term><see cref="F:Microsoft.Extensions.Logging.LogLevel.Error"/></term>
+                    <term>400,000,000</term>
+                    <term>499,999,999</term>
+                </item>
+                <item>
+                    <term><see cref="F:Microsoft.Extensions.Logging.LogLevel.Critical"/></term>
+                    <term>500,000,000</term>
+                    <term>599,999,999</term>
+                </item>
+            </list>
+            <para>
+            Each namespace of <see cref="N:UnityUtil"/>, then, is given 1,000 unique event IDs to work with in each <see cref="T:Microsoft.Extensions.Logging.LogLevel"/>-subspace (by default),
+            starting from some "base offset".
+            For example, the event ID offset of the <see cref="N:UnityUtil"/> root namespace is 0,
+            so it can use information event IDs 200,000,000 - 200,000,999 and warning event IDs 300,000,000 - 300,000,999.
+            Likewise, if the event ID offset of another namespace is 1000,
+            then it can use information event IDs 200,001,000 - 200,001,999 and warning event IDs 300,001,000 - 300,001,999.
+            In other words, a namespace's event ID offset sets the lowest offset relative to the start of each <see cref="T:Microsoft.Extensions.Logging.LogLevel"/>-range that a namespace can use.
+            </para>
+            <para>
+            The authoritative list of namespace event ID offsets is maintained in the <a href="https://github.com/DerploidEntertainment/UnityUtil">UnityUtil repo</a>.
+            You <i>must</i> avoid using event IDs that collide with these ranges when creating new log messages in libraries that reference <see cref="N:UnityUtil"/>,
+            so that you don't pass these conflicts on to consumers.
+            If you are only referencing <see cref="N:UnityUtil"/> in an application, then you <i>should</i> still avoid ID collisions;
+            ID collisions will not break your application's logging, but they will make it more difficult to search for specific logs.
+            </para>
+            <b>Note to Inheritors</b>
+            <para>
+            Inheriting from this class will make all of the above ID-management easier.
+            The <see cref="M:UnityUtil.Logging.BaseUnityUtilLogger`1.#ctor(Microsoft.Extensions.Logging.ILoggerFactory,`0,System.Int32)"/> constructor accepts an offset parameter,
+            and your custom log methods can use it by calling the <see langword="protected"/> <see cref="M:UnityUtil.Logging.BaseUnityUtilLogger`1.Log(System.Int32,System.String,Microsoft.Extensions.Logging.LogLevel,System.String,System.Object[])"/> meethod.
+            That way, your custom log methods can all use simple monotonically increasing event IDs (0, 1, 2, etc.),
+            and the actual integer value is computed (<see cref="T:Microsoft.Extensions.Logging.LogLevel"/>- and namespace-offsets added) in one place.
+            </para>
+            <para>
+            By convention, the custom logger for each <see cref="N:UnityUtil"/> namespace is a class called <c><![CDATA[<Namespace>Logger]]></c> within that namespace.
+            See the namespaces in this repo for examples.
+            </para>
+            <para>
+            When using dependency injection, consumers should not inject this class or any of its derived types directly.
+            Instead, consumers should inject <see cref="T:Microsoft.Extensions.Logging.ILoggerFactory"/> and new up these types <i>in-situ</i> explicitly.
+            Otherwise, the recommendation would be to create an interface for the custom logger <i>and</i> an implementing type,
+            and that would just create a lot of friction when adding a new log message.
+            </para>
+            </remarks>
+        </member>
+        <member name="M:UnityUtil.Logging.BaseUnityUtilLogger`1.#ctor(Microsoft.Extensions.Logging.ILoggerFactory,`0,System.Int32)">
+            <summary>
+            Creates a new instance of <see cref="T:UnityUtil.Logging.BaseUnityUtilLogger`1"/>
+            </summary>
+            <param name="loggerFactory">Used to create the internal <see cref="T:Microsoft.Extensions.Logging.ILogger`1"/> instance</param>
+            <param name="context">Object to which the log messages apply.</param>
+            <param name="eventIdOffset">This offset will be added to all logged event IDs, to ensure unique IDs across all systems.</param>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            <paramref name="eventIdOffset"/> is negative, not a multiple of <see cref="F:UnityUtil.Logging.BaseUnityUtilLogger`1.ComponentAllowedIdCount"/> greater than the highest allowed offset for a single <see cref="T:Microsoft.Extensions.Logging.LogLevel"/>
+            </exception>
+        </member>
+        <member name="F:UnityUtil.Logging.BaseUnityUtilLogger`1.LogLevelAllowedIdCount">
+            <summary>
+            The max number of log event IDs that each <see cref="T:Microsoft.Extensions.Logging.LogLevel"/> may use.
+            </summary>
+            <remarks>
+            Note to contributors: BEWARE!! Changing this value is a SERIOUS BREAKING CHANGE, altering most of the log <see cref="T:Microsoft.Extensions.Logging.EventId"/>s generated by this library.
+            </remarks>
+        </member>
+        <member name="F:UnityUtil.Logging.BaseUnityUtilLogger`1.ComponentAllowedIdCount">
+            <summary>
+            The max number of log event IDs that each <see cref="N:UnityUtil"/> component (namespace or referencing library) may use.
+            </summary>
+            <remarks>
+            Note to contributors: BEWARE!! Changing this value is a SERIOUS BREAKING CHANGE, altering most of the log <see cref="T:Microsoft.Extensions.Logging.EventId"/>s generated by this library.
+            </remarks>
+        </member>
+        <member name="F:UnityUtil.Logging.BaseUnityUtilLogger`1.BaseEventIdTrace">
+            <summary>
+            Base event ID for <see cref="F:Microsoft.Extensions.Logging.LogLevel.Trace"/> logs.
+            </summary>
+        </member>
+        <member name="F:UnityUtil.Logging.BaseUnityUtilLogger`1.BaseEventIdDebug">
+            <summary>
+            Base event ID for <see cref="F:Microsoft.Extensions.Logging.LogLevel.Debug"/> logs.
+            </summary>
+        </member>
+        <member name="F:UnityUtil.Logging.BaseUnityUtilLogger`1.BaseEventIdInformation">
+            <summary>
+            Base event ID for <see cref="F:Microsoft.Extensions.Logging.LogLevel.Information"/> logs.
+            </summary>
+        </member>
+        <member name="F:UnityUtil.Logging.BaseUnityUtilLogger`1.BaseEventIdWarning">
+            <summary>
+            Base event ID for <see cref="F:Microsoft.Extensions.Logging.LogLevel.Warning"/> logs.
+            </summary>
+        </member>
+        <member name="F:UnityUtil.Logging.BaseUnityUtilLogger`1.BaseEventIdError">
+            <summary>
+            Base event ID for <see cref="F:Microsoft.Extensions.Logging.LogLevel.Error"/> logs.
+            </summary>
+        </member>
+        <member name="F:UnityUtil.Logging.BaseUnityUtilLogger`1.BaseEventIdCritical">
+            <summary>
+            Base event ID for <see cref="F:Microsoft.Extensions.Logging.LogLevel.Critical"/> logs.
+            </summary>
+        </member>
+        <member name="M:UnityUtil.Logging.BaseUnityUtilLogger`1.LogTrace(System.Int32,System.String,System.String,System.Object[])">
+            <summary>
+            Formats and writes a log message at <see cref="F:Microsoft.Extensions.Logging.LogLevel.Trace"/> level,
+            with the specified <paramref name="id"/> and <paramref name="name"/>.
+            </summary>
+            <param name="id">
+            Unique ID <i>within the logging namespace</i>.
+            The <see cref="F:Microsoft.Extensions.Logging.LogLevel.Trace"/> and namespace event ID offsets will be automatically appended
+            </param>
+            <param name="name">
+            Distinctive (ideally unique) human-readable name for the log event.
+            The name of the custom log method is usually preferrable (using <see langword="nameof"/>).
+            </param>
+            <param name="message">Format string of the log message.</param>
+            <param name="args">An object array that contains zero or more objects to format.</param>
+        </member>
+        <member name="M:UnityUtil.Logging.BaseUnityUtilLogger`1.LogDebug(System.Int32,System.String,System.String,System.Object[])">
+            <summary>
+            Formats and writes a log message at <see cref="F:Microsoft.Extensions.Logging.LogLevel.Debug"/> level,
+            with the specified <paramref name="id"/> and <paramref name="name"/>.
+            </summary>
+            <param name="id">
+            Unique ID <i>within the logging namespace</i>.
+            The <see cref="F:Microsoft.Extensions.Logging.LogLevel.Debug"/> and namespace event ID offsets will be automatically appended
+            </param>
+            <param name="name">
+            Distinctive (ideally unique) human-readable name for the log event.
+            The name of the custom log method is usually preferrable (using <see langword="nameof"/>).
+            </param>
+            <param name="message">Format string of the log message.</param>
+            <param name="args">An object array that contains zero or more objects to format.</param>
+        </member>
+        <member name="M:UnityUtil.Logging.BaseUnityUtilLogger`1.LogInformation(System.Int32,System.String,System.String,System.Object[])">
+            <summary>
+            Formats and writes a log message at <see cref="F:Microsoft.Extensions.Logging.LogLevel.Information"/> level,
+            with the specified <paramref name="id"/> and <paramref name="name"/>.
+            </summary>
+            <param name="id">
+            Unique ID <i>within the logging namespace</i>.
+            The <see cref="F:Microsoft.Extensions.Logging.LogLevel.Information"/> and namespace event ID offsets will be automatically appended
+            </param>
+            <param name="name">
+            Distinctive (ideally unique) human-readable name for the log event.
+            The name of the custom log method is usually preferrable (using <see langword="nameof"/>).
+            </param>
+            <param name="message">Format string of the log message.</param>
+            <param name="args">An object array that contains zero or more objects to format.</param>
+        </member>
+        <member name="M:UnityUtil.Logging.BaseUnityUtilLogger`1.LogWarning(System.Int32,System.String,System.String,System.Object[])">
+            <summary>
+            Formats and writes a log message at <see cref="F:Microsoft.Extensions.Logging.LogLevel.Warning"/> level,
+            with the specified <paramref name="id"/> and <paramref name="name"/>.
+            </summary>
+            <param name="id">
+            Unique ID <i>within the logging namespace</i>.
+            The <see cref="F:Microsoft.Extensions.Logging.LogLevel.Warning"/> and namespace event ID offsets will be automatically appended
+            </param>
+            <param name="name">
+            Distinctive (ideally unique) human-readable name for the log event.
+            The name of the custom log method is usually preferrable (using <see langword="nameof"/>).
+            </param>
+            <param name="message">Format string of the log message.</param>
+            <param name="args">An object array that contains zero or more objects to format.</param>
+        </member>
+        <member name="M:UnityUtil.Logging.BaseUnityUtilLogger`1.LogError(System.Int32,System.String,System.String,System.Object[])">
+            <summary>
+            Formats and writes a log message at <see cref="F:Microsoft.Extensions.Logging.LogLevel.Error"/> level,
+            with the specified <paramref name="id"/> and <paramref name="name"/>.
+            </summary>
+            <param name="id">
+            Unique ID <i>within the logging namespace</i>.
+            The <see cref="F:Microsoft.Extensions.Logging.LogLevel.Error"/> and namespace event ID offsets will be automatically appended
+            </param>
+            <param name="name">
+            Distinctive (ideally unique) human-readable name for the log event.
+            The name of the custom log method is usually preferrable (using <see langword="nameof"/>).
+            </param>
+            <param name="message">Format string of the log message.</param>
+            <param name="args">An object array that contains zero or more objects to format.</param>
+        </member>
+        <member name="M:UnityUtil.Logging.BaseUnityUtilLogger`1.LogCritical(System.Int32,System.String,System.String,System.Object[])">
+            <summary>
+            Formats and writes a log message at <see cref="F:Microsoft.Extensions.Logging.LogLevel.Critical"/> level,
+            with the specified <paramref name="id"/> and <paramref name="name"/>.
+            </summary>
+            <param name="id">
+            Unique ID <i>within the logging namespace</i>.
+            The <see cref="F:Microsoft.Extensions.Logging.LogLevel.Critical"/> and namespace event ID offsets will be automatically appended
+            </param>
+            <param name="name">
+            Distinctive (ideally unique) human-readable name for the log event.
+            The name of the custom log method is usually preferrable (using <see langword="nameof"/>).
+            </param>
+            <param name="message">Format string of the log message.</param>
+            <param name="args">An object array that contains zero or more objects to format.</param>
+        </member>
+        <member name="M:UnityUtil.Logging.BaseUnityUtilLogger`1.Log(System.Int32,System.String,Microsoft.Extensions.Logging.LogLevel,System.String,System.Object[])">
+            <summary>
+            Formats and writes a log message at the specified <paramref name="logLevel"/>,
+            with the specified <paramref name="id"/> and <paramref name="name"/>.
+            </summary>
+            <param name="id">
+            Unique ID <i>within the logging namespace</i>.
+            The <see cref="T:Microsoft.Extensions.Logging.LogLevel"/> and namespace event ID offsets will be automatically appended
+            </param>
+            <param name="name">
+            Distinctive (ideally unique) human-readable name for the log event.
+            The name of the custom log method is usually preferrable (using <see langword="nameof"/>).
+            </param>
+            <param name="logLevel">Entry will be written on this level.</param>
+            <param name="message">Format string of the log message.</param>
+            <param name="args">An object array that contains zero or more objects to format.</param>
+        </member>
+        <member name="M:UnityUtil.Logging.BaseUnityUtilLogger`1.LogWarning(System.Int32,System.String,System.Exception,System.String,System.Object[])">
+            <summary>
+            Formats and writes a log message at <see cref="F:Microsoft.Extensions.Logging.LogLevel.Warning"/>,
+            with the specified <paramref name="id"/> and <paramref name="name"/>.
+            </summary>
+            <param name="id">
+            Unique ID <i>within the logging namespace</i>.
+            The <see cref="F:Microsoft.Extensions.Logging.LogLevel.Warning"/> and namespace event ID offsets will be automatically appended
+            </param>
+            <param name="name">
+            Distinctive (ideally unique) human-readable name for the log event.
+            The name of the custom log method is usually preferrable (using <see langword="nameof"/>).
+            </param>
+            <param name="exception">The exception to log.</param>
+            <param name="message">Format string of the log message.</param>
+            <param name="args">An object array that contains zero or more objects to format.</param>
+        </member>
+        <member name="M:UnityUtil.Logging.BaseUnityUtilLogger`1.LogError(System.Int32,System.String,System.Exception,System.String,System.Object[])">
+            <summary>
+            Formats and writes a log message at <see cref="F:Microsoft.Extensions.Logging.LogLevel.Error"/>,
+            with the specified <paramref name="id"/> and <paramref name="name"/>.
+            </summary>
+            <param name="id">
+            Unique ID <i>within the logging namespace</i>.
+            The <see cref="F:Microsoft.Extensions.Logging.LogLevel.Error"/> and namespace event ID offsets will be automatically appended
+            </param>
+            <param name="name">
+            Distinctive (ideally unique) human-readable name for the log event.
+            The name of the custom log method is usually preferrable (using <see langword="nameof"/>).
+            </param>
+            <param name="exception">The exception to log.</param>
+            <param name="message">Format string of the log message.</param>
+            <param name="args">An object array that contains zero or more objects to format.</param>
+        </member>
+        <member name="M:UnityUtil.Logging.BaseUnityUtilLogger`1.LogCritical(System.Int32,System.String,System.Exception,System.String,System.Object[])">
+            <summary>
+            Formats and writes a log message at <see cref="F:Microsoft.Extensions.Logging.LogLevel.Critical"/>,
+            with the specified <paramref name="id"/> and <paramref name="name"/>.
+            </summary>
+            <param name="id">
+            Unique ID <i>within the logging namespace</i>.
+            The <see cref="F:Microsoft.Extensions.Logging.LogLevel.Critical"/> and namespace event ID offsets will be automatically appended
+            </param>
+            <param name="name">
+            Distinctive (ideally unique) human-readable name for the log event.
+            The name of the custom log method is usually preferrable (using <see langword="nameof"/>).
+            </param>
+            <param name="exception">The exception to log.</param>
+            <param name="message">Format string of the log message.</param>
+            <param name="args">An object array that contains zero or more objects to format.</param>
+        </member>
+        <member name="M:UnityUtil.Logging.BaseUnityUtilLogger`1.Log(System.Int32,System.String,Microsoft.Extensions.Logging.LogLevel,System.Exception,System.String,System.Object[])">
+            <summary>
+            Formats and writes a log message at the specified <paramref name="logLevel"/>,
+            with the specified <paramref name="id"/> and <paramref name="name"/>.
+            </summary>
+            <param name="id">
+            Unique ID <i>within the logging namespace</i>.
+            The <see cref="T:Microsoft.Extensions.Logging.LogLevel"/> and namespace event ID offsets will be automatically appended
+            </param>
+            <param name="name">
+            Distinctive (ideally unique) human-readable name for the log event.
+            The name of the custom log method is usually preferrable (using <see langword="nameof"/>).
+            </param>
+            <param name="logLevel">Entry will be written on this level.</param>
+            <param name="exception">The exception to log.</param>
+            <param name="message">Format string of the log message.</param>
+            <param name="args">An object array that contains zero or more objects to format.</param>
+        </member>
+        <member name="T:UnityUtil.Logging.LogLevelCallbackLogger">
+            <summary>
+            "Default" implementation of <see cref="T:Microsoft.Extensions.Logging.ILogger"/> that calls provided callbacks for log messages based on their <see cref="T:Microsoft.Extensions.Logging.LogLevel"/>.
+            Mainly intended for testing code that needs to verify that loggers were invoked in specific ways.
+            Most runtime code should still prefer dependency injection and one of the custom <see cref="N:UnityUtil"/> loggers.
+            </summary>
+        </member>
+        <member name="T:UnityUtil.Logging.LogLevelCallbackLoggerFactory">
+            <summary>
+            "Default" implementation of <see cref="T:Microsoft.Extensions.Logging.ILoggerFactory"/> that creates instances of <see cref="T:UnityUtil.Logging.LogLevelCallbackLogger"/>.
+            </summary>
+        </member>
+        <member name="T:UnityUtil.Logging.UnityDebugLogger">
+            <summary>
+            "Default" implementation of <see cref="T:Microsoft.Extensions.Logging.ILogger"/> to wrap Unity's own <see cref="T:UnityEngine.Debug"/> <c>Log*</c> methods.
+            Mainly intended for Unity code that can't set up a proper logging framework via dependency injection (e.g., in Editor scripts).
+            Most runtime code should still prefer dependency injection and one of the custom <see cref="N:UnityUtil"/> loggers.
+            </summary>
+        </member>
+        <member name="T:UnityUtil.Logging.UnityDebugLoggerFactory">
+            <summary>
+            "Default" implementation of <see cref="T:Microsoft.Extensions.Logging.ILoggerFactory"/> that creates instances of <see cref="T:UnityUtil.Logging.UnityDebugLogger"/>.
+            </summary>
+        </member>
+        <member name="T:UnityUtil.QuantityEvent">
+            <summary>
+            Type arguments are (float oldValue, float newValue)
+            </summary>
+        </member>
+        <member name="T:UnityUtil.Math.IRandomishOptionChooser">
+            <summary>
+            Chooses between options in a "randomish" way, i.e., a way that <em>feels</em> random to humans over time but may not be truly (psuedo)random.
+            </summary>
+        </member>
+        <member name="M:UnityUtil.Math.IRandomishOptionChooser.GetOptionIndex">
+            <summary>
+            Chooses an option index in a "randomish" way, i.e., a way that <em>feels</em> random to humans over time but may not be truly (psuedo)random.
+            </summary>
+            <returns>
+            An index between 0 (inclusive) and the number of options (exclusive).
+            </returns>
+        </member>
+        <member name="M:UnityUtil.Math.IRandomNumberGenerator.NextInt">
+            <summary>
+            Returns a non-negative random integer.
+            </summary>
+            <returns>A 32-bit signed integer that is greater than or equal to 0 and less than <see cref="F:System.Int32.MaxValue"/>.</returns>
+            <exception cref="T:System.InvalidOperationException"><see cref="P:UnityUtil.Math.IRandomNumberGenerator.SystemRand"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="M:UnityUtil.Math.IRandomNumberGenerator.NextDouble">
+            <summary>
+            Returns a random floating-point number that is greater than or equal to 0.0, and less than 1.0.
+            </summary>
+            <returns>A double-precision floating point number that is greater than or equal to 0.0, and less than 1.0.</returns>
+            <exception cref="T:System.InvalidOperationException"><see cref="P:UnityUtil.Math.IRandomNumberGenerator.SystemRand"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="M:UnityUtil.Math.IRandomNumberGenerator.Range(System.Int32,System.Int32)">
+            <summary>
+            Returns a random integer that is within a specified range.
+            </summary>
+            <param name="inclusiveMin">The inclusive lower bound of the random number returned.</param>
+            <param name="exclusiveMax">The exclusive upper bound of the random number returned. <paramref name="exclusiveMax"/> must be greater than or equal to <paramref name="inclusiveMin"/>.</param>
+            <returns>
+            A 32-bit signed integer greater than or equal to <paramref name="inclusiveMin"/> and less than <paramref name="exclusiveMax"/>;
+            that is, the range of return values includes <paramref name="inclusiveMin"/> but not <paramref name="exclusiveMax"/>.
+            If <paramref name="inclusiveMin"/> equals <paramref name="exclusiveMax"/>, then <paramref name="inclusiveMin"/> is returned.</returns>
+            <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="inclusiveMin"/> is greater than <paramref name="exclusiveMax"/>.</exception>
+            <exception cref="T:System.InvalidOperationException"><see cref="P:UnityUtil.Math.IRandomNumberGenerator.SystemRand"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="M:UnityUtil.Math.IRandomNumberGenerator.Range(System.Single,System.Single)">
+            <summary>
+            Returns a random floating-point number that is within a specified range.
+            </summary>
+            <param name="inclusiveMin">The inclusive lower bound of the random number returned.</param>
+            <param name="exclusiveMax">The exclusive upper bound of the random number returned.</param>
+            <returns>
+            A floating point number greater than or equal to <paramref name="inclusiveMin"/> and less than <paramref name="exclusiveMax"/>;
+            that is, the range of return values includes <paramref name="inclusiveMin"/> but not <paramref name="exclusiveMax"/>.
+            If <paramref name="inclusiveMin"/> equals <paramref name="exclusiveMax"/>, then <paramref name="inclusiveMin"/> is returned.</returns>
+            <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="inclusiveMin"/> is greater than <paramref name="exclusiveMax"/>.</exception>
+            <exception cref="T:System.InvalidOperationException"><see cref="P:UnityUtil.Math.IRandomNumberGenerator.SystemRand"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="M:UnityUtil.Math.IRandomNumberGenerator.Range(System.Double,System.Double)">
+            <summary>
+            Returns a random floating-point number that is within a specified range.
+            </summary>
+            <param name="inclusiveMin">The inclusive lower bound of the random number returned.</param>
+            <param name="exclusiveMax">The exclusive upper bound of the random number returned.</param>
+            <returns>
+            A floating point number greater than or equal to <paramref name="inclusiveMin"/> and less than <paramref name="exclusiveMax"/>;
+            that is, the range of return values includes <paramref name="inclusiveMin"/> but not <paramref name="exclusiveMax"/>.
+            If <paramref name="inclusiveMin"/> equals <paramref name="exclusiveMax"/>, then <paramref name="inclusiveMin"/> is returned.</returns>
+            <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="inclusiveMin"/> is greater than <paramref name="exclusiveMax"/>.</exception>
+            <exception cref="T:System.InvalidOperationException"><see cref="P:UnityUtil.Math.IRandomNumberGenerator.SystemRand"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="T:UnityUtil.Math.MathLogger`1">
+            <inheritdoc/>
+        </member>
+        <member name="T:UnityUtil.Math.MaxRepeatsRandomishOptionChooser">
+            <summary>
+            <para>
+            Chooses between options in a "randomish" way, i.e., a way that <em>feels</em> random to humans over time but is not truly random.
+            Achieved by repeating options some max number of times in a row.
+            </para>
+            <para>
+            This type is not thread safe. If randomish option indices must be accessed by multiple threads, you will need to implement your own synchronization mechanism.
+            </para>
+            </summary>
+        </member>
+        <member name="F:UnityUtil.Math.MaxRepeatsRandomishOptionChooser.ProbabilitySumTolerance">
+            <summary>
+            All <see cref="P:UnityUtil.Math.MaxRepeatsRandomishOptionChooserConfig.OptionProbabilities"/> must sum to 1, within this tolerance.
+            This accounts for probabilities that cannot be accurately represented with floating point numbers (e.g., 1/9).
+            </summary>
+        </member>
+        <member name="P:UnityUtil.Math.MaxRepeatsRandomishOptionChooser.OptionRepeats">
+            <summary>
+            Number of times the option at each index has been repeated during the last <see cref="P:UnityUtil.Math.MaxRepeatsRandomishOptionChooserConfig.MaxRepeats"/> calls to <see cref="M:UnityUtil.Math.MaxRepeatsRandomishOptionChooser.GetOptionIndex"/>.
+            </summary>
+        </member>
+        <member name="M:UnityUtil.Math.MaxRepeatsRandomishOptionChooser.GetOptionIndex">
+            <summary>
+            Chooses an option index using "randomish" logic.
+            This is an O(n) operation, where n is the number of options.
+            </summary>
+            <returns>
+            An index between 0 (inclusive) and the number of options (exclusive).
+            </returns>
+            <remarks>
+            <para>
+            Indices are chosen using the configured <see cref="P:UnityUtil.Math.MaxRepeatsRandomishOptionChooserConfig.OptionProbabilities"/>
+            while ensuring that no option is returned more than <see cref="P:UnityUtil.Math.MaxRepeatsRandomishOptionChooserConfig.MaxRepeats"/> times in a row.
+            For example, suppose [0.3, 0.4, 0.3] are the specified probabilities, with a max repeat of 3.
+            Initially, there is a 30% chance of returning 0, 40% chance of returning 1, and 30% chance of returning 2.
+            If index 1 is returned 3 times in a row, then on the next call, there will instead be a 50% chance of returning 0 and a 50% chance of returning 2
+            (maintaining the relative probabilities of those options, while preventing 1 from being returned again).
+            On the next call, index 1 has no longer been returned 3 times in a row, so the probabilties go back to their initial values.
+            </para>
+            <para>
+            To understand this method's logic, picture a set of ranges between 0 and 1, with sizes determined by the <see cref="P:UnityUtil.Math.MaxRepeatsRandomishOptionChooserConfig.OptionProbabilities"/>.
+            </para>
+            <code>
+            |-------|----------------------|---|--------|
+            |------------------^------------------------|
+            </code>
+            <para>
+            The caret represents a random value, R, between 0 and 1 (inclusive).
+            The probability of choosing option i (0-based), according to the specified probabilities,
+            equals the probability of R falling within the (i+1)th range (where each range includes its left bound).
+            E.g., the probability of choosing index 1 equals the probability of R falling within the 2nd range.
+            Therefore, the index at which the cumulative probability of <see cref="P:UnityUtil.Math.MaxRepeatsRandomishOptionChooserConfig.OptionProbabilities"/> is greater than R is the "chosen" index.
+            </para>
+            <para>
+            <see cref="T:UnityUtil.Math.MaxRepeatsRandomishOptionChooser"/> maintains a collection of the last <see cref="P:UnityUtil.Math.MaxRepeatsRandomishOptionChooserConfig.MaxRepeats"/> indices returned.
+            When an option has been chosen more than the max allowed times in a row, its probability is temporarily zero.
+            In the above visualization, this is equivalent to collapsing that option's interval to zero width, and then restricting R
+            to the range between 0 and (1 - that option's probability).
+            </para>
+            </remarks>
+        </member>
+        <member name="M:UnityUtil.Math.MaxRepeatsRandomishOptionChooser.UseOption(System.Int32)">
+            <summary>
+            Adjust state after the option at <paramref name="index"/> is chosen.
+            </summary>
+            <param name="index">Index of the option that was chosen.</param>
+            <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="index"/> is out of bounds of the <see cref="P:UnityUtil.Math.MaxRepeatsRandomishOptionChooser.OptionRepeats"/> list.</exception>
+            <exception cref="T:System.InvalidOperationException">Option at <paramref name="index"/> has already been repeated the max of <see cref="P:UnityUtil.Math.MaxRepeatsRandomishOptionChooserConfig.MaxRepeats"/> times in a row.</exception>
+        </member>
+        <member name="M:UnityUtil.Math.MoreMath.RandomWeightedIndex(System.Collections.Generic.IReadOnlyList{System.Single},UnityUtil.Math.IRandomNumberGenerator)">
+            <summary>
+            Gets a random index where each index has a provided weight. For example, if [0.3, 0.4, 0.3] is provided, then
+            there is a 30% chance of returning 0, 40% chance of returning 1, and 30% chance of returning 2.
+            </summary>
+            <param name="indexWeights">The weights for each index. These must sum up to 1.</param>
+            <param name="randomNumberGenerator">The object used to generate pseudorandom numbers.</param>
+            <returns>An index between 0 (inclusive) and the length of <paramref name="indexWeights"/> (exclusive)</returns>
+            <exception cref="T:System.ArgumentException"><paramref name="indexWeights"/> is empty.</exception>
+            <exception cref="T:System.InvalidOperationException">The sum of <paramref name="indexWeights"/> is not 1.</exception>
+            <remarks>
+            Picture a set of ranges between 0 and 1, with sizes determined by <paramref name="indexWeights"/>
+            <code>
+            |-------|----------------------|---|--------|
+            |------------------^------------------------|
+            </code>
+            The caret represents a random value, R, between 0 and 1 (inclusive).
+            The probability of choosing index i (0-based), according to the specified weights,
+            equals the probability of R falling within the (i+1)th range (where each range includes its left bound).
+            E.g., the probability of choosing index 1 equals the probability of R falling within the 2nd range.
+            Therefore, the index at which the cumulative probability of <paramref name="indexWeights"/> is greater than R is our "chosen" index.
+            </remarks>
+        </member>
+        <member name="M:UnityUtil.Math.MoreMath.RandomUniqueIndices(System.Int32,System.Int32,UnityUtil.Math.IRandomNumberGenerator)">
+            <summary>
+            Returns a set of <paramref name="count"/> unique random indices into a collection with the provided <paramref name="sourceCount"/>.
+            Order of the returned indices is unspecified. Note that this method allocates a block of memory that
+            scales linearly (O(n)) with <paramref name="sourceCount"/>.
+            </summary>
+            <param name="count">The number of unique random indices to return.</param>
+            <param name="sourceCount">The number of elements in the source collection into which we are returning random indices.</param>
+            <param name="randomNumberGenerator">The object used to generate pseudorandom numbers.</param>
+            <returns></returns>
+            <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="count"/> or <paramref name="sourceCount"/> is less than zero.</exception>
+            <exception cref="T:System.InvalidOperationException"><paramref name="count"/> is greater than <paramref name="sourceCount"/>.</exception>
+        </member>
+        <member name="M:UnityUtil.Math.MoreMath.RandomConeVector(UnityEngine.Transform,System.Single,System.Boolean)">
+            <summary>
+            Returns a random unit vector within a cone of the provided half-angle around the provided <see cref="T:UnityEngine.Transform"/>'s forward vector (uniformly distributed).
+            </summary>
+            <param name="transform">The <see cref="T:UnityEngine.Transform"/> around whose forward vector the cone is centered</param>
+            <param name="halfAngle">The half angle (in degrees) of the cone</param>
+            <param name="onlyBoundary">If <see langword="true"/>, then the random unit vector will be constrained to the boundary of the cone.  If <see langword="false"/>, then the random unit vector may be anywhere within the cone.</param>
+            <returns>A random unit vector within a cone of the provided half-angle around the provided <see cref="T:UnityEngine.Transform"/>'s forward vector (uniformly distributed).</returns>
+            <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="halfAngle"/> is less then 0° or greater than or equal to 360°.</exception>
+        </member>
+        <member name="M:UnityUtil.Math.MoreMath.RandomConeVector(UnityEngine.Vector3,System.Single,System.Boolean)">
+            <summary>
+            Returns a random unit vector within a cone of the provided half-angle centered around the provided axis (uniformly distributed).
+            </summary>
+            <param name="axis">The center axis of the cone</param>
+            <param name="halfAngle">The half angle (in degrees) of the cone</param>
+            <param name="onlyBoundary">If <see langword="true"/>, then the random unit vector will be constrained to the boundary of the cone.  If <see langword="false"/>, then the random unit vector may be anywhere within the cone.</param>
+            <returns>A random unit vector within a cone of the provided half-angle around the provided <see cref="T:UnityEngine.Transform"/>'s forward vector (uniformly distributed).</returns>
+            <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="halfAngle"/> is less then 0° or greater than or equal to 360°.</exception>
+        </member>
+        <member name="P:UnityUtil.Math.UniformBatchedRandomishOptionChooserConfig.OptionCount">
+            <summary>
+            Number of equally likely options that can be chosen. Must be 1 or greater.
+            </summary>
+        </member>
+        <member name="P:UnityUtil.Math.UniformBatchedRandomishOptionChooserConfig.MinRunsPerBatch">
+            <summary>
+            Minimum number of runs (sequences of repeated options) allowed per batch. Must be 0 or greater and less than <see cref="P:UnityUtil.Math.UniformBatchedRandomishOptionChooserConfig.MaxRunsPerBatch"/>.
+            </summary>
+        </member>
+        <member name="P:UnityUtil.Math.UniformBatchedRandomishOptionChooserConfig.MaxRunsPerBatch">
+            <summary>
+            Maximum number of runs (sequences of repeated options) allowed per batch. Must be greater than or equal to <see cref="P:UnityUtil.Math.UniformBatchedRandomishOptionChooserConfig.MinRunsPerBatch"/>.
+            </summary>
+        </member>
+        <member name="P:UnityUtil.Math.UniformBatchedRandomishOptionChooserConfig.MaxRepeatsPerRun">
+            <summary>
+            Maximum number of times an option can be repeated in a run, i.e., the max "length" of a run.
+            Minimum number of repeats per run is obviously 1, so <see cref="P:UnityUtil.Math.UniformBatchedRandomishOptionChooserConfig.MaxRepeatsPerRun"/> must be greater than 1.
+            </summary>
+        </member>
+        <member name="T:UnityUtil.Math.UniformBatchedRandomishOptionChooser">
+            <summary>
+            <para>
+            Chooses between options in a "randomish" way, i.e., a way that <em>feels</em> random to humans over time but is not truly random.
+            Achieved by generating "batches" of options in advance with configurable numbers/lengths of runs.
+            All options are assumbed to be equally likely; they will have a "uniform" distribution over time.
+            </para>
+            <para>
+            This type is not thread safe. If randomish option indices must be accessed by multiple threads, you will need to implement your own synchronization mechanism.
+            </para>
+            </summary>
+        </member>
+        <member name="P:UnityUtil.Math.UniformBatchedRandomishOptionChooser.BatchProviderDelegate">
+            <summary>
+            The delegate that will provide the next batch of option indices. Defaults to <see cref="M:UnityUtil.Math.UniformBatchedRandomishOptionChooser.GetBatch"/>.
+            <strong>This property should only be explicitly set in unit tests!</strong>
+            </summary>
+        </member>
+        <member name="F:UnityUtil.Math.UniformBatchedRandomishOptionChooser.LastOptionIndexOfPreviousBatch">
+            <summary>
+            <see cref="M:UnityUtil.Math.UniformBatchedRandomishOptionChooser.GetBatch"/> will ensure that this index is not chosen at the start of a batch,
+            to prevent accidentally "continuing" a run across batches.
+            <strong>This property should only be explicitly set in unit tests!</strong>
+            </summary>
+        </member>
+        <member name="M:UnityUtil.Math.UniformBatchedRandomishOptionChooser.GetOptionIndex">
+            <inheritdoc/>
+        </member>
+        <member name="T:UnityUtil.Movement.LookAtAdjuster">
+            <summary>
+            Tells all associated <see cref="T:UnityUtil.Movement.LookAt"/> components when to look at a new <see cref="T:UnityEngine.Transform"/>.
+            </summary>
+        </member>
+        <member name="M:UnityUtil.Movement.LookAtAdjuster.SetTransformToLookAt(UnityEngine.Transform)">
+            <summary>
+            You can actually set <see cref="F:UnityUtil.Movement.LookAt.TransformToLookAt"/> directly.  This function was only created for use with UnityEvents.
+            </summary>
+            <param name="transform">The new <see cref="T:UnityEngine.Transform"/> to make the <see cref="F:UnityUtil.Movement.LookAt.TransformToRotate"/> look at.</param>
+        </member>
+        <member name="M:UnityUtil.Movement.LookAtRaycast.GetUpwardUnitVector">
+            <summary>
+            Returns the unit vector that this <see cref="T:UnityUtil.Movement.LookAtRaycast"/> will use to rotate towards what its associated <see cref="F:UnityUtil.Movement.LookAtRaycast.RaycastingTransform"/> is looking at.
+            </summary>
+            <returns>The unit vector that this <see cref="T:UnityUtil.Movement.LookAtRaycast"/> will use to rotate towards what its associated <see cref="F:UnityUtil.Movement.LookAtRaycast.RaycastingTransform"/> is looking at.</returns>
+        </member>
+        <member name="T:UnityUtil.MultiCollection`2">
+            <summary>
+            Represents a strongly typed list of objects with constant-time insertion, removal, and duplicate checks,
+            as well as low-overhead iteration, at the cost of additional memory.
+            </summary>
+            <typeparam name="TKey">The type of the keys in the collection.</typeparam>
+            <typeparam name="TValue">The type of the values in the collection.</typeparam>
+        </member>
+        <member name="M:UnityUtil.MultiCollection`2.TrimExcess">
+            <summary>
+            Sets the capacity to the actual number of elements in the underlying collection, to save on memory.
+            </summary>
+        </member>
+        <member name="T:UnityUtil.Physics2D.Rigidbody2DExtension">
+            <summary>
+            Adapted from this <a href="https://forum.unity.com/threads/need-rigidbody2d-addexplosionforce.212173/#post-1426983">Unity Forums post</a>
+            </summary>
+        </member>
+        <member name="M:UnityUtil.Physics.CollisionSounds.nextClip">
+            <summary>
+            Get the next AudioClip to be played (random or in order)
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:UnityUtil.Physics.HoverForce.GetUpwardUnitVector">
+            <summary>
+            Returns the unit vector in which this <see cref="T:UnityUtil.Physics.HoverForce"/> will attempt to hover.
+            </summary>
+            <returns>The unit vector in which this <see cref="T:UnityUtil.Physics.HoverForce"/> will attempt to hover.</returns>
+        </member>
+        <member name="T:UnityUtil.Physics.LiftableReleaseType">
+            <summary>
+            Represents the means by which a <see cref="T:UnityUtil.Physics.Liftable"/> came to be released from a <see cref="T:UnityUtil.Physics.Lifter"/>.
+            </summary>
+        </member>
+        <member name="F:UnityUtil.Physics.LiftableReleaseType.Accidental">
+            <summary>
+            The <see cref="T:UnityUtil.Physics.Liftable"/> was accidentally released, e.g. by a force breaking its connecting <see cref="T:UnityEngine.Joint"/>.
+            </summary>
+        </member>
+        <member name="F:UnityUtil.Physics.LiftableReleaseType.Purposeful">
+            <summary>
+            The <see cref="T:UnityUtil.Physics.Liftable"/> was purposefully released via player input.
+            </summary>
+        </member>
+        <member name="F:UnityUtil.Physics.LiftableReleaseType.Thrown">
+            <summary>
+            The <see cref="T:UnityUtil.Physics.Liftable"/> was purposefully released by throwing.
+            </summary>
+        </member>
+        <member name="T:UnityUtil.Physics.PhysicsLogger`1">
+            <inheritdoc/>
+        </member>
+        <member name="M:UnityUtil.Physics.TorqueStabilizer.GetUpwardUnitVector">
+            <summary>
+            Returns the unit vector in which this <see cref="T:UnityUtil.Physics.HoverForce"/> will attempt to hover.
+            </summary>
+            <returns>The unit vector in which this <see cref="T:UnityUtil.Physics.HoverForce"/> will attempt to hover.</returns>
+        </member>
+        <member name="T:UnityUtil.RootLogger`1">
+            <inheritdoc/>
+        </member>
+        <member name="T:UnityUtil.RuntimeIdProvider">
+            <inheritdoc/>
+        </member>
+        <member name="M:UnityUtil.RuntimeIdProvider.GetId">
+            <inheritdoc/>
+        </member>
+        <member name="T:UnityUtil.SpawnDirection">
+            <summary>
+            Determines the direction in which <see cref="F:UnityUtil.Spawner.Prefab"/> instances spawned by a <see cref="T:UnityUtil.Spawner"/> are launched.
+            </summary>
+        </member>
+        <member name="F:UnityUtil.SpawnDirection.Straight">
+            <summary>
+            Spawned <see cref="F:UnityUtil.Spawner.Prefab"/> instances will be launched along the <see cref="T:UnityUtil.Spawner"/>'s forward vector.
+            </summary>
+        </member>
+        <member name="F:UnityUtil.SpawnDirection.ConeRandom">
+            <summary>
+            Spawned <see cref="F:UnityUtil.Spawner.Prefab"/> instances will be launched along a random vector within a cone centered around the <see cref="T:UnityUtil.Spawner"/>'s forward vector.
+            </summary>
+        </member>
+        <member name="F:UnityUtil.SpawnDirection.ConeBoundary">
+            <summary>
+            Spawned <see cref="F:UnityUtil.Spawner.Prefab"/> instances will be launched along a random vector on the boundary of a cone centered around the <see cref="T:UnityUtil.Spawner"/>'s forward vector.
+            </summary>
+        </member>
+        <member name="F:UnityUtil.SpawnDirection.AnyDirection">
+            <summary>
+            Spawned <see cref="F:UnityUtil.Spawner.Prefab"/> instances will be launched along any random vector.
+            </summary>
+        </member>
+        <member name="M:UnityUtil.Storage.ILocalPreferences.DeleteAll">
+            <summary>
+            Removes all keys and values from the preferences. Use with caution.
+            </summary>
+        </member>
+        <member name="M:UnityUtil.Storage.ILocalPreferences.DeleteKey(System.String)">
+            <summary>
+            Removes key and its corresponding value from the preferences.
+            </summary>
+        </member>
+        <member name="M:UnityUtil.Storage.ILocalPreferences.GetFloat(System.String,System.Single)">
+            <summary>
+            Returns the value corresponding to key in the preference file if it exists.
+            </summary>
+        </member>
+        <member name="M:UnityUtil.Storage.ILocalPreferences.GetFloat(System.String)">
+            <summary>
+            Returns the value corresponding to key in the preference file if it exists.
+            </summary>
+        </member>
+        <member name="M:UnityUtil.Storage.ILocalPreferences.GetInt(System.String,System.Int32)">
+            <summary>
+            Returns the value corresponding to key in the preference file if it exists.
+            </summary>
+        </member>
+        <member name="M:UnityUtil.Storage.ILocalPreferences.GetInt(System.String)">
+            <summary>
+            Returns the value corresponding to key in the preference file if it exists.
+            </summary>
+        </member>
+        <member name="M:UnityUtil.Storage.ILocalPreferences.GetString(System.String,System.String)">
+            <summary>
+            Returns the value corresponding to key in the preference file if it exists.
+            </summary>
+        </member>
+        <member name="M:UnityUtil.Storage.ILocalPreferences.GetString(System.String)">
+            <summary>
+            Returns the value corresponding to key in the preference file if it exists.
+            </summary>
+        </member>
+        <member name="M:UnityUtil.Storage.ILocalPreferences.HasKey(System.String)">
+            <summary>
+            Returns true if key exists in the preferences.
+            </summary>
+        </member>
+        <member name="M:UnityUtil.Storage.ILocalPreferences.Save">
+            <summary>
+            Writes all modified preferences to disk.
+            </summary>
+        </member>
+        <member name="M:UnityUtil.Storage.ILocalPreferences.SetFloat(System.String,System.Single)">
+            <summary>
+            Sets the value of the preference identified by key.
+            </summary>
+        </member>
+        <member name="M:UnityUtil.Storage.ILocalPreferences.SetInt(System.String,System.Int32)">
+            <summary>
+            Sets the value of the preference identified by key.
+            </summary>
+        </member>
+        <member name="M:UnityUtil.Storage.ILocalPreferences.SetString(System.String,System.String)">
+            <summary>
+            Sets the value of the preference identified by key.
+            </summary>
+        </member>
+        <member name="M:UnityUtil.Triggers.AnimationEventTrigger.Trigger(System.String)">
+            <summary>
+            Warning! This method is not meant to be called programmatically.
+            Instead, create an <see cref="T:UnityEngine.AnimationClip"/> with an <see cref="T:UnityEngine.AnimationEvent"/> that calls this method.
+            </summary>
+            <param name="eventName">Name of the event that was raised by the <see cref="T:UnityEngine.Animator"/></param>
+        </member>
+        <member name="F:UnityUtil.Triggers.IntTriggerMode.TargetValue">
+            <summary>
+            Trigger event is raised every time the number reaches one of the specified values
+            </summary>
+        </member>
+        <member name="F:UnityUtil.Triggers.IntTriggerMode.Repeat">
+            <summary>
+            Trigger event is raised every time the encapsulated number is incremented the specified number of times
+            </summary>
+        </member>
+        <member name="T:UnityUtil.Triggers.TriggersLogger`1">
+            <inheritdoc/>
+        </member>
+        <member name="F:UnityUtil.UI.AudioSliderTransformation.Logarithmic">
+            <summary>
+            See <a href="https://gamedevbeginner.com/the-right-way-to-make-a-volume-slider-in-unity-using-logarithmic-conversion/">this article</a> for explanation of why volume sliders need to use a logarithmic transformation.
+            </summary>
+        </member>
+        <member name="T:UnityUtil.UI.DragThresholdScaler">
+            <summary>
+            This class is used to automatically scale an <see cref="F:UnityUtil.UI.DragThresholdScaler.EventSystem"/>'s <see cref="P:UnityEngine.EventSystems.EventSystem.pixelDragThreshold"/> with respect to a <see cref="T:UnityEngine.Canvas"/>.
+            </summary>
+            <remarks>
+            See the comments by user @runevision on this Unity forum post for more info: https://forum.unity.com/threads/buttons-within-scroll-rect-are-difficult-to-press-on-mobile.265682/
+            </remarks>
+        </member>
+        <member name="T:UnityUtil.UI.SafeAreaRectTransformScaler">
+            <summary>
+            Note that there is a simple <a href="https://docs.unity3d.com/Manual/class-PlayerSettingsAndroid.html#Resolution">project setting</a>
+            for toggling safe area usage on Android (Player > Resolution and Presentation > Render outside safe area),
+            but <a href="https://forum.unity.com/threads/notch-avoidance-for-ios.1073261/">iOS doesn't support</a> this option.
+            This component can be used on iOS <em>and</em> Android for a consistent dev experience across platforms.
+            </summary>
+        </member>
+        <member name="M:UnityUtil.UI.UiBreakpoints.OnRectTransformDimensionsChange">
+            <summary>
+            This Unity message is not documented in the MonoBehaviour docs, but apparently it IS a message that any MonoBehaviour can receive (not just UIBehaviour)
+            See this <a href="https://www.programmersought.com/article/1195140410/">weird and obscure source</a> :P
+            </summary>
+        </member>
+        <member name="T:UnityUtil.UI.UiLogger`1">
+            <inheritdoc/>
+        </member>
+        <member name="M:UnityUtil.UnityObjectExtensions.AssertActiveAndEnabled(UnityEngine.Behaviour,System.String)">
+            <summary>
+            Assert that this component is both active and enabled.
+            </summary>
+            <param name="behaviour">The <see cref="T:UnityEngine.Behaviour"/> to assert as active and enabled</param>
+            <param name="verbMessage">
+            If this component is either inactive or disabled, then this verb will be used in the logged error message.
+            Should be present-tense phrase, like "stop", or "perform that action". Padding spaces are not required.
+            </param>
+        </member>
+        <member name="T:UnityUtil.Updating.IUnityMainThreadDispatcher">
+            <summary>
+            Original author: Pim de Witte (pimdewitte.com) and contributors, https://github.com/PimDeWitte/UnityMainThreadDispatcher.
+            Encapsulates a thread-safe queue with actions to execute on the next update loop.
+            It can be used to make calls to Unity's main thread for things such as UI manipulation.
+            It was developed for use in combination with the Firebase Unity plugin, which uses separate threads for event handling.
+            </summary>
+        </member>
+        <member name="M:UnityUtil.Updating.IUnityMainThreadDispatcher.Enqueue(System.Action)">
+            <summary>
+            Locks the queue and adds <paramref name="action"/> to the queue
+            </summary>
+            <param name="action">Action that will be executed from Unity's main thread.</param>
+        </member>
+        <member name="M:UnityUtil.Updating.IUnityMainThreadDispatcher.EnqueueAsync(System.Action)">
+            <summary>
+            Locks the queue and adds <paramref name="action"/> to the queue, returning a <see cref="T:System.Threading.Tasks.Task"/> which is completed when the action completes
+            </summary>
+            <param name="action">Action that will be executed from Unity's main thread.</param>
+            <returns>A <see cref="T:System.Threading.Tasks.Task"/> that can be awaited until the action completes</returns>
+        </member>
+        <member name="M:UnityUtil.Updating.IUpdater.RegisterUpdate(System.Int32,System.Action{System.Single})">
+            <summary>
+            Register an <see cref="T:System.Action"/> to be called every frame for the component with a given instance ID.
+            </summary>
+            <param name="instanceId">The instance ID of the component that will be updated every frame. Must be unique among all registered instances.</param>
+            <param name="updateAction">The <see cref="T:System.Action"/> to be called every frame.</param>
+            <exception cref="T:System.InvalidOperationException">An Update <see cref="T:System.Action"/> has already been registered for <paramref name="instanceId"/>.</exception>
+        </member>
+        <member name="M:UnityUtil.Updating.IUpdater.UnregisterUpdate(System.Int32)">
+            <summary>
+            Unregister an <see cref="T:System.Action"/> from being called every frame for the component with the specified instance ID.
+            </summary>
+            <param name="instanceId">
+            The instance ID of the component that no longer needs to be updated every frame.
+            Must have been previously registered with <see cref="M:UnityUtil.Updating.IUpdater.RegisterUpdate(System.Int32,System.Action{System.Single})"/>.
+            </param>
+            <exception cref="T:System.InvalidOperationException">No Update <see cref="T:System.Action"/> was ever registered for <paramref name="instanceId"/>.</exception>
+        </member>
+        <member name="M:UnityUtil.Updating.IUpdater.RegisterFixedUpdate(System.Int32,System.Action{System.Single})">
+            <summary>
+            Register an <see cref="T:System.Action"/> to be called physics every frame for the component with the specified instance ID.
+            </summary>
+            <param name="instanceId">The instance ID of the component that will be updated every physics frame. Must be unique among all registered instances.</param>
+            <param name="fixedUpdateAction">The <see cref="T:System.Action"/> to be called every physics frame.</param>
+            <exception cref="T:System.InvalidOperationException">A FixedUpdate <see cref="T:System.Action"/> has already been registered for <paramref name="instanceId"/>.</exception>
+        </member>
+        <member name="M:UnityUtil.Updating.IUpdater.UnregisterFixedUpdate(System.Int32)">
+            <summary>
+            Unregister an <see cref="T:System.Action"/> from being called every physics frame for the component with the specified instance ID.
+            </summary>
+            <param name="instanceId">
+            The instance ID of the component that no longer needs to be updated every physics frame.
+            Must have been previously registered with <see cref="M:UnityUtil.Updating.IUpdater.RegisterFixedUpdate(System.Int32,System.Action{System.Single})"/>.
+            </param>
+            <exception cref="T:System.InvalidOperationException">No FixedUpdate <see cref="T:System.Action"/> was ever registered for <paramref name="instanceId"/>.</exception>
+        </member>
+        <member name="M:UnityUtil.Updating.IUpdater.RegisterLateUpdate(System.Int32,System.Action{System.Single})">
+            <summary>
+            Register an <see cref="T:System.Action"/> to be called at the end of every frame for the component with the specified instance ID.
+            </summary>
+            <param name="instanceId">The instance ID of the component that will be updated at the end of every frame. Must be unique among all registered instances.</param>
+            <param name="lateUpdateAction">The <see cref="T:System.Action"/> to be called at the end of every frame.</param>
+            <exception cref="T:System.InvalidOperationException">A LateUpdate <see cref="T:System.Action"/> has already been registered for <paramref name="instanceId"/>.</exception>
+        </member>
+        <member name="M:UnityUtil.Updating.IUpdater.UnregisterLateUpdate(System.Int32)">
+            <summary>
+            Unregister an <see cref="T:System.Action"/> from being called at the end of every frame for the component with the specified instance ID.
+            </summary>
+            <param name="instanceId">
+            The instance ID of the component that no longer needs to be updated at the end of every frame.
+            Must have been previously registered with <see cref="M:UnityUtil.Updating.IUpdater.RegisterLateUpdate(System.Int32,System.Action{System.Single})"/>.
+            </param>
+            <exception cref="T:System.InvalidOperationException">No LateUpdate <see cref="T:System.Action"/> was ever registered for <paramref name="instanceId"/>.</exception>
+        </member>
+        <member name="M:UnityUtil.Updating.IUpdater.TrimStorage">
+            <summary>
+            Sets the capacity of all underlying collections to the actual number of elements in those collections.
+            Depending on implementation, there may be separate collections for Update actions, FixedUpdate actions, etc.,
+            the memory of which are all auto-allocated as more actions are added.
+            Trimming the capacity of these collections is thus an important way of saving memory, e.g., after several updatable
+            objects have been destroyed.
+            </summary>
+        </member>
+        <member name="T:UnityUtil.Updating.UnityMainThreadDispatcher">
+            <summary>
+            Original author: Pim de Witte (pimdewitte.com) and contributors, https://github.com/PimDeWitte/UnityMainThreadDispatcher.
+            A thread-safe class which holds a queue with actions to execute on the next update loop.
+            It can be used to make calls to Unity's main thread for things such as UI manipulation.
+            It was developed for use in combination with the Firebase Unity plugin, which uses separate threads for event handling.
+            </summary>
+        </member>
+        <member name="M:UnityUtil.Updating.UnityMainThreadDispatcher.Enqueue(System.Action)">
+            <inheritdoc/>
+        </member>
+        <member name="M:UnityUtil.Updating.UnityMainThreadDispatcher.EnqueueAsync(System.Action)">
+            <inheritdoc/>
+        </member>
+        <member name="F:UnityUtil.Updating.Updatable.RegisterUpdatesAutomatically">
+            <summary>
+            If <see langword="true"/>, then this <see cref="T:UnityUtil.Updating.Updatable"/> will have its Update actions registered/unregistered automatically when it is enabled/disabled.
+            If <see langword="false"/>, then the Update actions must be registered/unregistered manually (best for when updates are only meant to be registered under specific/rare circumstances).
+            </summary>
+        </member>
+    </members>
+</doc>

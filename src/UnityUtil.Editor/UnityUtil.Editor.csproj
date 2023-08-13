@@ -1,10 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
+  <Import Project="../Logging.props" />
   <Import Project="../OtherUnityAssemblies.props"/>
 
   <PropertyGroup>
-    <RootNamespace>$(SolutionName).Editor</RootNamespace>
-    <DebugSymbols>true</DebugSymbols> <!-- Always emit debug symbols, even in Release. We can decide in Unity whether they're then included in a game build. -->
+    <UnityDestinationFolder>$(UnityProjectPath)\Assets\$(SolutionName)\Editor</UnityDestinationFolder>
   </PropertyGroup>
 
   <ItemGroup>
@@ -18,14 +18,5 @@
     <Reference Include="$(UnityModulesPath)\UnityEngine.CoreModule.dll" Private="false" />
     <Reference Include="$(UnityModulesPath)\UnityEngine.IMGUIModule.dll" Private="false" />
   </ItemGroup>
-
-  <Target Name="CopyOutputs" AfterTargets="AfterBuild">
-    <ItemGroup>
-      <ProjectOutput Include="$(OutDir)/$(ProjectName)*.dll" />
-      <ProjectOutput Include="$(OutDir)/$(ProjectName)*.pdb" />
-    </ItemGroup>
-    <Message Importance="high" Text="Moving $(ProjectName) outputs into appropriate subfolders of '$([System.IO.Path]::GetFullPath($(UnityProjectPath)))\Assets'" />
-    <Copy SourceFiles="%(ProjectOutput.Identity)" DestinationFolder="$(UnityProjectPath)\Assets\$(SolutionName)\Editor" />
-  </Target>
 
 </Project>

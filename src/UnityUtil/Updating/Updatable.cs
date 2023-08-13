@@ -1,9 +1,10 @@
 using System;
-using UnityUtil.Configuration;
+using UnityEngine;
+using UnityUtil.DependencyInjection;
 
 namespace UnityUtil.Updating;
 
-public abstract class Updatable : Configurable
+public abstract class Updatable : MonoBehaviour
 {
     protected IUpdater? Updater;
     private IRuntimeIdProvider? _runtimeIdProvider;
@@ -13,7 +14,7 @@ public abstract class Updatable : Configurable
     /// <summary>
     /// If <see langword="true"/>, then this <see cref="Updatable"/> will have its Update actions registered/unregistered automatically when it is enabled/disabled.
     /// If <see langword="false"/>, then the Update actions must be registered/unregistered manually (best for when updates are only meant to be registered under specific/rare circumstances).
-    /// <summary>
+    /// </summary>
     protected bool RegisterUpdatesAutomatically;
 
     protected Action<float>? BetterUpdate;
@@ -26,9 +27,9 @@ public abstract class Updatable : Configurable
         _runtimeIdProvider = runtimeIdProvider;
     }
 
-    protected override void Awake()
+    protected virtual void Awake()
     {
-        base.Awake();
+        DependencyInjector.Instance.ResolveDependenciesOf(this);
 
         InstanceId = _runtimeIdProvider!.GetId();
     }

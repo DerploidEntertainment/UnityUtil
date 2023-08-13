@@ -1,12 +1,13 @@
 ﻿using Sirenix.OdinInspector;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using TMPro;
 using UnityEngine;
-using UnityUtil.Configuration;
+using UnityUtil.DependencyInjection;
 
 namespace UnityUtil.UI;
 
-public class VersionText : Configurable
+public class VersionText : MonoBehaviour
 {
     private IAppVersion? _appVersion;
 
@@ -28,9 +29,10 @@ public class VersionText : Configurable
 
     public void Inject(IAppVersion appVersion) => _appVersion = appVersion;
 
-    protected override void Awake()
+    [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
+    private void Awake()
     {
-        base.Awake();
+        DependencyInjector.Instance.ResolveDependenciesOf(this);
 
         Text!.text = string.Format(CultureInfo.CurrentCulture, FormatString, _appVersion!.Version, _appVersion.Description, _appVersion.BuildNumber);
     }

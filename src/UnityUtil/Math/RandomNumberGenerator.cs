@@ -1,25 +1,32 @@
 ﻿using Microsoft.Extensions.Logging;
-using Sirenix.OdinInspector;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using UnityEngine;
-using UnityUtil.Configuration;
+using UnityUtil.DependencyInjection;
 using S = System;
 
 namespace UnityUtil.Math;
 
-public sealed class RandomNumberGenerator : Configurable, IRandomNumberGenerator
+public class RandomNumberGeneratorConfig
 {
+    public string Seed { get; set; } = "";
+}
+
+public sealed class RandomNumberGenerator : MonoBehaviour, IRandomNumberGenerator
+{
+    private RandomNumberGeneratorConfig? _config;
     private MathLogger<RandomNumberGenerator>? _logger;
 
-    [field: Tooltip("Type any string to seed the random number generator, or leave this field blank to use a time-dependent default seed value.")]
-    [field: SerializeField, LabelText(nameof(Seed))]
     public string Seed { get; private set; } = "";
 
-    protected override void Awake()
+    [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
+    [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
+    private void Awake()
     {
-        base.Awake();
+        DependencyInjector.Instance.ResolveDependenciesOf(this);
 
+        Seed = _config!.Seed;
         (int seed, bool generated) = GetOrGenerateSeed(Seed);
         if (generated) {
             Seed = seed.ToString(CultureInfo.InvariantCulture);
@@ -32,7 +39,11 @@ public sealed class RandomNumberGenerator : Configurable, IRandomNumberGenerator
         SystemRand = new S.Random(seed);
     }
 
-    public void Inject(ILoggerFactory loggerFactory) => _logger = new(loggerFactory, context: this);
+    public void Inject(RandomNumberGeneratorConfig config, ILoggerFactory loggerFactory)
+    {
+        _config = config;
+        _logger = new(loggerFactory, context: this);
+    }
 
     public S.Random? SystemRand { get; private set; }
 

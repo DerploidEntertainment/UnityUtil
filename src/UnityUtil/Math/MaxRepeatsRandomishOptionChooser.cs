@@ -22,7 +22,7 @@ public class MaxRepeatsRandomishOptionChooserConfig
 public class MaxRepeatsRandomishOptionChooser : IRandomishOptionChooser
 {
     /// <summary>
-    /// All <see cref="OptionProbabilities"/> must sum to 1, within this tolerance.
+    /// All <see cref="MaxRepeatsRandomishOptionChooserConfig.OptionProbabilities"/> must sum to 1, within this tolerance.
     /// This accounts for probabilities that cannot be accurately represented with floating point numbers (e.g., 1/9).
     /// </summary>
     public const float ProbabilitySumTolerance = 0.000001f;
@@ -60,7 +60,7 @@ public class MaxRepeatsRandomishOptionChooser : IRandomishOptionChooser
     }
 
     /// <summary>
-    /// Number of times the option at each index has been repeated during the last <see cref="MaxRepeats"/> calls to <see cref="GetOptionIndex"/>.
+    /// Number of times the option at each index has been repeated during the last <see cref="MaxRepeatsRandomishOptionChooserConfig.MaxRepeats"/> calls to <see cref="GetOptionIndex"/>.
     /// </summary>
     public IReadOnlyList<int> OptionRepeats => _repeats;
     internal float TotalProbability { get; private set; } = 1f;
@@ -126,7 +126,7 @@ public class MaxRepeatsRandomishOptionChooser : IRandomishOptionChooser
     /// </summary>
     /// <param name="index">Index of the option that was chosen.</param>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="index"/> is out of bounds of the <see cref="OptionRepeats"/> list.</exception>
-    /// <exception cref="InvalidOperationException">Option at <paramref name="index"/> has already been repeated the max of <see cref="MaxRepeats"/> times in a row.</exception>
+    /// <exception cref="InvalidOperationException">Option at <paramref name="index"/> has already been repeated the max of <see cref="MaxRepeatsRandomishOptionChooserConfig.MaxRepeats"/> times in a row.</exception>
     internal void UseOption(int index)
     {
         if (index < 0 || index >= _config.OptionProbabilities.Count)

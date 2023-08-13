@@ -5,7 +5,7 @@ using System;
 namespace UnityUtil.Logging;
 
 /// <summary>
-/// "Default" implementation of <see cref="MEL.ILogger"/> that calls provided callbacks for log messages based on their <see cref="LogLevel"/>.
+/// "Default" implementation of <see cref="ILogger"/> that calls provided callbacks for log messages based on their <see cref="LogLevel"/>.
 /// Mainly intended for testing code that needs to verify that loggers were invoked in specific ways.
 /// Most runtime code should still prefer dependency injection and one of the custom <see cref="UnityUtil"/> loggers.
 /// </summary>

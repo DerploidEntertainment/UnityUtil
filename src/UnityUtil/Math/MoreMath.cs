@@ -18,7 +18,7 @@ public static class MoreMath
     /// <param name="indexWeights">The weights for each index. These must sum up to 1.</param>
     /// <param name="randomNumberGenerator">The object used to generate pseudorandom numbers.</param>
     /// <returns>An index between 0 (inclusive) and the length of <paramref name="indexWeights"/> (exclusive)</returns>
-    /// <exception cref="ArgumentException"><paramref name="optionProbabilities"/> is empty.</exception>
+    /// <exception cref="ArgumentException"><paramref name="indexWeights"/> is empty.</exception>
     /// <exception cref="InvalidOperationException">The sum of <paramref name="indexWeights"/> is not 1.</exception>
     /// <remarks>
     /// Picture a set of ranges between 0 and 1, with sizes determined by <paramref name="indexWeights"/>
