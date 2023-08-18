@@ -56,7 +56,7 @@
     <RestoreAdditionalProjectSources>$(SolutionDir)\..\lib</RestoreAdditionalProjectSources>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Unity3D" Version="2.1.0" />
+    <PackageReference Include="Unity3D" Version="2.1.3" />
   </ItemGroup>
 
   <!-- Code analysis -->
