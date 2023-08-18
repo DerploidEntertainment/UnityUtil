@@ -22,4 +22,12 @@
     <Compile Include="$(UnityScriptsDir)\**\*.cs" />
   </ItemGroup>
 
+  <ItemGroup>
+    <!-- Test method names can definitely have underscores... -->
+    <AssemblyAttribute Include="System.Diagnostics.CodeAnalysis.SuppressMessage">
+      <_Parameter1>Naming</_Parameter1>
+      <_Parameter2>CA1707:Identifiers should not contain underscores</_Parameter2>
+    </AssemblyAttribute>
+  </ItemGroup>
+
 </Project>

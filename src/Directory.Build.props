@@ -85,12 +85,6 @@
       <_Parameter1>Design</_Parameter1>
       <_Parameter2>CA1062:Validate arguments of public methods</_Parameter2>
     </AssemblyAttribute>
-
-    <!-- Test method names can definitely have underscores... -->
-    <AssemblyAttribute Condition="'$(IsTestProject)'=='true'" Include="System.Diagnostics.CodeAnalysis.SuppressMessage">
-      <_Parameter1>Naming</_Parameter1>
-      <_Parameter2>CA1707:Identifiers should not contain underscores</_Parameter2>
-    </AssemblyAttribute>
   </ItemGroup>
 
 </Project>
