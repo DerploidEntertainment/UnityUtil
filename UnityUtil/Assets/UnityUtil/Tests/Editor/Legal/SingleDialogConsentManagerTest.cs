@@ -271,9 +271,9 @@ namespace UnityUtil.Editor.Tests.Legal
         }
 
         [Test]
-        [TestCase(10, 10, 10)]
-        [TestCase(10, 20, 30)]
-        public async Task Initialize_InitializesAllInParallel(params int[] initializeDurationsMs)
+        [TestCase(new[] { 10, 10, 10 })]
+        [TestCase(new[] { 10, 20, 30 })]
+        public async Task Initialize_InitializesAllInParallel(int[] initializeDurationsMs)
         {
             Mock<IInitializableWithConsent>[] initializables = getInitializablesWithConsent(initializeDurationsMs.Length, initializeDurationsMs);
             SingleDialogConsentManager singleDialogConsentManager = getSingleDialogConsentManager(
@@ -301,7 +301,7 @@ namespace UnityUtil.Editor.Tests.Legal
                 .Select(x => {
                     Mock<IInitializableWithConsent> initializable = new();
                     initializable.Setup(x => x.InitializeAsync(It.IsAny<bool>()))
-                        .Returns(S.Task.FromException(new InvalidOperationException($"AH!! Consent {x} exploded!")));
+                        .ThrowsAsync(new InvalidOperationException($"AH!! Consent {x} exploded!"));
                     return initializable;
                 })
                 .ToArray();
