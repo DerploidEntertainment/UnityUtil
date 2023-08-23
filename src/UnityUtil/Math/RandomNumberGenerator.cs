@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using Sirenix.OdinInspector;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
@@ -8,13 +9,15 @@ using S = System;
 
 namespace UnityUtil.Math;
 
-public class RandomNumberGeneratorConfig
+[Serializable]
+public sealed class RandomNumberGeneratorConfig
 {
     public string Seed { get; set; } = "";
 }
 
 public sealed class RandomNumberGenerator : MonoBehaviour, IRandomNumberGenerator
 {
+    [ReadOnly, ShowInInspector]
     private RandomNumberGeneratorConfig? _config;
     private MathLogger<RandomNumberGenerator>? _logger;
 
