@@ -11,6 +11,10 @@ public class SplashScreenManager : MonoBehaviour, ISplashScreenManager
 {
     private UiLogger<SplashScreenManager>? _logger;
 
+    [Tooltip(
+        $"The behavior to apply when calling {nameof(Stop)}. " +
+        $"See https://docs.unity3d.com/ScriptReference/Rendering.SplashScreen.StopBehavior.html."
+    )]
     public SplashScreen.StopBehavior StopBehavior;
 
     public UnityEvent StartedDrawing = new();
