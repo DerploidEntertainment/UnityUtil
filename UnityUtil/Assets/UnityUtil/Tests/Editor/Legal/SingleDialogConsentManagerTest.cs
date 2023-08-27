@@ -341,6 +341,37 @@ namespace UnityUtil.Editor.Tests.Legal
 
         #endregion
 
+        #region OptOut
+
+        [Test]
+        public async Task OptOut_Throws_InitializableNotFound()
+        {
+            IInitializableWithConsent[] initializables = getInitializablesWithConsent(1).Select(x => x.Object).ToArray();
+            Mock<IInitializableWithConsent> missingInitializable = getInitializableWithConsent(hasConsent: true);
+            SingleDialogConsentManager singleDialogConsentManager = getSingleDialogConsentManager(initializablesWithConsent: initializables);
+
+            await singleDialogConsentManager.ShowDialogIfNeededAsync();
+            Assert.Throws<ArgumentException>(() => singleDialogConsentManager.OptOut(missingInitializable.Object));
+        }
+
+        [Test]
+        public async Task OptOut_SetsLocalPreference()
+        {
+            IInitializableWithConsent[] initializables = getInitializablesWithConsent(1).Select(x => x.Object).ToArray();
+            Mock<ILocalPreferences> localPreferences = getLocalPreferences();
+            SingleDialogConsentManager singleDialogConsentManager = getSingleDialogConsentManager(
+                initializablesWithConsent: initializables,
+                localPreferences: localPreferences.Object
+            );
+
+            await singleDialogConsentManager.ShowDialogIfNeededAsync();
+            singleDialogConsentManager.OptOut(initializables[0]);
+
+            localPreferences.Verify(x => x.SetInt(initializables[0].ConsentPreferenceKey, 0), Times.Once);
+        }
+
+        #endregion
+
 #pragma warning restore IDE1006 // Naming Styles
 
         private static SingleDialogConsentManager getSingleDialogConsentManagerWithConsents(LegalAcceptance legalAcceptance, bool?[] priorConsents) =>

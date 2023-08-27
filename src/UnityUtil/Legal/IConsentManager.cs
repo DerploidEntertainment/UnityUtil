@@ -1,10 +1,17 @@
-﻿namespace UnityUtil.Legal
+﻿using System;
+
+namespace UnityUtil.Legal
 {
     public interface IConsentManager
     {
         bool ForceConsentBehavior { get; }
 
-        void GiveConsent();
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="initializableWithConsent"></param>
+        /// <exception cref="InvalidOperationException">Consent has not yet been initialized</exception>
+        /// <exception cref="ArgumentException"><paramref name="initializableWithConsent"/> is not managed by this consent manager</exception>
         void OptOut(IInitializableWithConsent initializableWithConsent);
     }
 }

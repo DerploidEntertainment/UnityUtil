@@ -199,6 +199,23 @@
             </summary>
             <returns>A new, unique identifier.</returns>
         </member>
+        <member name="M:UnityUtil.Legal.IConsentManager.HasConsent(UnityUtil.Legal.IInitializableWithConsent)">
+            <summary>
+            
+            </summary>
+            <param name="initializableWithConsent"></param>
+            <returns></returns>
+            <exception cref="T:System.InvalidOperationException">Consent has not yet been initialized</exception>
+            <exception cref="T:System.ArgumentException"><paramref name="initializableWithConsent"/> is not managed by this consent manager</exception>
+        </member>
+        <member name="M:UnityUtil.Legal.IConsentManager.OptOut(UnityUtil.Legal.IInitializableWithConsent)">
+            <summary>
+            
+            </summary>
+            <param name="initializableWithConsent"></param>
+            <exception cref="T:System.InvalidOperationException">Consent has not yet been initialized</exception>
+            <exception cref="T:System.ArgumentException"><paramref name="initializableWithConsent"/> is not managed by this consent manager</exception>
+        </member>
         <member name="T:UnityUtil.Legal.LegalLogger`1">
             <inheritdoc/>
         </member>
