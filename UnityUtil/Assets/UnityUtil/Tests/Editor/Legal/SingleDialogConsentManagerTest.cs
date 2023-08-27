@@ -341,6 +341,35 @@ namespace UnityUtil.Editor.Tests.Legal
 
         #endregion
 
+        #region HasConsent
+
+        [Test]
+        public async Task HasConsent_Throws_InitializableNotFound()
+        {
+            IInitializableWithConsent[] initializables = getInitializablesWithConsent(1).Select(x => x.Object).ToArray();
+            Mock<IInitializableWithConsent> missingInitializable = getInitializableWithConsent(hasConsent: true);
+            SingleDialogConsentManager singleDialogConsentManager = getSingleDialogConsentManager(initializablesWithConsent: initializables);
+
+            await singleDialogConsentManager.ShowDialogIfNeededAsync();
+            Assert.Throws<ArgumentException>(() => singleDialogConsentManager.HasConsent(missingInitializable.Object));
+        }
+
+        [Test]
+        [TestCase(true), TestCase(false)]
+        public async Task HasConsent_GetsCorrectConent(bool hasConsent)
+        {
+            Mock<IInitializableWithConsent>[] initializables = getInitializablesWithConsent(1);
+            SingleDialogConsentManager singleDialogConsentManager = getSingleDialogConsentManager(
+                initializablesWithConsent: initializables.Select(x => x.Object).ToArray(),
+                localPreferences: getLocalPreferences(priorConsents: new bool?[] { hasConsent }).Object
+            );
+
+            await singleDialogConsentManager.ShowDialogIfNeededAsync();
+            Assert.That(singleDialogConsentManager.HasConsent(initializables[0].Object), Is.EqualTo(hasConsent));
+        }
+
+        #endregion
+
         #region OptOut
 
         [Test]
@@ -430,10 +459,18 @@ namespace UnityUtil.Editor.Tests.Legal
                 .Select(x => {
                     Mock<IInitializableWithConsent> initializable = new();
                     initializable.SetupGet(x => x.ConsentPreferenceKey).Returns($"{CONSENT_PREF_KEY_PREFIX}{x}");
-                    initializable.Setup(x => x.InitializeAsync(It.IsAny<bool>())).Returns(S.Task.Delay(millisecondsDelay: initializeDurations[x]));
+                    initializable.Setup(x => x.InitializeAsync(It.IsAny<bool>())).Returns(Task.Delay(millisecondsDelay: initializeDurations[x]));
                     return initializable;
                 })
                 .ToArray();
+        }
+
+        private static Mock<IInitializableWithConsent> getInitializableWithConsent(bool hasConsent)
+        {
+            Mock<IInitializableWithConsent> initializable = new();
+            initializable.SetupGet(x => x.ConsentPreferenceKey).Returns(CONSENT_PREF_KEY_PREFIX);
+            initializable.Setup(x => x.InitializeAsync(It.IsAny<bool>())).Returns(Task.FromResult(hasConsent));
+            return initializable;
         }
     }
 }

@@ -188,6 +188,14 @@ public class SingleDialogConsentManager : MonoBehaviour, IConsentManager
         }
     }
 
+    public bool HasConsent(IInitializableWithConsent initializableWithConsent)
+    {
+        int index = _initializablesWithConsent!.FindIndex(x => x == initializableWithConsent);
+        return index == -1
+            ? throw new ArgumentException($"Provided {nameof(initializableWithConsent)} was not in the set provided to this {nameof(SingleDialogConsentManager)}", nameof(initializableWithConsent))
+            : _consents![index].hasConsent;
+    }
+
     public void OptOut(IInitializableWithConsent initializableWithConsent)
     {
         int index = _initializablesWithConsent!.FindIndex(x => x == initializableWithConsent);
