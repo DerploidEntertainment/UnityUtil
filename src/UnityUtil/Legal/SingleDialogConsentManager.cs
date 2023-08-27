@@ -2,7 +2,6 @@ using Microsoft.Extensions.Logging;
 using Sirenix.OdinInspector;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
@@ -24,7 +23,7 @@ public class SingleDialogConsentManager : MonoBehaviour, IConsentManager
     private LegalLogger<SingleDialogConsentManager>? _logger;
     private ILegalAcceptManager? _legalAcceptManager;
     private ILocalPreferences? _localPreferences;
-    private IEnumerable<IInitializableWithConsent>? _initializablesWithConsent;
+    private List<IInitializableWithConsent>? _initializablesWithConsent;
 
     private bool _legalAcceptanceRequired;
     private (bool isConsentRequired, bool hasConsent)[]? _consents;
@@ -55,8 +54,8 @@ public class SingleDialogConsentManager : MonoBehaviour, IConsentManager
         _logger = new(loggerFactory, context: this);
         _legalAcceptManager = legalAcceptManager;
         _localPreferences = localPreferences;
-        _initializablesWithConsent = initializablesWithConsent;
-        _consents = new (bool isConsentRequired, bool hasConsent)[_initializablesWithConsent.Count()];
+        _initializablesWithConsent = initializablesWithConsent.ToList();
+        _consents = new (bool isConsentRequired, bool hasConsent)[_initializablesWithConsent.Count];
     }
 
     [Tooltip(
@@ -140,7 +139,7 @@ public class SingleDialogConsentManager : MonoBehaviour, IConsentManager
     /// Give consent to all registered <see cref="IInitializableWithConsent"/>s that did not already have consent saved in local preferences,
     /// and accept the latest legal documents.
     /// </summary>
-    public void GiveConsent()
+    internal void GiveConsent()
     {
         _logger!.ConsentGiveAll();
 
@@ -169,7 +168,7 @@ public class SingleDialogConsentManager : MonoBehaviour, IConsentManager
     /// See this exception's <see cref="AggregateException.InnerExceptions"/> collection for more details.
     /// </exception>
     [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Async suffix doesn't really look great on async void methods")]
-    public async void Initialize()
+    internal async void Initialize()
     {
         _logger!.ConsentInitializingAll();
 
@@ -189,8 +188,20 @@ public class SingleDialogConsentManager : MonoBehaviour, IConsentManager
         }
     }
 
+    public bool HasConsent(IInitializableWithConsent initializableWithConsent)
+    {
+        int index = _initializablesWithConsent!.FindIndex(x => x == initializableWithConsent);
+        return index == -1
+            ? throw new ArgumentException($"Provided {nameof(initializableWithConsent)} was not in the set provided to this {nameof(SingleDialogConsentManager)}", nameof(initializableWithConsent))
+            : _consents![index].hasConsent;
+    }
+
     public void OptOut(IInitializableWithConsent initializableWithConsent)
     {
+        int index = _initializablesWithConsent!.FindIndex(x => x == initializableWithConsent);
+        if (index == -1)
+            throw new ArgumentException($"Provided {nameof(initializableWithConsent)} was not in the set provided to this {nameof(SingleDialogConsentManager)}", nameof(initializableWithConsent));
+
         _logger!.ConsentOptingOut(initializableWithConsent);
         _localPreferences!.SetInt(initializableWithConsent.ConsentPreferenceKey, 0);
     }
