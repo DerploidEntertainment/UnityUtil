@@ -142,10 +142,6 @@ public class SingleDialogConsentManager : MonoBehaviour, IConsentManager
     /// </summary>
     public void GiveConsent()
     {
-        if (Application.platform == RuntimePlatform.IPhonePlayer) {
-            // TODO: Request SKAdNetwork permissions on iOS 14.5+
-        }
-
         _logger!.ConsentGiveAll();
 
         // Store that consents were given, so we don't request consent again every startup
