@@ -1093,6 +1093,13 @@
             See the comments by user @runevision on this Unity forum post for more info: https://forum.unity.com/threads/buttons-within-scroll-rect-are-difficult-to-press-on-mobile.265682/
             </remarks>
         </member>
+        <member name="T:UnityUtil.UI.RootCanvasSetter">
+            <summary>
+            Add this component to a <see cref="T:UnityEngine.Canvas"/> in any scene to re-parent it to a <see cref="T:UnityEngine.Canvas"/> from the DI system.
+            This allows creation of a "root" <see cref="T:UnityEngine.Canvas"/> in a loading scene (with components adjusting its scaling and event handling),
+            from which <see cref="T:UnityEngine.Canvas"/>es in other scenes will inherit those settings.
+            </summary>
+        </member>
         <member name="T:UnityUtil.UI.SafeAreaRectTransformScaler">
             <summary>
             Note that there is a simple <a href="https://docs.unity3d.com/Manual/class-PlayerSettingsAndroid.html#Resolution">project setting</a>

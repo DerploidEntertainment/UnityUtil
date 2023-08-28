@@ -31,11 +31,7 @@ public class DragThresholdScaler : MonoBehaviour
 
     [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
     [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
-    private void Awake()
-    {
-        DependencyInjector.Instance.ResolveDependenciesOf(this);
-
+    private void Awake() =>
         EventSystem!.pixelDragThreshold = DragThresholdFactor * (int)CanvasScaler!.scaleFactor;
-    }
 
 }
