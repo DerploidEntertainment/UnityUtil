@@ -23,10 +23,10 @@ public class SafeAreaRectTransformScaler : MonoBehaviour
 
     [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
     [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
-    private void Awake()
-    {
-        DependencyInjector.Instance.ResolveDependenciesOf(this);
+    private void Awake() => DependencyInjector.Instance.ResolveDependenciesOf(this);
 
+    public void ScaleRectTransform()
+    {
         _logger!.CurrentSafeArea(RectTransform!);
 
         // Calculations inspired by this article: https://connect.unity.com/p/updating-your-gui-for-the-iphone-x-and-other-notched-devices
