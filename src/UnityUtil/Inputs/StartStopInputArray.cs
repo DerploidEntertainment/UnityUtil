@@ -7,7 +7,7 @@ namespace UnityUtil.Inputs;
 [CreateAssetMenu(fileName = "start-stop-input-array", menuName = $"{nameof(UnityUtil)}/{nameof(UnityUtil.Inputs)}/{nameof(StartStopInputArray)}")]
 public class StartStopInputArray : ScriptableObject
 {
-    public StartStopInput[] Inputs = Array.Empty<StartStopInput>();
+    public StartStopInput[] Inputs = [];
 
     public int Length => Inputs.Length;
     public bool[] Started() => Inputs.Select(i => i.Started()).ToArray();

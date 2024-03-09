@@ -7,7 +7,7 @@ namespace UnityUtil.Inputs;
 [CreateAssetMenu(fileName = "value-input-array", menuName = $"{nameof(UnityUtil)}/{nameof(UnityUtil.Inputs)}/{nameof(ValueInputArray)}")]
 public class ValueInputArray : ScriptableObject
 {
-    public ValueInput[] Inputs = Array.Empty<ValueInput>();
+    public ValueInput[] Inputs = [];
 
     public int Length => Inputs.Length;
 

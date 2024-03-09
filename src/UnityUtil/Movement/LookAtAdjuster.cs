@@ -10,7 +10,7 @@ namespace UnityUtil.Movement;
 public class LookAtAdjuster : Updatable
 {
     [Tooltip($"These are the {nameof(LookAt)} components that will be told what new Transforms to look at.")]
-    public LookAt[] AssociatedLookAts = Array.Empty<LookAt>();
+    public LookAt[] AssociatedLookAts = [];
 
     /// <summary>
     /// You can actually set <see cref="LookAt.TransformToLookAt"/> directly.  This function was only created for use with UnityEvents.

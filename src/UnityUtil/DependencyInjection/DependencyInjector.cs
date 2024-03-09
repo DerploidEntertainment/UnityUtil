@@ -9,15 +9,12 @@ using U = UnityEngine;
 
 namespace UnityUtil.DependencyInjection;
 
-public class DependencyResolutionCounts
-{
-    public DependencyResolutionCounts(IReadOnlyDictionary<Type, int> cachedResolutionCounts, IReadOnlyDictionary<Type, int> uncachedResolutionCounts)
-    {
-        Cached = cachedResolutionCounts;
-        Uncached = uncachedResolutionCounts;
-    }
-    public IReadOnlyDictionary<Type, int> Cached { get; }
-    public IReadOnlyDictionary<Type, int> Uncached { get; }
+public class DependencyResolutionCounts(
+    IReadOnlyDictionary<Type, int> cachedResolutionCounts,
+    IReadOnlyDictionary<Type, int> uncachedResolutionCounts
+) {
+    public IReadOnlyDictionary<Type, int> Cached { get; } = cachedResolutionCounts;
+    public IReadOnlyDictionary<Type, int> Uncached { get; } = uncachedResolutionCounts;
 }
 
 public class DependencyInjector
@@ -35,19 +32,19 @@ public class DependencyInjector
     private ITypeMetadataProvider? _typeMetadataProvider;
     private RootLogger<DependencyInjector>? _logger;
 
-    private readonly Dictionary<int, Dictionary<Type, Dictionary<string, Service>>> _services = new();
+    private readonly Dictionary<int, Dictionary<Type, Dictionary<string, Service>>> _services = [];
 
     /// <summary>
     /// This collection is only a field (rather than a local var) so as to reduce allocations in <see cref="getDependeciesOfMethod(string, MethodBase, ParameterInfo[])"/>
     /// </summary>
-    private readonly HashSet<(Type type, string? tag)> _injectedTypes = new();
+    private readonly HashSet<(Type type, string? tag)> _injectedTypes = [];
 
     private bool _recording;
     private readonly HashSet<Type> _cachedResolutionTypes;
-    private readonly Dictionary<Type, List<Action<object>>> _compiledInject = new();
-    private readonly Dictionary<Type, Func<object>> _compiledConstructors = new();
-    private readonly Dictionary<Type, int> _uncachedResolutionCounts = new();
-    private readonly Dictionary<Type, int> _cachedResolutionCounts = new();
+    private readonly Dictionary<Type, List<Action<object>>> _compiledInject = [];
+    private readonly Dictionary<Type, Func<object>> _compiledConstructors = [];
+    private readonly Dictionary<Type, int> _uncachedResolutionCounts = [];
+    private readonly Dictionary<Type, int> _cachedResolutionCounts = [];
 
     #region Constructors/initialization
 
@@ -142,13 +139,13 @@ public class DependencyInjector
         int sceneHandle = scene.HasValue ? scene.Value.handle : DEFAULT_SCENE_HANDLE;
         bool sceneAdded = _services.TryGetValue(sceneHandle, out var sceneServices);
         if (!sceneAdded) {
-            sceneServices = new Dictionary<Type, Dictionary<string, Service>>();
+            sceneServices = [];
             _services.Add(sceneHandle, sceneServices);
         }
 
         bool typeAdded = sceneServices.TryGetValue(service.ServiceType, out var typedServices);
         if (!typeAdded) {
-            typedServices = new Dictionary<string, Service>();
+            typedServices = [];
             sceneServices.Add(service.ServiceType, typedServices);
         }
 #pragma warning restore IDE0008 // Use explicit type
@@ -237,16 +234,17 @@ public class DependencyInjector
             return client;
         }
 
-        (ConstructorInfo constructor, ParameterInfo[] parameters)[] constructors = _typeMetadataProvider!.GetConstructors(clientType)
-            .Select(x => (constructor: x, parameters: _typeMetadataProvider!.GetMethodParameters(x)))
-            .OrderByDescending(x => x.parameters.Length)
-            .ToArray();
+        (ConstructorInfo constructor, ParameterInfo[] parameters)[] constructors = [..
+            _typeMetadataProvider!.GetConstructors(clientType)
+                .Select(x => (constructor: x, parameters: _typeMetadataProvider!.GetMethodParameters(x)))
+                .OrderByDescending(x => x.parameters.Length),
+        ];
 
         if (constructors.Length == 0)
             return Activator.CreateInstance(clientType);
 
         foreach ((ConstructorInfo constructor, ParameterInfo[] parameters) in constructors) {
-            object[] dependencies = Array.Empty<object>();
+            object[] dependencies = [];
             string clientName = $"{parameters.Length}-parameter constructor of Type {clientType.Name}";
             try { dependencies = getDependeciesOfMethod(clientName, constructor, parameters); }
             catch (KeyNotFoundException) { continue; }
@@ -322,7 +320,7 @@ public class DependencyInjector
             if (compile) {
                 string compiledMethodName = $"{nameof(ResolveDependenciesOf)}_{injectMethod.DeclaringType.Name}_Generated";
                 Action<object> compiledInject = _typeMetadataProvider.CompileMethodCall(compiledMethodName, nameof(client), injectMethod, dependencies);
-                (compiledInjectList ??= new List<Action<object>>()).Add(compiledInject);
+                (compiledInjectList ??= []).Add(compiledInject);
                 compiledInject(client);
                 if (_recording)
                     _cachedResolutionCounts[clientType] = 1;
@@ -340,13 +338,13 @@ public class DependencyInjector
     {
         throwIfUninitialized(nameof(UnregisterSceneServices));
 
-        if (!_services.ContainsKey(scene.handle)) {
+        if (!_services.TryGetValue(scene.handle, out Dictionary<Type, Dictionary<string, Service>>? sceneServices)) {
             _logger?.UnregisterMissingSceneService(scene);
             return;
         }
 
         _logger?.UnregisteringSceneServices(scene);
-        int sceneServiceCount = _services[scene.handle].Sum(x => x.Value.Values.Count);
+        int sceneServiceCount = sceneServices.Sum(x => x.Value.Values.Count);
         _services.Remove(scene.handle);
         _logger?.UnregisteredAllSceneServices(scene, sceneServiceCount);
     }

@@ -19,11 +19,11 @@ public class NamedAnimationEvent
 public class AnimationEventTrigger : MonoBehaviour
 {
 
-    private Dictionary<string, UnityEvent> _triggerDict = new();
+    private Dictionary<string, UnityEvent> _triggerDict = [];
 
     [SerializeField, LabelText("Triggers")]
     [SuppressMessage("Style", "IDE0044:Add readonly modifier", Justification = "Unity doesn't serialize readonly fields")]
-    private NamedAnimationEvent[] _triggers = Array.Empty<NamedAnimationEvent>();
+    private NamedAnimationEvent[] _triggers = [];
 
     [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
     [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]

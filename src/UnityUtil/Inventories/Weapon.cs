@@ -96,7 +96,7 @@ public class Weapon : MonoBehaviour
         _accuracyLerpT = (Info.AccuracyLerpTime == 0 ? 1f : _accuracyLerpT + (1f / _tool!.Info!.AutomaticUseRate) / Info.AccuracyLerpTime);
         RaycastHit[] rayAttackHits()
         {
-            RaycastHit[] rayHits = Array.Empty<RaycastHit>();
+            RaycastHit[] rayHits = [];
 
             // Raycast into the scene with the given LayerMask, collecting the desired number of hitInfos
             if (Info.AttackAllInRange || Info.MaxAttacks > 1) {
@@ -106,14 +106,14 @@ public class Weapon : MonoBehaviour
             else if (Info.MaxAttacks == 1) {
                 bool somethingHit = U.Physics.Raycast(ray.origin, ray.direction, out RaycastHit hit, Info.Range, Info.AttackLayerMask);
                 if (somethingHit)
-                    rayHits = new[] { hit };
+                    rayHits = [hit];
             }
 
             return rayHits;
         }
         RaycastHit[] boxAttackHits()
         {
-            RaycastHit[] boxHits = Array.Empty<RaycastHit>();
+            RaycastHit[] boxHits = [];
 
             // Boxcast into the scene with the given LayerMask, collecting the desired number of hitInfos
             if (Info.AttackAllInRange || Info.MaxAttacks > 1) {
@@ -123,14 +123,14 @@ public class Weapon : MonoBehaviour
             else if (Info.MaxAttacks == 1) {
                 bool somethingHit = U.Physics.BoxCast(ray.origin, Info.HalfExtents, ray.direction, out RaycastHit hit, Info.Orientation, Info.Range, Info.AttackLayerMask);
                 if (somethingHit)
-                    boxHits = new[] { hit };
+                    boxHits = [hit];
             }
 
             return boxHits;
         }
         RaycastHit[] sphereAttackHits()
         {
-            RaycastHit[] sphereHits = Array.Empty<RaycastHit>();
+            RaycastHit[] sphereHits = [];
 
             // Spherecast into the scene with the given LayerMask, collecting the desired number of hitInfos
             if (Info.AttackAllInRange || Info.MaxAttacks > 1) {
@@ -140,14 +140,14 @@ public class Weapon : MonoBehaviour
             else if (Info.MaxAttacks == 1) {
                 bool somethingHit = U.Physics.SphereCast(ray.origin, Info.Radius, ray.direction, out RaycastHit hit, Info.Range, Info.AttackLayerMask);
                 if (somethingHit)
-                    sphereHits = new[] { hit };
+                    sphereHits = [hit];
             }
 
             return sphereHits;
         }
         RaycastHit[] capsuleAttackHits()
         {
-            RaycastHit[] capsuleHits = Array.Empty<RaycastHit>();
+            RaycastHit[] capsuleHits = [];
 
             // Capsulecast into the scene with the given LayerMask, collecting the desired number of hitInfos
             Vector3 p1 = ray.origin + Info.Point1;
@@ -159,7 +159,7 @@ public class Weapon : MonoBehaviour
             else if (Info.MaxAttacks == 1) {
                 bool somethingHit = U.Physics.CapsuleCast(p1, p2, Info.Radius, ray.direction, out RaycastHit hit, Info.Range, Info.AttackLayerMask);
                 if (somethingHit)
-                    capsuleHits = new[] { hit };
+                    capsuleHits = [hit];
             }
 
             return capsuleHits;

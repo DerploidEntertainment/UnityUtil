@@ -14,19 +14,14 @@ namespace UnityUtil;
 public class MultiCollection<TKey, TValue> : IEnumerable<TValue>
 {
 
-    protected class Element
+    protected class Element(TKey key, TValue value)
     {
-        public TKey Key;
-        public TValue Value;
-        public Element(TKey key, TValue value)
-        {
-            Key = key;
-            Value = value;
-        }
+        public TKey Key = key;
+        public TValue Value = value;
     }
 
-    private readonly IDictionary<TKey, int> _indexLookup = new Dictionary<TKey, int>();
-    private readonly List<Element> _list = new();
+    private readonly Dictionary<TKey, int> _indexLookup = [];
+    private readonly List<Element> _list = [];
 
     public int Count => _list.Count;
 
