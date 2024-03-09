@@ -160,12 +160,6 @@
         "com.unity.modules.imgui": "1.0.0"
       }
     },
-    "odininspector": {
-      "version": "file:odininspector",
-      "depth": 0,
-      "source": "embedded",
-      "dependencies": {}
-    },
     "org.nuget.castle.core": {
       "version": "5.1.1",
       "depth": 1,
