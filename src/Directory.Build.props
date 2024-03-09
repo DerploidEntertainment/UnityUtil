@@ -15,9 +15,9 @@
     <NoWarn>1591</NoWarn> <!-- Missing XML comment for publicly visible type or member -->
   </PropertyGroup>
 
-  <!-- Set paths to Unity project assemblies (depending on whether we're currently in the UnityUtil solution) -->
+  <!-- Set paths to Unity project assemblies -->
   <PropertyGroup>
-    <UnityProjectPath>$(SolutionDir)\..\UnityUtil</UnityProjectPath>
+    <UnityProjectPath>$(SolutionDir)\..\$(SolutionName)</UnityProjectPath>
     <SirenixAssembliesDir>Packages\odininspector\Sirenix\Assemblies</SirenixAssembliesDir>
     <SirenixAssembliesPath>$(UnityProjectPath)\$(SirenixAssembliesDir)</SirenixAssembliesPath>
   </PropertyGroup>
@@ -27,8 +27,8 @@
     <IsTestProject Condition="$(MSBuildProjectName.Contains('.Test'))">true</IsTestProject>
   </PropertyGroup>
   <ItemGroup>
-    <InternalsVisibleTo Condition="'$(IsTestProject)'!='true'" Include="UnityUtil.Editor.Tests" />
-    <InternalsVisibleTo Condition="'$(IsTestProject)'!='true'" Include="UnityUtil.Tests" />
+    <InternalsVisibleTo Condition="'$(IsTestProject)'!='true'" Include="$(MSBuildProjectName).Editor.Tests" />
+    <InternalsVisibleTo Condition="'$(IsTestProject)'!='true'" Include="$(MSBuildProjectName).Tests" />
     <InternalsVisibleTo Condition="'$(IsTestProject)'!='true'" Include="DynamicProxyGenAssembly2" />
   </ItemGroup>
 
