@@ -13,12 +13,10 @@ using UnityUtil.Logging;
 using UnityUtil.Storage;
 
 namespace UnityUtil.Legal;
-internal class LegalDocumentState
+internal class LegalDocumentState(string currentTag)
 {
-    public string CurrentTag;
+    public string CurrentTag = currentTag;
     public string? AcceptedTag;
-
-    public LegalDocumentState(string currentTag) => CurrentTag = currentTag;
 }
 
 public class LegalAcceptManager : MonoBehaviour, ILegalAcceptManager
@@ -30,10 +28,10 @@ public class LegalAcceptManager : MonoBehaviour, ILegalAcceptManager
     private DownloadHandler? _downloadHandler;
     private UploadHandler? _uploadHandler;
 
-    private string[] _latestVersionTags = Array.Empty<string>();
+    private string[] _latestVersionTags = [];
 
     [DisableInPlayMode]
-    public LegalDocument[] Documents = Array.Empty<LegalDocument>();
+    public LegalDocument[] Documents = [];
 
     [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
     [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]

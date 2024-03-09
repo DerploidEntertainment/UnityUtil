@@ -32,10 +32,9 @@ A set of utility classes and components useful to any Unity project, 2D or 3D.
 3. Install dependencies in your Unity project. This is an opinionated list of 3rd party assets/packages that UnityUtil leverages for certain features.
     Unfortunately, some of these assets cost money. In the future, UnityUtil's features will be broken up into separate packages,
     so that users can ignore specific packages and not spend money on their Asset Store dependencies.
-    - [Odin Inspector](https://odininspector.com/) (v3.0.12 or above).
-        After installing, close the Editor and copy the `Sirenix/` folder from `Assets/` to a new `odininspector/` folder under `Packages/`.
-        Also add a `package.json` file to the new folder as described in [Odin's docs](https://odininspector.com/tutorials/getting-started/install-odin-inspector-as-a-unity-package).
-        Re-open Unity to see Odin installed as an embedded package.
+    - [Odin Inspector](https://odininspector.com/) (v3.0.12 or above). We strongly recommend _not_ installing Odin as an
+        [embedded UPM package](https://odininspector.com/tutorials/getting-started/install-odin-inspector-as-a-unity-package),
+        as it just makes later updates to the asset more difficult.
 4. In the Unity Editor, open the [Package Manager window](https://docs.unity3d.com/Manual/upm-ui.html), click the `+` button in the upper-left and choose `Add package from git URL...`.
 5. Paste one of the following URLs:
     - `https://github.com/DerploidEntertainment/UnityUtil.git?path=/UnityUtil/Assets/UnityUtil#main` for the latest stable version
@@ -46,11 +45,6 @@ A set of utility classes and components useful to any Unity project, 2D or 3D.
 You can update this package from Unity's Package Manager window, even when it is imported as a git repo.
 Doing so will update the commit from which changes are imported.
 As the API stabilizes, I will move this package to [OpenUPM](https://openupm.com/) and add a changelog to make its versioning more clear.
-
-There are also some things to note when updating the following dependencies:
-
-- Odin Inspector: don't forget to repeat the process above to make Odin an _embedded UPM package_, not just a folder under `Assets/`.
-    You must also bump the `version` field in the `odininspector` package's' `package.json`.
 
 ## Features
 

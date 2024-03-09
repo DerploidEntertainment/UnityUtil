@@ -1,5 +1,4 @@
 ﻿using Sirenix.OdinInspector;
-using System;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -17,7 +16,7 @@ public class UiBreakpointsTrigger : MonoBehaviour
         $"For example, if {nameof(UiBreakpoints)} has 3 breakpoints, and only the 2nd one is currently matching, " +
         $"then the 2nd event from this array will be raised when {nameof(Trigger)} is called."
     )]
-    public UnityEvent[] BreakpointTriggers = Array.Empty<UnityEvent>();
+    public UnityEvent[] BreakpointTriggers = [];
 
     public void Trigger()
     {

@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions.Internal;
 using System;
 using UnityEngine;
 using MEL = Microsoft.Extensions.Logging;
@@ -15,9 +14,9 @@ public class UnityDebugLogger : MEL.ILogger
 {
     public UnityDebugLogger() { }
 
-    public IDisposable BeginScope<TState>(TState state) => NullScope.Instance;
+    public IDisposable? BeginScope<TState>(TState state) where TState : notnull => null;
     public bool IsEnabled(LogLevel logLevel) => true;
-    public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
+    public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
     {
         string msg = $"{eventId} {formatter(state, exception)}";
 

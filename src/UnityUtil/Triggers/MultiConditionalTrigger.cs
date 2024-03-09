@@ -1,5 +1,4 @@
 using Sirenix.OdinInspector;
-using System;
 using UnityEngine;
 
 namespace UnityUtil.Triggers;
@@ -10,7 +9,7 @@ public abstract class MultiConditionalTrigger : ConditionalTrigger
     [Tooltip("Note that this property may not refresh unless you select a different component in the Inspector then select this component again.")]
     private bool _currentState;
 
-    public ConditionalTrigger[] Conditions = Array.Empty<ConditionalTrigger>();
+    public ConditionalTrigger[] Conditions = [];
 
     protected virtual void Awake() => ResetBecameEventListeners();
 

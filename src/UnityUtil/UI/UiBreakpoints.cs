@@ -68,7 +68,7 @@ public class UiBreakpoints : MonoBehaviour
 
     [InfoBox($"No matching breakpoints. Raising {nameof(NoBreakpointMatched)} event instead", nameof(_noMatch))]
     [TableList(AlwaysExpanded = true), ValidateInput(nameof(AreBreakpointsValid), "Breakpoint values must be provided in ascending order with no duplicates")]
-    public UiBreakpoint[] Breakpoints = Array.Empty<UiBreakpoint>();
+    public UiBreakpoint[] Breakpoints = [];
 
     [Tooltip(
         "If no breakpoints are matched, then this UnityEvent will be raised instead, e.g., " +

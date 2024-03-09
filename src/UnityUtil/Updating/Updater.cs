@@ -7,9 +7,9 @@ namespace UnityUtil.Updating;
 [DisallowMultipleComponent]
 public class Updater : MonoBehaviour, IUpdater
 {
-    private readonly MultiCollection<int, Action<float>> _updates = new();
-    private readonly MultiCollection<int, Action<float>> _fixed = new();
-    private readonly MultiCollection<int, Action<float>> _late = new();
+    private readonly MultiCollection<int, Action<float>> _updates = [];
+    private readonly MultiCollection<int, Action<float>> _fixed = [];
+    private readonly MultiCollection<int, Action<float>> _late = [];
 
     public void RegisterUpdate(int instanceId, Action<float> updateAction)
     {

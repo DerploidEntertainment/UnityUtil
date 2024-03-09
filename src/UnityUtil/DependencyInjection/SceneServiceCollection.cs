@@ -43,7 +43,7 @@ public class SceneServiceCollection : MonoBehaviour, IEnumerable<InspectorServic
         "with all common services, so that they are each registered once, or register the services with different tags."
     )]
     [TableList(AlwaysExpanded = true, ShowIndexLabels = false)]
-    public InspectorService[] Services = Array.Empty<InspectorService>();
+    public InspectorService[] Services = [];
 
     /// <summary>
     /// Inheriting classes can override this method to register additional scene-specific services.

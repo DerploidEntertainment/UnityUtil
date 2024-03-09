@@ -26,7 +26,7 @@ public class ColliderDuplicator : MonoBehaviour
 {
     private PhysicsLogger<ColliderDuplicator>? _logger;
 
-    private List<Transform> _duplicates = new();
+    private List<Transform> _duplicates = [];
 
     [Tooltip("Each Collider selected for duplication will be duplicated under each of these GameObjects.")]
     public Transform? NewParentOfDuplicates;
@@ -38,7 +38,7 @@ public class ColliderDuplicator : MonoBehaviour
         "Add additional Colliders to duplicate here. If these are child Colliders, " +
         $"we recommend that you set {nameof(ChildColliderDuplication)} to '{nameof(ChildColliderDuplicateMode.None)}'."
     )]
-    public Collider[] CollidersToDuplicate = Array.Empty<Collider>();
+    public Collider[] CollidersToDuplicate = [];
 
     [Tooltip("Select the behavior for changing the 'isTrigger' field of all duplicate Colliders")]
     public ChangeTriggerMode ChangeTriggerMode = ChangeTriggerMode.KeepOriginal;
@@ -78,8 +78,8 @@ public class ColliderDuplicator : MonoBehaviour
         List<Transform> dupls = ChildColliderDuplication switch {
             ChildColliderDuplicateMode.ImmediateChildCollidersOnly => duplicateImmediateChildren(),
             ChildColliderDuplicateMode.AllChildCollidersFlattened => duplicateAllChildrenFlat(),
-            ChildColliderDuplicateMode.AllChildCollidersHierarchy => newParent == null ? new() : duplicateAllChildrenHierarchy(newParent),
-            _ => new(),
+            ChildColliderDuplicateMode.AllChildCollidersHierarchy => newParent == null ? [] : duplicateAllChildrenHierarchy(newParent),
+            _ => [],
         };
 
         // Duplicate other child Colliders
@@ -100,7 +100,7 @@ public class ColliderDuplicator : MonoBehaviour
             .Where(c => c.transform.parent == transform);
 
         // Duplicate each Collider on its own new GameObject
-        List<Transform> dupls = new();
+        List<Transform> dupls = [];
         foreach (Collider c in childColls) {
             var newChild = new GameObject(c.name);
             duplicateCollider(c, newChild);
@@ -116,7 +116,7 @@ public class ColliderDuplicator : MonoBehaviour
         IEnumerable<Collider> childColls = gameObject.GetComponentsInChildren<Collider>();
 
         // Duplicate each Collider on its own new GameObject
-        List<Transform> dupls = new();
+        List<Transform> dupls = [];
         foreach (Collider c in childColls) {
             var newChild = new GameObject(c.name);
             duplicateCollider(c, newChild);
@@ -129,7 +129,7 @@ public class ColliderDuplicator : MonoBehaviour
     private List<Transform> duplicateAllChildrenHierarchy(Transform newParent)
     {
         duplicateHierarchy(transform, newParent);
-        return new();
+        return [];
     }
 
     private List<Transform> duplicateHierarchy(Transform origParent, Transform duplParent)
@@ -139,8 +139,7 @@ public class ColliderDuplicator : MonoBehaviour
             duplicateCollider(c, duplParent.gameObject);
 
         // Get Colliders on immediate children
-        IEnumerable<Transform> origChildren = origParent.GetComponentsInChildren<Transform>()
-                                                    .Where(t => t.parent == origParent);
+        IEnumerable<Transform> origChildren = origParent.GetComponentsInChildren<Transform>().Where(t => t.parent == origParent);
 
         // Duplicate each of these Colliders on a new child of the new GameObject
         // Then recursively duplicate grandchildren
@@ -154,12 +153,12 @@ public class ColliderDuplicator : MonoBehaviour
             duplicateHierarchy(origChild, duplChild);
         }
 
-        return new();
+        return [];
     }
 
     private void duplicateCollider(Collider collider, GameObject newParent)
     {
-        Collider? newColl = null;
+        Collider? newColl;
 
         // Copy BoxCollider properties
         if (collider is BoxCollider origBox) {

@@ -11,13 +11,13 @@ namespace UnityUtil.Inventories;
 public class PushTool : MonoBehaviour
 {
     private Weapon? _weapon;
-    private readonly HashSet<Rigidbody> _pushedRigidbodies = new();
+    private readonly HashSet<Rigidbody> _pushedRigidbodies = [];
 
     [Required]
     public PushToolInfo? Info;
 
     [Tooltip("If true, then any colliders attached to the same Rigidbodies as one of these colldiers will NOT be affected.  You might use this field to prevent pushing of any of the colliders that make up a player's vehicle, for example.")]
-    public Collider[] IgnoreRigidbodiesAttachedTo = Array.Empty<Collider>();
+    public Collider[] IgnoreRigidbodiesAttachedTo = [];
 
     [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
     [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]

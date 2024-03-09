@@ -1,5 +1,4 @@
 ﻿using Sirenix.OdinInspector;
-using System;
 using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
 using U = UnityEngine;
@@ -14,7 +13,7 @@ public class CollisionSounds : MonoBehaviour
     [Required]
     public AudioSource? AudioSource;
     public bool RandomizeClips;
-    public AudioClip[] AudioClips = Array.Empty<AudioClip>();
+    public AudioClip[] AudioClips = [];
 
     [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
     [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]

@@ -5,9 +5,8 @@ using UnityEngine;
 
 namespace Serilog.Enrichers.UnityObjectPath;
 
-public class UnityObjectPathLogEnricher : ILogEventEnricher
+public class UnityObjectPathLogEnricher(UnityObjectPathLogEnricherSettings unityObjectPathLogEnricherSettings) : ILogEventEnricher
 {
-    private readonly UnityObjectPathLogEnricherSettings _unityObjectPathLogEnricherSettings;
 
     /// <summary>
     /// Purposefully collides with the key used by <a href="https://github.com/KuraiAndras/Serilog.Sinks.Unity3D/blob/master/Serilog.Sinks.Unity3D/Assets/Serilog.Sinks.Unity3D/UnityObjectEnricher.cs">Serilog.Sinks.Unity3D's <c>UnityObjectEnricher</c></a>.
@@ -17,11 +16,6 @@ public class UnityObjectPathLogEnricher : ILogEventEnricher
     public const string UnityContextKey = "%_DO_NOT_USE_UNITY_ID_DO_NOT_USE%";
 
     public const string UnityPathKey = "UnityObjectPath";
-
-    public UnityObjectPathLogEnricher(UnityObjectPathLogEnricherSettings unityObjectPathLogEnricherSettings)
-    {
-        _unityObjectPathLogEnricherSettings = unityObjectPathLogEnricherSettings;
-    }
 
     public void Enrich(LogEvent logEvent, ILogEventPropertyFactory propertyFactory)
     {
@@ -42,8 +36,8 @@ public class UnityObjectPathLogEnricher : ILogEventEnricher
             ? context.name
             : getName(
                 component.transform,
-                _unityObjectPathLogEnricherSettings!.NumParents,
-                _unityObjectPathLogEnricherSettings!.AncestorNameSeparator
+                unityObjectPathLogEnricherSettings!.NumParents,
+                unityObjectPathLogEnricherSettings!.AncestorNameSeparator
             );
 
     private static string getName(Transform transform, uint numParents, string separator)

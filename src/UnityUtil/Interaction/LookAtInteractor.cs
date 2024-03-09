@@ -10,8 +10,8 @@ namespace UnityUtil.Interaction;
 
 public class LookAtInteractor : Updatable
 {
-    private readonly IList<ToggleTrigger> _toggled = new List<ToggleTrigger>();
-    private readonly HashSet<ToggleTrigger> _triggerBuffer = new();
+    private readonly List<ToggleTrigger> _toggled = [];
+    private readonly HashSet<ToggleTrigger> _triggerBuffer = [];
 
     [Header("Raycasting")]
     public float Range;
@@ -74,7 +74,7 @@ public class LookAtInteractor : Updatable
     private void look(float deltaTime)
     {
         // Raycast for Colliders to look at
-        RaycastHit[] hits = Array.Empty<RaycastHit>();
+        RaycastHit[] hits = [];
         if (InteractWithAllInRange || MaxInteractions > 1) {
             RaycastHit[] allHits = U.Physics.RaycastAll(transform.position, transform.forward, Range, InteractLayerMask);
             hits = allHits;
@@ -82,7 +82,7 @@ public class LookAtInteractor : Updatable
         else if (MaxInteractions == 1) {
             bool somethingHit = U.Physics.Raycast(transform.position, transform.forward, out RaycastHit hit, Range, InteractLayerMask);
             if (somethingHit)
-                hits = new[] { hit };
+                hits = [hit];
         }
 
         // Store the ToggleTriggers associated with those Colliders

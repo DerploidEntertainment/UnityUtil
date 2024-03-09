@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
 using Sirenix.OdinInspector;
-using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using UnityEngine;
@@ -24,7 +23,7 @@ public class SequenceTrigger : MonoBehaviour
         $"The sequence of triggers to iterate through. Every time {nameof(Step)} is called, the {nameof(CurrentStep)} index will be incremented. " +
         $"Call {nameof(Trigger)} to invoke the trigger at {nameof(CurrentStep)} (multiple times, if desired)."
     )]
-    public UnityEvent[] StepTriggers = Array.Empty<UnityEvent>();
+    public UnityEvent[] StepTriggers = [];
 
     public void Inject(ILoggerFactory loggerFactory) => _logger = new(loggerFactory, context: this);
 

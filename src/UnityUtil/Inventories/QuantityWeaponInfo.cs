@@ -22,5 +22,5 @@ public class QuantityWeaponInfo : ScriptableObject
     public bool OnlyAffectClosest = true;
 
     [Tooltip("If a Collider has any of these tags, then it will be ignored, allowing Colliders inside/behind it to be affected.")]
-    public string[] IgnoreColliderTags = Array.Empty<string>();
+    public string[] IgnoreColliderTags = [];
 }
