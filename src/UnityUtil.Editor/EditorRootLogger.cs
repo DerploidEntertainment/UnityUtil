@@ -20,9 +20,6 @@ internal class EditorRootLogger<T> : BaseUnityUtilLogger<T>
     public void ContextualGameObjectsRemoved(RemoveFromBuild[] targetsRemoved, RemoveFromBuild[] targetsRemovable, GameObject parent, Scene scene) =>
         LogInformation(id: 0, nameof(ContextualGameObjectsRemoved), $"Removed {{{nameof(targetsRemoved)}}} GameObjects out of {{{nameof(targetsRemovable)}}} marked for contextual removal under {{{nameof(parent)}}} in {{{nameof(scene)}}}", targetsRemoved.Length, targetsRemovable.Length, parent.name, scene.name);
 
-    public void ContextualGameObjectsNotRemoved(Scene scene) =>
-        LogInformation(id: 1, nameof(ContextualGameObjectsNotRemoved), $"No GameObjects marked for contextual removal in {{{nameof(scene)}}}", scene.name);
-
     public void LoadingAsciiCharacterSprites(string pathTemplate) =>
         LogInformation(id: 2, nameof(LoadingAsciiCharacterSprites), $"Loading character Sprites using {{{nameof(pathTemplate)}}}...", pathTemplate);
 

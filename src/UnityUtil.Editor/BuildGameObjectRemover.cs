@@ -20,13 +20,11 @@ public class BuildGameObjectRemover
             : Debug.isDebugBuild ? BuildContext.DebugBuild
             : BuildContext.ReleaseBuild;
 
-        int numRemoveTargets = 0;
         GameObject[] roots = scene.GetRootGameObjects();
         for (int r = 0; r < roots.Length; ++r) {
             GameObject root = roots[r];
 
             RemoveFromBuild[] removableTargets = root.GetComponentsInChildren<RemoveFromBuild>(includeInactive: true);
-            numRemoveTargets += removableTargets.Length;
 
             // Determine which GameObjects should actually be removed
             RemoveFromBuild[] targetsToRemove = removableTargets
@@ -48,8 +46,5 @@ public class BuildGameObjectRemover
             if (removableTargets.Length > 0)
                 _logger.ContextualGameObjectsRemoved(targetsToRemove, removableTargets, root, scene);
         }
-
-        if (numRemoveTargets == 0)
-            _logger.ContextualGameObjectsNotRemoved(scene);
     }
 }
