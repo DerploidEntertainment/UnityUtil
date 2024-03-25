@@ -1,8 +1,8 @@
 {
-  "name": "com.serilog.enrichers.unityobjectpath",
+  "name": "com.serilog.enrichers.unity",
   "version": "0.1.0",
-  "description": "A Serilog Enricher that adds Unity object paths (component hierarchies or asset names) to log events.",
-  "displayName": "Serilog Enricher: Unity object path",
+  "description": "A Serilog Enricher that enriches log events with Unity data (component hierarchies, frame counts, etc.)",
+  "displayName": "Serilog Enricher: Unity",
   "unity": "2019.4",
   "author": {
     "name": "Rabadash8820",

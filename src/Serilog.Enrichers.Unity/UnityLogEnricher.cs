@@ -3,7 +3,7 @@ using Serilog.Events;
 using System.Text;
 using UnityEngine;
 
-namespace Serilog.Enrichers.UnityObjectPath;
+namespace Serilog.Enrichers.Unity;
 
 public class UnityLogEnricher(UnityLogEnricherSettings unityLogEnricherSettings) : ILogEventEnricher
 {

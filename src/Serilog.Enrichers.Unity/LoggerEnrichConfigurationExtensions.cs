@@ -1,5 +1,5 @@
 ﻿using Serilog.Configuration;
-using Serilog.Enrichers.UnityObjectPath;
+using Serilog.Enrichers.Unity;
 using System;
 
 namespace Serilog;
@@ -14,14 +14,11 @@ public static class LoggerEnrichmentConfigurationExtensions
     /// <param name="enrichmentConfiguration">Logger sink configuration.</param>
     /// <param name="settings">Supplies settings for generating the hierarchical path of scene objects.</param>
     /// <returns>Configuration object allowing method chaining.</returns>
-    public static LoggerConfiguration UnityObjectPath(
+    public static LoggerConfiguration WithUnityData(
         this LoggerEnrichmentConfiguration enrichmentConfiguration,
         UnityLogEnricherSettings settings
-    )
-    {
-        if (enrichmentConfiguration == null) throw new ArgumentNullException(nameof(enrichmentConfiguration));
-        if (settings == null) throw new ArgumentNullException(nameof(settings));
-
-        return enrichmentConfiguration.With(new UnityLogEnricher(settings));
-    }
+    ) =>
+        enrichmentConfiguration == null ? throw new ArgumentNullException(nameof(enrichmentConfiguration))
+        : settings == null ? throw new ArgumentNullException(nameof(settings))
+        : enrichmentConfiguration.With(new UnityLogEnricher(settings));
 }

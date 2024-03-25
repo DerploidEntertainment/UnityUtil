@@ -1,7 +1,7 @@
 ﻿using Sirenix.OdinInspector;
 using UnityEngine;
 
-namespace Serilog.Enrichers.UnityObjectPath;
+namespace Serilog.Enrichers.Unity;
 
 [CreateAssetMenu(menuName = $"{nameof(Serilog)}/Enrichers/{nameof(UnityLogEnricherSettings)}", fileName = "unity-log-enricher-settings")]
 public class UnityLogEnricherSettings : ScriptableObject
