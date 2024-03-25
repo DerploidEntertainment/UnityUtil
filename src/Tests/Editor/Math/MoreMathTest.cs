@@ -2,6 +2,7 @@ using Moq;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
 using UnityUtil.Math;
 
@@ -10,12 +11,8 @@ namespace UnityUtil.Editor.Tests.Math
     public class MoreMathTest : BaseEditModeTestFixture
     {
         [Test]
-        public void RandomWeightedIndex_Fails_NoWeights()
-        {
-            Assert.Throws<ArgumentException>(() =>
-                MoreMath.RandomWeightedIndex(Array.Empty<float>(), getRandomNumberGenerator())
-            );
-        }
+        public void RandomWeightedIndex_Fails_NoWeights() =>
+            Assert.Throws<ArgumentException>(() => MoreMath.RandomWeightedIndex(Array.Empty<float>(), getRandomNumberGenerator()));
 
         [Test]
         [TestCase(new[] { 0f })]
@@ -24,6 +21,7 @@ namespace UnityUtil.Editor.Tests.Math
         [TestCase(new[] { 0.25f, 0.85f })]
         [TestCase(new[] { 0.1f, 0.1f })]
         [TestCase(new[] { 0.2f, 0.5f })]
+        [SuppressMessage("Performance", "CA1861:Avoid constant arrays as arguments", Justification = "Fine for test cases that only run once")]
         public void RandomWeightedIndex_Fails_WeightsDontSumToOne(float[] indexWeights)
         {
             Debug.Log($"Index weights: {string.Join(',', indexWeights)}");
@@ -49,6 +47,7 @@ namespace UnityUtil.Editor.Tests.Math
         [TestCase(new[] { 1.01f })]
         [TestCase(new[] { 200f })]
         [TestCase(new[] { -1f, 2f })]
+        [SuppressMessage("Performance", "CA1861:Avoid constant arrays as arguments", Justification = "Fine for test cases that only run once")]
         public void RandomWeightedIndex_Fails_WeightsOverOne(float[] indexWeights)
         {
             Debug.Log($"Index weights: {string.Join(',', indexWeights)}");
@@ -57,6 +56,7 @@ namespace UnityUtil.Editor.Tests.Math
             );
         }
 
+        [SuppressMessage("Performance", "CA1861:Avoid constant arrays as arguments", Justification = "Fine for test cases that only run once")]
         private static IEnumerable<TestCaseData> yieldCorrectIndexTestCases()
         {
             yield return new(0.0d, new[] { 1f }, 0);
@@ -91,6 +91,6 @@ namespace UnityUtil.Editor.Tests.Math
             Assert.That(index, Is.EqualTo(expectedIndex));
         }
 
-        private static IRandomNumberGenerator getRandomNumberGenerator() => new TestRandomNumberGenerator(123456789);    // Hard-coded seed so tests are stable
+        private static TestRandomNumberGenerator getRandomNumberGenerator() => new(123456789);    // Hard-coded seed so tests are stable
     }
 }

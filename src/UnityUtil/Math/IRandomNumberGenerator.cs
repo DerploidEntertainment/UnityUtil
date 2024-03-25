@@ -1,15 +1,13 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 using S = System;
 
 namespace UnityUtil.Math;
 
-[SuppressMessage("Security", "CA5394:Do not use insecure randomness", Justification = "Interface is not intended to be secure")]
 public interface IRandomNumberGenerator
 {
     string Seed { get; }
 
-    S.Random? SystemRand { get; }
+    Random? SystemRand { get; }
 
     /// <summary>
     /// Returns a non-negative random integer.
