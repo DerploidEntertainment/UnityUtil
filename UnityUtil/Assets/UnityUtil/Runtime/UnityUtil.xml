@@ -607,6 +607,11 @@
             "Default" implementation of <see cref="T:Microsoft.Extensions.Logging.ILoggerFactory"/> that creates instances of <see cref="T:UnityUtil.Logging.LogLevelCallbackLogger"/>.
             </summary>
         </member>
+        <member name="M:UnityUtil.Logging.LogLevelCallbackLoggerFactory.#ctor(Microsoft.Extensions.Logging.LogLevel,System.Action{Microsoft.Extensions.Logging.LogLevel,Microsoft.Extensions.Logging.EventId,System.Exception,System.String},System.Action{Microsoft.Extensions.Logging.LogLevel,Microsoft.Extensions.Logging.EventId,System.Exception,System.String})">
+            <summary>
+            "Default" implementation of <see cref="T:Microsoft.Extensions.Logging.ILoggerFactory"/> that creates instances of <see cref="T:UnityUtil.Logging.LogLevelCallbackLogger"/>.
+            </summary>
+        </member>
         <member name="T:UnityUtil.Logging.UnityDebugLogger">
             <summary>
             "Default" implementation of <see cref="T:Microsoft.Extensions.Logging.ILogger"/> to wrap Unity's own <see cref="T:UnityEngine.Debug"/> <c>Log*</c> methods.
