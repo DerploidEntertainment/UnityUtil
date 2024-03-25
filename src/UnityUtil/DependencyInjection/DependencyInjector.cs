@@ -26,9 +26,9 @@ public class DependencyInjector
 
     private const int DEFAULT_SCENE_HANDLE = -1;
 
-    public static readonly DependencyInjector Instance = new(Array.Empty<Type>()) { RecordingResolutions = U.Device.Application.isEditor };
+    public static readonly DependencyInjector Instance = new([]) { RecordingResolutions = U.Device.Application.isEditor };
 
-    private ILoggerFactory? _loggerFactory;
+    public ILoggerFactory? LoggerFactory { get; private set; }
     private ITypeMetadataProvider? _typeMetadataProvider;
     private RootLogger<DependencyInjector>? _logger;
 
@@ -64,7 +64,7 @@ public class DependencyInjector
             throw new InvalidOperationException($"Cannot initialize a {nameof(DependencyInjector)} multiple times!");
 
         _typeMetadataProvider = typeMetadataProvider;
-        _loggerFactory = loggerFactory;
+        LoggerFactory = loggerFactory;
         _logger = new(loggerFactory, context: this);
 
         Initialized = true;
@@ -130,8 +130,8 @@ public class DependencyInjector
         throwIfUninitialized(nameof(RegisterService));
 
         // Check if the provided service is for logging
-        if (service.ServiceType == typeof(ILoggerFactory) && _loggerFactory == null)
-            _loggerFactory = (ILoggerFactory)service.Instance;
+        if (service.ServiceType == typeof(ILoggerFactory) && LoggerFactory == null)
+            LoggerFactory = (ILoggerFactory)service.Instance;
 
         // Register this service with the provided scene (if one was provided), so that it can be unloaded later if the scene is unloaded
         // Show an error if provided service's type/tag match those of an already registered service
