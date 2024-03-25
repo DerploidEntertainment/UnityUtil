@@ -312,7 +312,7 @@ namespace UnityUtil.Editor.Tests.Legal
                 initializablesWithConsent: initializables.Select(x => x.Object).ToArray()
             );
 
-            static void log(LogLevel logLevel, EventId eventId, Exception exception, string message)
+            static void log(LogLevel logLevel, EventId eventId, Exception? exception, string message)
             {
                 LogType logType = logLevel switch {
                     LogLevel.None or LogLevel.Trace or LogLevel.Debug or LogLevel.Information => LogType.Log,

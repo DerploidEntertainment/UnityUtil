@@ -10,10 +10,9 @@ using UnityUtil.Logging;
 namespace UnityUtil;
 
 /// <inheritdoc/>
-internal class EditorRootLogger<T> : BaseUnityUtilLogger<T>
+internal class EditorRootLogger<T>(ILoggerFactory loggerFactory, T context)
+    : BaseUnityUtilLogger<T>(loggerFactory, context, eventIdOffset: 16_000)
 {
-    public EditorRootLogger(ILoggerFactory loggerFactory, T context)
-        : base(loggerFactory, context, eventIdOffset: 16_000) { }
 
     #region Information
 
