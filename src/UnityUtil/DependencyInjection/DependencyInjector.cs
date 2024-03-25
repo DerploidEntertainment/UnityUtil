@@ -19,7 +19,7 @@ public class DependencyResolutionCounts(
 
 public class DependencyInjector
 {
-    public const string DefaultTag = "Untagged";
+    public const string DefaultInjectTag = "Untagged";
     public const string InjectMethodName = "Inject";
     public const string DefaultLoggerProviderName = "default-logger-provider";
     public const BindingFlags InjectMethodBindingFlags = BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance;
@@ -79,7 +79,7 @@ public class DependencyInjector
 
     #region Service registration
 
-    public void RegisterService(string serviceTypeName, object instance, Scene? scene = null)
+    public void RegisterService(string serviceTypeName, object instance, string injectTag = DefaultInjectTag, Scene? scene = null)
     {
         if (string.IsNullOrEmpty(serviceTypeName))
             serviceTypeName = instance.GetType().AssemblyQualifiedName;
@@ -89,17 +89,17 @@ public class DependencyInjector
         if (!serviceType.IsAssignableFrom(instance.GetType()))
             throw new InvalidOperationException($"The service instance registered for Type '{serviceTypeName}' is not actually derived from that Type!");
 
-        RegisterService(serviceType, instance, scene);
+        RegisterService(serviceType, instance, injectTag, scene);
     }
-    public void RegisterService<TInstance>(TInstance instance, Scene? scene = null) where TInstance : class => RegisterService(typeof(TInstance), instance, scene);
-    public void RegisterService<TService, TInstance>(TInstance instance, Scene? scene = null) where TInstance : class, TService => RegisterService(typeof(TService), instance, scene);
-    public void RegisterService(Type serviceType, object instance, Scene? scene = null)
+    public void RegisterService<TInstance>(TInstance instance, string injectTag = DefaultInjectTag, Scene? scene = null) where TInstance : class => RegisterService(typeof(TInstance), instance, injectTag, scene);
+    public void RegisterService<TService, TInstance>(TInstance instance, string injectTag = DefaultInjectTag, Scene? scene = null) where TInstance : class, TService => RegisterService(typeof(TService), instance, injectTag, scene);
+    public void RegisterService(Type serviceType, object instance, string injectTag = DefaultInjectTag, Scene? scene = null)
     {
-        var service = new Service(serviceType, (instance as Component)?.tag ?? DefaultTag, instance);
+        var service = new Service(serviceType, injectTag, instance);
         registerService(service, scene);
     }
 
-    public void RegisterService(string serviceTypeName, Func<object> instanceFactory, string tag = DefaultTag, Scene? scene = null)
+    public void RegisterService(string serviceTypeName, Func<object> instanceFactory, string injectTag = DefaultInjectTag, Scene? scene = null)
     {
         if (string.IsNullOrEmpty(serviceTypeName))
             serviceTypeName = instanceFactory.GetType().AssemblyQualifiedName;
@@ -109,13 +109,13 @@ public class DependencyInjector
         if (!serviceType.IsAssignableFrom(instanceFactory.GetType()))
             throw new InvalidOperationException($"The service instance registered for Type '{serviceTypeName}' is not actually derived from that Type!");
 
-        RegisterService(serviceType, instanceFactory, tag, scene);
+        RegisterService(serviceType, instanceFactory, injectTag, scene);
     }
-    public void RegisterService<TInstance>(Func<TInstance> instanceFactory, string tag = DefaultTag, Scene? scene = null) where TInstance : class => RegisterService(typeof(TInstance), instanceFactory, tag, scene);
-    public void RegisterService<TService, TInstance>(Func<TInstance> instanceFactory, string tag = DefaultTag, Scene? scene = null) where TInstance : class, TService => RegisterService(typeof(TService), instanceFactory, tag, scene);
-    public void RegisterService(Type serviceType, Func<object> instanceFactory, string tag = DefaultTag, Scene? scene = null)
+    public void RegisterService<TInstance>(Func<TInstance> instanceFactory, string injectTag = DefaultInjectTag, Scene? scene = null) where TInstance : class => RegisterService(typeof(TInstance), instanceFactory, injectTag, scene);
+    public void RegisterService<TService, TInstance>(Func<TInstance> instanceFactory, string injectTag = DefaultInjectTag, Scene? scene = null) where TInstance : class, TService => RegisterService(typeof(TService), instanceFactory, injectTag, scene);
+    public void RegisterService(Type serviceType, Func<object> instanceFactory, string injectTag = DefaultInjectTag, Scene? scene = null)
     {
-        var service = new Service(serviceType, tag, instanceFactory);
+        var service = new Service(serviceType, injectTag, instanceFactory);
         registerService(service, scene);
     }
 
@@ -123,7 +123,7 @@ public class DependencyInjector
     /// Register <paramref name="service"/> present in <paramref name="scene"/>
     /// </summary>
     /// <exception cref="InvalidOperationException">
-    /// A <see cref="Service"/> with the provided <see cref="Service.ServiceType"/> and <see cref="Service.Tag"/> has already been registered.
+    /// A <see cref="Service"/> with the provided <see cref="Service.ServiceType"/> and <see cref="Service.InjectTag"/> has already been registered.
     /// </exception>
     private void registerService(Service service, Scene? scene = null)
     {
@@ -150,11 +150,11 @@ public class DependencyInjector
         }
 #pragma warning restore IDE0008 // Use explicit type
 
-        bool tagAdded = typedServices.ContainsKey(service.Tag);
+        bool tagAdded = typedServices.ContainsKey(service.InjectTag);
         if (tagAdded)
-            throw new InvalidOperationException($"Attempt to register multiple services with Type '{service.ServiceType.Name}' and tag '{service.Tag}'{(scene.HasValue ? $" from scene '{scene.Value.name}'" : "")}");
+            throw new InvalidOperationException($"Attempt to register multiple services with Type '{service.ServiceType.Name}' and tag '{service.InjectTag}'{(scene.HasValue ? $" from scene '{scene.Value.name}'" : "")}");
         else {
-            typedServices.Add(service.Tag, service);
+            typedServices.Add(service.InjectTag, service);
             _logger?.RegisteredService(service, scene);
         }
     }
@@ -368,7 +368,7 @@ public class DependencyInjector
             // Get the dependency's requested tag, if it exists
             InjectTagAttribute? injAttr = _typeMetadataProvider!.GetCustomAttribute<InjectTagAttribute>(parameters[p]);
             bool untagged = string.IsNullOrEmpty(injAttr?.Tag);
-            string tag = untagged ? DefaultTag : injAttr!.Tag;
+            string tag = untagged ? DefaultInjectTag : injAttr!.Tag;
 
             // Warn if a dependency with this Type and tag has already been injected
             bool firstInjection = _injectedTypes.Add((paramType, tag));
@@ -383,7 +383,7 @@ public class DependencyInjector
 
         return dependencies;
     }
-    internal void TryGetService(Type serviceType, string tag, string clientName, out Service service)
+    internal void TryGetService(Type serviceType, string injectTag, string clientName, out Service service)
     {
         Dictionary<string, Service>? typedServices = null;
         foreach (int scene in _services.Keys) {
@@ -391,11 +391,11 @@ public class DependencyInjector
                 break;
         }
         if (typedServices is null)
-            throw new KeyNotFoundException($"{clientName} has a dependency of Type '{serviceType.FullName}', but no service was registered with that Type. Did you forget to add a service to the service collection?");
+            throw new KeyNotFoundException($"{clientName} has a dependency of Type '{serviceType.FullName}', but no service was registered with that Type.");
 
-        bool resolved = typedServices.TryGetValue(tag, out service);
+        bool resolved = typedServices.TryGetValue(injectTag, out service);
         if (!resolved)
-            throw new KeyNotFoundException($"{clientName} has a dependency of Type '{serviceType.FullName}' with tag '{tag}', but no matching service was registered. Did you forget to tag a service?");
+            throw new KeyNotFoundException($"{clientName} has a dependency of Type '{serviceType.FullName}' with tag '{injectTag}', but no matching service was registered. Did you forget to tag a service?");
     }
 
     #endregion

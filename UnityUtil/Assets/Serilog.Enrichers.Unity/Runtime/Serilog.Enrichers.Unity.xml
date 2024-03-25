@@ -22,5 +22,65 @@
             then this enricher will use it to construct the context's "path".
             </summary>
         </member>
+        <member name="P:Serilog.Enrichers.Unity.UnityLogEnricherSettings.IncludeFrameCount">
+            <summary>
+            If <see langword="true"/>, then every log is encriched with <see cref="P:UnityEngine.Time.frameCount"/>.
+            See the Unity Scripting API docs for <a href="https://docs.unity3d.com/ScriptReference/Time.html"><c>Time</c></a>.
+            </summary>
+        </member>
+        <member name="P:Serilog.Enrichers.Unity.UnityLogEnricherSettings.IncludeTimeSinceLevelLoad">
+            <summary>
+            If <see langword="true"/>, then every log is encriched with <see cref="P:UnityEngine.Time.timeSinceLevelLoad"/>.
+            See the Unity Scripting API docs for <a href="https://docs.unity3d.com/ScriptReference/Time.html"><c>Time</c></a>.
+            </summary>
+        </member>
+        <member name="P:Serilog.Enrichers.Unity.UnityLogEnricherSettings.IncludeTimeSinceLevelLoadAsDouble">
+            <summary>
+            If <see langword="true"/>, then every log is encriched with <see cref="P:UnityEngine.Time.timeSinceLevelLoadAsDouble"/>.
+            See the Unity Scripting API docs for <a href="https://docs.unity3d.com/ScriptReference/Time.html"><c>Time</c></a>.
+            </summary>
+        </member>
+        <member name="P:Serilog.Enrichers.Unity.UnityLogEnricherSettings.IncludeUnscaledTime">
+            <summary>
+            If <see langword="true"/>, then every log is encriched with <see cref="P:UnityEngine.Time.unscaledTime"/>.
+            See the Unity Scripting API docs for <a href="https://docs.unity3d.com/ScriptReference/Time.html"><c>Time</c></a>.
+            </summary>
+        </member>
+        <member name="P:Serilog.Enrichers.Unity.UnityLogEnricherSettings.IncludeUnscaledTimeAsDouble">
+            <summary>
+            If <see langword="true"/>, then every log is encriched with <see cref="P:UnityEngine.Time.unscaledTimeAsDouble"/>.
+            See the Unity Scripting API docs for <a href="https://docs.unity3d.com/ScriptReference/Time.html"><c>Time</c></a>.
+            </summary>
+        </member>
+        <member name="P:Serilog.Enrichers.Unity.UnityLogEnricherSettings.IncludeTime">
+            <summary>
+            If <see langword="true"/>, then every log is encriched with <see cref="P:UnityEngine.Time.time"/>.
+            See the Unity Scripting API docs for <a href="https://docs.unity3d.com/ScriptReference/Time.html"><c>Time</c></a>.
+            </summary>
+        </member>
+        <member name="P:Serilog.Enrichers.Unity.UnityLogEnricherSettings.IncludeTimeAsDouble">
+            <summary>
+            If <see langword="true"/>, then every log is encriched with <see cref="P:UnityEngine.Time.timeAsDouble"/>.
+            See the Unity Scripting API docs for <a href="https://docs.unity3d.com/ScriptReference/Time.html"><c>Time</c></a>.
+            </summary>
+        </member>
+        <member name="P:Serilog.Enrichers.Unity.UnityLogEnricherSettings.IncludeSceneObjectPath">
+            <summary>
+            If <see langword="true"/>, then every log is encriched with the hierarchy path of scene objects, if applicable.
+            Use this to generate logs that more specifically identify a scene Object.
+            </summary>
+        </member>
+        <member name="P:Serilog.Enrichers.Unity.UnityLogEnricherSettings.ParentCount">
+            <summary>
+            If <see cref="P:Serilog.Enrichers.Unity.UnityLogEnricherSettings.IncludeSceneObjectPath"/> is <see langword="true"/> then,
+            for Objects that are scene objects, the name will include up to this many parent objects' names in the logs.
+            </summary>
+        </member>
+        <member name="P:Serilog.Enrichers.Unity.UnityLogEnricherSettings.ParentNameSeparator">
+            <summary>
+            If <see cref="P:Serilog.Enrichers.Unity.UnityLogEnricherSettings.IncludeSceneObjectPath"/> is <see langword="true"/> then,
+            for Objects that are scene objects, the name of the Object and its <see cref="P:Serilog.Enrichers.Unity.UnityLogEnricherSettings.ParentCount"/> parents will be separated by this string.
+            </summary>
+        </member>
     </members>
 </doc>

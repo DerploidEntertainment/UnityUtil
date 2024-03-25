@@ -4,6 +4,7 @@ using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -20,7 +21,7 @@ namespace UnityUtil.Editor.Tests.Legal
     public class SingleDialogConsentManagerTest : BaseEditModeTestFixture
     {
         private const string CONSENT_PREF_KEY_PREFIX = "TEST_CONSENT_";
-        private static IEnumerable<TestCaseData> getConsentStateTestCases() =>
+        private static TestCaseData[] getConsentStateTestCases() =>
             new TestCaseData[] {
                 new(LegalAcceptance.Unprovided, new bool?[]{ null }),
                 new(LegalAcceptance.Unprovided, new bool?[]{ true }),
@@ -273,6 +274,7 @@ namespace UnityUtil.Editor.Tests.Legal
         [Test]
         [TestCase(new[] { 10, 10, 10 })]
         [TestCase(new[] { 10, 20, 30 })]
+        [SuppressMessage("Performance", "CA1861:Avoid constant arrays as arguments", Justification = "Fine for test cases that only run once")]
         public async Task Initialize_InitializesAllInParallel(int[] initializeDurationsMs)
         {
             Mock<IInitializableWithConsent>[] initializables = getInitializablesWithConsent(initializeDurationsMs.Length, initializeDurationsMs);

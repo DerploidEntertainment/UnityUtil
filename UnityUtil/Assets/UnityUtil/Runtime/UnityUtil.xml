@@ -19,7 +19,7 @@
             Register <paramref name="service"/> present in <paramref name="scene"/>
             </summary>
             <exception cref="T:System.InvalidOperationException">
-            A <see cref="T:UnityUtil.DependencyInjection.Service"/> with the provided <see cref="F:UnityUtil.DependencyInjection.Service.ServiceType"/> and <see cref="F:UnityUtil.DependencyInjection.Service.Tag"/> has already been registered.
+            A <see cref="T:UnityUtil.DependencyInjection.Service"/> with the provided <see cref="F:UnityUtil.DependencyInjection.Service.ServiceType"/> and <see cref="F:UnityUtil.DependencyInjection.Service.InjectTag"/> has already been registered.
             </exception>
         </member>
         <member name="P:UnityUtil.DependencyInjection.DependencyInjector.CachedResolutionTypes">
@@ -100,21 +100,9 @@
             This type is used internally by the DI system. You should never need to implement it in your own code.
             </summary>
         </member>
-        <member name="T:UnityUtil.DependencyInjection.SceneServiceCollection">
+        <member name="F:UnityUtil.DependencyInjection.Service.InjectTag">
             <summary>
-            Encapsulates a collection in which scene-specific service instances can be registered.
-            Inheriting classes can override <see cref="M:UnityUtil.DependencyInjection.SceneServiceCollection.Awake"/> to register additional scene-specific services via type-specific fields.
-            </summary>
-        </member>
-        <member name="M:UnityUtil.DependencyInjection.SceneServiceCollection.Awake">
-            <summary>
-            Inheriting classes can override this method to register additional scene-specific services.
-            </summary>
-        </member>
-        <member name="M:UnityUtil.DependencyInjection.SceneServiceCollection.OnDestroy">
-            <summary>
-            Unregisters all services from this collection and any others in the scene.
-            There should only be one collection per scene anyway.
+            Tag to disambiguate services of the same <see cref="F:UnityUtil.DependencyInjection.Service.ServiceType"/>.
             </summary>
         </member>
         <member name="T:UnityUtil.Inventories.AmmoEvent">

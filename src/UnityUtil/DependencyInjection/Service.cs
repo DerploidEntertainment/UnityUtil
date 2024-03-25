@@ -9,18 +9,23 @@ internal readonly struct Service
     public Service(Type serviceType, string tag, object instance)
     {
         ServiceType = serviceType;
-        Tag = tag;
+        InjectTag = tag;
         _instance = new Lazy<object>(instance);
     }
 
     public Service(Type serviceType, string tag, Func<object> instanceFactory)
     {
         ServiceType = serviceType;
-        Tag = tag;
+        InjectTag = tag;
         _instance = new Lazy<object>(instanceFactory);
     }
 
     public readonly Type ServiceType;
-    public readonly string Tag;
+
+    /// <summary>
+    /// Tag to disambiguate services of the same <see cref="ServiceType"/>.
+    /// </summary>
+    public readonly string InjectTag;
+
     public object Instance => _instance.Value;
 }

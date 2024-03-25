@@ -171,7 +171,7 @@ namespace UnityUtil.Editor.Tests.Math
             Assert.That(batch.Count, Is.InRange(minCount, maxCount));
         }
 
-        private static IEnumerable<TestCaseData> yieldBatchConfigTestCases() => new TestCaseData[] {
+        private static TestCaseData[] yieldBatchConfigTestCases() => new TestCaseData[] {
             new(1, 0, 0, 2),
             new(1, 0, 1, 2),
             new(1, 1, 1, 2),
@@ -511,7 +511,7 @@ namespace UnityUtil.Editor.Tests.Math
 
         #endregion
 
-        private static IRandomNumberGenerator getRandomNumberGenerator() => new TestRandomNumberGenerator(123456789);    // Hard-coded seed so tests are stable
+        private static TestRandomNumberGenerator getRandomNumberGenerator() => new(123456789);    // Hard-coded seed so tests are stable
 
         private static UniformBatchedRandomishOptionChooser getRandomishOptionChooser(
             IRandomNumberGenerator? randomNumberGenerator = null,
@@ -523,7 +523,7 @@ namespace UnityUtil.Editor.Tests.Math
             );
 
         /// <summary>
-        /// Set up <paramref name="mockedRandomNumberGenerator"/> to return the following "randomish" numbers:
+        /// Mock an <see name="IRandomNumberGenerator"/> to return the following "randomish" numbers:
         /// <list type="number">
         /// <item>Actual random numbers while logic is picking number/length of runs</item>
         /// <item>Thereafter, values provided by <paramref name="optionIndexProvider"/></item>
@@ -534,7 +534,9 @@ namespace UnityUtil.Editor.Tests.Math
             Mock<IRandomNumberGenerator> mockedRandomNumberGenerator = new();
 
             // All "other" range calls will just return PRNG-generated values
+#pragma warning disable CA1859 // Use concrete types when possible for improved performance; justification: var must be interface type to use default interface methods
             IRandomNumberGenerator randomNumberGenerator = getRandomNumberGenerator();
+#pragma warning restore CA1859 // Use concrete types when possible for improved performance
             mockedRandomNumberGenerator.Setup(x => x.Range(It.IsAny<int>(), It.IsAny<int>()))
                 .Returns<int, int>((inclusiveMin, exclusiveMax) => randomNumberGenerator.Range(inclusiveMin, exclusiveMax));
 

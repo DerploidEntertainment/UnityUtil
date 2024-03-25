@@ -68,7 +68,16 @@ then you must use the [`link.xml` approach](https://docs.unity3d.com/Manual/Mana
 
 ### Dependency Injection
 
-**Docs coming soon!**
+Order of service registration does not matter.
+Multiple scenes may have scene-specific composition roots, even multiple such roots;
+their registered services will all be combined.
+You should also define an `OnDestroy` method in these components, so that services can be unregistered when the scene unloads.
+This allows a game to dynamically register and unregister a scene's services at runtime.
+We recommend setting composition roots components to run as early as possible in the Unity Script Execution Order,
+so that their services are registered before all other components' `Awake` methods run.
+Note, however, that an error will result if multiple composition roots
+try to register a service with the same parameters. In this case, it may be better to create a 'base' scene
+with all common services, so that they are each registered once, or register the services with different tags.
 
 ### Inputs
 
