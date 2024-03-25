@@ -391,7 +391,7 @@ public class DependencyInjector
                 break;
         }
         if (typedServices is null)
-            throw new KeyNotFoundException($"{clientName} has a dependency of Type '{serviceType.FullName}', but no service was registered with that Type. Did you forget to add a service to the service collection?");
+            throw new KeyNotFoundException($"{clientName} has a dependency of Type '{serviceType.FullName}', but no service was registered with that Type.");
 
         bool resolved = typedServices.TryGetValue(injectTag, out service);
         if (!resolved)
