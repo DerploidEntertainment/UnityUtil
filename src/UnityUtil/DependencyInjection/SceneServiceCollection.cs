@@ -52,7 +52,7 @@ public class SceneServiceCollection : MonoBehaviour, IEnumerable<InspectorServic
     {
         for (int s = 0; s < Services.Length; ++s) {
             InspectorService service = Services[s];
-            DependencyInjector.Instance.RegisterService(service.TypeName, service.Instance!, gameObject.scene);
+            DependencyInjector.Instance.RegisterService(service.TypeName, service.Instance!, scene: gameObject.scene);
         }
     }
 

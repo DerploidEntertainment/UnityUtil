@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
+using System.Security;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -170,52 +171,56 @@ namespace UnityUtil.Editor.Tests.DependencyInjection
         public void Registers_Instance_SameTypeDifferentTag()
         {
             DependencyInjector dependencyInjector = getDependencyInjector();
+            const string TEST_TAG = "test";
 
-            // Test fails if these lines throw or log an error
-            dependencyInjector.RegisterService(getComponentService<TestComponent>(tag: "test"));
-            dependencyInjector.RegisterService(getComponentService<TestComponent>(tag: "not-test"));
+            Assert.DoesNotThrow(() => dependencyInjector.RegisterService(getComponentService<TestComponent>(), TEST_TAG));
+            Assert.DoesNotThrow(() => dependencyInjector.RegisterService(getComponentService<TestComponent>(), "not-" + TEST_TAG));
         }
 
         [Test]
         public void Registers_Factory_SameTypeDifferentTag()
         {
             DependencyInjector dependencyInjector = getDependencyInjector();
+            const string TEST_TAG = "test";
 
-            // Test fails if these lines throw or log an error
-            dependencyInjector.RegisterService(() => getComponentService<TestComponent>(), "test");
-            dependencyInjector.RegisterService(() => getComponentService<TestComponent>(), "not-test");
+            Assert.DoesNotThrow(() => dependencyInjector.RegisterService(() => getComponentService<TestComponent>(), TEST_TAG));
+            Assert.DoesNotThrow(() => dependencyInjector.RegisterService(() => getComponentService<TestComponent>(), "not-" + TEST_TAG));
         }
 
         [Test]
-        public void CannotRegister_Instance_SameTypeAndTag_SameScene()
+        public void CannotRegister_Instance_SameTypeAndTag_SameScene([Values] bool explicitScene)
         {
             // ARRANGE
             DependencyInjector dependencyInjector = getDependencyInjector();
-            dependencyInjector.RegisterService(getComponentService<TestComponent>("test"));
-            dependencyInjector.RegisterService(getComponentService<TestComponent>());
+            Scene? scene = explicitScene ? SceneManager.GetActiveScene() : null;
+            const string TEST_TAG = "test";
 
             // ACT/ASSERT
+            dependencyInjector.RegisterService(getComponentService<TestComponent>(), TEST_TAG, scene: scene);
             Assert.Throws<InvalidOperationException>(() =>
-                dependencyInjector.RegisterService(getComponentService<TestComponent>("test")));
+                dependencyInjector.RegisterService(getComponentService<TestComponent>(), TEST_TAG, scene: scene));
 
+            dependencyInjector.RegisterService(getComponentService<TestComponent>(), scene: scene);
             Assert.Throws<InvalidOperationException>(() =>
-                dependencyInjector.RegisterService(getComponentService<TestComponent>()));
+                dependencyInjector.RegisterService(getComponentService<TestComponent>(), scene: scene));
         }
 
         [Test]
-        public void CannotRegister_Factory_SameTypeAndTag_SameScene()
+        public void CannotRegister_Factory_SameTypeAndTag_SameScene([Values] bool explicitScene)
         {
             // ARRANGE
             DependencyInjector dependencyInjector = getDependencyInjector();
-            dependencyInjector.RegisterService(getComponentService<TestComponent>("test"));
-            dependencyInjector.RegisterService(getComponentService<TestComponent>());
+            Scene? scene = explicitScene ? SceneManager.GetActiveScene() : null;
+            const string TEST_TAG = "test";
 
             // ACT/ASSERT
+            dependencyInjector.RegisterService(getComponentService<TestComponent>(), TEST_TAG, scene: scene);
             Assert.Throws<InvalidOperationException>(() =>
-                dependencyInjector.RegisterService(() => getComponentService<TestComponent>(), "test"));
+                dependencyInjector.RegisterService(getComponentService<TestComponent>(), TEST_TAG, scene: scene));
 
+            dependencyInjector.RegisterService(getComponentService<TestComponent>(), scene: scene);
             Assert.Throws<InvalidOperationException>(() =>
-                dependencyInjector.RegisterService(() => getComponentService<TestComponent>()));
+                dependencyInjector.RegisterService(() => getComponentService<TestComponent>(), scene: scene));
         }
 
         [Test, Ignore("Haven't figured out a way to open a new Scene while in the unsaved scene created by the Test Runner")]
@@ -223,16 +228,16 @@ namespace UnityUtil.Editor.Tests.DependencyInjection
         {
             // ARRANGE
             DependencyInjector dependencyInjector = getDependencyInjector();
-            dependencyInjector.RegisterService(getComponentService<TestComponent>("test"));
-            dependencyInjector.RegisterService(getComponentService<TestComponent>());
-
             Scene otherScene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Additive);
             SceneManager.SetActiveScene(otherScene);
+            const string TEST_TAG = "test";
 
             // ACT/ASSERT
+            dependencyInjector.RegisterService(getComponentService<TestComponent>(), TEST_TAG);
             Assert.Throws<InvalidOperationException>(() =>
-                dependencyInjector.RegisterService(getComponentService<TestComponent>("test")));
+                dependencyInjector.RegisterService(getComponentService<TestComponent>(), TEST_TAG));
 
+            dependencyInjector.RegisterService(getComponentService<TestComponent>());
             Assert.Throws<InvalidOperationException>(() =>
                 dependencyInjector.RegisterService(getComponentService<TestComponent>()));
 
@@ -244,16 +249,16 @@ namespace UnityUtil.Editor.Tests.DependencyInjection
         {
             // ARRANGE
             DependencyInjector dependencyInjector = getDependencyInjector();
-            dependencyInjector.RegisterService(getComponentService<TestComponent>("test"));
-            dependencyInjector.RegisterService(getComponentService<TestComponent>());
-
             Scene otherScene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Additive);
             SceneManager.SetActiveScene(otherScene);
+            const string TEST_TAG = "test";
 
             // ACT/ASSERT
+            dependencyInjector.RegisterService(getComponentService<TestComponent>(), TEST_TAG);
             Assert.Throws<InvalidOperationException>(() =>
-                dependencyInjector.RegisterService(getComponentService<TestComponent>("test")));
+                dependencyInjector.RegisterService(getComponentService<TestComponent>(), TEST_TAG));
 
+            dependencyInjector.RegisterService(getComponentService<TestComponent>());
             Assert.Throws<InvalidOperationException>(() =>
                 dependencyInjector.RegisterService(getComponentService<TestComponent>()));
 
@@ -261,36 +266,19 @@ namespace UnityUtil.Editor.Tests.DependencyInjection
         }
 
         [Test]
-        public void Registers_ComponentInstances_WithInspectorTag()
-        {
-            // ARRANGE
-            DependencyInjector dependencyInjector = getDependencyInjector();
-
-            var obj = new GameObject { tag = "test" };
-            TestComponent serviceInstance = obj.AddComponent<TestComponent>();
-            dependencyInjector.RegisterService(serviceInstance);
-
-            // ACT/ASSERT
-            dependencyInjector.TryGetService(typeof(TestComponent), tag: "test", clientName: "Unit test", out Service service);
-            Assert.That(service.Instance, Is.SameAs(serviceInstance));
-
-            Assert.Throws<KeyNotFoundException>(() => dependencyInjector.TryGetService(typeof(TestComponent), tag: "other", clientName: "Unit test", out _));
-        }
-
-        [Test]
-        public void Registers_NonComponentInstances_WithDefaultTag()
+        public void Registers_DefaultInjectTag()
         {
             // ARRANGE
             DependencyInjector dependencyInjector = getDependencyInjector();
 
             object serviceInstance = new();
-            dependencyInjector.RegisterService(serviceInstance);
 
             // ACT/ASSERT
-            dependencyInjector.TryGetService(typeof(object), tag: DependencyInjector.DefaultTag, clientName: "Unit test", out Service service);
+            dependencyInjector.RegisterService(serviceInstance);
+            dependencyInjector.TryGetService(typeof(object), injectTag: DependencyInjector.DefaultInjectTag, clientName: "Unit test", out Service service);
             Assert.That(service.Instance, Is.SameAs(serviceInstance));
 
-            Assert.Throws<KeyNotFoundException>(() => dependencyInjector.TryGetService(typeof(object), tag: "test", clientName: "Unit test", out _));
+            Assert.Throws<KeyNotFoundException>(() => dependencyInjector.TryGetService(typeof(object), injectTag: "test", clientName: "Unit test", out _));
         }
 
         #endregion
@@ -304,7 +292,7 @@ namespace UnityUtil.Editor.Tests.DependencyInjection
             object serviceInstance = new();
             dependencyInjector.RegisterService(serviceInstance);
 
-            dependencyInjector.TryGetService(typeof(object), tag: DependencyInjector.DefaultTag, clientName: "Unit test", out Service service);
+            dependencyInjector.TryGetService(typeof(object), injectTag: DependencyInjector.DefaultInjectTag, clientName: "Unit test", out Service service);
 
             Assert.That(service.Instance, Is.SameAs(serviceInstance));
         }
@@ -316,22 +304,22 @@ namespace UnityUtil.Editor.Tests.DependencyInjection
             var serviceInstance = new InvalidOperationException();
             dependencyInjector.RegisterService<Exception>(serviceInstance);
 
-            dependencyInjector.TryGetService(typeof(Exception), tag: DependencyInjector.DefaultTag, clientName: "Unit test", out Service service);
+            dependencyInjector.TryGetService(typeof(Exception), injectTag: DependencyInjector.DefaultInjectTag, clientName: "Unit test", out Service service);
 
             Assert.That(service.Instance, Is.SameAs(serviceInstance));
             Assert.Throws<KeyNotFoundException>(() =>
-                dependencyInjector.TryGetService(typeof(ApplicationException), tag: DependencyInjector.DefaultTag, clientName: "Unit test", out _));
+                dependencyInjector.TryGetService(typeof(ApplicationException), injectTag: DependencyInjector.DefaultInjectTag, clientName: "Unit test", out _));
         }
 
         [Test]
         public void Resolves_Instance_ByTypeAndTag()
         {
             DependencyInjector dependencyInjector = getDependencyInjector();
-            var obj = new GameObject { tag = "test" };
-            TestComponent serviceInstance = obj.AddComponent<TestComponent>();
-            dependencyInjector.RegisterService(serviceInstance);
+            TestComponent serviceInstance = getComponentService<TestComponent>();
+            const string TEST_TAG = "test";
 
-            dependencyInjector.TryGetService(typeof(TestComponent), tag: "test", clientName: "Unit test", out Service service);
+            dependencyInjector.RegisterService(serviceInstance, TEST_TAG);
+            dependencyInjector.TryGetService(typeof(TestComponent), TEST_TAG, clientName: "Unit test", out Service service);
 
             Assert.That(service.Instance, Is.SameAs(serviceInstance));
         }
@@ -343,7 +331,7 @@ namespace UnityUtil.Editor.Tests.DependencyInjection
             object serviceInstance = new();
             dependencyInjector.RegisterService(() => serviceInstance);
 
-            dependencyInjector.TryGetService(typeof(object), tag: DependencyInjector.DefaultTag, clientName: "Unit test", out Service service);
+            dependencyInjector.TryGetService(typeof(object), injectTag: DependencyInjector.DefaultInjectTag, clientName: "Unit test", out Service service);
 
             Assert.That(service.Instance, Is.SameAs(serviceInstance));
         }
@@ -355,11 +343,11 @@ namespace UnityUtil.Editor.Tests.DependencyInjection
             var serviceInstance = new InvalidOperationException();
             dependencyInjector.RegisterService<Exception, InvalidOperationException>(() => serviceInstance);
 
-            dependencyInjector.TryGetService(typeof(Exception), tag: DependencyInjector.DefaultTag, clientName: "Unit test", out Service service);
+            dependencyInjector.TryGetService(typeof(Exception), injectTag: DependencyInjector.DefaultInjectTag, clientName: "Unit test", out Service service);
 
             Assert.That(service.Instance, Is.SameAs(serviceInstance));
             Assert.Throws<KeyNotFoundException>(() =>
-                dependencyInjector.TryGetService(typeof(ApplicationException), tag: DependencyInjector.DefaultTag, clientName: "Unit test", out _));
+                dependencyInjector.TryGetService(typeof(ApplicationException), injectTag: DependencyInjector.DefaultInjectTag, clientName: "Unit test", out _));
         }
 
         [Test]
@@ -369,7 +357,7 @@ namespace UnityUtil.Editor.Tests.DependencyInjection
             TestComponent serviceInstance = new GameObject().AddComponent<TestComponent>();
             dependencyInjector.RegisterService(() => serviceInstance, "test");
 
-            dependencyInjector.TryGetService(typeof(TestComponent), tag: "test", clientName: "Unit test", out Service service);
+            dependencyInjector.TryGetService(typeof(TestComponent), injectTag: "test", clientName: "Unit test", out Service service);
 
             Assert.That(service.Instance, Is.SameAs(serviceInstance));
         }
@@ -383,10 +371,10 @@ namespace UnityUtil.Editor.Tests.DependencyInjection
         {
             DependencyInjector dependencyInjector = getDependencyInjector();
 
-            Assert.Throws<KeyNotFoundException>(() => dependencyInjector.TryGetService(typeof(Component), tag: "any", clientName: "Unit test", out _));
-            Assert.Throws<KeyNotFoundException>(() => dependencyInjector.TryGetService(typeof(Component), tag: "Untagged", clientName: "Unit test", out _));
-            Assert.Throws<KeyNotFoundException>(() => dependencyInjector.TryGetService(typeof(MonoBehaviour), tag: "any", clientName: "Unit test", out _));
-            Assert.Throws<KeyNotFoundException>(() => dependencyInjector.TryGetService(typeof(MonoBehaviour), tag: "Untagged", clientName: "Unit test", out _));
+            Assert.Throws<KeyNotFoundException>(() => dependencyInjector.TryGetService(typeof(Component), injectTag: "any", clientName: "Unit test", out _));
+            Assert.Throws<KeyNotFoundException>(() => dependencyInjector.TryGetService(typeof(Component), injectTag: "Untagged", clientName: "Unit test", out _));
+            Assert.Throws<KeyNotFoundException>(() => dependencyInjector.TryGetService(typeof(MonoBehaviour), injectTag: "any", clientName: "Unit test", out _));
+            Assert.Throws<KeyNotFoundException>(() => dependencyInjector.TryGetService(typeof(MonoBehaviour), injectTag: "Untagged", clientName: "Unit test", out _));
         }
 
         [Test, Ignore("Haven't figured out a way to open a new Scene while in the unsaved scene created by the Test Runner")]
@@ -517,9 +505,10 @@ namespace UnityUtil.Editor.Tests.DependencyInjection
             int warnCount = 0;
             ILoggerFactory loggerFactory = new LogLevelCallbackLoggerFactory(LogLevel.Warning, (_, _, _, _) => ++warnCount);
             DependencyInjector dependencyInjector = getDependencyInjector(loggerFactory: loggerFactory);
-            dependencyInjector.RegisterService(getComponentService<TestComponent>(tag: "test"));
-            dependencyInjector.RegisterService(getComponentService<TestComponent>(tag: "not-test"));
+            const string TEST_TAG = "test";
 
+            dependencyInjector.RegisterService(getComponentService<TestComponent>(), TEST_TAG);
+            dependencyInjector.RegisterService(getComponentService<TestComponent>(), "not-" + TEST_TAG);
             dependencyInjector.ResolveDependenciesOf(new SameTypeDifferentTagsClient());
 
             Assert.That(warnCount, Is.EqualTo(0));
@@ -531,7 +520,7 @@ namespace UnityUtil.Editor.Tests.DependencyInjection
             int warnCount = 0;
             ILoggerFactory loggerFactory = new LogLevelCallbackLoggerFactory(LogLevel.Warning, (_, _, _, _) => ++warnCount);
             DependencyInjector dependencyInjector = getDependencyInjector(loggerFactory: loggerFactory);
-            dependencyInjector.RegisterService(getComponentService<TestComponent>(tag: "test"));
+            dependencyInjector.RegisterService(getComponentService<TestComponent>(), "test");
 
             dependencyInjector.ResolveDependenciesOf(new SameTypeSameTagsClient());
 
@@ -628,8 +617,8 @@ namespace UnityUtil.Editor.Tests.DependencyInjection
             int warnCount = 0;
             ILoggerFactory loggerFactory = new LogLevelCallbackLoggerFactory(LogLevel.Warning, (_, _, _, _) => ++warnCount);
             DependencyInjector dependencyInjector = getDependencyInjector(loggerFactory: loggerFactory);
-            dependencyInjector.RegisterService(getComponentService<TestComponent>());
 
+            dependencyInjector.RegisterService(getComponentService<TestComponent>());
             dependencyInjector.Construct<ConstructorSameTypeNoTagsClient>();
 
             Assert.That(warnCount, Is.EqualTo(1));
@@ -641,9 +630,10 @@ namespace UnityUtil.Editor.Tests.DependencyInjection
             int warnCount = 0;
             ILoggerFactory loggerFactory = new LogLevelCallbackLoggerFactory(LogLevel.Warning, (_, _, _, _) => ++warnCount);
             DependencyInjector dependencyInjector = getDependencyInjector(loggerFactory: loggerFactory);
-            dependencyInjector.RegisterService(getComponentService<TestComponent>(tag: "test"));
-            dependencyInjector.RegisterService(getComponentService<TestComponent>(tag: "not-test"));
+            const string TEST_TAG = "test";
 
+            dependencyInjector.RegisterService(getComponentService<TestComponent>(), TEST_TAG);
+            dependencyInjector.RegisterService(getComponentService<TestComponent>(), "not-" + TEST_TAG);
             dependencyInjector.Construct<ConstructorSameTypeDifferentTagsClient>();
 
             Assert.That(warnCount, Is.EqualTo(0));
@@ -655,8 +645,8 @@ namespace UnityUtil.Editor.Tests.DependencyInjection
             int warnCount = 0;
             ILoggerFactory loggerFactory = new LogLevelCallbackLoggerFactory(LogLevel.Warning, (_, _, _, _) => ++warnCount);
             DependencyInjector dependencyInjector = getDependencyInjector(loggerFactory: loggerFactory);
-            dependencyInjector.RegisterService(getComponentService<TestComponent>(tag: "test"));
 
+            dependencyInjector.RegisterService(getComponentService<TestComponent>(), "test");
             dependencyInjector.Construct<ConstructorSameTypeSameTagsClient>();
 
             Assert.That(warnCount, Is.EqualTo(1));
@@ -805,15 +795,15 @@ namespace UnityUtil.Editor.Tests.DependencyInjection
         {
             DependencyInjector dependencyInjector = getDependencyInjector();
             Scene activeScene = SceneManager.GetActiveScene();
-            dependencyInjector.RegisterService(new object(), SceneManager.GetActiveScene());
-            dependencyInjector.RegisterService(new InvalidOperationException(), SceneManager.GetActiveScene());
+            dependencyInjector.RegisterService(new object(), scene: SceneManager.GetActiveScene());
+            dependencyInjector.RegisterService(new InvalidOperationException(), scene: SceneManager.GetActiveScene());
 
             dependencyInjector.UnregisterSceneServices(activeScene);
 
             Assert.Throws<KeyNotFoundException>(() =>
-                dependencyInjector.TryGetService(typeof(object), DependencyInjector.DefaultTag, clientName: "Unit test", out _));
+                dependencyInjector.TryGetService(typeof(object), DependencyInjector.DefaultInjectTag, clientName: "Unit test", out _));
             Assert.Throws<KeyNotFoundException>(() =>
-                dependencyInjector.TryGetService(typeof(Exception), DependencyInjector.DefaultTag, clientName: "Unit test", out _));
+                dependencyInjector.TryGetService(typeof(Exception), DependencyInjector.DefaultInjectTag, clientName: "Unit test", out _));
         }
 
         [Test, Ignore("Haven't figured out a way to open a new Scene while in the unsaved scene created by the Test Runner")]
@@ -835,7 +825,7 @@ namespace UnityUtil.Editor.Tests.DependencyInjection
 
             return dependencyInjector;
         }
-        private static T getComponentService<T>(string tag = "Untagged") where T : Component => new GameObject { tag = tag }.AddComponent<T>();
+        private static T getComponentService<T>() where T : Component => new GameObject().AddComponent<T>();
         private static Mock<ITypeMetadataProvider> getTypeMetadataProvider()
         {
             var mock = new Mock<ITypeMetadataProvider>();

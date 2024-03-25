@@ -20,7 +20,7 @@ internal class RootLogger<T> : BaseUnityUtilLogger<T>
     public void RegisteredService(Service service, Scene? scene)
     {
         string msg = $"Successfully registered service of type {{serviceType}} and tag {{tag}}{(scene.HasValue ? $" from {{{nameof(scene)}}}" : "")}";
-        LogInformation(id: 0, nameof(RegisteredService), msg, service.ServiceType.Name, service.Tag, scene?.name);
+        LogInformation(id: 0, nameof(RegisteredService), msg, service.ServiceType.Name, service.InjectTag, scene?.name);
     }
 
     public void ToggledRecordingDependencyResolution(bool isRecording) =>
