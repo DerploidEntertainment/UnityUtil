@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <UnityScriptsDir>$(UnityProjectPath)\Assets\UnityUtil\Tests\Runtime</UnityScriptsDir>
+    <UnityDestinationFolder>$(UnityProjectPath)\Assets\$(SolutionName)\Tests\Runtime</UnityDestinationFolder>
   </PropertyGroup>
 
   <ItemGroup>

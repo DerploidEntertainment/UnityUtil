@@ -5,7 +5,7 @@
     <Reference Remove="$(UnityEnginePath)" />
   </ItemGroup>
 
-  <Target Name="CopyOutputs" AfterTargets="AfterBuild" Condition="'$(IsTestProject)'!='true'">
+  <Target Name="CopyOutputs" AfterTargets="AfterBuild" Condition="'$(UnityDestinationFolder)'!=''">
     <ItemGroup>
       <ProjectOutput Include="$(OutDir)/$(ProjectName).dll" />
       <ProjectOutput Include="$(OutDir)/$(ProjectName).pdb" />
