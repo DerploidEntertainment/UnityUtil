@@ -1,12 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <UnityDestinationFolder>$(UnityProjectPath)\Assets\$(MSBuildProjectName)\Runtime</UnityDestinationFolder> <!-- $(ProjectName) is blank here for some reason -->
+    <UnityDestinationFolder>$(UnityProjectPath)\Assets\$(MSBuildProjectName)\Runtime</UnityDestinationFolder>
   </PropertyGroup>
 
   <ItemGroup>
     <Reference Include="$(UnityModulesPath)\UnityEngine.CoreModule.dll" Private="false" />
     <Reference Include="$(UnityPackageCachePath)\org.nuget.serilog%40*\netstandard2.1\Serilog.dll" Private="false" />
+    <Reference Include="$(SirenixAssembliesPath)\Sirenix.OdinInspector.Attributes.dll" Private="false"/>
     <PackageReference Include="SerilogAnalyzer" Version="0.15.0" />
   </ItemGroup>
 

@@ -16,12 +16,12 @@ public static class LoggerEnrichmentConfigurationExtensions
     /// <returns>Configuration object allowing method chaining.</returns>
     public static LoggerConfiguration UnityObjectPath(
         this LoggerEnrichmentConfiguration enrichmentConfiguration,
-        UnityObjectPathLogEnricherSettings settings
+        UnityLogEnricherSettings settings
     )
     {
         if (enrichmentConfiguration == null) throw new ArgumentNullException(nameof(enrichmentConfiguration));
         if (settings == null) throw new ArgumentNullException(nameof(settings));
 
-        return enrichmentConfiguration.With(new UnityObjectPathLogEnricher(settings));
+        return enrichmentConfiguration.With(new UnityLogEnricher(settings));
     }
 }
