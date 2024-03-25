@@ -1,13 +1,14 @@
 ﻿using Serilog.Core;
 using Serilog.Events;
+using System;
 using System.Text;
 using UnityEngine;
+using U = UnityEngine;
 
 namespace Serilog.Enrichers.Unity;
 
-public class UnityLogEnricher(UnityLogEnricherSettings unityLogEnricherSettings) : ILogEventEnricher
+public class UnityLogEnricher : ILogEventEnricher
 {
-
     /// <summary>
     /// Purposefully collides with the key used by
     /// <a href="https://github.com/KuraiAndras/Serilog.Sinks.Unity3D/blob/master/Serilog.Sinks.Unity3D/Assets/Serilog.Sinks.Unity3D/UnityObjectEnricher.cs">Serilog.Sinks.Unity3D's <c>UnityObjectEnricher</c></a>.
@@ -25,52 +26,62 @@ public class UnityLogEnricher(UnityLogEnricherSettings unityLogEnricherSettings)
     public static readonly string TimeAsDoubleKey = "UnityTimeAsDouble";
     public static readonly string ObjectPathKey = "UnityObjectPath";
 
+    private readonly UnityLogEnricherSettings _unityLogEnricherSettings;
+
+    public UnityLogEnricher(UnityLogEnricherSettings unityLogEnricherSettings)
+    {
+        if (unityLogEnricherSettings.ParentCount < 0)
+            throw new ArgumentException($"{nameof(UnityLogEnricherSettings.ParentCount)} must be >= 0", nameof(unityLogEnricherSettings));
+
+        _unityLogEnricherSettings = unityLogEnricherSettings;
+    }
+
     public void Enrich(LogEvent logEvent, ILogEventPropertyFactory propertyFactory)
     {
-        if (unityLogEnricherSettings.IncludeFrameCount)
+        if (_unityLogEnricherSettings.IncludeFrameCount)
             logEvent.AddPropertyIfAbsent(new LogEventProperty(FrameCountKey, new ScalarValue(Time.frameCount)));
 
-        if (unityLogEnricherSettings.IncludeTimeSinceLevelLoad)
+        if (_unityLogEnricherSettings.IncludeTimeSinceLevelLoad)
             logEvent.AddPropertyIfAbsent(new LogEventProperty(TimeSinceLevelLoadKey, new ScalarValue(Time.timeSinceLevelLoad)));
 
-        if (unityLogEnricherSettings.IncludeTimeSinceLevelLoadAsDouble)
+        if (_unityLogEnricherSettings.IncludeTimeSinceLevelLoadAsDouble)
             logEvent.AddPropertyIfAbsent(new LogEventProperty(TimeSinceLevelLoadAsDoubleKey, new ScalarValue(Time.timeSinceLevelLoadAsDouble)));
 
-        if (unityLogEnricherSettings.IncludeUnscaledTime)
+        if (_unityLogEnricherSettings.IncludeUnscaledTime)
             logEvent.AddPropertyIfAbsent(new LogEventProperty(UnscaledTimeKey, new ScalarValue(Time.unscaledTime)));
 
-        if (unityLogEnricherSettings.IncludeUnscaledTimeAsDouble)
+        if (_unityLogEnricherSettings.IncludeUnscaledTimeAsDouble)
             logEvent.AddPropertyIfAbsent(new LogEventProperty(UnscaledTimeAsDoubleKey, new ScalarValue(Time.unscaledTimeAsDouble)));
 
-        if (unityLogEnricherSettings.IncludeTime)
+        if (_unityLogEnricherSettings.IncludeTime)
             logEvent.AddPropertyIfAbsent(new LogEventProperty(TimeKey, new ScalarValue(Time.time)));
 
-        if (unityLogEnricherSettings.IncludeTimeAsDouble)
+        if (_unityLogEnricherSettings.IncludeTimeAsDouble)
             logEvent.AddPropertyIfAbsent(new LogEventProperty(TimeAsDoubleKey, new ScalarValue(Time.timeAsDouble)));
 
         if (
-            unityLogEnricherSettings.IncludeSceneObjectPath
+            _unityLogEnricherSettings.IncludeSceneObjectPath
             && logEvent.Properties.TryGetValue(UnityContextKey, out LogEventPropertyValue? contextPropertyValue)
             && contextPropertyValue is ScalarValue contextScalarValue
-            && contextScalarValue.Value is Object unityContext
+            && contextScalarValue.Value is U.Object unityContext
         )
             logEvent.AddPropertyIfAbsent(new LogEventProperty(ObjectPathKey, new ScalarValue(getUnityObjectPath(unityContext))));
     }
 
-    private string getUnityObjectPath(Object context) =>
+    private string getUnityObjectPath(U.Object context) =>
         context is not Component component
             ? context.name
             : getName(
                 component.transform,
-                unityLogEnricherSettings!.ParentCount,
-                unityLogEnricherSettings!.ParentNameSeparator
+                _unityLogEnricherSettings!.ParentCount,
+                _unityLogEnricherSettings!.ParentNameSeparator
             );
 
-    private static string getName(Transform transform, uint numParents, string separator)
+    private static string getName(Transform transform, int parentCount, string separator)
     {
         Transform trans = transform;
         var nameBuilder = new StringBuilder(trans.name);
-        for (int p = 0; p < numParents; ++p) {
+        for (int p = 0; p < parentCount; ++p) {
             trans = trans.parent;
             if (trans == null)
                 break;

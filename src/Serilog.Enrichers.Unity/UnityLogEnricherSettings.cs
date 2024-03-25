@@ -1,83 +1,66 @@
-﻿using Sirenix.OdinInspector;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Serilog.Enrichers.Unity;
 
-[CreateAssetMenu(menuName = $"{nameof(Serilog)}/Enrichers/{nameof(UnityLogEnricherSettings)}", fileName = "unity-log-enricher-settings")]
-public class UnityLogEnricherSettings : ScriptableObject
+public class UnityLogEnricherSettings
 {
-    private const string GRP_TIME = "Include Time";
+    /// <summary>
+    /// If <see langword="true"/>, then every log is encriched with <see cref="Time.frameCount"/>.
+    /// See the Unity Scripting API docs for <a href="https://docs.unity3d.com/ScriptReference/Time.html"><c>Time</c></a>.
+    /// </summary>
+    public bool IncludeFrameCount { get; set; } = true;
 
-    [BoxGroup(GRP_TIME)]
-    [Tooltip(
-        "If true, then every log is encriched with the Unity `Time.frameCount` value. " +
-        "See `Time` in the Unity Scripting API docs: https://docs.unity3d.com/ScriptReference/Time.html."
-    )]
-    [LabelText("frameCount")]
-    public bool IncludeFrameCount = true;
+    /// <summary>
+    /// If <see langword="true"/>, then every log is encriched with <see cref="Time.timeSinceLevelLoad"/>.
+    /// See the Unity Scripting API docs for <a href="https://docs.unity3d.com/ScriptReference/Time.html"><c>Time</c></a>.
+    /// </summary>
+    public bool IncludeTimeSinceLevelLoad { get; set; } = false;
 
-    [BoxGroup(GRP_TIME)]
-    [Tooltip(
-        "If true, then every log is encriched with the Unity `Time.timeSinceLevelLoad` value. " +
-        "See `Time` in the Unity Scripting API docs: https://docs.unity3d.com/ScriptReference/Time.html."
-    )]
-    [LabelText("timeSinceLevelLoad")]
-    public bool IncludeTimeSinceLevelLoad = false;
+    /// <summary>
+    /// If <see langword="true"/>, then every log is encriched with <see cref="Time.timeSinceLevelLoadAsDouble"/>.
+    /// See the Unity Scripting API docs for <a href="https://docs.unity3d.com/ScriptReference/Time.html"><c>Time</c></a>.
+    /// </summary>
+    public bool IncludeTimeSinceLevelLoadAsDouble { get; set; } = false;
 
-    [BoxGroup(GRP_TIME)]
-    [Tooltip(
-        "If true, then every log is encriched with the Unity `Time.timeSinceLevelLoadAsDouble` value. " +
-        "See `Time` in the Unity Scripting API docs: https://docs.unity3d.com/ScriptReference/Time.html."
-    )]
-    [LabelText("timeSinceLevelLoadAsDouble")]
-    public bool IncludeTimeSinceLevelLoadAsDouble = false;
+    /// <summary>
+    /// If <see langword="true"/>, then every log is encriched with <see cref="Time.unscaledTime"/>.
+    /// See the Unity Scripting API docs for <a href="https://docs.unity3d.com/ScriptReference/Time.html"><c>Time</c></a>.
+    /// </summary>
+    public bool IncludeUnscaledTime { get; set; } = false;
 
-    [BoxGroup(GRP_TIME)]
-    [Tooltip(
-        "If true, then every log is encriched with the Unity `Time.unscaledTime` value. " +
-        "See `Time` in the Unity Scripting API docs: https://docs.unity3d.com/ScriptReference/Time.html. " +
-        "Note that these Unity timestamps are fairly redundant with the log timestamp already provided by Serilog."
-    )]
-    [LabelText("unscaledTime")]
-    public bool IncludeUnscaledTime = false;
+    /// <summary>
+    /// If <see langword="true"/>, then every log is encriched with <see cref="Time.unscaledTimeAsDouble"/>.
+    /// See the Unity Scripting API docs for <a href="https://docs.unity3d.com/ScriptReference/Time.html"><c>Time</c></a>.
+    /// </summary>
+    public bool IncludeUnscaledTimeAsDouble { get; set; } = false;
 
-    [BoxGroup(GRP_TIME)]
-    [Tooltip(
-        "If true, then every log is encriched with the Unity `Time.unscaledTimeAsDouble` value. " +
-        "See `Time` in the Unity Scripting API docs: https://docs.unity3d.com/ScriptReference/Time.html. " +
-        "Note that these Unity timestamps are fairly redundant with the log timestamp already provided by Serilog."
-    )]
-    [LabelText("unscaledTimeAsDouble")]
-    public bool IncludeUnscaledTimeAsDouble = false;
+    /// <summary>
+    /// If <see langword="true"/>, then every log is encriched with <see cref="Time.time"/>.
+    /// See the Unity Scripting API docs for <a href="https://docs.unity3d.com/ScriptReference/Time.html"><c>Time</c></a>.
+    /// </summary>
+    public bool IncludeTime { get; set; } = false;
 
-    [BoxGroup(GRP_TIME)]
-    [Tooltip(
-        "If true, then every log is encriched with the Unity `Time.time` value. " +
-        "See `Time` in the Unity Scripting API docs: https://docs.unity3d.com/ScriptReference/Time.html."
-    )]
-    [LabelText("time")]
-    public bool IncludeTime = false;
+    /// <summary>
+    /// If <see langword="true"/>, then every log is encriched with <see cref="Time.timeAsDouble"/>.
+    /// See the Unity Scripting API docs for <a href="https://docs.unity3d.com/ScriptReference/Time.html"><c>Time</c></a>.
+    /// </summary>
+    public bool IncludeTimeAsDouble { get; set; } = false;
 
-    [BoxGroup(GRP_TIME)]
-    [Tooltip(
-        "If true, then every log is encriched with the Unity `Time.timeAsDouble` value. " +
-        "See `Time` in the Unity Scripting API docs: https://docs.unity3d.com/ScriptReference/Time.html."
-    )]
-    [LabelText("timeAsDouble")]
-    public bool IncludeTimeAsDouble = false;
+    /// <summary>
+    /// If <see langword="true"/>, then every log is encriched with the hierarchy path of scene objects, if applicable.
+    /// Use this to generate logs that more specifically identify a scene Object.
+    /// </summary>
+    public bool IncludeSceneObjectPath { get; set; } = true;
 
-    [ToggleGroup(nameof(IncludeSceneObjectPath))]
-    [Tooltip("Enable this to generate logs that more specifically identify a scene Object.")]
-    public bool IncludeSceneObjectPath = true;
+    /// <summary>
+    /// If <see cref="IncludeSceneObjectPath"/> is <see langword="true"/> then,
+    /// for Objects that are scene objects, the name will include up to this many parent objects' names in the logs.
+    /// </summary>
+    public int ParentCount { get; set; } = 1;
 
-    [Tooltip(
-        "For Objects that are scene objects, the name will include up to this many parent objects' names in the logs. " +
-        "Use this to generate logs that more specifically identify a scene Object."
-    )]
-    [ToggleGroup(nameof(IncludeSceneObjectPath))]
-    public uint ParentCount = 1u;
-
-    [Tooltip($"For Objects that are scene objects, the name of the Object and its {nameof(ParentCount)} parents will be separated by this string.")]
-    [ToggleGroup(nameof(IncludeSceneObjectPath))]
-    public string ParentNameSeparator = "/";
+    /// <summary>
+    /// If <see cref="IncludeSceneObjectPath"/> is <see langword="true"/> then,
+    /// for Objects that are scene objects, the name of the Object and its <see cref="ParentCount"/> parents will be separated by this string.
+    /// </summary>
+    public string ParentNameSeparator { get; set; } = "/";
 }
