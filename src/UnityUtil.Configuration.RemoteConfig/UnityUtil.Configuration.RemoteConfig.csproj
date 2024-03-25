@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <UnityDestinationFolder>$(UnityProjectPath)\Assets\$(MSBuildProjectName)\Runtime</UnityDestinationFolder> <!-- $(ProjectName) is blank here for some reason -->
+    <UnityDestinationFolder>$(UnityProjectPath)\Assets\$(MSBuildProjectName)\Runtime</UnityDestinationFolder>
   </PropertyGroup>
 
   <ItemGroup>
