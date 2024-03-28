@@ -63,7 +63,7 @@ public class SingleDialogConsentManager : MonoBehaviour, IConsentManager
         "This is useful for testing UI and event-driven logic while in the Editor. " +
         "This flag has no effect when actually running on a device."
     )]
-    [field: SerializeField, LabelText(nameof(ForceConsentBehavior))]
+    [field: LabelText(nameof(ForceConsentBehavior)), ShowInInspector]
     public bool ForceConsentBehavior { get; internal set; }
 
 
