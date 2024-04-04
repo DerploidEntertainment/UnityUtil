@@ -32,7 +32,7 @@ public class LookAt : Updatable
         base.Awake();
 
         RegisterUpdatesAutomatically = true;
-        BetterUpdate = look;
+        UpdateAction = look;
     }
     private void look(float deltaTime)
     {

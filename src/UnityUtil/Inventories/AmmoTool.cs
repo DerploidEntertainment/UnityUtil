@@ -71,7 +71,7 @@ public class AmmoTool : Updatable
         });
 
         RegisterUpdatesAutomatically = true;
-        BetterUpdate = checkForReload;
+        UpdateAction = checkForReload;
     }
 
     private void checkForReload(float deltaTime)

@@ -43,7 +43,7 @@ public class CharacterFPSWalker : Updatable
         _oldHeight = ControllerToMove!.height;
         CrouchHeight = Mathf.Min(CrouchHeight, _oldHeight);
 
-        BetterUpdate = doUpdate;
+        UpdateAction = doUpdate;
         RegisterUpdatesAutomatically = true;
     }
     private void doUpdate(float deltaTime)

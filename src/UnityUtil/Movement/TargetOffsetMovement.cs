@@ -22,7 +22,7 @@ public class TargetOffsetMovement : Updatable
         base.Awake();
 
         RegisterUpdatesAutomatically = true;
-        BetterUpdate = move;
+        UpdateAction = move;
     }
 
     private void move(float deltaTime) => TransformToMove!.position = Target!.position + Offset;

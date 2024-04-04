@@ -82,7 +82,7 @@ public class Lifter : Updatable
         }
 
         RegisterUpdatesAutomatically = true;
-        BetterUpdate = doUpdate;
+        UpdateAction = doUpdate;
     }
 
     private void doUpdate(float deltaTime)

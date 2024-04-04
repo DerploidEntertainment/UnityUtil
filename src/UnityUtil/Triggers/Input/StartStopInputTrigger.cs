@@ -17,7 +17,7 @@ public class StartStopInputTrigger : Updatable
         base.Awake();
 
         RegisterUpdatesAutomatically = true;
-        BetterUpdate = checkInputs;
+        UpdateAction = checkInputs;
     }
 
     private void checkInputs(float deltaTime)

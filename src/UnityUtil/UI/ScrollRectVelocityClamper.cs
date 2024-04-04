@@ -31,7 +31,7 @@ public class ScrollRectVelocityClamper : Updatable
         base.Awake();
 
         RegisterUpdatesAutomatically = true;
-        BetterUpdate = deltaTime => {
+        UpdateAction = deltaTime => {
             if (ScrollRect!.inertia)
                 ScrollRect.velocity = GetClampedVelocity(ScrollRect.velocity);
         };

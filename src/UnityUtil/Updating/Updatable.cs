@@ -17,9 +17,9 @@ public abstract class Updatable : MonoBehaviour
     /// </summary>
     protected bool RegisterUpdatesAutomatically;
 
-    protected Action<float>? BetterUpdate;
-    protected Action<float>? BetterFixedUpdate;
-    protected Action<float>? BetterLateUpdate;
+    protected Action<float>? UpdateAction;
+    protected Action<float>? FixedUpdateAction;
+    protected Action<float>? LateUpdateAction;
 
     public void Inject(IUpdater updater, IRuntimeIdProvider runtimeIdProvider)
     {
@@ -36,22 +36,22 @@ public abstract class Updatable : MonoBehaviour
     protected virtual void OnEnable()
     {
         if (RegisterUpdatesAutomatically) {
-            if (BetterUpdate is not null)
-                Updater!.RegisterUpdate(InstanceId, BetterUpdate);
-            if (BetterFixedUpdate is not null)
-                Updater!.RegisterFixedUpdate(InstanceId, BetterFixedUpdate);
-            if (BetterLateUpdate is not null)
-                Updater!.RegisterLateUpdate(InstanceId, BetterLateUpdate);
+            if (UpdateAction is not null)
+                Updater!.RegisterUpdate(InstanceId, UpdateAction);
+            if (FixedUpdateAction is not null)
+                Updater!.RegisterFixedUpdate(InstanceId, FixedUpdateAction);
+            if (LateUpdateAction is not null)
+                Updater!.RegisterLateUpdate(InstanceId, LateUpdateAction);
         }
     }
     protected virtual void OnDisable()
     {
         if (RegisterUpdatesAutomatically) {
-            if (BetterUpdate is not null)
+            if (UpdateAction is not null)
                 Updater!.UnregisterUpdate(InstanceId);
-            if (BetterFixedUpdate is not null)
+            if (FixedUpdateAction is not null)
                 Updater!.UnregisterFixedUpdate(InstanceId);
-            if (BetterLateUpdate is not null)
+            if (LateUpdateAction is not null)
                 Updater!.UnregisterLateUpdate(InstanceId);
         }
     }

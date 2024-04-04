@@ -29,7 +29,7 @@ public class StartInteractor : Updatable
         base.Awake();
 
         RegisterUpdatesAutomatically = true;
-        BetterUpdate = raycast;
+        UpdateAction = raycast;
     }
 
     private void raycast(float deltaTime)

@@ -28,7 +28,7 @@ public class Tool : Updatable
     {
         base.Awake();
 
-        BetterUpdate = doUpdate;
+        UpdateAction = doUpdate;
         RegisterUpdatesAutomatically = true;
     }
     private void doUpdate(float deltaTime)

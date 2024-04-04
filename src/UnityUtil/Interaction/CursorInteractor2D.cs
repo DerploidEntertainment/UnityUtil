@@ -19,7 +19,7 @@ public class CursorInteractor2D : Updatable
         base.Awake();
 
         RegisterUpdatesAutomatically = true;
-        BetterUpdate = raycastScreen;
+        UpdateAction = raycastScreen;
     }
 
     private void raycastScreen(float deltaTime)

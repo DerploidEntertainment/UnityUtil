@@ -15,7 +15,7 @@ public class TapInteractor : Updatable
         base.Awake();
 
         RegisterUpdatesAutomatically = true;
-        BetterUpdate = tap;
+        UpdateAction = tap;
     }
 
     private void tap(float deltaTime)
