@@ -1,5 +1,5 @@
 {
-  "name": "rabadash8820.unityutil-physics",
+  "name": "rabadash8820.unityutil.physics",
   "version": "0.1.0",
   "description": "A set of utility classes and components useful to any Unity project, 2D or 3D, specifically related to 3D physics.",
   "displayName": "UnityUtil.Physics",
@@ -14,8 +14,8 @@
     "com.unity.modules.audio": "1.0.0",
     "com.unity.modules.physics": "1.0.0",
     "rabadash8820.unityutil": "https://github.com/DerploidEntertainment/UnityUtil.git?path=/UnityUtil/Assets/UnityUtil",
-    "rabadash8820.unityutil-inputs": "https://github.com/DerploidEntertainment/UnityUtil.git?path=/UnityUtil/Assets/UnityUtil.Inputs",
-    "rabadash8820.unityutil-triggers": "https://github.com/DerploidEntertainment/UnityUtil.git?path=/UnityUtil/Assets/UnityUtil.Triggers"
+    "rabadash8820.unityutil.inputs": "https://github.com/DerploidEntertainment/UnityUtil.git?path=/UnityUtil/Assets/UnityUtil.Inputs",
+    "rabadash8820.unityutil.triggers": "https://github.com/DerploidEntertainment/UnityUtil.git?path=/UnityUtil/Assets/UnityUtil.Triggers"
   },
   "license": "MIT",
   "keywords": [

@@ -1,5 +1,5 @@
 {
-  "name": "rabadash8820.unityutil-interactors",
+  "name": "rabadash8820.unityutil.interactors",
   "version": "0.1.0",
   "description": "A set of utility classes and components useful to any Unity project, 2D or 3D, specifically related to interaction with in-world objects.",
   "displayName": "UnityUtil.Interactors",
