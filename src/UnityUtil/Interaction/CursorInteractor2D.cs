@@ -18,7 +18,6 @@ public class CursorInteractor2D : Updatable
     {
         base.Awake();
 
-        RegisterUpdatesAutomatically = true;
         UpdateAction = raycastScreen;
     }
 

@@ -17,7 +17,6 @@ public class LookAtInteractor2D : Updatable
     {
         base.Awake();
 
-        RegisterUpdatesAutomatically = true;
         UpdateAction = look;
     }
 

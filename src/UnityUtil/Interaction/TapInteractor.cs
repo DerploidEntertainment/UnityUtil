@@ -14,7 +14,6 @@ public class TapInteractor : Updatable
     {
         base.Awake();
 
-        RegisterUpdatesAutomatically = true;
         UpdateAction = tap;
     }
 

@@ -12,10 +12,11 @@ public abstract class Updatable : MonoBehaviour
     public int InstanceId { get; private set; }
 
     /// <summary>
-    /// If <see langword="true"/>, then this <see cref="Updatable"/> will have its Update actions registered/unregistered automatically when it is enabled/disabled.
-    /// If <see langword="false"/>, then the Update actions must be registered/unregistered manually (best for when updates are only meant to be registered under specific/rare circumstances).
+    /// If <see langword="true"/>, then this <see cref="Updatable"/> will have its various update actions registered/unregistered automatically when it is enabled/disabled.
+    /// If <see langword="false"/>, then actions must be registered/unregistered explicitly (best for when they are only meant to be registered under specific/rare circumstances).
+    /// Default is <see langword="true"/>.
     /// </summary>
-    protected bool RegisterUpdatesAutomatically;
+    protected bool RegisterActionsAutomatically = true;
 
     protected Action<float>? UpdateAction;
     protected Action<float>? FixedUpdateAction;
@@ -35,7 +36,7 @@ public abstract class Updatable : MonoBehaviour
     }
     protected virtual void OnEnable()
     {
-        if (RegisterUpdatesAutomatically) {
+        if (RegisterActionsAutomatically) {
             if (UpdateAction is not null)
                 Updater!.RegisterUpdate(InstanceId, UpdateAction);
             if (FixedUpdateAction is not null)
@@ -46,7 +47,7 @@ public abstract class Updatable : MonoBehaviour
     }
     protected virtual void OnDisable()
     {
-        if (RegisterUpdatesAutomatically) {
+        if (RegisterActionsAutomatically) {
             if (UpdateAction is not null)
                 Updater!.UnregisterUpdate(InstanceId);
             if (FixedUpdateAction is not null)

@@ -57,7 +57,6 @@ public class MouseLook : Updatable
     {
         base.Awake();
 
-        RegisterUpdatesAutomatically = true;
         UpdateAction = doUpdate;
         FixedUpdateAction = doFixedUpdate;
     }

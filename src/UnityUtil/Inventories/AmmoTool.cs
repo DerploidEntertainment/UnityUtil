@@ -70,7 +70,6 @@ public class AmmoTool : Updatable
             AmmoReduced.Invoke(oldClip, CurrentBackupAmmo, CurrentClipAmmo, CurrentBackupAmmo);
         });
 
-        RegisterUpdatesAutomatically = true;
         UpdateAction = checkForReload;
     }
 

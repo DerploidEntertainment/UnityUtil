@@ -81,7 +81,6 @@ public class Lifter : Updatable
             );
         }
 
-        RegisterUpdatesAutomatically = true;
         UpdateAction = doUpdate;
     }
 

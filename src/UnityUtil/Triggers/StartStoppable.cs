@@ -31,7 +31,7 @@ public abstract class StartStoppable : Updatable
     {
         base.Awake();
 
-        RegisterUpdatesAutomatically = false;
+        RegisterActionsAutomatically = false;
     }
     protected override void OnEnable()
     {

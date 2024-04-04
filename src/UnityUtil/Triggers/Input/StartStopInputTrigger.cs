@@ -16,7 +16,6 @@ public class StartStopInputTrigger : Updatable
     {
         base.Awake();
 
-        RegisterUpdatesAutomatically = true;
         UpdateAction = checkInputs;
     }
 

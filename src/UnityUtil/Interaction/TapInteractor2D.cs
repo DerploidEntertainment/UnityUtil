@@ -13,7 +13,6 @@ public class TapInteractor2D : Updatable
     {
         base.Awake();
 
-        RegisterUpdatesAutomatically = true;
         UpdateAction = tap;
     }
 

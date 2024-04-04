@@ -24,7 +24,7 @@ public class InspectorButtonTrigger : Updatable
     {
         base.Awake();
 
-        RegisterUpdatesAutomatically = false;
+        RegisterActionsAutomatically = false;
     }
     protected override void OnEnable()
     {

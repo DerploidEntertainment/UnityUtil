@@ -33,7 +33,6 @@ public class OverheatTool : Updatable
             throw new InvalidOperationException($"{this.GetHierarchyNameWithType()} was started with {nameof(Info.StartingHeat)} heat but it can only store a max of {Info.MaxHeat}");
 
         UpdateAction = doUpdate;
-        RegisterUpdatesAutomatically = true;
 
         // Initialize heat
         CurrentHeat = Info.StartingHeat;

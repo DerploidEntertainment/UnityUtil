@@ -28,7 +28,6 @@ public class StartInteractor : Updatable
     {
         base.Awake();
 
-        RegisterUpdatesAutomatically = true;
         UpdateAction = raycast;
     }
 

@@ -1225,10 +1225,11 @@
         <member name="M:UnityUtil.Updating.UnityMainThreadDispatcher.EnqueueAsync(System.Action)">
             <inheritdoc/>
         </member>
-        <member name="F:UnityUtil.Updating.Updatable.RegisterUpdatesAutomatically">
+        <member name="F:UnityUtil.Updating.Updatable.RegisterActionsAutomatically">
             <summary>
-            If <see langword="true"/>, then this <see cref="T:UnityUtil.Updating.Updatable"/> will have its Update actions registered/unregistered automatically when it is enabled/disabled.
-            If <see langword="false"/>, then the Update actions must be registered/unregistered manually (best for when updates are only meant to be registered under specific/rare circumstances).
+            If <see langword="true"/>, then this <see cref="T:UnityUtil.Updating.Updatable"/> will have its various update actions registered/unregistered automatically when it is enabled/disabled.
+            If <see langword="false"/>, then actions must be registered/unregistered explicitly (best for when they are only meant to be registered under specific/rare circumstances).
+            Default is <see langword="true"/>.
             </summary>
         </member>
     </members>

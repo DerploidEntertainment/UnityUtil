@@ -21,7 +21,6 @@ public class TargetOffsetMovement : Updatable
     {
         base.Awake();
 
-        RegisterUpdatesAutomatically = true;
         UpdateAction = move;
     }
 
