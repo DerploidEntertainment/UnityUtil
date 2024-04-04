@@ -15,7 +15,7 @@ public sealed class RandomNumberGeneratorConfig
     public string Seed { get; set; } = "";
 }
 
-public sealed class RandomNumberGenerator : MonoBehaviour, IRandomNumberGenerator
+public sealed class RandomNumberGenerator : ScriptableObject, IRandomNumberGenerator
 {
     [ReadOnly, ShowInInspector]
     private RandomNumberGeneratorConfig? _config;
