@@ -13,8 +13,11 @@ public class Tool : Updatable
     private Coroutine? _refractoryRoutine;
     private uint _numUses;
 
-    [Required] public ToolInfo? Info;
-    [Required] public StartStopInput? UseInput;
+    [RequiredIn(PrefabKind.NonPrefabInstance)]
+    public ToolInfo? Info;
+
+    [RequiredIn(PrefabKind.NonPrefabInstance)]
+    public StartStopInput? UseInput;
 
     /// <summary>
     /// The current charge of this <see cref="Tool"/>.  0 is completely uncharged, 1 is completely charged.

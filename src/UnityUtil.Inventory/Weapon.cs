@@ -22,7 +22,7 @@ public class Weapon : MonoBehaviour
     private Tool? _tool;
     private float _accuracyLerpT;
 
-    [Required]
+    [RequiredIn(PrefabKind.NonPrefabInstance)]
     public WeaponInfo? Info;
 
     public AttackEvent Attacked = new();

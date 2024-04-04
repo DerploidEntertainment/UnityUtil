@@ -1,7 +1,6 @@
 ﻿using Sirenix.OdinInspector;
 using System;
 using UnityEngine;
-using UnityEngine.Assertions;
 using UnityEngine.Events;
 using UnityUtil.Inputs;
 using UnityUtil.Updating;
@@ -19,8 +18,11 @@ public class AmmoTool : Updatable
 {
     private Tool? _tool;
 
-    [Required] public AmmoToolInfo? Info;
-    [Required] public StartStopInput? ReloadInput;
+    [RequiredIn(PrefabKind.NonPrefabInstance)]
+    public AmmoToolInfo? Info;
+
+    [RequiredIn(PrefabKind.NonPrefabInstance)]
+    public StartStopInput? ReloadInput;
 
     /// <summary>
     /// The amount of ammo currently in the main clip.

@@ -10,7 +10,7 @@ public class QuantityWeapon : MonoBehaviour
 {
     private Weapon? _weapon;
 
-    [Required]
+    [RequiredIn(PrefabKind.NonPrefabInstance)]
     public QuantityWeaponInfo? Info;
 
     [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]

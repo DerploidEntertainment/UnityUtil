@@ -20,7 +20,7 @@ public class CopyrightText : MonoBehaviour
     [MultiLineProperty]
     public string FormatString = "© {0}, {1}";
 
-    [Required]
+    [RequiredIn(PrefabKind.NonPrefabInstance)]
     public TMP_Text? Text;
 
     [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]

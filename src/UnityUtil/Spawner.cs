@@ -45,7 +45,7 @@ public class Spawner : MonoBehaviour
         "The actual Unity prefab to spawn. We highly recommend using a PREFAB, as opposed to " +
         "an existing GameObject in the Scene, though either will technically work."
     )]
-    [Required]
+    [RequiredIn(PrefabKind.NonPrefabInstance)]
     public GameObject? Prefab;
 
     [Tooltip($"All spawned instances of {nameof(Prefab)} will be parented to this Transform.")]

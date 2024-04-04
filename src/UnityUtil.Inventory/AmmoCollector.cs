@@ -8,7 +8,7 @@ namespace UnityUtil.Inventory;
 [RequireComponent(typeof(Collector))]
 public class AmmoCollector : MonoBehaviour
 {
-    [Required]
+    [RequiredIn(PrefabKind.NonPrefabInstance)]
     public Inventory? Inventory;
     public float Radius = 1f;
 

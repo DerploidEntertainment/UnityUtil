@@ -6,6 +6,6 @@ namespace UnityUtil.Inventory;
 [RequireComponent(typeof(Collectible))]
 public class AmmoCollectible : MonoBehaviour
 {
-    [Required]
+    [RequiredIn(PrefabKind.NonPrefabInstance)]
     public string AmmoTypeName = "";
 }

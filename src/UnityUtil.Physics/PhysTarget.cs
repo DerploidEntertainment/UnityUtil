@@ -7,6 +7,6 @@ namespace UnityUtil.Physics;
 [RequireComponent(typeof(Collider))]
 public class PhysTarget : MonoBehaviour
 {
-    [Required]
+    [RequiredIn(PrefabKind.NonPrefabInstance)]
     public MonoBehaviour? TargetComponent;
 }

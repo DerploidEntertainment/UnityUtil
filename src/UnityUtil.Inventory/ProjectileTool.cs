@@ -9,10 +9,12 @@ public class ProjectileTool : MonoBehaviour
 {
     private Tool? _tool;
 
-    [Required] public ProjectileToolInfo? Info;
+    [RequiredIn(PrefabKind.NonPrefabInstance)]
+    public ProjectileToolInfo? Info;
 
     [Tooltip("The ProjectilePrefab will be parented to this Transform after it is instantiated.")]
-    [Required] public Transform? ProjectileParent;
+    [RequiredIn(PrefabKind.NonPrefabInstance)]
+    public Transform? ProjectileParent;
 
     [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
     [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]

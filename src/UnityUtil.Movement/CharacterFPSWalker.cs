@@ -11,15 +11,26 @@ public class CharacterFPSWalker : Updatable
 {
     private float _oldHeight;
 
-    [Required]
+    [RequiredIn(PrefabKind.NonPrefabInstance)]
     public CharacterController? ControllerToMove;
 
     [Header("Inputs")]
-    [Required] public StartStopInput? SprintInput;
-    [Required] public StartStopInput? CrouchInput;
-    [Required] public StartStopInput? JumpInput;
-    [Required] public ValueInput? HorizontalInput;
-    [Required] public ValueInput? VerticalInput;
+
+    [RequiredIn(PrefabKind.NonPrefabInstance)]
+    public StartStopInput? SprintInput;
+
+    [RequiredIn(PrefabKind.NonPrefabInstance)]
+    public StartStopInput? CrouchInput;
+
+    [RequiredIn(PrefabKind.NonPrefabInstance)]
+    public StartStopInput? JumpInput;
+
+    [RequiredIn(PrefabKind.NonPrefabInstance)]
+    public ValueInput? HorizontalInput;
+
+    [RequiredIn(PrefabKind.NonPrefabInstance)]
+    public ValueInput? VerticalInput;
+
 
     [Header("Speed")]
     public float WalkSpeed = 15f;

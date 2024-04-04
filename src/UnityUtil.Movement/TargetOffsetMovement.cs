@@ -7,11 +7,11 @@ namespace UnityUtil.Movement;
 public class TargetOffsetMovement : Updatable
 {
     [Tooltip($"The Transform to keep at the given {nameof(Offset)} from the {nameof(Target)}")]
-    [Required]
+    [RequiredIn(PrefabKind.NonPrefabInstance)]
     public Transform? TransformToMove;
 
     [Tooltip($"The Transform being followed at the given {nameof(Offset)}")]
-    [Required]
+    [RequiredIn(PrefabKind.NonPrefabInstance)]
     public Transform? Target;
 
     [Tooltip($"The Offset at which to follow the {nameof(Target)} Transform")]

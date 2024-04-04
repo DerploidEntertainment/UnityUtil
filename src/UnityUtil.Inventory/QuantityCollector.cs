@@ -7,7 +7,7 @@ namespace UnityUtil.Inventory;
 [RequireComponent(typeof(Collector))]
 public class QuantityCollector : MonoBehaviour
 {
-    [Required]
+    [RequiredIn(PrefabKind.NonPrefabInstance)]
     public ManagedQuantity? Quantity;
 
     [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]

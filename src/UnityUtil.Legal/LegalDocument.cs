@@ -10,7 +10,7 @@ public class LegalDocument : ScriptableObject
         "The URI that points at the latest version of this legal document. " +
         "For obvious reasons, the server response for this resource should not include cache headers (other than cache validation)."
     )]
-    [Required]
+    [RequiredIn(PrefabKind.NonPrefabInstance)]
     public OpenableUri? LatestVersionUri;
 
     [Tooltip(

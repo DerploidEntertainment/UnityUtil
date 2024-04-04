@@ -41,8 +41,11 @@ public class Lifter : Updatable
     private bool _oldUseGravity;
 
     [Header("Inputs")]
-    [Required] public StartStopInput? LiftInput;
-    [Required] public StartStopInput? ThrowInput;
+    [RequiredIn(PrefabKind.NonPrefabInstance)]
+    public StartStopInput? LiftInput;
+
+    [RequiredIn(PrefabKind.NonPrefabInstance)]
+    public StartStopInput? ThrowInput;
 
     [Header("Options")]
     [Tooltip(

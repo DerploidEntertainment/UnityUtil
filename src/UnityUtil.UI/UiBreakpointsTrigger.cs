@@ -6,7 +6,7 @@ namespace UnityUtil.UI;
 
 public class UiBreakpointsTrigger : MonoBehaviour
 {
-    [Required]
+    [RequiredIn(PrefabKind.NonPrefabInstance)]
     public UiBreakpoints? UiBreakpoints;
 
     [ValidateInput(nameof(isNumBreakpointsValid), ContinuousValidationCheck = true)]

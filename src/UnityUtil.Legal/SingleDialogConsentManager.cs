@@ -68,8 +68,11 @@ public class SingleDialogConsentManager : MonoBehaviour, IConsentManager
 
 
     [Header("UI")]
-    [Required] public Button? BtnInitialConsent;
-    [Required] public Button? BtnLegalUpdate;
+    [RequiredIn(PrefabKind.NonPrefabInstance)]
+    public Button? BtnInitialConsent;
+
+    [RequiredIn(PrefabKind.NonPrefabInstance)]
+    public Button? BtnLegalUpdate;
 
     [Tooltip("Raised when the initial consent dialog is necessary. I.e., when consents have not been given/denied or the legal docs have not been accepted.")]
     public UnityEvent InitialConsentRequired = new();

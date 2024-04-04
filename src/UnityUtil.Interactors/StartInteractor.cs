@@ -16,7 +16,7 @@ public class InteractionEventArgs : EventArgs
 
 public class StartInteractor : Updatable
 {
-    [Required]
+    [RequiredIn(PrefabKind.NonPrefabInstance)]
     public StartStopInput? Input;
     public float Range;
     public LayerMask InteractLayerMask;

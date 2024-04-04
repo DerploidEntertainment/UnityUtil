@@ -11,7 +11,7 @@ public class CursorInteractor : Updatable
 {
     public LayerMask InteractLayerMask;
 
-    [Required]
+    [RequiredIn(PrefabKind.NonPrefabInstance)]
     public StartStopInput? Input;
 
     protected override void Awake()

@@ -7,7 +7,7 @@ namespace UnityUtil.Triggers.Input;
 
 public class StartStopInputTrigger : Updatable
 {
-    [Required]
+    [RequiredIn(PrefabKind.NonPrefabInstance)]
     public StartStopInput? Input;
     public UnityEvent InputStarted = new();
     public UnityEvent InputStopped = new();

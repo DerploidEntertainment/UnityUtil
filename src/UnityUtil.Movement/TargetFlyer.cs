@@ -13,7 +13,7 @@ public class TargetFlyer : Updatable
 
     public bool Idle;
 
-    [Required]
+    [RequiredIn(PrefabKind.NonPrefabInstance)]
     public Rigidbody? FlyingRigidbody;
 
     [Header("Flying Settings")]

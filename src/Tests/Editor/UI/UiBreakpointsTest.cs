@@ -6,7 +6,6 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityUtil.Logging;
 using UnityUtil.UI;
-using UA = UnityEngine.Assertions;
 
 namespace UnityUtil.Editor.Tests.UI
 {

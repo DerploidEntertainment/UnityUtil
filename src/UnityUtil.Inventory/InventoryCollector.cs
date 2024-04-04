@@ -8,7 +8,7 @@ public class InventoryCollector : MonoBehaviour
 {
     private SphereCollider? _sphere;
 
-    [Required]
+    [RequiredIn(PrefabKind.NonPrefabInstance)]
     public Inventory? Inventory;
     public float Radius = 1f;
 
