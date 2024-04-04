@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>UnityUtil.Physics2D</name>
+    </assembly>
+    <members>
+        <member name="T:UnityUtil.Physics2D.Rigidbody2DExtension">
+            <summary>
+            Adapted from this <a href="https://forum.unity.com/threads/need-rigidbody2d-addexplosionforce.212173/#post-1426983">Unity Forums post</a>
+            </summary>
+        </member>
+    </members>
+</doc>

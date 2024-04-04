@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>UnityUtil.Physics</name>
+    </assembly>
+    <members>
+        <member name="M:UnityUtil.Physics.CollisionSounds.nextClip">
+            <summary>
+            Get the next AudioClip to be played (random or in order)
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:UnityUtil.Physics.HoverForce.GetUpwardUnitVector">
+            <summary>
+            Returns the unit vector in which this <see cref="T:UnityUtil.Physics.HoverForce"/> will attempt to hover.
+            </summary>
+            <returns>The unit vector in which this <see cref="T:UnityUtil.Physics.HoverForce"/> will attempt to hover.</returns>
+        </member>
+        <member name="T:UnityUtil.Physics.LiftableReleaseType">
+            <summary>
+            Represents the means by which a <see cref="T:UnityUtil.Physics.Liftable"/> came to be released from a <see cref="T:UnityUtil.Physics.Lifter"/>.
+            </summary>
+        </member>
+        <member name="F:UnityUtil.Physics.LiftableReleaseType.Accidental">
+            <summary>
+            The <see cref="T:UnityUtil.Physics.Liftable"/> was accidentally released, e.g. by a force breaking its connecting <see cref="T:UnityEngine.Joint"/>.
+            </summary>
+        </member>
+        <member name="F:UnityUtil.Physics.LiftableReleaseType.Purposeful">
+            <summary>
+            The <see cref="T:UnityUtil.Physics.Liftable"/> was purposefully released via player input.
+            </summary>
+        </member>
+        <member name="F:UnityUtil.Physics.LiftableReleaseType.Thrown">
+            <summary>
+            The <see cref="T:UnityUtil.Physics.Liftable"/> was purposefully released by throwing.
+            </summary>
+        </member>
+        <member name="T:UnityUtil.Physics.PhysicsLogger`1">
+            <inheritdoc/>
+        </member>
+        <member name="M:UnityUtil.Physics.TorqueStabilizer.GetUpwardUnitVector">
+            <summary>
+            Returns the unit vector in which this <see cref="T:UnityUtil.Physics.HoverForce"/> will attempt to hover.
+            </summary>
+            <returns>The unit vector in which this <see cref="T:UnityUtil.Physics.HoverForce"/> will attempt to hover.</returns>
+        </member>
+    </members>
+</doc>

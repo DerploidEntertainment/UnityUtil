@@ -14,6 +14,11 @@
     <Reference Include="$(UnityModulesPath)\UnityEngine.AudioModule.dll" Private="false" />
     <Reference Include="$(UnityModulesPath)\UnityEngine.AnimationModule.dll" Private="false" />
     <Reference Include="$(UnityModulesPath)\UnityEngine.CoreModule.dll" Private="false" />
+
+    <ProjectReference Include="..\..\UnityUtil\UnityUtil.csproj" />
+    <ProjectReference Include="..\..\UnityUtil.Legal\UnityUtil.Legal.csproj" />
+    <ProjectReference Include="..\..\UnityUtil.Triggers\UnityUtil.Triggers.csproj" />
+    <ProjectReference Include="..\..\UnityUtil.UI\UnityUtil.UI.csproj" />
   </ItemGroup>
 
 </Project>

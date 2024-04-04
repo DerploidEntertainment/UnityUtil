@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>UnityUtil.Triggers</name>
+    </assembly>
+    <members>
+        <member name="M:UnityUtil.Triggers.AnimationEventTrigger.Trigger(System.String)">
+            <summary>
+            Warning! This method is not meant to be called programmatically.
+            Instead, create an <see cref="T:UnityEngine.AnimationClip"/> with an <see cref="T:UnityEngine.AnimationEvent"/> that calls this method.
+            </summary>
+            <param name="eventName">Name of the event that was raised by the <see cref="T:UnityEngine.Animator"/></param>
+        </member>
+        <member name="F:UnityUtil.Triggers.IntTriggerMode.TargetValue">
+            <summary>
+            Trigger event is raised every time the number reaches one of the specified values
+            </summary>
+        </member>
+        <member name="F:UnityUtil.Triggers.IntTriggerMode.Repeat">
+            <summary>
+            Trigger event is raised every time the encapsulated number is incremented the specified number of times
+            </summary>
+        </member>
+        <member name="T:UnityUtil.Triggers.TriggersLogger`1">
+            <inheritdoc/>
+        </member>
+    </members>
+</doc>

@@ -8,6 +8,9 @@
     <Reference Include="$(UnityModulesPath)\UnityEngine.CoreModule.dll" Private="false" />
     <Reference Include="$(UnityModulesPath)\UnityEngine.PhysicsModule.dll" Private="false" />
     <Reference Include="$(UnityModulesPath)\UnityEngine.Physics2DModule.dll" Private="false" />
+
+    <ProjectReference Include="..\..\UnityUtil\UnityUtil.csproj" />
+    <ProjectReference Include="..\..\UnityUtil.Triggers\UnityUtil.Triggers.csproj" />
   </ItemGroup>
 
 </Project>

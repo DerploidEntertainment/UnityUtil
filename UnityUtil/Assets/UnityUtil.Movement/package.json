@@ -1,0 +1,24 @@
+{
+  "name": "rabadash8820.unityutil-movement",
+  "version": "0.1.0",
+  "description": "A set of utility classes and components useful to any Unity project, 2D or 3D, specifically related to in-game movement mechanics.",
+  "displayName": "UnityUtil.Movement",
+  "unity": "2019.4",
+  "author": {
+    "name": "Rabadash8820",
+    "url": "https://github.com/Rabadash8820"
+  },
+  "dependencies": {
+    "org.nuget.microsoft.extensions.logging.abstractions": "2.2.0",
+    "com.unity.test-framework": "1.1.33",
+    "com.unity.modules.physics": "1.0.0"
+  },
+  "license": "MIT",
+  "keywords": [
+    "input",
+    "movement",
+    "physics",
+    "physics2d",
+    "utility"
+  ]
+}

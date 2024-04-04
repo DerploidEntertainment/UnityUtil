@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>UnityUtil.UI</name>
+    </assembly>
+    <members>
+        <member name="F:UnityUtil.UI.AudioSliderTransformation.Logarithmic">
+            <summary>
+            See <a href="https://gamedevbeginner.com/the-right-way-to-make-a-volume-slider-in-unity-using-logarithmic-conversion/">this article</a> for explanation of why volume sliders need to use a logarithmic transformation.
+            </summary>
+        </member>
+        <member name="T:UnityUtil.UI.DragThresholdScaler">
+            <summary>
+            This class is used to automatically scale an <see cref="F:UnityUtil.UI.DragThresholdScaler.EventSystem"/>'s <see cref="P:UnityEngine.EventSystems.EventSystem.pixelDragThreshold"/> with respect to a <see cref="T:UnityEngine.Canvas"/>.
+            </summary>
+            <remarks>
+            See the comments by user @runevision on this Unity forum post for more info: https://forum.unity.com/threads/buttons-within-scroll-rect-are-difficult-to-press-on-mobile.265682/
+            </remarks>
+        </member>
+        <member name="T:UnityUtil.UI.RootCanvasSetter">
+            <summary>
+            Add this component to a <see cref="T:UnityEngine.Canvas"/> in any scene to re-parent it to a <see cref="T:UnityEngine.Canvas"/> from the DI system.
+            This allows creation of a "root" <see cref="T:UnityEngine.Canvas"/> in a loading scene (with components adjusting its scaling and event handling),
+            from which <see cref="T:UnityEngine.Canvas"/>es in other scenes will inherit those settings.
+            </summary>
+        </member>
+        <member name="T:UnityUtil.UI.SafeAreaRectTransformScaler">
+            <summary>
+            Note that there is a simple <a href="https://docs.unity3d.com/Manual/class-PlayerSettingsAndroid.html#Resolution">project setting</a>
+            for toggling safe area usage on Android (Player > Resolution and Presentation > Render outside safe area),
+            but <a href="https://forum.unity.com/threads/notch-avoidance-for-ios.1073261/">iOS doesn't support</a> this option.
+            This component can be used on iOS <em>and</em> Android for a consistent dev experience across platforms.
+            </summary>
+        </member>
+        <member name="M:UnityUtil.UI.UiBreakpoints.OnRectTransformDimensionsChange">
+            <summary>
+            This Unity message is not documented in the MonoBehaviour docs, but apparently it IS a message that any MonoBehaviour can receive (not just UIBehaviour)
+            See this <a href="https://www.programmersought.com/article/1195140410/">weird and obscure source</a> :P
+            </summary>
+        </member>
+        <member name="T:UnityUtil.UI.UiLogger`1">
+            <inheritdoc/>
+        </member>
+    </members>
+</doc>

@@ -14,7 +14,6 @@
     <Reference Include="$(NunitPath)" Private="false" />
     <Reference Include="$(UnityPackageCachePath)\org.nuget.moq%40*\netstandard2.1\Moq.dll" Private="false" />
     <PackageReference Include="NUnit.Analyzers" Version="3.2.0" />
-    <ProjectReference Include="..\..\UnityUtil\UnityUtil.csproj" />
     <Reference Include="$(UnityScriptAssembliesPath)\UnityEngine.TestRunner.dll" Private="false" />
   </ItemGroup>
 

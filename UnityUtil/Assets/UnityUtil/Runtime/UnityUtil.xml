@@ -105,76 +105,6 @@
             Tag to disambiguate services of the same <see cref="F:UnityUtil.DependencyInjection.Service.ServiceType"/>.
             </summary>
         </member>
-        <member name="T:UnityUtil.Inventories.AmmoEvent">
-            <summary>
-            Type arguments are (int oldClipAmmo, int oldBackupAmmo, int newClipAmmo, int newBackupAmmo)
-            </summary>
-        </member>
-        <member name="P:UnityUtil.Inventories.AmmoTool.CurrentClipAmmo">
-            <summary>
-            The amount of ammo currently in the main clip.
-            </summary>
-        </member>
-        <member name="P:UnityUtil.Inventories.AmmoTool.CurrentBackupAmmo">
-            <summary>
-            The total amount of ammo in all backup clips.
-            </summary>
-        </member>
-        <member name="M:UnityUtil.Inventories.AmmoTool.Load(System.Int32)">
-            <summary>
-            Load this <see cref="T:UnityUtil.Inventories.AmmoTool"/> with a specified amount of ammo.
-            </summary>
-            <param name="ammo">The amount of ammo with which to load the <see cref="T:UnityUtil.Inventories.AmmoTool"/>.</param>
-            <returns>The amount of left-over ammo that could not be stored in the <see cref="T:UnityUtil.Inventories.AmmoTool"/>'s clips.  Will always be >= 0.</returns>
-        </member>
-        <member name="M:UnityUtil.Inventories.AmmoTool.ReloadClip">
-            <summary>
-            Reload this <see cref="T:UnityUtil.Inventories.AmmoTool"/>'s current clip from its backup ammo
-            </summary>
-        </member>
-        <member name="T:UnityUtil.Inventories.CollectibleDestroyMode">
-            <summary>
-            Determines under what circumstances, if any, a Collectible's <see cref="T:UnityEngine.GameObject"/> will be destroyed.
-            </summary>
-        </member>
-        <member name="F:UnityUtil.Inventories.CollectibleDestroyMode.Never">
-            <summary>
-            Never destroy the Collectible due to detection/collection.
-            </summary>
-        </member>
-        <member name="F:UnityUtil.Inventories.CollectibleDestroyMode.WhenDetected">
-            <summary>
-            Destroy the Collectible anytime it is detected, whehter the Detector uses it or not.
-            </summary>
-        </member>
-        <member name="F:UnityUtil.Inventories.CollectibleDestroyMode.WhenUsed">
-            <summary>
-            Destroy the Collectible only when it is used by the Detector.
-            </summary>
-        </member>
-        <member name="F:UnityUtil.Inventories.CollectibleDestroyMode.WhenEmptied">
-            <summary>
-            Destroy the Collectible only when its contained value is depeleted, potentially allowing multiple collect events.
-            </summary>
-        </member>
-        <member name="T:UnityUtil.Inventories.CollectEvent">
-            <summary>
-            Type arguments are (Collector collector, Collectible collectible)
-            </summary>
-        </member>
-        <member name="T:UnityUtil.Inventories.InventoriesLogger`1">
-            <inheritdoc/>
-        </member>
-        <member name="T:UnityUtil.Inventories.OverheatChangedEvent">
-            <summary>
-            Type arguments are (bool isOverheated)
-            </summary>
-        </member>
-        <member name="P:UnityUtil.Inventories.Tool.CurrentCharge">
-            <summary>
-            The current charge of this <see cref="T:UnityUtil.Inventories.Tool"/>.  0 is completely uncharged, 1 is completely charged.
-            </summary>
-        </member>
         <member name="T:UnityUtil.IRuntimeIdProvider">
             <summary>
             Provides methods for getting a unique identifier at runtime
@@ -186,58 +116,6 @@
             but different integers may be generated during each run.
             </summary>
             <returns>A new, unique identifier.</returns>
-        </member>
-        <member name="M:UnityUtil.Legal.IConsentManager.HasConsent(UnityUtil.Legal.IInitializableWithConsent)">
-            <summary>
-            
-            </summary>
-            <param name="initializableWithConsent"></param>
-            <returns></returns>
-            <exception cref="T:System.InvalidOperationException">Consent has not yet been initialized</exception>
-            <exception cref="T:System.ArgumentException"><paramref name="initializableWithConsent"/> is not managed by this consent manager</exception>
-        </member>
-        <member name="M:UnityUtil.Legal.IConsentManager.OptOut(UnityUtil.Legal.IInitializableWithConsent)">
-            <summary>
-            
-            </summary>
-            <param name="initializableWithConsent"></param>
-            <exception cref="T:System.InvalidOperationException">Consent has not yet been initialized</exception>
-            <exception cref="T:System.ArgumentException"><paramref name="initializableWithConsent"/> is not managed by this consent manager</exception>
-        </member>
-        <member name="T:UnityUtil.Legal.LegalLogger`1">
-            <inheritdoc/>
-        </member>
-        <member name="T:UnityUtil.Legal.SingleDialogConsentManager">
-            <summary>
-            Manages the gathering and persisting of a user's consent to share their personal data with registered <see cref="T:UnityUtil.Legal.IInitializableWithConsent"/>s.
-            Consent is expected to be gathered after showing a single UI dialog during the First-Time User Experience (FTUE).
-            </summary>
-        </member>
-        <member name="M:UnityUtil.Legal.SingleDialogConsentManager.ShowDialogIfNeededAsync">
-            <summary>
-            Raise the <see cref="F:UnityUtil.Legal.SingleDialogConsentManager.InitialConsentRequired"/>, <see cref="F:UnityUtil.Legal.SingleDialogConsentManager.LegalUpdateRequired"/>, or <see cref="F:UnityUtil.Legal.SingleDialogConsentManager.NoUiRequired"/> events as necessary,
-            depending on the consents and legal documents acceptance saved in local preferences.
-            </summary>
-        </member>
-        <member name="M:UnityUtil.Legal.SingleDialogConsentManager.GiveConsent">
-            <summary>
-            Give consent to all registered <see cref="T:UnityUtil.Legal.IInitializableWithConsent"/>s that did not already have consent saved in local preferences,
-            and accept the latest legal documents.
-            </summary>
-        </member>
-        <member name="M:UnityUtil.Legal.SingleDialogConsentManager.Initialize">
-            <summary>
-            Initializes all registered <see cref="T:UnityUtil.Legal.IInitializableWithConsent"/>s in parallel, passing them the corresponding flag for consent.
-            </summary>
-            <exception cref="T:System.AggregateException">
-            One or more of the <see cref="M:UnityUtil.Legal.IInitializableWithConsent.InitializeAsync(System.Boolean)"/> calls failed.
-            See this exception's <see cref="P:System.AggregateException.InnerExceptions"/> collection for more details.
-            </exception>
-        </member>
-        <member name="M:UnityUtil.Legal.SingleDialogConsentManager.ClearConsentPreferences">
-            <summary>
-            Clear consent saved in in local preferences for all registered <see cref="T:UnityUtil.Legal.IInitializableWithConsent"/>s.
-            </summary>
         </member>
         <member name="T:UnityUtil.Logging.BaseUnityUtilLogger`1">
             <summary>
@@ -861,23 +739,6 @@
         <member name="M:UnityUtil.Math.UniformBatchedRandomishOptionChooser.GetOptionIndex">
             <inheritdoc/>
         </member>
-        <member name="T:UnityUtil.Movement.LookAtAdjuster">
-            <summary>
-            Tells all associated <see cref="T:UnityUtil.Movement.LookAt"/> components when to look at a new <see cref="T:UnityEngine.Transform"/>.
-            </summary>
-        </member>
-        <member name="M:UnityUtil.Movement.LookAtAdjuster.SetTransformToLookAt(UnityEngine.Transform)">
-            <summary>
-            You can actually set <see cref="F:UnityUtil.Movement.LookAt.TransformToLookAt"/> directly.  This function was only created for use with UnityEvents.
-            </summary>
-            <param name="transform">The new <see cref="T:UnityEngine.Transform"/> to make the <see cref="F:UnityUtil.Movement.LookAt.TransformToRotate"/> look at.</param>
-        </member>
-        <member name="M:UnityUtil.Movement.LookAtRaycast.GetUpwardUnitVector">
-            <summary>
-            Returns the unit vector that this <see cref="T:UnityUtil.Movement.LookAtRaycast"/> will use to rotate towards what its associated <see cref="F:UnityUtil.Movement.LookAtRaycast.RaycastingTransform"/> is looking at.
-            </summary>
-            <returns>The unit vector that this <see cref="T:UnityUtil.Movement.LookAtRaycast"/> will use to rotate towards what its associated <see cref="F:UnityUtil.Movement.LookAtRaycast.RaycastingTransform"/> is looking at.</returns>
-        </member>
         <member name="T:UnityUtil.MultiCollection`2">
             <summary>
             Represents a strongly typed list of objects with constant-time insertion, removal, and duplicate checks,
@@ -890,52 +751,6 @@
             <summary>
             Sets the capacity to the actual number of elements in the underlying collection, to save on memory.
             </summary>
-        </member>
-        <member name="T:UnityUtil.Physics2D.Rigidbody2DExtension">
-            <summary>
-            Adapted from this <a href="https://forum.unity.com/threads/need-rigidbody2d-addexplosionforce.212173/#post-1426983">Unity Forums post</a>
-            </summary>
-        </member>
-        <member name="M:UnityUtil.Physics.CollisionSounds.nextClip">
-            <summary>
-            Get the next AudioClip to be played (random or in order)
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:UnityUtil.Physics.HoverForce.GetUpwardUnitVector">
-            <summary>
-            Returns the unit vector in which this <see cref="T:UnityUtil.Physics.HoverForce"/> will attempt to hover.
-            </summary>
-            <returns>The unit vector in which this <see cref="T:UnityUtil.Physics.HoverForce"/> will attempt to hover.</returns>
-        </member>
-        <member name="T:UnityUtil.Physics.LiftableReleaseType">
-            <summary>
-            Represents the means by which a <see cref="T:UnityUtil.Physics.Liftable"/> came to be released from a <see cref="T:UnityUtil.Physics.Lifter"/>.
-            </summary>
-        </member>
-        <member name="F:UnityUtil.Physics.LiftableReleaseType.Accidental">
-            <summary>
-            The <see cref="T:UnityUtil.Physics.Liftable"/> was accidentally released, e.g. by a force breaking its connecting <see cref="T:UnityEngine.Joint"/>.
-            </summary>
-        </member>
-        <member name="F:UnityUtil.Physics.LiftableReleaseType.Purposeful">
-            <summary>
-            The <see cref="T:UnityUtil.Physics.Liftable"/> was purposefully released via player input.
-            </summary>
-        </member>
-        <member name="F:UnityUtil.Physics.LiftableReleaseType.Thrown">
-            <summary>
-            The <see cref="T:UnityUtil.Physics.Liftable"/> was purposefully released by throwing.
-            </summary>
-        </member>
-        <member name="T:UnityUtil.Physics.PhysicsLogger`1">
-            <inheritdoc/>
-        </member>
-        <member name="M:UnityUtil.Physics.TorqueStabilizer.GetUpwardUnitVector">
-            <summary>
-            Returns the unit vector in which this <see cref="T:UnityUtil.Physics.HoverForce"/> will attempt to hover.
-            </summary>
-            <returns>The unit vector in which this <see cref="T:UnityUtil.Physics.HoverForce"/> will attempt to hover.</returns>
         </member>
         <member name="T:UnityUtil.RootLogger`1">
             <inheritdoc/>
@@ -1059,63 +874,6 @@
             </summary>
             <param name="key"></param>
             <param name="value"></param>
-        </member>
-        <member name="M:UnityUtil.Triggers.AnimationEventTrigger.Trigger(System.String)">
-            <summary>
-            Warning! This method is not meant to be called programmatically.
-            Instead, create an <see cref="T:UnityEngine.AnimationClip"/> with an <see cref="T:UnityEngine.AnimationEvent"/> that calls this method.
-            </summary>
-            <param name="eventName">Name of the event that was raised by the <see cref="T:UnityEngine.Animator"/></param>
-        </member>
-        <member name="F:UnityUtil.Triggers.IntTriggerMode.TargetValue">
-            <summary>
-            Trigger event is raised every time the number reaches one of the specified values
-            </summary>
-        </member>
-        <member name="F:UnityUtil.Triggers.IntTriggerMode.Repeat">
-            <summary>
-            Trigger event is raised every time the encapsulated number is incremented the specified number of times
-            </summary>
-        </member>
-        <member name="T:UnityUtil.Triggers.TriggersLogger`1">
-            <inheritdoc/>
-        </member>
-        <member name="F:UnityUtil.UI.AudioSliderTransformation.Logarithmic">
-            <summary>
-            See <a href="https://gamedevbeginner.com/the-right-way-to-make-a-volume-slider-in-unity-using-logarithmic-conversion/">this article</a> for explanation of why volume sliders need to use a logarithmic transformation.
-            </summary>
-        </member>
-        <member name="T:UnityUtil.UI.DragThresholdScaler">
-            <summary>
-            This class is used to automatically scale an <see cref="F:UnityUtil.UI.DragThresholdScaler.EventSystem"/>'s <see cref="P:UnityEngine.EventSystems.EventSystem.pixelDragThreshold"/> with respect to a <see cref="T:UnityEngine.Canvas"/>.
-            </summary>
-            <remarks>
-            See the comments by user @runevision on this Unity forum post for more info: https://forum.unity.com/threads/buttons-within-scroll-rect-are-difficult-to-press-on-mobile.265682/
-            </remarks>
-        </member>
-        <member name="T:UnityUtil.UI.RootCanvasSetter">
-            <summary>
-            Add this component to a <see cref="T:UnityEngine.Canvas"/> in any scene to re-parent it to a <see cref="T:UnityEngine.Canvas"/> from the DI system.
-            This allows creation of a "root" <see cref="T:UnityEngine.Canvas"/> in a loading scene (with components adjusting its scaling and event handling),
-            from which <see cref="T:UnityEngine.Canvas"/>es in other scenes will inherit those settings.
-            </summary>
-        </member>
-        <member name="T:UnityUtil.UI.SafeAreaRectTransformScaler">
-            <summary>
-            Note that there is a simple <a href="https://docs.unity3d.com/Manual/class-PlayerSettingsAndroid.html#Resolution">project setting</a>
-            for toggling safe area usage on Android (Player > Resolution and Presentation > Render outside safe area),
-            but <a href="https://forum.unity.com/threads/notch-avoidance-for-ios.1073261/">iOS doesn't support</a> this option.
-            This component can be used on iOS <em>and</em> Android for a consistent dev experience across platforms.
-            </summary>
-        </member>
-        <member name="M:UnityUtil.UI.UiBreakpoints.OnRectTransformDimensionsChange">
-            <summary>
-            This Unity message is not documented in the MonoBehaviour docs, but apparently it IS a message that any MonoBehaviour can receive (not just UIBehaviour)
-            See this <a href="https://www.programmersought.com/article/1195140410/">weird and obscure source</a> :P
-            </summary>
-        </member>
-        <member name="T:UnityUtil.UI.UiLogger`1">
-            <inheritdoc/>
         </member>
         <member name="M:UnityUtil.UnityObjectExtensions.AssertActiveAndEnabled(UnityEngine.Behaviour,System.String)">
             <summary>

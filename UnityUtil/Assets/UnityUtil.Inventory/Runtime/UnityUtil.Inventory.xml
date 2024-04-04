@@ -1,0 +1,84 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>UnityUtil.Inventory</name>
+    </assembly>
+    <members>
+        <member name="T:UnityUtil.Inventory.AmmoEvent">
+            <summary>
+            Type arguments are (int oldClipAmmo, int oldBackupAmmo, int newClipAmmo, int newBackupAmmo)
+            </summary>
+        </member>
+        <member name="P:UnityUtil.Inventory.AmmoTool.CurrentClipAmmo">
+            <summary>
+            The amount of ammo currently in the main clip.
+            </summary>
+        </member>
+        <member name="P:UnityUtil.Inventory.AmmoTool.CurrentBackupAmmo">
+            <summary>
+            The total amount of ammo in all backup clips.
+            </summary>
+        </member>
+        <member name="M:UnityUtil.Inventory.AmmoTool.Load(System.Int32)">
+            <summary>
+            Load this <see cref="T:UnityUtil.Inventory.AmmoTool"/> with a specified amount of ammo.
+            </summary>
+            <param name="ammo">The amount of ammo with which to load the <see cref="T:UnityUtil.Inventory.AmmoTool"/>.</param>
+            <returns>The amount of left-over ammo that could not be stored in the <see cref="T:UnityUtil.Inventory.AmmoTool"/>'s clips.  Will always be >= 0.</returns>
+        </member>
+        <member name="M:UnityUtil.Inventory.AmmoTool.ReloadClip">
+            <summary>
+            Reload this <see cref="T:UnityUtil.Inventory.AmmoTool"/>'s current clip from its backup ammo
+            </summary>
+        </member>
+        <member name="T:UnityUtil.Inventory.CollectibleDestroyMode">
+            <summary>
+            Determines under what circumstances, if any, a Collectible's <see cref="T:UnityEngine.GameObject"/> will be destroyed.
+            </summary>
+        </member>
+        <member name="F:UnityUtil.Inventory.CollectibleDestroyMode.Never">
+            <summary>
+            Never destroy the Collectible due to detection/collection.
+            </summary>
+        </member>
+        <member name="F:UnityUtil.Inventory.CollectibleDestroyMode.WhenDetected">
+            <summary>
+            Destroy the Collectible anytime it is detected, whehter the Detector uses it or not.
+            </summary>
+        </member>
+        <member name="F:UnityUtil.Inventory.CollectibleDestroyMode.WhenUsed">
+            <summary>
+            Destroy the Collectible only when it is used by the Detector.
+            </summary>
+        </member>
+        <member name="F:UnityUtil.Inventory.CollectibleDestroyMode.WhenEmptied">
+            <summary>
+            Destroy the Collectible only when its contained value is depeleted, potentially allowing multiple collect events.
+            </summary>
+        </member>
+        <member name="T:UnityUtil.Inventory.CollectEvent">
+            <summary>
+            Type arguments are (Collector collector, Collectible collectible)
+            </summary>
+        </member>
+        <member name="T:UnityUtil.Inventory.InventoriesLogger`1">
+            <inheritdoc/>
+        </member>
+        <member name="T:UnityUtil.Inventory.OverheatChangedEvent">
+            <summary>
+            Type arguments are (bool isOverheated)
+            </summary>
+        </member>
+        <member name="P:UnityUtil.Inventory.Tool.CurrentCharge">
+            <summary>
+            The current charge of this <see cref="T:UnityUtil.Inventory.Tool"/>.  0 is completely uncharged, 1 is completely charged.
+            </summary>
+        </member>
+        <member name="M:UnityUtil.Movement.LookAtRaycast.GetUpwardUnitVector">
+            <summary>
+            Returns the unit vector that this <see cref="T:UnityUtil.Movement.LookAtRaycast"/> will use to rotate towards what its associated <see cref="F:UnityUtil.Movement.LookAtRaycast.RaycastingTransform"/> is looking at.
+            </summary>
+            <returns>The unit vector that this <see cref="T:UnityUtil.Movement.LookAtRaycast"/> will use to rotate towards what its associated <see cref="F:UnityUtil.Movement.LookAtRaycast.RaycastingTransform"/> is looking at.</returns>
+        </member>
+    </members>
+</doc>

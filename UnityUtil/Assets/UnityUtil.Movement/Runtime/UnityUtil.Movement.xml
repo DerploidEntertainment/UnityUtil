@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>UnityUtil.Movement</name>
+    </assembly>
+    <members>
+        <member name="T:UnityUtil.Movement.LookAtAdjuster">
+            <summary>
+            Tells all associated <see cref="T:UnityUtil.Movement.LookAt"/> components when to look at a new <see cref="T:UnityEngine.Transform"/>.
+            </summary>
+        </member>
+        <member name="M:UnityUtil.Movement.LookAtAdjuster.SetTransformToLookAt(UnityEngine.Transform)">
+            <summary>
+            You can actually set <see cref="F:UnityUtil.Movement.LookAt.TransformToLookAt"/> directly.  This function was only created for use with UnityEvents.
+            </summary>
+            <param name="transform">The new <see cref="T:UnityEngine.Transform"/> to make the <see cref="F:UnityUtil.Movement.LookAt.TransformToRotate"/> look at.</param>
+        </member>
+    </members>
+</doc>

@@ -22,14 +22,18 @@
     <SirenixAssembliesPath>$(UnityProjectPath)\$(SirenixAssembliesDir)</SirenixAssembliesPath>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Reference Include="$(SirenixAssembliesPath)\Sirenix.OdinInspector.Attributes.dll" Private="false"/>
+  </ItemGroup>
+
   <!-- Make internals visible to test projects (and Moq) in non-test projects -->
   <PropertyGroup>
     <IsTestProject Condition="$(MSBuildProjectName.Contains('.Test'))">true</IsTestProject>
   </PropertyGroup>
-  <ItemGroup>
-    <InternalsVisibleTo Condition="'$(IsTestProject)'!='true'" Include="$(MSBuildProjectName).Editor.Tests" />
-    <InternalsVisibleTo Condition="'$(IsTestProject)'!='true'" Include="$(MSBuildProjectName).Tests" />
-    <InternalsVisibleTo Condition="'$(IsTestProject)'!='true'" Include="DynamicProxyGenAssembly2" />
+  <ItemGroup Condition="'$(IsTestProject)'!='true'">
+    <InternalsVisibleTo Include="$(SolutionName).Editor.Tests" />
+    <InternalsVisibleTo Include="$(SolutionName).Tests" />
+    <InternalsVisibleTo Include="DynamicProxyGenAssembly2" />
   </ItemGroup>
 
   <!-- CLS compliance -->

@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>UnityUtil.Legal</name>
+    </assembly>
+    <members>
+        <member name="M:UnityUtil.Legal.IConsentManager.HasConsent(UnityUtil.Legal.IInitializableWithConsent)">
+            <summary>
+            
+            </summary>
+            <param name="initializableWithConsent"></param>
+            <returns></returns>
+            <exception cref="T:System.InvalidOperationException">Consent has not yet been initialized</exception>
+            <exception cref="T:System.ArgumentException"><paramref name="initializableWithConsent"/> is not managed by this consent manager</exception>
+        </member>
+        <member name="M:UnityUtil.Legal.IConsentManager.OptOut(UnityUtil.Legal.IInitializableWithConsent)">
+            <summary>
+            
+            </summary>
+            <param name="initializableWithConsent"></param>
+            <exception cref="T:System.InvalidOperationException">Consent has not yet been initialized</exception>
+            <exception cref="T:System.ArgumentException"><paramref name="initializableWithConsent"/> is not managed by this consent manager</exception>
+        </member>
+        <member name="T:UnityUtil.Legal.LegalLogger`1">
+            <inheritdoc/>
+        </member>
+        <member name="T:UnityUtil.Legal.SingleDialogConsentManager">
+            <summary>
+            Manages the gathering and persisting of a user's consent to share their personal data with registered <see cref="T:UnityUtil.Legal.IInitializableWithConsent"/>s.
+            Consent is expected to be gathered after showing a single UI dialog during the First-Time User Experience (FTUE).
+            </summary>
+        </member>
+        <member name="M:UnityUtil.Legal.SingleDialogConsentManager.ShowDialogIfNeededAsync">
+            <summary>
+            Raise the <see cref="F:UnityUtil.Legal.SingleDialogConsentManager.InitialConsentRequired"/>, <see cref="F:UnityUtil.Legal.SingleDialogConsentManager.LegalUpdateRequired"/>, or <see cref="F:UnityUtil.Legal.SingleDialogConsentManager.NoUiRequired"/> events as necessary,
+            depending on the consents and legal documents acceptance saved in local preferences.
+            </summary>
+        </member>
+        <member name="M:UnityUtil.Legal.SingleDialogConsentManager.GiveConsent">
+            <summary>
+            Give consent to all registered <see cref="T:UnityUtil.Legal.IInitializableWithConsent"/>s that did not already have consent saved in local preferences,
+            and accept the latest legal documents.
+            </summary>
+        </member>
+        <member name="M:UnityUtil.Legal.SingleDialogConsentManager.Initialize">
+            <summary>
+            Initializes all registered <see cref="T:UnityUtil.Legal.IInitializableWithConsent"/>s in parallel, passing them the corresponding flag for consent.
+            </summary>
+            <exception cref="T:System.AggregateException">
+            One or more of the <see cref="M:UnityUtil.Legal.IInitializableWithConsent.InitializeAsync(System.Boolean)"/> calls failed.
+            See this exception's <see cref="P:System.AggregateException.InnerExceptions"/> collection for more details.
+            </exception>
+        </member>
+        <member name="M:UnityUtil.Legal.SingleDialogConsentManager.ClearConsentPreferences">
+            <summary>
+            Clear consent saved in in local preferences for all registered <see cref="T:UnityUtil.Legal.IInitializableWithConsent"/>s.
+            </summary>
+        </member>
+    </members>
+</doc>

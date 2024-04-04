@@ -4,10 +4,4 @@
     If they were, then we'd be trying to use short-hand path properties from Unity3D before they've actually been imported
     (Microsoft.Common.props imports Directory.Build.props before importing props from NuGet packages, see https://docs.microsoft.com/en-us/visualstudio/msbuild/customize-your-build#import-order)
   -->
-  <ItemGroup>
-    <Reference Include="$(SirenixAssembliesPath)\Sirenix.OdinInspector.Attributes.dll" Private="false"/>
-    <Reference Include="$(UnityScriptAssembliesPath)\UnityEngine.UI.dll" Private="false" />
-    <Reference Include="$(UnityModulesPath)\UnityEngine.UIModule.dll" Private="false" />
-    <Reference Include="$(UnityScriptAssembliesPath)\Unity.TextMeshPro.dll" Private="false" />
-  </ItemGroup>
 </Project>

@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="../OtherUnityAssemblies.props" />
+  <Import Project="../Logging.props" />
+
+  <PropertyGroup>
+    <UnityDestinationFolder>$(UnityProjectPath)\Assets\$(MSBuildProjectName)\Runtime</UnityDestinationFolder>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="$(UnityModulesPath)\UnityEngine.CoreModule.dll" Private="false" />
+    <Reference Include="$(UnityModulesPath)\UnityEngine.UnityWebRequestModule.dll" Private="false" />
+    <Reference Include="$(UnityModulesPath)\UnityEngine.UIModule.dll" Private="false" />
+    
+    <Reference Include="$(UnityScriptAssembliesPath)\UnityEngine.UI.dll" Private="false" />
+    <Reference Include="$(UnityScriptAssembliesPath)\Unity.TextMeshPro.dll" Private="false" />
+
+    <ProjectReference Include="..\UnityUtil\UnityUtil.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="$(UnityProjectPath)\Assets\$(MSBuildProjectName)\package.json" />
+  </ItemGroup>
+
+</Project>
