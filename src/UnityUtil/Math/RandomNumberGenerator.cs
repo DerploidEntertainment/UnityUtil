@@ -15,6 +15,7 @@ public sealed class RandomNumberGeneratorConfig
     public string Seed { get; set; } = "";
 }
 
+[CreateAssetMenu(menuName = $"{nameof(UnityUtil)}/{nameof(UnityUtil.Math)}/{nameof(RandomNumberGenerator)}", fileName = "random-number-generator")]
 public sealed class RandomNumberGenerator : ScriptableObject, IRandomNumberGenerator
 {
     [ReadOnly, ShowInInspector]
