@@ -30,10 +30,10 @@ public class ScrollRectVelocityClamper : Updatable
     {
         base.Awake();
 
-        UpdateAction = deltaTime => {
+        RegisterUpdate(deltaTime => {
             if (ScrollRect!.inertia)
                 ScrollRect.velocity = GetClampedVelocity(ScrollRect.velocity);
-        };
+        });
     }
 
     internal Vector2 GetClampedVelocity(Vector2 velocity)

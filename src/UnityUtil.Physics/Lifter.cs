@@ -84,7 +84,7 @@ public class Lifter : Updatable
             );
         }
 
-        UpdateAction = doUpdate;
+        RegisterUpdate(doUpdate);
     }
 
     private void doUpdate(float deltaTime)

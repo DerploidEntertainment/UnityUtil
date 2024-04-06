@@ -27,7 +27,7 @@ public class StartInteractor2D : Updatable
     {
         base.Awake();
 
-        UpdateAction = raycast;
+        RegisterUpdate(raycast);
     }
 
     private void raycast(float deltaTime)

@@ -18,7 +18,7 @@ public class CursorInteractor : Updatable
     {
         base.Awake();
 
-        UpdateAction = raycastScreen;
+        RegisterUpdate(raycastScreen);
     }
 
     private void raycastScreen(float deltaTime)

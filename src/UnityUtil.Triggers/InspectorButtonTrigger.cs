@@ -20,27 +20,6 @@ public class InspectorButtonTrigger : Updatable
     [Tooltip("Time, in seconds, before the button may be pressed again.")]
     public float RefactoryPeriod = 1f;
 
-    protected override void Awake()
-    {
-        base.Awake();
-
-        RegisterActionsAutomatically = false;
-    }
-    protected override void OnEnable()
-    {
-        base.OnEnable();
-
-        if (_tRefactory > -1f)
-            Updater!.RegisterUpdate(InstanceId, updateRefactory);
-    }
-    protected override void OnDisable()
-    {
-        base.OnDisable();
-
-        if (_tRefactory > -1f)
-            Updater!.UnregisterUpdate(InstanceId);
-    }
-
     [Button, EnableIf(nameof(CanPress))]
     public void Press()
     {
@@ -52,7 +31,7 @@ public class InspectorButtonTrigger : Updatable
         Triggered.Invoke();
         CanPress = false;
         _tRefactory = 0f;
-        Updater!.RegisterUpdate(InstanceId, updateRefactory);
+        RegisterUpdate(updateRefactory);
     }
 
     private void updateRefactory(float deltaTime)
@@ -63,7 +42,7 @@ public class InspectorButtonTrigger : Updatable
         }
 
         _tRefactory = 0f;
-        Updater!.UnregisterUpdate(InstanceId);
+        UnregisterUpdate();
 
         CanPress = true;
     }

@@ -21,7 +21,7 @@ public class TargetOffsetMovement : Updatable
     {
         base.Awake();
 
-        UpdateAction = move;
+        RegisterUpdate(move);
     }
 
     private void move(float deltaTime) => TransformToMove!.position = Target!.position + Offset;

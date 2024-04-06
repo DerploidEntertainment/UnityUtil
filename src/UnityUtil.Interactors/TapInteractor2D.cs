@@ -13,7 +13,7 @@ public class TapInteractor2D : Updatable
     {
         base.Awake();
 
-        UpdateAction = tap;
+        RegisterUpdate(tap);
     }
 
     private void tap(float deltaTime)

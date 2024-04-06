@@ -72,7 +72,7 @@ public class AmmoTool : Updatable
             AmmoReduced.Invoke(oldClip, CurrentBackupAmmo, CurrentClipAmmo, CurrentBackupAmmo);
         });
 
-        UpdateAction = checkForReload;
+        RegisterUpdate(checkForReload);
     }
 
     private void checkForReload(float deltaTime)

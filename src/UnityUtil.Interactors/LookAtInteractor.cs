@@ -46,7 +46,7 @@ public class LookAtInteractor : Updatable
     {
         base.Awake();
 
-        UpdateAction = look;
+        RegisterUpdate(look);
     }
     protected override void OnDisable()
     {

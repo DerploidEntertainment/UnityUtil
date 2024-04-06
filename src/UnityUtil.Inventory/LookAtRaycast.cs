@@ -64,7 +64,7 @@ public class LookAtRaycast : Updatable
     {
         base.Awake();
 
-        UpdateAction = doUpdate;
+        RegisterUpdate(doUpdate);
     }
     [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
     private void OnDrawGizmos()

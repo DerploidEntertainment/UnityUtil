@@ -27,12 +27,6 @@ public abstract class StartStoppable : Updatable
     [Tooltip("Should the repeater start automatically when this GameObject is enabled/started for the first time?")]
     public bool StartAutomatically = false;
 
-    protected override void Awake()
-    {
-        base.Awake();
-
-        RegisterActionsAutomatically = false;
-    }
     protected override void OnEnable()
     {
         base.OnEnable();
@@ -132,7 +126,7 @@ public abstract class StartStoppable : Updatable
 
     protected virtual void DoRestart()
     {
-        Updater!.RegisterUpdate(InstanceId, DoUpdate);
+        RegisterUpdate(DoUpdate);
         Running = true;
     }
     protected virtual void DoStop()
@@ -141,7 +135,7 @@ public abstract class StartStoppable : Updatable
             return;
 
         Running = false;
-        Updater!.UnregisterUpdate(InstanceId);
+        UnregisterUpdate();
     }
     protected virtual void DoPause()
     {
@@ -149,7 +143,7 @@ public abstract class StartStoppable : Updatable
             return;
 
         Running = false;
-        Updater!.UnregisterUpdate(InstanceId);
+        UnregisterUpdate();
     }
     protected virtual void DoResume()
     {
@@ -157,7 +151,7 @@ public abstract class StartStoppable : Updatable
             return;
 
         Running = true;
-        Updater!.RegisterUpdate(InstanceId, DoUpdate);
+        RegisterUpdate(DoUpdate);
     }
     protected abstract void DoUpdate(float deltaTime);
 

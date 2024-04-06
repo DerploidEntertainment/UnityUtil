@@ -983,12 +983,55 @@
         <member name="M:UnityUtil.Updating.UnityMainThreadDispatcher.EnqueueAsync(System.Action)">
             <inheritdoc/>
         </member>
-        <member name="F:UnityUtil.Updating.Updatable.RegisterActionsAutomatically">
+        <member name="T:UnityUtil.Updating.Updatable">
             <summary>
-            If <see langword="true"/>, then this <see cref="T:UnityUtil.Updating.Updatable"/> will have its various update actions registered/unregistered automatically when it is enabled/disabled.
-            If <see langword="false"/>, then actions must be registered/unregistered explicitly (best for when they are only meant to be registered under specific/rare circumstances).
-            Default is <see langword="true"/>.
+            Base class for components that need to register with the UnityUtil update system.
             </summary>
+        </member>
+        <member name="P:UnityUtil.Updating.Updatable.InstanceId">
+            <summary>
+            Runtime instance ID of this component, used internally to register actions with the update system.
+            Inheritors may use this value so they don't have to add duplicate dependencies on an <see cref="T:UnityUtil.IRuntimeIdProvider"/>.
+            </summary>
+        </member>
+        <member name="M:UnityUtil.Updating.Updatable.RegisterUpdate(System.Action{System.Single})">
+            <summary>
+            Register <paramref name="action"/> to be called during <a href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.Update.html"><c>Update</c></a>.
+            It will automatically be unsubscribed and resubscribed as the component is disabled (or destroyed) and re-enabled.
+            </summary>
+            <param name="action">The action to be called during Update</param>
+        </member>
+        <member name="M:UnityUtil.Updating.Updatable.RegisterFixedUpdate(System.Action{System.Single})">
+            <summary>
+            Register <paramref name="action"/> to be called during <a href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.FixedUpdate.html"><c>FixedUpdate</c></a>.
+            It will automatically be unsubscribed and resubscribed as the component is disabled (or destroyed) and re-enabled.
+            </summary>
+            <param name="action">The action to be called during FixedUpdate</param>
+        </member>
+        <member name="M:UnityUtil.Updating.Updatable.RegisterLateUpdate(System.Action{System.Single})">
+            <summary>
+            Register <paramref name="action"/> to be called during <a href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.LateUpdate.html"><c>LateUpdate</c></a>.
+            It will automatically be unsubscribed and resubscribed as the component is disabled (or destroyed) and re-enabled.
+            </summary>
+            <param name="action">The action to be called during LateUpdate</param>
+        </member>
+        <member name="M:UnityUtil.Updating.Updatable.UnregisterUpdate">
+            <summary>
+            Unregister this component's <a href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.Update.html"><c>Update</c></a> action.
+            </summary>
+            <exception cref="T:System.InvalidOperationException">No <c>Update</c> action was ever registered for this component.</exception>
+        </member>
+        <member name="M:UnityUtil.Updating.Updatable.UnregisterFixedUpdate">
+            <summary>
+            Unregister this component's <a href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.FixedUpdate.html"><c>FixedUpdate</c></a> action.
+            </summary>
+            <exception cref="T:System.InvalidOperationException">No <c>FixedUpdate</c> action was ever registered for this component.</exception>
+        </member>
+        <member name="M:UnityUtil.Updating.Updatable.UnregisterLateUpdate">
+            <summary>
+            Unregister this component's <a href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.LateUpdate.html"><c>LateUpdate</c></a> action.
+            </summary>
+            <exception cref="T:System.InvalidOperationException">No <c>LateUpdate</c> action was ever registered for this component.</exception>
         </member>
     </members>
 </doc>
