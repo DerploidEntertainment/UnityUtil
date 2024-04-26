@@ -5,6 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using UnityEngine;
 using UnityUtil.DependencyInjection;
+using UnityUtil.Logging;
 using S = System;
 
 namespace UnityUtil.Math;
@@ -15,7 +16,7 @@ public sealed class RandomNumberGeneratorConfig
     public string Seed { get; set; } = "";
 }
 
-[CreateAssetMenu(menuName = $"{nameof(UnityUtil)}/{nameof(UnityUtil.Math)}/{nameof(RandomNumberGenerator)}", fileName = "random-number-generator")]
+[CreateAssetMenu(menuName = $"{nameof(UnityUtil)}/{nameof(Math)}/{nameof(RandomNumberGenerator)}", fileName = "random-number-generator")]
 public sealed class RandomNumberGenerator : ScriptableObject, IRandomNumberGenerator
 {
     [ReadOnly, ShowInInspector]
@@ -28,7 +29,10 @@ public sealed class RandomNumberGenerator : ScriptableObject, IRandomNumberGener
     [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
     private void Awake()
     {
-        DependencyInjector.Instance.ResolveDependenciesOf(this);
+        if (Application.isEditor)
+            Inject(new RandomNumberGeneratorConfig(), new UnityDebugLoggerFactory());
+        else
+            DependencyInjector.Instance.ResolveDependenciesOf(this);
 
         Seed = _config!.Seed;
         (int seed, bool generated) = GetOrGenerateSeed(Seed);
