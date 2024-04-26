@@ -1,11 +1,18 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace UnityUtil;
 
-public class Destroyer : MonoBehaviour
+[CreateAssetMenu(menuName = $"{nameof(UnityUtil)}/{nameof(Destroyer)}", fileName = "destroyer")]
+public class Destroyer : ScriptableObject
 {
-    [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "UnityEvents can't call static methods")]
-    public void DoDestroy(Object obj) => Destroy(obj);
+    [Tooltip($"Only relevant when calling {nameof(Destroy)}")]
+    public float TimeBeforeDeletion;
+
+    [Tooltip($"Only relevant when calling {nameof(DestroyImmediate)}")]
+    public bool AllowDestroyingAssets;
+
+    public new void Destroy(Object obj) => Destroy(obj, TimeBeforeDeletion);
+
+    public new void DestroyImmediate(Object obj) => DestroyImmediate(obj, AllowDestroyingAssets);
 
 }
