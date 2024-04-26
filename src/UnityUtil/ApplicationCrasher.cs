@@ -4,16 +4,24 @@ using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
 using UnityEngine.Diagnostics;
 using UnityUtil.DependencyInjection;
+using UnityUtil.Logging;
 
 namespace UnityUtil;
 
-public class GameCrasher : MonoBehaviour
+[CreateAssetMenu(menuName = $"{nameof(UnityUtil)}/{nameof(ApplicationCrasher)}", fileName = "application-crasher")]
+public class ApplicationCrasher : ScriptableObject
 {
-    private RootLogger<GameCrasher>? _logger;
+    private RootLogger<ApplicationCrasher>? _logger;
 
     [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
     [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
-    private void Awake() => DependencyInjector.Instance.ResolveDependenciesOf(this);
+    private void Awake()
+    {
+        if (Application.isEditor)
+            Inject(new UnityDebugLoggerFactory());
+        else
+            DependencyInjector.Instance.ResolveDependenciesOf(this);
+    }
 
     public void Inject(ILoggerFactory loggerFactory) => _logger = new(loggerFactory, context: this);
 
