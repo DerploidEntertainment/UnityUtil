@@ -6,21 +6,14 @@
 using Sirenix.OdinInspector;
 using System;
 using UnityEngine;
-using UnityEngine.Events;
 
 namespace UnityUtil.Triggers;
 
-[CreateAssetMenu(menuName = $"{nameof(UnityUtil)}/{nameof(GameEvent)}", fileName = "event-something-happened")]
-public class GameEvent : ScriptableObject
+[CreateAssetMenu(menuName = $"{nameof(UnityUtil)}/{nameof(ApplicationEvent)}", fileName = "event")]
+public class ApplicationEvent : ScriptableObject
 {
     public event EventHandler? Invoked;
 
-    public UnityEvent Actions = new();
-
     [Button]
-    public void Invoke()
-    {
-        Actions.Invoke();
-        Invoked?.Invoke(this, EventArgs.Empty);
-    }
+    public void Invoke() => Invoked?.Invoke(sender: this, EventArgs.Empty);
 }
