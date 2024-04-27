@@ -761,6 +761,17 @@
         <member name="M:UnityUtil.RuntimeIdProvider.GetId">
             <inheritdoc/>
         </member>
+        <member name="T:UnityUtil.ShowBackingFieldAttribute">
+            <summary>
+            Force Unity to serialize the backing field of a C# auto-implemented property.
+            Consuming properties should be declared as follows
+            (note that both a getter and a setter are required for Unity to recognize the backing field):
+            <code>
+            [field: SerializeBackingField]
+            public SomeType SomeProperty { get; private set; }
+            </code>
+            </summary>
+        </member>
         <member name="T:UnityUtil.SpawnDirection">
             <summary>
             Determines the direction in which <see cref="F:UnityUtil.Spawner.Prefab"/> instances spawned by a <see cref="T:UnityUtil.Spawner"/> are launched.
