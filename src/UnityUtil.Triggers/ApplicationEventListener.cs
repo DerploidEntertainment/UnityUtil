@@ -12,8 +12,8 @@ namespace UnityUtil.Triggers;
 
 public class ApplicationEventListener : MonoBehaviour
 {
-    [Required, Tooltip("Event to listen to")]
-    public ApplicationEvent? Event;
+    [field: Required, SerializeField, ShowBackingField, Tooltip("Event to listen to")]
+    public ApplicationEvent? Event { get; private set; }
 
     [Button, ShowInInspector]
     [Tooltip(
@@ -31,7 +31,7 @@ public class ApplicationEventListener : MonoBehaviour
 
     [field: SerializeField, ShowInInspector, LabelText(nameof(_eventInvoked), nicifyText: true)]
     [field: Tooltip($"Actions to invoke when {nameof(Event)} is invoked")]
-    [SuppressMessage("Style", "IDE0044:Add readonly modifier", Justification = "Unity doesn't serialize readonly fields or something")]
+    [SuppressMessage("Style", "IDE0044:Add readonly modifier", Justification = "Unity doesn't serialize readonly fields")]
     private UnityEvent _eventInvoked = new();
 
     [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
