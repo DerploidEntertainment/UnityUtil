@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
 using UnityEngine.Events;
@@ -38,9 +38,9 @@ public class IntTrigger : MonoBehaviour
     public IntTriggerMode Mode;
     [Tooltip("The encapsulated number is initialized to this value when the Scene starts.")]
     public int StartingValue = 0;
-    [Tooltip("Trigger event is raised every time one of these values is reached.  Ignored if Mode is not TargetValue.")]
-    public int[] TargetValues = new[] { 5 };
-    [Tooltip("Trigger event is raised every time the encapsulated number is incremented by this amount.  Ignored if Mode is not Repeat.")]
+    [Tooltip("Trigger event is raised every time one of these values is reached. Ignored if Mode is not TargetValue.")]
+    public int[] TargetValues = [5];
+    [Tooltip("Trigger event is raised every time the encapsulated number is incremented by this amount. Ignored if Mode is not Repeat.")]
     public int RepeatIncrementAmount;
 
     [Tooltip("This event is raised whenever the encapsulated number DOES NOT reach a desired value.")]
