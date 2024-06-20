@@ -31,8 +31,8 @@
     <IsTestProject Condition="$(MSBuildProjectName.Contains('.Test'))">true</IsTestProject>
   </PropertyGroup>
   <ItemGroup Condition="'$(IsTestProject)'!='true'">
-    <InternalsVisibleTo Include="$(SolutionName).Editor.Tests" />
-    <InternalsVisibleTo Include="$(SolutionName).Tests" />
+    <InternalsVisibleTo Include="$(MSBuildProjectName).Tests.Editor" />
+    <InternalsVisibleTo Include="$(MSBuildProjectName).Tests.Runtime" />
     <InternalsVisibleTo Include="DynamicProxyGenAssembly2" />
   </ItemGroup>
 

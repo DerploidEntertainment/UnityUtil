@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <UnityDestinationFolder>$(UnityProjectPath)\Assets\Tests\$(MSBuildProjectName)</UnityDestinationFolder>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\UnityUtil.Editor\UnityUtil.Editor.csproj" />
+
+    <Reference Include="$(UnityModulesPath)\UnityEngine.CoreModule.dll" Private="false" />
+  </ItemGroup>
+
+</Project>
