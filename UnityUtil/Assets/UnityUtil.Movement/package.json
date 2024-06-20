@@ -10,7 +10,6 @@
   },
   "dependencies": {
     "org.nuget.microsoft.extensions.logging.abstractions": "2.2.0",
-    "com.unity.test-framework": "1.1.33",
     "com.unity.modules.physics": "1.0.0"
   },
   "license": "MIT",

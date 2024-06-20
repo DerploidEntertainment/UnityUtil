@@ -10,7 +10,6 @@
   },
   "dependencies": {
     "org.nuget.microsoft.extensions.logging.abstractions": "2.2.0",
-    "com.unity.test-framework": "1.1.33",
     "com.unity.modules.ui": "1.0.0",
     "com.unity.modules.unitywebrequest": "1.0.0",
     "rabadash8820.unityutil": "https://github.com/DerploidEntertainment/UnityUtil.git?path=/UnityUtil/Assets/UnityUtil"
