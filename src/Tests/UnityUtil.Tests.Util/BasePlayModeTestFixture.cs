@@ -1,15 +1,14 @@
 ﻿using NUnit.Framework;
 using UnityEngine;
 
-namespace UnityUtil.Tests
+namespace UnityUtil.Tests;
+
+public class BasePlayModeTestFixture
 {
-    public class BasePlayModeTestFixture
+    [OneTimeSetUp]
+    public void OneTimeSetUp()
     {
-        [OneTimeSetUp]
-        public void OneTimeSetUp()
-        {
-            PlayModeTestHelpers.ResetScene();
-            Debug.Log($"Scene reset by {nameof(BasePlayModeTestFixture)}.{nameof(OneTimeSetUp)}");
-        }
+        PlayModeTestHelpers.ResetScene();
+        Debug.Log($"Scene reset by {nameof(BasePlayModeTestFixture)}.{nameof(OneTimeSetUp)}");
     }
 }

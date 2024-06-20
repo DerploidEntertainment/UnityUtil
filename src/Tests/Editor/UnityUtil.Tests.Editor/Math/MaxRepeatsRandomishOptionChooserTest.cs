@@ -10,6 +10,8 @@ namespace UnityUtil.Editor.Tests.Math
 {
     public class MaxRepeatsRandomishOptionChooserTest : BaseEditModeTestFixture
     {
+#pragma warning disable CA1861 // Avoid constant arrays as arguments
+
         #region Constructor
 
         [Test]
@@ -17,7 +19,7 @@ namespace UnityUtil.Editor.Tests.Math
             Assert.Throws<ArgumentException>(() =>
                 new MaxRepeatsRandomishOptionChooser(
                     Mock.Of<IRandomNumberGenerator>(),
-                    new MaxRepeatsRandomishOptionChooserConfig { MaxRepeats = 1, OptionProbabilities = Array.Empty<float>() }
+                    new MaxRepeatsRandomishOptionChooserConfig { MaxRepeats = 1, OptionProbabilities = [] }
                 )
             );
 
@@ -65,7 +67,7 @@ namespace UnityUtil.Editor.Tests.Math
             Assert.Throws<ArgumentException>(() =>
                 new MaxRepeatsRandomishOptionChooser(
                     Mock.Of<IRandomNumberGenerator>(),
-                    new MaxRepeatsRandomishOptionChooserConfig { MaxRepeats = maxRepeats, OptionProbabilities = new[] { 1f } }
+                    new MaxRepeatsRandomishOptionChooserConfig { MaxRepeats = maxRepeats, OptionProbabilities = [1f] }
                 )
             );
 
@@ -82,7 +84,7 @@ namespace UnityUtil.Editor.Tests.Math
         {
             Debug.Log($"Option probabilities: {string.Join(',', optionProbabilities)}");
             MaxRepeatsRandomishOptionChooser maxRepeatsRandomishOptionChooser = getRandomishOptionChooser(
-                config: new MaxRepeatsRandomishOptionChooserConfig { MaxRepeats = 1, OptionProbabilities = new[] { 1f } }
+                config: new MaxRepeatsRandomishOptionChooserConfig { MaxRepeats = 1, OptionProbabilities = [1f] }
             );
 
             Assert.Throws<ArgumentOutOfRangeException>(() =>
@@ -94,7 +96,7 @@ namespace UnityUtil.Editor.Tests.Math
         public void UseOption_IncrementsAndDecrementsCounts()
         {
             MaxRepeatsRandomishOptionChooser maxRepeatsRandomishOptionChooser = getRandomishOptionChooser(
-                config: new MaxRepeatsRandomishOptionChooserConfig { MaxRepeats = 2, OptionProbabilities = new[] { 0.5f, 0.5f } }
+                config: new MaxRepeatsRandomishOptionChooserConfig { MaxRepeats = 2, OptionProbabilities = [0.5f, 0.5f] }
             );
 
             Assert.That(maxRepeatsRandomishOptionChooser.OptionRepeats[0], Is.Zero);
@@ -123,7 +125,7 @@ namespace UnityUtil.Editor.Tests.Math
         public void UseOption_DoesNotIncrementCounts_AboveMaxRepeats(int maxRepeats)
         {
             MaxRepeatsRandomishOptionChooser maxRepeatsRandomishOptionChooser = getRandomishOptionChooser(
-                config: new MaxRepeatsRandomishOptionChooserConfig { MaxRepeats = maxRepeats, OptionProbabilities = new[] { 0.5f, 0.5f } }
+                config: new MaxRepeatsRandomishOptionChooserConfig { MaxRepeats = maxRepeats, OptionProbabilities = [0.5f, 0.5f] }
             );
 
             Assert.That(maxRepeatsRandomishOptionChooser.OptionRepeats[0], Is.Zero);
@@ -146,7 +148,7 @@ namespace UnityUtil.Editor.Tests.Math
         public void UseOption_CannotHaveMoreThanMaxRepeatsInRow(int maxRepeats)
         {
             MaxRepeatsRandomishOptionChooser maxRepeatsRandomishOptionChooser = getRandomishOptionChooser(
-                config: new MaxRepeatsRandomishOptionChooserConfig { MaxRepeats = maxRepeats, OptionProbabilities = new[] { 0.5f, 0.5f } }
+                config: new MaxRepeatsRandomishOptionChooserConfig { MaxRepeats = maxRepeats, OptionProbabilities = [0.5f, 0.5f] }
             );
 
             Assert.That(maxRepeatsRandomishOptionChooser.OptionRepeats[0], Is.Zero);
@@ -164,9 +166,9 @@ namespace UnityUtil.Editor.Tests.Math
         [TestCase(3)]
         public void UseOption_RemovesAndAddsProbability(int maxRepeats)
         {
-            MaxRepeatsRandomishOptionChooserConfig config = new() { MaxRepeats = maxRepeats, OptionProbabilities = new[] { 0.5f, 0.5f } };
+            MaxRepeatsRandomishOptionChooserConfig config = new() { MaxRepeats = maxRepeats, OptionProbabilities = [0.5f, 0.5f] };
             MaxRepeatsRandomishOptionChooser maxRepeatsRandomishOptionChooser = getRandomishOptionChooser(
-                config: new MaxRepeatsRandomishOptionChooserConfig { MaxRepeats = maxRepeats, OptionProbabilities = new[] { 0.5f, 0.5f } }
+                config: new MaxRepeatsRandomishOptionChooserConfig { MaxRepeats = maxRepeats, OptionProbabilities = [0.5f, 0.5f] }
             );
 
             Assert.That(maxRepeatsRandomishOptionChooser.TotalProbability, Is.EqualTo(1f));
@@ -189,7 +191,7 @@ namespace UnityUtil.Editor.Tests.Math
         public void UseOption_CanReturnSingleOptionForever(int maxRepeats)
         {
             MaxRepeatsRandomishOptionChooser maxRepeatsRandomishOptionChooser = getRandomishOptionChooser(
-                config: new MaxRepeatsRandomishOptionChooserConfig { MaxRepeats = maxRepeats, OptionProbabilities = new[] { 1f } }
+                config: new MaxRepeatsRandomishOptionChooserConfig { MaxRepeats = maxRepeats, OptionProbabilities = [1f] }
             );
 
             for (int x = 0; x < 10; ++x) {
@@ -203,7 +205,7 @@ namespace UnityUtil.Editor.Tests.Math
         public void UseOption_RemovesOptionsAfterMaxRepeats()
         {
             MaxRepeatsRandomishOptionChooser maxRepeatsRandomishOptionChooser = getRandomishOptionChooser(
-                config: new MaxRepeatsRandomishOptionChooserConfig { MaxRepeats = 2, OptionProbabilities = new[] { 0.5f, 0.5f } }
+                config: new MaxRepeatsRandomishOptionChooserConfig { MaxRepeats = 2, OptionProbabilities = [0.5f, 0.5f] }
             );
 
             Assert.That(maxRepeatsRandomishOptionChooser.TotalProbability, Is.EqualTo(1f));
@@ -229,7 +231,7 @@ namespace UnityUtil.Editor.Tests.Math
         public void GetOptionIndex_CanReturnSingleOptionForever(int maxRepeats)
         {
             MaxRepeatsRandomishOptionChooser maxRepeatsRandomishOptionChooser = getRandomishOptionChooser(
-                config: new MaxRepeatsRandomishOptionChooserConfig { MaxRepeats = maxRepeats, OptionProbabilities = new[] { 1f } }
+                config: new MaxRepeatsRandomishOptionChooserConfig { MaxRepeats = maxRepeats, OptionProbabilities = [1f] }
             );
 
             MaxRepeatsRandomishOptionChooser randomishOptionChooser = getRandomishOptionChooser();
@@ -250,7 +252,7 @@ namespace UnityUtil.Editor.Tests.Math
 
             // Uniform distribution, 1 max repeat
             randomNumberGenerator.Invocations.Clear();
-            config = new() { MaxRepeats = 1, OptionProbabilities = new[] { 0.5f, 0.5f } };
+            config = new() { MaxRepeats = 1, OptionProbabilities = [0.5f, 0.5f] };
             randomishOptionChooser = getRandomishOptionChooser(randomNumberGenerator.Object, config);
 
             randomishOptionChooser.GetOptionIndex();
@@ -263,7 +265,7 @@ namespace UnityUtil.Editor.Tests.Math
 
             // Uniform distribution, >1 max repeat
             randomNumberGenerator.Invocations.Clear();
-            config = new() { MaxRepeats = 2, OptionProbabilities = new[] { 0.5f, 0.5f } };
+            config = new() { MaxRepeats = 2, OptionProbabilities = [0.5f, 0.5f] };
             randomishOptionChooser = getRandomishOptionChooser(randomNumberGenerator.Object, config);
 
             randomishOptionChooser.GetOptionIndex();
@@ -280,7 +282,7 @@ namespace UnityUtil.Editor.Tests.Math
 
             // Non-uniform distribution, 1 max repeat
             randomNumberGenerator.Invocations.Clear();
-            config = new() { MaxRepeats = 1, OptionProbabilities = new[] { 0.75f, 0.25f } };
+            config = new() { MaxRepeats = 1, OptionProbabilities = [0.75f, 0.25f] };
             randomishOptionChooser = getRandomishOptionChooser(randomNumberGenerator.Object, config);
 
             randomishOptionChooser.GetOptionIndex();
@@ -293,7 +295,7 @@ namespace UnityUtil.Editor.Tests.Math
 
             // Non-uniform distribution, >1 max repeat
             randomNumberGenerator.Invocations.Clear();
-            config = new() { MaxRepeats = 2, OptionProbabilities = new[] { 0.75f, 0.25f } };
+            config = new() { MaxRepeats = 2, OptionProbabilities = [0.75f, 0.25f] };
             randomishOptionChooser = getRandomishOptionChooser(randomNumberGenerator.Object, config);
 
             randomishOptionChooser.GetOptionIndex();
@@ -311,21 +313,21 @@ namespace UnityUtil.Editor.Tests.Math
 
         private static IEnumerable<TestCaseData> yieldCorrectIndexTestCases()
         {
-            float[] oneProbs = new[] { 1f };
+            float[] oneProbs = [1f];
             yield return new(0.0d, oneProbs, 0);
             yield return new(0.3d, oneProbs, 0);
             yield return new(0.5d, oneProbs, 0);
             yield return new(0.6d, oneProbs, 0);
             yield return new(1.0d, oneProbs, 0);
 
-            float[] twoProbs = new[] { 0.5f, 0.5f };
+            float[] twoProbs = [0.5f, 0.5f];
             yield return new(0.0d, twoProbs, 0);
             yield return new(0.3d, twoProbs, 0);
             yield return new(0.5d, twoProbs, 1);
             yield return new(0.6d, twoProbs, 1);
             yield return new(1.0d, twoProbs, 1);
 
-            float[] threeProbs = new[] { 0.2f, 0.3f, 0.5f };
+            float[] threeProbs = [0.2f, 0.3f, 0.5f];
             yield return new(0.0d, threeProbs, 0);
             yield return new(0.1d, threeProbs, 0);
             yield return new(0.2d, threeProbs, 1);
@@ -356,11 +358,11 @@ namespace UnityUtil.Editor.Tests.Math
         [TestCase(5)]
         public void GetOptionIndex_CorrectlyRepeatsIndices_UniformDistro(int maxRepeats)
         {
-            MaxRepeatsRandomishOptionChooserConfig config = new() { MaxRepeats = maxRepeats, OptionProbabilities = new[] { 0.25f, 0.25f, 0.25f, 0.25f } };
+            MaxRepeatsRandomishOptionChooserConfig config = new() { MaxRepeats = maxRepeats, OptionProbabilities = [0.25f, 0.25f, 0.25f, 0.25f] };
             IRandomNumberGenerator randomNumberGenerator = Mock.Of<IRandomNumberGenerator>(x => x.Range(It.IsAny<float>(), It.IsAny<float>()) == 0f);
             MaxRepeatsRandomishOptionChooser randomishOptionChooser = getRandomishOptionChooser(randomNumberGenerator, config);
 
-            List<int> chosenIndices = new();
+            List<int> chosenIndices = [];
 
             for (int x = 0; x < config.MaxRepeats + 2; ++x)
                 chosenIndices.Add(randomishOptionChooser.GetOptionIndex());
@@ -376,11 +378,11 @@ namespace UnityUtil.Editor.Tests.Math
         [TestCase(5)]
         public void GetOptionIndex_CorrectlyRepeatsIndices_NonUniformDistro(int maxRepeats)
         {
-            MaxRepeatsRandomishOptionChooserConfig config = new() { MaxRepeats = maxRepeats, OptionProbabilities = new[] { 0.75f, 0.25f } };
+            MaxRepeatsRandomishOptionChooserConfig config = new() { MaxRepeats = maxRepeats, OptionProbabilities = [0.75f, 0.25f] };
             IRandomNumberGenerator randomNumberGenerator = Mock.Of<IRandomNumberGenerator>(x => x.Range(It.IsAny<float>(), It.IsAny<float>()) == 0f);
             MaxRepeatsRandomishOptionChooser randomishOptionChooser = getRandomishOptionChooser(randomNumberGenerator, config);
 
-            List<int> chosenIndices = new();
+            List<int> chosenIndices = [];
 
             for (int x = 0; x < config.MaxRepeats + 2; ++x)
                 chosenIndices.Add(randomishOptionChooser.GetOptionIndex());
@@ -402,7 +404,7 @@ namespace UnityUtil.Editor.Tests.Math
             // ARRANGE
             MaxRepeatsRandomishOptionChooserConfig config = new() { MaxRepeats = maxRepeats, OptionProbabilities = optionProbabilities };
             MaxRepeatsRandomishOptionChooser randomishOptionChooser = getRandomishOptionChooser(config: config);
-            List<int> chosenIndices = new();
+            List<int> chosenIndices = [];
 
             // ACT
             const int NUM_ITERATIONS = 100;
@@ -430,9 +432,9 @@ namespace UnityUtil.Editor.Tests.Math
         [TestCase(5)]
         public void GetOptionIndex_RepeatsSingleOptionForever(int maxRepeats)
         {
-            MaxRepeatsRandomishOptionChooserConfig config = new() { MaxRepeats = maxRepeats, OptionProbabilities = new[] { 1f } };
+            MaxRepeatsRandomishOptionChooserConfig config = new() { MaxRepeats = maxRepeats, OptionProbabilities = [1f] };
             MaxRepeatsRandomishOptionChooser randomishOptionChooser = getRandomishOptionChooser(config: config);
-            List<int> chosenIndices = new();
+            List<int> chosenIndices = [];
 
             const int NUM_ITERATIONS = 100;
             for (int x = 0; x < NUM_ITERATIONS; ++x)
@@ -456,7 +458,7 @@ namespace UnityUtil.Editor.Tests.Math
             // ARRANGE
             MaxRepeatsRandomishOptionChooserConfig config = new() { MaxRepeats = maxRepeats, OptionProbabilities = optionProbabilities };
             MaxRepeatsRandomishOptionChooser randomishOptionChooser = getRandomishOptionChooser(config: config);
-            List<int> chosenIndices = new();
+            List<int> chosenIndices = [];
 
             // ACT
             const int NUM_ITERATIONS = 10_000;
@@ -470,7 +472,9 @@ namespace UnityUtil.Editor.Tests.Math
 
         #endregion
 
-        private static IRandomNumberGenerator getRandomNumberGenerator() => new TestRandomNumberGenerator(123456789);    // Hard-coded seed so tests are stable
+#pragma warning restore CA1861 // Avoid constant arrays as arguments
+
+        private static TestRandomNumberGenerator getRandomNumberGenerator() => new(123456789);    // Hard-coded seed so tests are stable
         private static MaxRepeatsRandomishOptionChooser getRandomishOptionChooser(
             IRandomNumberGenerator? randomNumberGenerator = null,
             MaxRepeatsRandomishOptionChooserConfig? config = null
