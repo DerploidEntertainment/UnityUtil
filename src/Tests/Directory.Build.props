@@ -6,6 +6,7 @@
   <Import Project="..\Logging.props"/>
 
   <PropertyGroup>
+    <NunitAssembly>com.unity.ext.nunit\net40\unity-custom\nunit.framework.dll</NunitAssembly>
     <TestingProjectName>$(MSBuildProjectName.Substring(0, $(MSBuildProjectName.IndexOf(`.Tests`))))</TestingProjectName>
     <TestingProjectPath>..\..\..\$(TestingProjectName)\$(TestingProjectName).csproj</TestingProjectPath>
   </PropertyGroup>
@@ -13,7 +14,7 @@
   <!-- Dependencies -->
   <ItemGroup>
     <Reference Include="$(NunitPath)" Private="false" />
-    <Reference Include="$(UnityPackageCachePath)\org.nuget.moq%40*\netstandard2.1\Moq.dll" Private="false" />
+    <Reference Include="$(UnityPackageCachePath)\org.nuget.moq\netstandard2.1\Moq.dll" Private="false" />
     <PackageReference Include="NUnit.Analyzers" Version="3.2.0" />
 
     <Reference Include="$(UnityScriptAssembliesPath)\UnityEngine.TestRunner.dll" Private="false" />

@@ -5,6 +5,6 @@
     (Microsoft.Common.props imports Directory.Build.props before importing props from NuGet packages, see https://docs.microsoft.com/en-us/visualstudio/msbuild/customize-your-build#import-order)
   -->
   <ItemGroup>
-    <Reference Include="$(UnityPackageCachePath)\org.nuget.microsoft.extensions.logging.abstractions%40*\Microsoft.Extensions.Logging.Abstractions.dll" Private="false" />
+    <Reference Include="$(UnityPackageCachePath)\org.nuget.microsoft.extensions.logging.abstractions\Microsoft.Extensions.Logging.Abstractions.dll" Private="false" />
   </ItemGroup>
 </Project>
