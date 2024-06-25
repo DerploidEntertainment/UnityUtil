@@ -124,7 +124,7 @@ public class Spawner : MonoBehaviour
 #endif
             float speed = U.Random.Range(MinSpeed, MaxSpeed);
             if (rb.isKinematic)
-                rb.velocity = speed * dir;
+                rb.linearVelocity = speed * dir;
             else
 #if DEBUG_2D
                     rb.AddForce(speed * dir, ForceMode.VelocityChange);
