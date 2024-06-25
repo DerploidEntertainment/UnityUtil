@@ -68,12 +68,12 @@ public class TargetFlyer : Updatable
 
         // Add a Force to move towards the target position at constant velocity
         Vector3 toward = (targetPosition - transform.position).normalized;
-        var vToward = Vector3.Project(FlyingRigidbody!.velocity, toward);
+        var vToward = Vector3.Project(FlyingRigidbody!.linearVelocity, toward);
         float factor = vToward.normalized == toward ? Mathf.Sign(MoveSpeed * MoveSpeed - vToward.sqrMagnitude) : 1;
         netForce += factor * MoveAccel * toward;
 
         // Add a Force to reduce any velocity in the normal direction
-        var vNorm = Vector3.ProjectOnPlane(FlyingRigidbody.velocity, toward);
+        var vNorm = Vector3.ProjectOnPlane(FlyingRigidbody.linearVelocity, toward);
         Vector3 norm = vNorm.normalized;
         if (vNorm.sqrMagnitude > 0f)
             netForce -= MoveAccel * norm;
