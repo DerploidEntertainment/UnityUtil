@@ -105,18 +105,18 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.sysroot": {
-      "version": "2.0.7",
+      "version": "2.0.10",
       "depth": 1,
       "source": "registry",
       "dependencies": {},
       "url": "https://packages.unity.com"
     },
     "com.unity.sysroot.linux-x86_64": {
-      "version": "2.0.6",
+      "version": "2.0.9",
       "depth": 1,
       "source": "registry",
       "dependencies": {
-        "com.unity.sysroot": "2.0.7"
+        "com.unity.sysroot": "2.0.10"
       },
       "url": "https://packages.unity.com"
     },
@@ -142,12 +142,12 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.toolchain.win-x86_64-linux-x86_64": {
-      "version": "2.0.6",
+      "version": "2.0.9",
       "depth": 0,
       "source": "registry",
       "dependencies": {
-        "com.unity.sysroot": "2.0.7",
-        "com.unity.sysroot.linux-x86_64": "2.0.6"
+        "com.unity.sysroot": "2.0.10",
+        "com.unity.sysroot.linux-x86_64": "2.0.9"
       },
       "url": "https://packages.unity.com"
     },
@@ -199,7 +199,7 @@
       "url": "https://unitynuget-registry.azurewebsites.net"
     },
     "org.nuget.microsoft.extensions.dependencyinjection.abstractions": {
-      "version": "8.0.0",
+      "version": "8.0.1",
       "depth": 1,
       "source": "registry",
       "dependencies": {
@@ -209,11 +209,11 @@
       "url": "https://unitynuget-registry.azurewebsites.net"
     },
     "org.nuget.microsoft.extensions.logging.abstractions": {
-      "version": "8.0.0",
+      "version": "8.0.1",
       "depth": 0,
       "source": "registry",
       "dependencies": {
-        "org.nuget.microsoft.extensions.dependencyinjection.abstractions": "8.0.0",
+        "org.nuget.microsoft.extensions.dependencyinjection.abstractions": "8.0.1",
         "org.nuget.system.buffers": "4.5.1",
         "org.nuget.system.memory": "4.5.5"
       },
@@ -251,11 +251,12 @@
       "url": "https://unitynuget-registry.azurewebsites.net"
     },
     "org.nuget.serilog": {
-      "version": "3.1.1",
+      "version": "4.0.0",
       "depth": 0,
       "source": "registry",
       "dependencies": {
-        "org.nuget.system.diagnostics.diagnosticsource": "7.0.2"
+        "org.nuget.system.diagnostics.diagnosticsource": "8.0.1",
+        "org.nuget.system.threading.channels": "8.0.0"
       },
       "url": "https://unitynuget-registry.azurewebsites.net"
     },
@@ -274,7 +275,7 @@
       "url": "https://unitynuget-registry.azurewebsites.net"
     },
     "org.nuget.system.diagnostics.diagnosticsource": {
-      "version": "7.0.2",
+      "version": "8.0.1",
       "depth": 1,
       "source": "registry",
       "dependencies": {
@@ -338,6 +339,15 @@
       "depth": 3,
       "source": "registry",
       "dependencies": {},
+      "url": "https://unitynuget-registry.azurewebsites.net"
+    },
+    "org.nuget.system.threading.channels": {
+      "version": "8.0.0",
+      "depth": 1,
+      "source": "registry",
+      "dependencies": {
+        "org.nuget.system.threading.tasks.extensions": "4.5.4"
+      },
       "url": "https://unitynuget-registry.azurewebsites.net"
     },
     "org.nuget.system.threading.tasks.extensions": {
