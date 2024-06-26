@@ -1,0 +1,10 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <Reference Include="$(UnityEditorPath)" Private="false" />
+    <Reference Include="$(UnityModulesPath)\UnityEngine.dll" Private="false" />
+    <Reference Include="$(UnityModulesPath)\UnityEngine.CoreModule.dll" Private="false" />
+    <Reference Include="$(UnityModulesPath)\UnityEngine.AnimationModule.dll" Private="false" />
+  </ItemGroup>
+
+</Project>
