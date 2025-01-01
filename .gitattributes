@@ -1,3 +1,7 @@
+#########################################################################################
+# Be sure to copy any changes here to the .gitattributes files inside the UPM packages!
+#########################################################################################
+
 # Unity
 
 *.cs diff=csharp text
