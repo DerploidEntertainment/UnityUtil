@@ -7,7 +7,7 @@ namespace UnityUtil.Math;
 public class MaxRepeatsRandomishOptionChooserConfig
 {
     public int MaxRepeats { get; set; } = 1;
-    public IReadOnlyList<float> OptionProbabilities { get; set; } = new[] { 1f };
+    public IReadOnlyList<float> OptionProbabilities { get; set; } = [1f];
 }
 
 /// <summary>
@@ -27,16 +27,16 @@ public class MaxRepeatsRandomishOptionChooser : IRandomishOptionChooser
     /// </summary>
     public const float ProbabilitySumTolerance = 0.000001f;
 
-    private readonly IRandomNumberGenerator _randomNumberGenerator;
+    private readonly IRandomAdapter _randomAdapter;
     private readonly MaxRepeatsRandomishOptionChooserConfig _config;
 
     private readonly int[] _repeats;
     private readonly int[] _repeatRingBuffer;
     private int _repeatRingBufferIndex = -1;
 
-    public MaxRepeatsRandomishOptionChooser(IRandomNumberGenerator randomNumberGenerator, MaxRepeatsRandomishOptionChooserConfig config)
+    public MaxRepeatsRandomishOptionChooser(IRandomAdapter randomAdapter, MaxRepeatsRandomishOptionChooserConfig config)
     {
-        _randomNumberGenerator = randomNumberGenerator;
+        _randomAdapter = randomAdapter;
         _config = config;
 
         if (_config.MaxRepeats < 1)
@@ -105,7 +105,7 @@ public class MaxRepeatsRandomishOptionChooser : IRandomishOptionChooser
     /// </remarks>
     public int GetOptionIndex()
     {
-        float val = (float)_randomNumberGenerator.Range(0f, TotalProbability);
+        float val = (float)_randomAdapter.Range(0f, TotalProbability);
 
         int index = -1;
         float sum = 0f;

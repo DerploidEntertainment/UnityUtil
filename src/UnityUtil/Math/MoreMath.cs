@@ -16,7 +16,7 @@ public static class MoreMath
     /// there is a 30% chance of returning 0, 40% chance of returning 1, and 30% chance of returning 2.
     /// </summary>
     /// <param name="indexWeights">The weights for each index. These must sum up to 1.</param>
-    /// <param name="randomNumberGenerator">The object used to generate pseudorandom numbers.</param>
+    /// <param name="randomAdapter">The object used to generate pseudorandom numbers.</param>
     /// <returns>An index between 0 (inclusive) and the length of <paramref name="indexWeights"/> (exclusive)</returns>
     /// <exception cref="ArgumentException"><paramref name="indexWeights"/> is empty.</exception>
     /// <exception cref="InvalidOperationException">The sum of <paramref name="indexWeights"/> is not 1.</exception>
@@ -32,12 +32,12 @@ public static class MoreMath
     /// E.g., the probability of choosing index 1 equals the probability of R falling within the 2nd range.
     /// Therefore, the index at which the cumulative probability of <paramref name="indexWeights"/> is greater than R is our "chosen" index.
     /// </remarks>
-    public static int RandomWeightedIndex(IReadOnlyList<float> indexWeights, IRandomNumberGenerator randomNumberGenerator)
+    public static int RandomWeightedIndex(IReadOnlyList<float> indexWeights, IRandomAdapter randomAdapter)
     {
         if (indexWeights.Count == 0)
             throw new ArgumentException($"{nameof(indexWeights)} must have at least one element.", nameof(indexWeights));
 
-        float val = (float)randomNumberGenerator.NextDouble();   // Between 0 (inclusive) and 1 (exclusive)
+        float val = (float)randomAdapter.NextDouble();   // Between 0 (inclusive) and 1 (exclusive)
 
         int index = -1;
         float sum = 0f;
@@ -63,11 +63,11 @@ public static class MoreMath
     /// </summary>
     /// <param name="count">The number of unique random indices to return.</param>
     /// <param name="sourceCount">The number of elements in the source collection into which we are returning random indices.</param>
-    /// <param name="randomNumberGenerator">The object used to generate pseudorandom numbers.</param>
+    /// <param name="randomAdapter">The object used to generate pseudorandom numbers.</param>
     /// <returns></returns>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="count"/> or <paramref name="sourceCount"/> is less than zero.</exception>
     /// <exception cref="InvalidOperationException"><paramref name="count"/> is greater than <paramref name="sourceCount"/>.</exception>
-    public static int[] RandomUniqueIndices(int count, int sourceCount, IRandomNumberGenerator randomNumberGenerator)
+    public static int[] RandomUniqueIndices(int count, int sourceCount, IRandomAdapter randomAdapter)
     {
         if (count < 0)
             throw new ArgumentOutOfRangeException(nameof(count), count, $" must be greater than or equal to zero.");
@@ -80,7 +80,7 @@ public static class MoreMath
 
         int[] sourceIndices = Enumerable.Range(0, sourceCount).ToArray();
         for (int r = 0; r < count; ++r) {
-            int s = randomNumberGenerator.Range(0, sourceCount - r);
+            int s = randomAdapter.Range(0, sourceCount - r);
             resultIndices[r] = sourceIndices[s];
             (sourceIndices[sourceCount - r - 1], sourceIndices[s]) = (sourceIndices[s], sourceIndices[sourceCount - r - 1]);
         }

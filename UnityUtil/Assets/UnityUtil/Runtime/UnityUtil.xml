@@ -495,6 +495,74 @@
             Type arguments are (float oldValue, float newValue)
             </summary>
         </member>
+        <member name="T:UnityUtil.Math.IRandomAdapter">
+            <summary>
+            Provides an interface around <see cref="T:System.Random"/> to allow for easier testing and dependency injection.
+            </summary>
+        </member>
+        <member name="P:UnityUtil.Math.IRandomAdapter.Seed">
+            <summary>
+            The seed used to initialize <see cref="P:UnityUtil.Math.IRandomAdapter.Rand"/>
+            </summary>
+        </member>
+        <member name="P:UnityUtil.Math.IRandomAdapter.Rand">
+            <summary>
+            The adapted <see cref="T:System.Random"/> instance
+            </summary>
+        </member>
+        <member name="M:UnityUtil.Math.IRandomAdapter.NextInt">
+            <summary>
+            Returns a non-negative random integer.
+            </summary>
+            <returns>A 32-bit signed integer that is greater than or equal to 0 and less than <see cref="F:System.Int32.MaxValue"/>.</returns>
+            <exception cref="T:System.InvalidOperationException"><see cref="P:UnityUtil.Math.IRandomAdapter.Rand"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="M:UnityUtil.Math.IRandomAdapter.NextDouble">
+            <summary>
+            Returns a random floating-point number that is greater than or equal to 0.0, and less than 1.0.
+            </summary>
+            <returns>A double-precision floating point number that is greater than or equal to 0.0, and less than 1.0.</returns>
+            <exception cref="T:System.InvalidOperationException"><see cref="P:UnityUtil.Math.IRandomAdapter.Rand"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="M:UnityUtil.Math.IRandomAdapter.Range(System.Int32,System.Int32)">
+            <summary>
+            Returns a random integer that is within a specified range.
+            </summary>
+            <param name="inclusiveMin">The inclusive lower bound of the random number returned.</param>
+            <param name="exclusiveMax">The exclusive upper bound of the random number returned. <paramref name="exclusiveMax"/> must be greater than or equal to <paramref name="inclusiveMin"/>.</param>
+            <returns>
+            A 32-bit signed integer greater than or equal to <paramref name="inclusiveMin"/> and less than <paramref name="exclusiveMax"/>;
+            that is, the range of return values includes <paramref name="inclusiveMin"/> but not <paramref name="exclusiveMax"/>.
+            If <paramref name="inclusiveMin"/> equals <paramref name="exclusiveMax"/>, then <paramref name="inclusiveMin"/> is returned.</returns>
+            <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="inclusiveMin"/> is greater than <paramref name="exclusiveMax"/>.</exception>
+            <exception cref="T:System.InvalidOperationException"><see cref="P:UnityUtil.Math.IRandomAdapter.Rand"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="M:UnityUtil.Math.IRandomAdapter.Range(System.Single,System.Single)">
+            <summary>
+            Returns a random floating-point number that is within a specified range.
+            </summary>
+            <param name="inclusiveMin">The inclusive lower bound of the random number returned.</param>
+            <param name="exclusiveMax">The exclusive upper bound of the random number returned.</param>
+            <returns>
+            A floating point number greater than or equal to <paramref name="inclusiveMin"/> and less than <paramref name="exclusiveMax"/>;
+            that is, the range of return values includes <paramref name="inclusiveMin"/> but not <paramref name="exclusiveMax"/>.
+            If <paramref name="inclusiveMin"/> equals <paramref name="exclusiveMax"/>, then <paramref name="inclusiveMin"/> is returned.</returns>
+            <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="inclusiveMin"/> is greater than <paramref name="exclusiveMax"/>.</exception>
+            <exception cref="T:System.InvalidOperationException"><see cref="P:UnityUtil.Math.IRandomAdapter.Rand"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="M:UnityUtil.Math.IRandomAdapter.Range(System.Double,System.Double)">
+            <summary>
+            Returns a random floating-point number that is within a specified range.
+            </summary>
+            <param name="inclusiveMin">The inclusive lower bound of the random number returned.</param>
+            <param name="exclusiveMax">The exclusive upper bound of the random number returned.</param>
+            <returns>
+            A floating point number greater than or equal to <paramref name="inclusiveMin"/> and less than <paramref name="exclusiveMax"/>;
+            that is, the range of return values includes <paramref name="inclusiveMin"/> but not <paramref name="exclusiveMax"/>.
+            If <paramref name="inclusiveMin"/> equals <paramref name="exclusiveMax"/>, then <paramref name="inclusiveMin"/> is returned.</returns>
+            <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="inclusiveMin"/> is greater than <paramref name="exclusiveMax"/>.</exception>
+            <exception cref="T:System.InvalidOperationException"><see cref="P:UnityUtil.Math.IRandomAdapter.Rand"/> is <see langword="null"/>.</exception>
+        </member>
         <member name="T:UnityUtil.Math.IRandomishOptionChooser">
             <summary>
             Chooses between options in a "randomish" way, i.e., a way that <em>feels</em> random to humans over time but may not be truly (psuedo)random.
@@ -507,59 +575,6 @@
             <returns>
             An index between 0 (inclusive) and the number of options (exclusive).
             </returns>
-        </member>
-        <member name="M:UnityUtil.Math.IRandomNumberGenerator.NextInt">
-            <summary>
-            Returns a non-negative random integer.
-            </summary>
-            <returns>A 32-bit signed integer that is greater than or equal to 0 and less than <see cref="F:System.Int32.MaxValue"/>.</returns>
-            <exception cref="T:System.InvalidOperationException"><see cref="P:UnityUtil.Math.IRandomNumberGenerator.SystemRand"/> is <see langword="null"/>.</exception>
-        </member>
-        <member name="M:UnityUtil.Math.IRandomNumberGenerator.NextDouble">
-            <summary>
-            Returns a random floating-point number that is greater than or equal to 0.0, and less than 1.0.
-            </summary>
-            <returns>A double-precision floating point number that is greater than or equal to 0.0, and less than 1.0.</returns>
-            <exception cref="T:System.InvalidOperationException"><see cref="P:UnityUtil.Math.IRandomNumberGenerator.SystemRand"/> is <see langword="null"/>.</exception>
-        </member>
-        <member name="M:UnityUtil.Math.IRandomNumberGenerator.Range(System.Int32,System.Int32)">
-            <summary>
-            Returns a random integer that is within a specified range.
-            </summary>
-            <param name="inclusiveMin">The inclusive lower bound of the random number returned.</param>
-            <param name="exclusiveMax">The exclusive upper bound of the random number returned. <paramref name="exclusiveMax"/> must be greater than or equal to <paramref name="inclusiveMin"/>.</param>
-            <returns>
-            A 32-bit signed integer greater than or equal to <paramref name="inclusiveMin"/> and less than <paramref name="exclusiveMax"/>;
-            that is, the range of return values includes <paramref name="inclusiveMin"/> but not <paramref name="exclusiveMax"/>.
-            If <paramref name="inclusiveMin"/> equals <paramref name="exclusiveMax"/>, then <paramref name="inclusiveMin"/> is returned.</returns>
-            <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="inclusiveMin"/> is greater than <paramref name="exclusiveMax"/>.</exception>
-            <exception cref="T:System.InvalidOperationException"><see cref="P:UnityUtil.Math.IRandomNumberGenerator.SystemRand"/> is <see langword="null"/>.</exception>
-        </member>
-        <member name="M:UnityUtil.Math.IRandomNumberGenerator.Range(System.Single,System.Single)">
-            <summary>
-            Returns a random floating-point number that is within a specified range.
-            </summary>
-            <param name="inclusiveMin">The inclusive lower bound of the random number returned.</param>
-            <param name="exclusiveMax">The exclusive upper bound of the random number returned.</param>
-            <returns>
-            A floating point number greater than or equal to <paramref name="inclusiveMin"/> and less than <paramref name="exclusiveMax"/>;
-            that is, the range of return values includes <paramref name="inclusiveMin"/> but not <paramref name="exclusiveMax"/>.
-            If <paramref name="inclusiveMin"/> equals <paramref name="exclusiveMax"/>, then <paramref name="inclusiveMin"/> is returned.</returns>
-            <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="inclusiveMin"/> is greater than <paramref name="exclusiveMax"/>.</exception>
-            <exception cref="T:System.InvalidOperationException"><see cref="P:UnityUtil.Math.IRandomNumberGenerator.SystemRand"/> is <see langword="null"/>.</exception>
-        </member>
-        <member name="M:UnityUtil.Math.IRandomNumberGenerator.Range(System.Double,System.Double)">
-            <summary>
-            Returns a random floating-point number that is within a specified range.
-            </summary>
-            <param name="inclusiveMin">The inclusive lower bound of the random number returned.</param>
-            <param name="exclusiveMax">The exclusive upper bound of the random number returned.</param>
-            <returns>
-            A floating point number greater than or equal to <paramref name="inclusiveMin"/> and less than <paramref name="exclusiveMax"/>;
-            that is, the range of return values includes <paramref name="inclusiveMin"/> but not <paramref name="exclusiveMax"/>.
-            If <paramref name="inclusiveMin"/> equals <paramref name="exclusiveMax"/>, then <paramref name="inclusiveMin"/> is returned.</returns>
-            <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="inclusiveMin"/> is greater than <paramref name="exclusiveMax"/>.</exception>
-            <exception cref="T:System.InvalidOperationException"><see cref="P:UnityUtil.Math.IRandomNumberGenerator.SystemRand"/> is <see langword="null"/>.</exception>
         </member>
         <member name="T:UnityUtil.Math.MathLogger`1">
             <inheritdoc/>
@@ -634,13 +649,13 @@
             <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="index"/> is out of bounds of the <see cref="P:UnityUtil.Math.MaxRepeatsRandomishOptionChooser.OptionRepeats"/> list.</exception>
             <exception cref="T:System.InvalidOperationException">Option at <paramref name="index"/> has already been repeated the max of <see cref="P:UnityUtil.Math.MaxRepeatsRandomishOptionChooserConfig.MaxRepeats"/> times in a row.</exception>
         </member>
-        <member name="M:UnityUtil.Math.MoreMath.RandomWeightedIndex(System.Collections.Generic.IReadOnlyList{System.Single},UnityUtil.Math.IRandomNumberGenerator)">
+        <member name="M:UnityUtil.Math.MoreMath.RandomWeightedIndex(System.Collections.Generic.IReadOnlyList{System.Single},UnityUtil.Math.IRandomAdapter)">
             <summary>
             Gets a random index where each index has a provided weight. For example, if [0.3, 0.4, 0.3] is provided, then
             there is a 30% chance of returning 0, 40% chance of returning 1, and 30% chance of returning 2.
             </summary>
             <param name="indexWeights">The weights for each index. These must sum up to 1.</param>
-            <param name="randomNumberGenerator">The object used to generate pseudorandom numbers.</param>
+            <param name="randomAdapter">The object used to generate pseudorandom numbers.</param>
             <returns>An index between 0 (inclusive) and the length of <paramref name="indexWeights"/> (exclusive)</returns>
             <exception cref="T:System.ArgumentException"><paramref name="indexWeights"/> is empty.</exception>
             <exception cref="T:System.InvalidOperationException">The sum of <paramref name="indexWeights"/> is not 1.</exception>
@@ -657,7 +672,7 @@
             Therefore, the index at which the cumulative probability of <paramref name="indexWeights"/> is greater than R is our "chosen" index.
             </remarks>
         </member>
-        <member name="M:UnityUtil.Math.MoreMath.RandomUniqueIndices(System.Int32,System.Int32,UnityUtil.Math.IRandomNumberGenerator)">
+        <member name="M:UnityUtil.Math.MoreMath.RandomUniqueIndices(System.Int32,System.Int32,UnityUtil.Math.IRandomAdapter)">
             <summary>
             Returns a set of <paramref name="count"/> unique random indices into a collection with the provided <paramref name="sourceCount"/>.
             Order of the returned indices is unspecified. Note that this method allocates a block of memory that
@@ -665,7 +680,7 @@
             </summary>
             <param name="count">The number of unique random indices to return.</param>
             <param name="sourceCount">The number of elements in the source collection into which we are returning random indices.</param>
-            <param name="randomNumberGenerator">The object used to generate pseudorandom numbers.</param>
+            <param name="randomAdapter">The object used to generate pseudorandom numbers.</param>
             <returns></returns>
             <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="count"/> or <paramref name="sourceCount"/> is less than zero.</exception>
             <exception cref="T:System.InvalidOperationException"><paramref name="count"/> is greater than <paramref name="sourceCount"/>.</exception>
@@ -689,6 +704,12 @@
             <param name="onlyBoundary">If <see langword="true"/>, then the random unit vector will be constrained to the boundary of the cone.  If <see langword="false"/>, then the random unit vector may be anywhere within the cone.</param>
             <returns>A random unit vector within a cone of the provided half-angle around the provided <see cref="T:UnityEngine.Transform"/>'s forward vector (uniformly distributed).</returns>
             <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="halfAngle"/> is less then 0° or greater than or equal to 360°.</exception>
+        </member>
+        <member name="P:UnityUtil.Math.RandomAdapter.Seed">
+            <inheritdoc/>
+        </member>
+        <member name="P:UnityUtil.Math.RandomAdapter.Rand">
+            <inheritdoc/>
         </member>
         <member name="P:UnityUtil.Math.UniformBatchedRandomishOptionChooserConfig.OptionCount">
             <summary>

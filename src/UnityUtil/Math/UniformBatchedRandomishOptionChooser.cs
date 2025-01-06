@@ -40,15 +40,15 @@ public class UniformBatchedRandomishOptionChooserConfig
 /// </summary>
 public class UniformBatchedRandomishOptionChooser : IRandomishOptionChooser
 {
-    private readonly IRandomNumberGenerator _randomNumberGenerator;
+    private readonly IRandomAdapter _randomAdapter;
     private readonly UniformBatchedRandomishOptionChooserConfig _config;
 
     private IReadOnlyList<int>? _batch;
     private int _currBatchIndex;
 
-    public UniformBatchedRandomishOptionChooser(IRandomNumberGenerator randomNumberGenerator, UniformBatchedRandomishOptionChooserConfig config)
+    public UniformBatchedRandomishOptionChooser(IRandomAdapter randomAdapter, UniformBatchedRandomishOptionChooserConfig config)
     {
-        _randomNumberGenerator = randomNumberGenerator;
+        _randomAdapter = randomAdapter;
         _config = config;
 
         if (_config.OptionCount < 1)
@@ -98,10 +98,10 @@ public class UniformBatchedRandomishOptionChooser : IRandomishOptionChooser
         // Time complexity is thus O(numRuns*numOptions) in the worst case, but should be O(numRuns) in the average case.
         Dictionary<int, int> extraOptionRepeats = new(_config.MaxRunsPerBatch);
         int batchCount = _config.OptionCount;
-        int runCount = _randomNumberGenerator.Range(_config.MinRunsPerBatch, _config.MaxRunsPerBatch);
+        int runCount = _randomAdapter.Range(_config.MinRunsPerBatch, _config.MaxRunsPerBatch);
         for (int run = 0; run < runCount; ++run) {
-            int extraRepeatsCount = _randomNumberGenerator.Range(1, _config.MaxRepeatsPerRun);    // E.g., max repeats of 2 means add at most 1 repeat (max is exclusive)
-            int randOptionIndex = _randomNumberGenerator.Range(0, _config.OptionCount);
+            int extraRepeatsCount = _randomAdapter.Range(1, _config.MaxRepeatsPerRun);    // E.g., max repeats of 2 means add at most 1 repeat (max is exclusive)
+            int randOptionIndex = _randomAdapter.Range(0, _config.OptionCount);
             while (extraOptionRepeats.ContainsKey(randOptionIndex))    // Will never infinite loop b/c constructor validates that # runs is <= # options
                 randOptionIndex = (randOptionIndex + 1) % _config.OptionCount;
             extraOptionRepeats.Add(randOptionIndex, extraRepeatsCount);
@@ -116,7 +116,7 @@ public class UniformBatchedRandomishOptionChooser : IRandomishOptionChooser
         int[] batch = new int[batchCount];
         int[] availableOptions = Enumerable.Range(0, _config.OptionCount).ToArray();
         for (int opt = 0; opt < _config.OptionCount; ++opt) {
-            int randAvailableIndex = _randomNumberGenerator.Range(0, _config.OptionCount - opt);
+            int randAvailableIndex = _randomAdapter.Range(0, _config.OptionCount - opt);
             int randOpt = availableOptions[randAvailableIndex];
             if (opt == 0 && randOpt == LastOptionIndexOfPreviousBatch && _config.OptionCount > 1) { --opt; continue; }  // Make sure we don't accidentally "continue" last run of previous batch
             availableOptions[randAvailableIndex] = availableOptions[_config.OptionCount - opt - 1];

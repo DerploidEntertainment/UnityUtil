@@ -1,27 +1,35 @@
 ﻿using System;
-using S = System;
 
 namespace UnityUtil.Math;
 
-public interface IRandomNumberGenerator
+/// <summary>
+/// Provides an interface around <see cref="Random"/> to allow for easier testing and dependency injection.
+/// </summary>
+public interface IRandomAdapter
 {
-    string Seed { get; }
+    /// <summary>
+    /// The seed used to initialize <see cref="Rand"/>
+    /// </summary>
+    int Seed { get; }
 
-    Random? SystemRand { get; }
+    /// <summary>
+    /// The adapted <see cref="Random"/> instance
+    /// </summary>
+    Random Rand { get; }
 
     /// <summary>
     /// Returns a non-negative random integer.
     /// </summary>
     /// <returns>A 32-bit signed integer that is greater than or equal to 0 and less than <see cref="int.MaxValue"/>.</returns>
-    /// <exception cref="InvalidOperationException"><see cref="SystemRand"/> is <see langword="null"/>.</exception>
-    int NextInt() => SystemRand?.Next() ?? throw new InvalidOperationException($"{nameof(SystemRand)} must be non-null before calling {nameof(NextInt)}.");
+    /// <exception cref="InvalidOperationException"><see cref="Rand"/> is <see langword="null"/>.</exception>
+    int NextInt() => Rand.Next();
 
     /// <summary>
     /// Returns a random floating-point number that is greater than or equal to 0.0, and less than 1.0.
     /// </summary>
     /// <returns>A double-precision floating point number that is greater than or equal to 0.0, and less than 1.0.</returns>
-    /// <exception cref="InvalidOperationException"><see cref="SystemRand"/> is <see langword="null"/>.</exception>
-    double NextDouble() => SystemRand?.NextDouble() ?? throw new InvalidOperationException($"{nameof(SystemRand)} must be non-null before calling {nameof(NextDouble)}.");
+    /// <exception cref="InvalidOperationException"><see cref="Rand"/> is <see langword="null"/>.</exception>
+    double NextDouble() => Rand.NextDouble();
 
     /// <summary>
     /// Returns a random integer that is within a specified range.
@@ -33,10 +41,8 @@ public interface IRandomNumberGenerator
     /// that is, the range of return values includes <paramref name="inclusiveMin"/> but not <paramref name="exclusiveMax"/>.
     /// If <paramref name="inclusiveMin"/> equals <paramref name="exclusiveMax"/>, then <paramref name="inclusiveMin"/> is returned.</returns>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="inclusiveMin"/> is greater than <paramref name="exclusiveMax"/>.</exception>
-    /// <exception cref="InvalidOperationException"><see cref="SystemRand"/> is <see langword="null"/>.</exception>
-    int Range(int inclusiveMin, int exclusiveMax) =>
-        SystemRand?.Next(inclusiveMin, exclusiveMax)
-            ?? throw new InvalidOperationException($"{nameof(SystemRand)} must be non-null before calling {nameof(NextInt)}.");
+    /// <exception cref="InvalidOperationException"><see cref="Rand"/> is <see langword="null"/>.</exception>
+    int Range(int inclusiveMin, int exclusiveMax) => Rand.Next(inclusiveMin, exclusiveMax);
 
     /// <summary>
     /// Returns a random floating-point number that is within a specified range.
@@ -48,13 +54,11 @@ public interface IRandomNumberGenerator
     /// that is, the range of return values includes <paramref name="inclusiveMin"/> but not <paramref name="exclusiveMax"/>.
     /// If <paramref name="inclusiveMin"/> equals <paramref name="exclusiveMax"/>, then <paramref name="inclusiveMin"/> is returned.</returns>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="inclusiveMin"/> is greater than <paramref name="exclusiveMax"/>.</exception>
-    /// <exception cref="InvalidOperationException"><see cref="SystemRand"/> is <see langword="null"/>.</exception>
+    /// <exception cref="InvalidOperationException"><see cref="Rand"/> is <see langword="null"/>.</exception>
     float Range(float inclusiveMin, float exclusiveMax) =>
-        SystemRand is null
-            ? throw new InvalidOperationException($"{nameof(SystemRand)} must be non-null before calling {nameof(NextInt)}.")
-        : inclusiveMin > exclusiveMax
+        inclusiveMin > exclusiveMax
             ? throw new InvalidOperationException($"{nameof(inclusiveMin)} must be less than or equal to {nameof(exclusiveMax)}.")
-        : (float)(SystemRand.NextDouble() * (exclusiveMax - inclusiveMin) + inclusiveMin);
+        : (float)(Rand.NextDouble() * (exclusiveMax - inclusiveMin) + inclusiveMin);
 
     /// <summary>
     /// Returns a random floating-point number that is within a specified range.
@@ -66,11 +70,9 @@ public interface IRandomNumberGenerator
     /// that is, the range of return values includes <paramref name="inclusiveMin"/> but not <paramref name="exclusiveMax"/>.
     /// If <paramref name="inclusiveMin"/> equals <paramref name="exclusiveMax"/>, then <paramref name="inclusiveMin"/> is returned.</returns>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="inclusiveMin"/> is greater than <paramref name="exclusiveMax"/>.</exception>
-    /// <exception cref="InvalidOperationException"><see cref="SystemRand"/> is <see langword="null"/>.</exception>
+    /// <exception cref="InvalidOperationException"><see cref="Rand"/> is <see langword="null"/>.</exception>
     double Range(double inclusiveMin, double exclusiveMax) =>
-        SystemRand is null
-            ? throw new InvalidOperationException($"{nameof(SystemRand)} must be non-null before calling {nameof(NextInt)}.")
-        : inclusiveMin > exclusiveMax
+        inclusiveMin > exclusiveMax
             ? throw new InvalidOperationException($"{nameof(inclusiveMin)} must be less than or equal to {nameof(exclusiveMax)}.")
-        : SystemRand.NextDouble() * (exclusiveMax - inclusiveMin) + inclusiveMin;
+        : Rand.NextDouble() * (exclusiveMax - inclusiveMin) + inclusiveMin;
 }

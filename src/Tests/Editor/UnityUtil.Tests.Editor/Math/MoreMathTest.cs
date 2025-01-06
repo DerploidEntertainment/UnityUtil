@@ -12,7 +12,7 @@ public class MoreMathTest : BaseEditModeTestFixture
 {
     [Test]
     public void RandomWeightedIndex_Fails_NoWeights() =>
-        Assert.Throws<ArgumentException>(() => MoreMath.RandomWeightedIndex(indexWeights: [], getRandomNumberGenerator()));
+        Assert.Throws<ArgumentException>(() => MoreMath.RandomWeightedIndex(indexWeights: [], getRandomAdapter()));
 
     [Test]
     [TestCase(new[] { 0f })]
@@ -26,7 +26,7 @@ public class MoreMathTest : BaseEditModeTestFixture
     {
         Debug.Log($"Index weights: {string.Join(',', indexWeights)}");
         Assert.Throws<InvalidOperationException>(() =>
-            MoreMath.RandomWeightedIndex(indexWeights, getRandomNumberGenerator())
+            MoreMath.RandomWeightedIndex(indexWeights, getRandomAdapter())
         );
     }
 
@@ -39,7 +39,7 @@ public class MoreMathTest : BaseEditModeTestFixture
     {
         Debug.Log($"Index weights: {string.Join(',', indexWeights)}");
         Assert.Throws<InvalidOperationException>(() =>
-            MoreMath.RandomWeightedIndex(indexWeights, getRandomNumberGenerator())
+            MoreMath.RandomWeightedIndex(indexWeights, getRandomAdapter())
         );
     }
 
@@ -52,7 +52,7 @@ public class MoreMathTest : BaseEditModeTestFixture
     {
         Debug.Log($"Index weights: {string.Join(',', indexWeights)}");
         Assert.Throws<InvalidOperationException>(() =>
-            MoreMath.RandomWeightedIndex(indexWeights, getRandomNumberGenerator())
+            MoreMath.RandomWeightedIndex(indexWeights, getRandomAdapter())
         );
     }
 
@@ -86,10 +86,10 @@ public class MoreMathTest : BaseEditModeTestFixture
     public void RandomWeightedIndex_ReturnsCorrectIndex(double randomValue, float[] indexWeights, int expectedIndex)
     {
         Debug.Log($"Index weights: {string.Join(',', indexWeights)}");
-        IRandomNumberGenerator randomNumberGenerator = Mock.Of<IRandomNumberGenerator>(x => x.NextDouble() == randomValue);
+        IRandomAdapter randomNumberGenerator = Mock.Of<IRandomAdapter>(x => x.NextDouble() == randomValue);
         int index = MoreMath.RandomWeightedIndex(indexWeights, randomNumberGenerator);
         Assert.That(index, Is.EqualTo(expectedIndex));
     }
 
-    private static TestRandomNumberGenerator getRandomNumberGenerator() => new(123456789);    // Hard-coded seed so tests are stable
+    private static TestRandomAdapter getRandomAdapter() => new(123456789);    // Hard-coded seed so tests are stable
 }

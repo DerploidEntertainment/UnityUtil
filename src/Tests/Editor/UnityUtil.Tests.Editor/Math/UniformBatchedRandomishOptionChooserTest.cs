@@ -16,7 +16,7 @@ public class UniformBatchedRandomishOptionChooserTest : BaseEditModeTestFixture
     public void Constructs_DefaultConfig() =>
         Assert.DoesNotThrow(() =>
             new UniformBatchedRandomishOptionChooser(
-                getRandomNumberGenerator(),
+                getRandomAdapter(),
                 new UniformBatchedRandomishOptionChooserConfig()
             )
         );
@@ -28,7 +28,7 @@ public class UniformBatchedRandomishOptionChooserTest : BaseEditModeTestFixture
     {
         UniformBatchedRandomishOptionChooserConfig config = new() { OptionCount = optionCount };
         ArgumentException e = Assert.Throws<ArgumentException>(() =>
-            new UniformBatchedRandomishOptionChooser(getRandomNumberGenerator(), config)
+            new UniformBatchedRandomishOptionChooser(getRandomAdapter(), config)
         );
         Assert.That(e.Message, Contains.Substring(nameof(config.OptionCount)));
     }
@@ -38,7 +38,7 @@ public class UniformBatchedRandomishOptionChooserTest : BaseEditModeTestFixture
     {
         UniformBatchedRandomishOptionChooserConfig config = new() { MinRunsPerBatch = -1 };
         ArgumentException e = Assert.Throws<ArgumentException>(() =>
-            new UniformBatchedRandomishOptionChooser(getRandomNumberGenerator(), config)
+            new UniformBatchedRandomishOptionChooser(getRandomAdapter(), config)
         );
         Assert.That(e.Message, Contains.Substring(nameof(config.MinRunsPerBatch)));
     }
@@ -47,7 +47,7 @@ public class UniformBatchedRandomishOptionChooserTest : BaseEditModeTestFixture
     public void Constructs_ZeroMinRunsPerBatch() =>
         Assert.DoesNotThrow(() =>
             new UniformBatchedRandomishOptionChooser(
-                getRandomNumberGenerator(),
+                getRandomAdapter(),
                 new UniformBatchedRandomishOptionChooserConfig { MinRunsPerBatch = 0 }
             )
         );
@@ -57,7 +57,7 @@ public class UniformBatchedRandomishOptionChooserTest : BaseEditModeTestFixture
     {
         UniformBatchedRandomishOptionChooserConfig config = new() { MaxRunsPerBatch = -1 };
         ArgumentException e = Assert.Throws<ArgumentException>(() =>
-            new UniformBatchedRandomishOptionChooser(getRandomNumberGenerator(), config)
+            new UniformBatchedRandomishOptionChooser(getRandomAdapter(), config)
         );
         Assert.That(e.Message, Contains.Substring(nameof(config.MaxRunsPerBatch)));
     }
@@ -70,7 +70,7 @@ public class UniformBatchedRandomishOptionChooserTest : BaseEditModeTestFixture
             MaxRunsPerBatch = 1,
         };
         ArgumentException e = Assert.Throws<ArgumentException>(() =>
-            new UniformBatchedRandomishOptionChooser(getRandomNumberGenerator(), config)
+            new UniformBatchedRandomishOptionChooser(getRandomAdapter(), config)
         );
         Assert.That(e.Message, Contains.Substring(nameof(config.MaxRunsPerBatch)));
     }
@@ -83,7 +83,7 @@ public class UniformBatchedRandomishOptionChooserTest : BaseEditModeTestFixture
             MaxRunsPerBatch = 3,
         };
         ArgumentException e = Assert.Throws<ArgumentException>(() =>
-            new UniformBatchedRandomishOptionChooser(getRandomNumberGenerator(), config)
+            new UniformBatchedRandomishOptionChooser(getRandomAdapter(), config)
         );
         Assert.That(e.Message, Contains.Substring(nameof(config.MaxRunsPerBatch)));
     }
@@ -92,7 +92,7 @@ public class UniformBatchedRandomishOptionChooserTest : BaseEditModeTestFixture
     public void Constructs_MaxRunsPerBatchEqualsMinRuns() =>
         Assert.DoesNotThrow(() =>
             new UniformBatchedRandomishOptionChooser(
-                getRandomNumberGenerator(),
+                getRandomAdapter(),
                 new UniformBatchedRandomishOptionChooserConfig {
                     OptionCount = 3,
                     MinRunsPerBatch = 2,
@@ -105,7 +105,7 @@ public class UniformBatchedRandomishOptionChooserTest : BaseEditModeTestFixture
     public void Constructs_MaxRunsPerBatchEqualsOptionCount() =>
         Assert.DoesNotThrow(() =>
             new UniformBatchedRandomishOptionChooser(
-                getRandomNumberGenerator(),
+                getRandomAdapter(),
                 new UniformBatchedRandomishOptionChooserConfig {
                     OptionCount = 2,
                     MaxRunsPerBatch = 2,
@@ -117,7 +117,7 @@ public class UniformBatchedRandomishOptionChooserTest : BaseEditModeTestFixture
     public void Constructs_MaxRunsPerBatchEqualsMinRunsEqualsOptionCount() =>
         Assert.DoesNotThrow(() =>
             new UniformBatchedRandomishOptionChooser(
-                getRandomNumberGenerator(),
+                getRandomAdapter(),
                 new UniformBatchedRandomishOptionChooserConfig {
                     OptionCount = 2,
                     MinRunsPerBatch = 2,
@@ -134,7 +134,7 @@ public class UniformBatchedRandomishOptionChooserTest : BaseEditModeTestFixture
     {
         var config = new UniformBatchedRandomishOptionChooserConfig { MaxRepeatsPerRun = maxRepeatsPerRun };
         ArgumentException e = Assert.Throws<ArgumentException>(() =>
-            new UniformBatchedRandomishOptionChooser(getRandomNumberGenerator(), config)
+            new UniformBatchedRandomishOptionChooser(getRandomAdapter(), config)
         );
         Assert.That(e.Message, Contains.Substring(nameof(config.MaxRepeatsPerRun)));
     }
@@ -393,11 +393,11 @@ public class UniformBatchedRandomishOptionChooserTest : BaseEditModeTestFixture
         const int NUM_ATTEMPTS = 20;
         int numAttempts = 0;
 #pragma warning disable CA2201 // Do not raise reserved exception types
-        Mock<IRandomNumberGenerator> mockedRandomNumberGenerator = getPrngWithOptionIndexRandomization(optionCount, runCount, () =>
+        Mock<IRandomAdapter> randomAdapter = getPrngWithOptionIndexRandomization(optionCount, runCount, () =>
             (++numAttempts == NUM_ATTEMPTS) ? throw new Exception() : LAST_OPTION);
 #pragma warning restore CA2201 // Do not raise reserved exception types
         UniformBatchedRandomishOptionChooser uniformBatchedRandomishOptionChooser = getRandomishOptionChooser(
-            mockedRandomNumberGenerator.Object,
+            randomAdapter.Object,
             new() {
                 OptionCount = optionCount,
                 MinRunsPerBatch = runCount,
@@ -452,9 +452,9 @@ public class UniformBatchedRandomishOptionChooserTest : BaseEditModeTestFixture
     [TestCase(1, 1, 3)]
     public void GetBatch_CanContinueRunBetweenBatches_OnlyOneOption(int optionCount, int runCount, int maxRepeatsPerRun)
     {
-        Mock<IRandomNumberGenerator> mockedRandomNumberGenerator = getPrngWithOptionIndexRandomization(optionCount, runCount, () => 0);
+        Mock<IRandomAdapter> randomAdapter = getPrngWithOptionIndexRandomization(optionCount, runCount, () => 0);
         UniformBatchedRandomishOptionChooser uniformBatchedRandomishOptionChooser = getRandomishOptionChooser(
-            mockedRandomNumberGenerator.Object,
+            randomAdapter.Object,
             new() {
                 OptionCount = optionCount,
                 MinRunsPerBatch = runCount,
@@ -512,42 +512,42 @@ public class UniformBatchedRandomishOptionChooserTest : BaseEditModeTestFixture
 
     #endregion
 
-    private static TestRandomNumberGenerator getRandomNumberGenerator() => new(123456789);    // Hard-coded seed so tests are stable
+    private static TestRandomAdapter getRandomAdapter() => new(123456789);    // Hard-coded seed so tests are stable
 
     private static UniformBatchedRandomishOptionChooser getRandomishOptionChooser(
-        IRandomNumberGenerator? randomNumberGenerator = null,
+        IRandomAdapter? randomAdapter = null,
         UniformBatchedRandomishOptionChooserConfig? config = null
     ) =>
         new(
-            randomNumberGenerator ?? getRandomNumberGenerator(),
+            randomAdapter ?? getRandomAdapter(),
             config ?? new UniformBatchedRandomishOptionChooserConfig()
         );
 
     /// <summary>
-    /// Mock an <see name="IRandomNumberGenerator"/> to return the following "randomish" numbers:
+    /// Mock an <see name="IRandomAdapter"/> to return the following "randomish" numbers:
     /// <list type="number">
     /// <item>Actual random numbers while logic is picking number/length of runs</item>
     /// <item>Thereafter, values provided by <paramref name="optionIndexProvider"/></item>
     /// </list>
     /// </summary>
-    private static Mock<IRandomNumberGenerator> getPrngWithOptionIndexRandomization(int optionCount, int runCount, Func<int> optionIndexProvider)
+    private static Mock<IRandomAdapter> getPrngWithOptionIndexRandomization(int optionCount, int runCount, Func<int> optionIndexProvider)
     {
-        Mock<IRandomNumberGenerator> mockedRandomNumberGenerator = new();
+        Mock<IRandomAdapter> mockedRandomAdapter = new();
 
         // All "other" range calls will just return PRNG-generated values
 #pragma warning disable CA1859 // Use concrete types when possible for improved performance; justification: var must be interface type to use default interface methods
-        IRandomNumberGenerator randomNumberGenerator = getRandomNumberGenerator();
+        IRandomAdapter randomAdapter = getRandomAdapter();
 #pragma warning restore CA1859 // Use concrete types when possible for improved performance
-        mockedRandomNumberGenerator.Setup(x => x.Range(It.IsAny<int>(), It.IsAny<int>()))
-            .Returns<int, int>((inclusiveMin, exclusiveMax) => randomNumberGenerator.Range(inclusiveMin, exclusiveMax));
+        mockedRandomAdapter.Setup(x => x.Range(It.IsAny<int>(), It.IsAny<int>()))
+            .Returns<int, int>((inclusiveMin, exclusiveMax) => randomAdapter.Range(inclusiveMin, exclusiveMax));
 
         // Range(0, optionCount) will first be called several times to decide which options will have runs,
         // so just return actual PRNG-generated values for those calls.
         int numAttempts = 0;
-        mockedRandomNumberGenerator.Setup(x => x.Range(0, optionCount)) // Can't use SetupSequence cause it doesn't support "do this for all following invokes"
-            .Returns(() => (numAttempts++ < runCount) ? randomNumberGenerator.Range(0, optionCount) : optionIndexProvider());
+        mockedRandomAdapter.Setup(x => x.Range(0, optionCount)) // Can't use SetupSequence cause it doesn't support "do this for all following invokes"
+            .Returns(() => (numAttempts++ < runCount) ? randomAdapter.Range(0, optionCount) : optionIndexProvider());
 
-        return mockedRandomNumberGenerator;
+        return mockedRandomAdapter;
     }
 
 }

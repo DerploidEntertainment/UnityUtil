@@ -6,7 +6,7 @@
     <members>
         <member name="M:UnityUtil.Editor.Tests.Math.UniformBatchedRandomishOptionChooserTest.getPrngWithOptionIndexRandomization(System.Int32,System.Int32,System.Func{System.Int32})">
             <summary>
-            Mock an <see name="IRandomNumberGenerator"/> to return the following "randomish" numbers:
+            Mock an <see name="IRandomAdapter"/> to return the following "randomish" numbers:
             <list type="number">
             <item>Actual random numbers while logic is picking number/length of runs</item>
             <item>Thereafter, values provided by <paramref name="optionIndexProvider"/></item>
