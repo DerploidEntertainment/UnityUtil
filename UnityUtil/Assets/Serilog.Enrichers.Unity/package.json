@@ -4,6 +4,7 @@
   "description": "A Serilog Enricher that enriches log events with Unity data (frame counts, GameObject hierarchies, etc.)",
   "displayName": "Serilog Enricher: Unity",
   "unity": "2019.4",
+  "documentationUrl": "https://github.com/DerploidEntertainment/UnityUtil/blob/0.1.0-unity6/src/Serilog.Enrichers.Unity/README.md",
   "author": {
     "name": "Rabadash8820",
     "url": "https://github.com/Rabadash8820"

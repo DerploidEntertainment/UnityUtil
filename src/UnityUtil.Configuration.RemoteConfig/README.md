@@ -1,6 +1,16 @@
 # UnityUtil.Configuration.RemoteConfig
 
-This project implements a [Microsoft.Extensions.Configuration](https://learn.microsoft.com/en-us/dotnet/core/extensions/configuration) configuration provider for Unity's [RemoteConfig](https://docs.unity.com/ugs/manual/remote-config/manual/WhatsRemoteConfig) service.
+[< Back to main README](../../README.md)
+
+**Work in progress!**
+
+This repo has been under open-source development since ~2017, but only since late 2022 has it been seriously considered for "usability" by 3rd parties,
+so documentation content/organization are still in development.
+
+## Overview
+
+This project implements a [Microsoft.Extensions.Configuration](https://learn.microsoft.com/en-us/dotnet/core/extensions/configuration) configuration provider
+for Unity's [RemoteConfig](https://docs.unity.com/ugs/manual/remote-config/manual/WhatsRemoteConfig) service.
 With it, you can add RemoteConfig settings to your game's configuration with code like the following:
 
 ```cs
@@ -68,3 +78,5 @@ private async void Start()
     IConfigurationRoot config = configurationBuilder.Build();
 }
 ```
+
+Copyright © 2017 - present Dan Vicarel & Contributors. All rights reserved.

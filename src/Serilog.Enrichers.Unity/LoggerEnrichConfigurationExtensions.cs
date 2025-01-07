@@ -1,4 +1,5 @@
 ﻿using System;
+using Serilog.Configuration;
 
 namespace Serilog.Enrichers.Unity;
 

@@ -2,25 +2,17 @@
 
 A set of utility classes and components useful to any Unity project, 2D or 3D.
 
+**Work in progress!**
+
+This package has been under open-source development since ~2017, but only since late 2022 has it been seriously considered for "usability" by 3rd parties,
+so documentation content/organization are still in development.
+
 ## Contents
 
 - [Installing](#installing)
   - [Updating](#updating)
-- [Features](#features)
-  - [Configuration](#configuration)
-  - [Dependency Injection](#dependency-injection)
-  - [Inputs](#inputs)
-  - [Interaction](#interaction)
-  - [Inventories](#inventories)
-  - [Legal](#legal)
-  - [Logging](#logging)
-  - [Math](#math)
-  - [Movement](#movement)
-  - [Physics](#physics)
-  - [Physics2D](#physics2d)
-  - [Storage](#storage)
-  - [Triggers](#triggers)
-  - [UI](#ui)
+- [Packages](#packages)
+- [Note on IL2CPP](#note-on-il2cpp)
 - [Support](#support)
 - [Contributing](#contributing)
 - [License](#license)
@@ -36,9 +28,10 @@ A set of utility classes and components useful to any Unity project, 2D or 3D.
         [embedded UPM package](https://odininspector.com/tutorials/getting-started/install-odin-inspector-as-a-unity-package),
         as it just makes later updates to the asset more difficult.
 4. In the Unity Editor, open the [Package Manager window](https://docs.unity3d.com/Manual/upm-ui.html), click the `+` button in the upper-left and choose `Add package from git URL...`.
-5. Paste one of the following URLs:
-    - `https://github.com/DerploidEntertainment/UnityUtil.git?path=/UnityUtil/Assets/UnityUtil#main` for the latest stable version
-    - `https://github.com/DerploidEntertainment/UnityUtil.git?path=/UnityUtil/Assets/UnityUtil#<branch>` for experimental features on `<branch>`
+5. Paste a URL like the following:
+    - `https://github.com/DerploidEntertainment/UnityUtil.git?path=/UnityUtil/Assets/<package>#main` for the latest stable version of `<package>` (see the [list of packages](#packages) below)
+    - `https://github.com/DerploidEntertainment/UnityUtil.git?path=/UnityUtil/Assets/<package>#unity<unityVersion>` for the latest stable version of `<package>` built against Unity `<unityVersion>` (e.g., `unity6`)
+    - `https://github.com/DerploidEntertainment/UnityUtil.git?path=/UnityUtil/Assets/<package>#<version>-unity<unityVersion>` for `<version>` of `<package>` built against Unity `<unityVersion>` (e.g., `0.1.0-unity6`)
 
 ### Updating
 
@@ -46,225 +39,29 @@ You can update this package from Unity's Package Manager window, even when it is
 Doing so will update the commit from which changes are imported.
 As the API stabilizes, I will move this package to [OpenUPM](https://openupm.com/) and add a changelog to make its versioning more clear.
 
-## Features
+## Packages
 
-**Work in progress!**
+- [Serilog.Enrichers.Unity](./src/Serilog.Enrichers.Unity/README.md): Implements a Serilog enricher to dynamically add Unity data to log events like frame counts, GameObject hierarchies, etc.
+- [UnityUtil](./src/UnityUtil/README.md): utility classes and components related to dependency injection, logging, mathematics, data storage, etc.
+- [UnityUtil.Configuration.RemoteConfig](./src/UnityUtil.Configuration.RemoteConfig/README.md): Implementats a `Microsoft.Extensions.Configuration` configuration provider for Unity Remote Config
+- [UnityUtil.Inputs](./src/UnityUtil.Inputs/README.md): abstracted player inputs
+- [UnityUtil.Interactors](./src/UnityUtil.Interactors/README.md): interaction with in-world objects
+- [UnityUtil.Inventory](./src/UnityUtil.Inventory/README.md): in-game item inventories
+- [UnityUtil.Legal](./src/UnityUtil.Legal/README.md): legal/privacy consent
+- [UnityUtil.Movement](./src/UnityUtil.Movement/README.md): in-game movement mechanics
+- [UnityUtil.Physics](./src/UnityUtil.Physics/README.md): 3D physics helpers
+- [UnityUtil.Physics2D](./src/UnityUtil.Physics2D/README.md): 2D physics helpers
+- [UnityUtil.Triggers](./src/UnityUtil.Triggers/README.md): event-based behavior in-game
+- [UnityUtil.UI](./src/UnityUtil.UI/README.md): in-game and in-Editor user interfaces
 
-This package has been under open-source development since ~2017, but only since late 2022 has it been seriously considered for "usability" by 3rd parties,
-so documentation content/organization are still in development.
+## Note on IL2CPP
 
-### General notes
-
-Sometimes, you need to preserve code elements from [managed code stripping](https://docs.unity3d.com/Manual/ManagedCodeStripping.html) during builds.
+Sometimes, you need to preserve code elements from [managed code stripping](https://docs.unity3d.com/Manual/ManagedCodeStripping.html) by IL2CPP during builds.
 For example, your app may produce runtime code that doesn't exist when Unity performs the static analysis, e.g. through reflection and/or dependency injection.
-You can use Unity's `PreserveAttribute` mechansim to preserve these elements in your own code;
+You can use Unity's `[Preserve]` mechansim to preserve these elements in your own code;
 however, UnityUtil intentionally does _not_ annotate any code with `[Preserve]` so that you have total control over the size of your builds.
 Therefore, if you need to preserve UnityUtil code elements (types, methods, etc.),
 then you must use the [`link.xml` approach](https://docs.unity3d.com/Manual/ManagedCodeStripping.html#LinkXMLAnnotation) described in the Unity Manual.
-
-### Configuration
-
-**Docs coming soon!**
-
-### Dependency Injection
-
-Order of service registration does not matter.
-Multiple scenes may have scene-specific composition roots, even multiple such roots;
-their registered services will all be combined.
-You should also define an `OnDestroy` method in these components, so that services can be unregistered when the scene unloads.
-This allows a game to dynamically register and unregister a scene's services at runtime.
-We recommend setting composition roots components to run as early as possible in the Unity Script Execution Order,
-so that their services are registered before all other components' `Awake` methods run.
-Note, however, that an error will result if multiple composition roots
-try to register a service with the same parameters. In this case, it may be better to create a 'base' scene
-with all common services, so that they are each registered once, or register the services with different tags.
-
-### Inputs
-
-**Docs coming soon!**
-
-### Interaction
-
-**Docs coming soon!**
-
-### Inventories
-
-**Docs coming soon!**
-
-### Legal
-
-**Docs coming soon!**
-
-### Logging
-
-All UnityUtil namespaces use the `Microsoft.Extensions.Logging.Abstractions` types for logging.
-These types are designed by Microsoft to abstract any actual logging framework used by apps/games, such as Serilog, NLog, Log4Net, etc.
-See [Logging in .NET](https://learn.microsoft.com/en-us/dotnet/core/extensions/logging) for more info (especially if you're new to log levels, scopes, message templates, etc.).
-The MS Extension libraries are published as NuGet packages, as are most .NET logging frameworks.
-By adding the UnityNuGet UPM scoped registry (described in [Installing](#installing)), you can effectively use any logging framework with UnityUtil in a ".NET native" way.
-This is useful, as most .NET log frameworks are much more powerful/extensible than [Unity's built-in logger](https://docs.unity3d.com/ScriptReference/Debug-unityLogger.html).
-
-For example, if you wanted to use Serilog in your game code, you would add the following UPM (NuGet) packages to your Unity project
-(via the Package Manager window or by manually editing `Packages/manifest.json`).
-
-```jsonc
-// Packages/manifest.json
-{
-    "dependencies": {
-        "org.nuget.serilog": <version>",
-        "org.nuget.serilog.extensions.logging": "<version>",
-        // ...
-    },
-    // ...
-}
-```
-
-The `org.nuget.serilog` package adds Serilog itself, while `org.nuget.serilog.extensions.logging` adds a "glue" library to make Serilog usable with `Microsoft.Extensions.Logging.Abstractions`.
-
-With this setup, you can register an `ILoggerFactory` for [dependency injection](#dependency-injection).
-Client types can then inject this service and use it as follows:
-
-```cs
-class MyClass {
-    private ILogger<MyClass>? _logger;
-    // ...
-    public void Inject(ILoggerFactory loggerFactory) {
-        _logger = loggerFactory.CreateLogger<MyClass>();
-    }
-    // ...
-    public void DoStuff() {
-        _logger!.LogInformation(new EventId(100, "DoingStuff"), "Currently doing stuff in {frame}...", Time.frameCount);
-    }
-}
-```
-
-The MS `ILogger` extension methods expect every log message to have an [`EventId`](https://learn.microsoft.com/en-us/dotnet/core/extensions/logging?tabs=command-line#log-event-id),
-which encapsulates an integer ID and a string name.
-This presents a challenge, as every UnityUtil library, along with _your_ app, are now sharing the same "space" of `EventId`s.
-To prevent ID "collisions", you can define a custom logger class for your app that exposes a unique public method for every log message.
-
-Following the example above, you could define the following custom logger:
-
-```cs
-public void MyAppLogger<T> {
-    private readonly ILogger<T> _logger;
-    // ...
-    public void MyAppLogger(ILoggerFactory loggerFactory) {
-        _logger = loggerFactory.CreateLogger<T>();
-    }
-    // ...
-    public void DoStuff(int frame) {
-        _logger.LogInformation(new EventId(100, nameof(DoStuff)), "Currently doing stuff in {{{nameof(frame)}}}...", frame);
-    }
-}
-```
-
-and use it in `MyClass` as follows:
-
-```cs
-class MyClass {
-    private MyAppLogger<MyClass>? _logger;
-    // ...
-    public void Inject (ILoggerFactory loggerFactory) {
-        _logger = new(loggerFactory);
-    }
-    // ...
-    public void DoStuff() {
-        _logger!.DoStuff(Time.frameCount);
-    }
-}
-```
-
-While this "custom logger pattern" is more verbose, it provides a number of benefits (all of which are visible in the above code):
-
-1. All `EventId` IDs are now visible in a single file (`MyAppLogger.cs`), making it simpler to find and prevent ID collisions.
-1. All `EventId` names can use the `nameof` operator on the name of the method, making it easier to keep your log event names unique and free of typos.
-1. All log event messages are now visible in a single file, making it easier to keep wording and log property names consistent.
-1. The log methods can accept and work with parameters, keeping your calling code clean and free of log-specific logic.
-    For example, your log method might accept a single parameter, but access multiple members of that parameter in the encapsulated log message.
-1. Your log methods can also use the `nameof` operator in the underlying log message, to keep log property names free of typos.
-
-However, you still have to ensure that all log events have a unique ID.
-UnityUtil provides a `BaseUnityUtilLogger` class from which you can derive to simplify the custom logger pattern.
-Using it, the `MyAppLogger` example above would become:
-
-```cs
-public void MyAppLogger<T> : BaseUnityUtilLogger<T> {
-    public void MyAppLogger(ILoggerFactory loggerFactory, T context)
-        : base(loggerFactory, context, eventIdOffset: 1_000_000) { }
-    // ...
-    public void DoStuff(int frame) {
-        LogInformation(id: 0, nameof(DoStuff), "Currently doing stuff in {{{nameof(frame)}}}...", frame);
-    }
-}
-```
-
-First, notice that `BaseUnityUtilLogger`'s constructor requires a `context` parameter.
-This is useful in Unity code: if your logging object derives from `MonoBeheviour`,
-then it is saved to your log message's [scope](https://learn.microsoft.com/en-us/dotnet/core/extensions/logging#log-scopes),
-which specific logging frameworks can then extract and use as the `context` for underlying Unity [`Debug.Log`](https://docs.unity3d.com/ScriptReference/Debug.Log.html) calls.
-In short, when you then click on the log event message in the Unity Console, the Editor highlights the logging object in the Hierarchy Window.
-This can be very useful for understanding which components on which GameObjects are generating which logs during play testing.
-
-Next, notice that `BaseUnityUtilLogger`'s constructor requires an `eventIdOffset` parameter.
-This offset is added to the ID passed in calls to its protected `Log` method.
-In other words, you can use simple increasing IDs (0, 1, 2, etc.) in your custom logger class,
-and `BaseUnityUtilLogger.Log` converts those IDs into "disambiguated" IDs that are unique across all UnityUtil libraries _and_ your code!
-The rule of thumb here is that every assembly (UnityUtil library or your app) gets a "subspace" of messages per `LogLevel` (`Information`, `Warning,`Error`, etc.).
-Every ID's first digit matches its`LogLevel`enum value. For example, all`Warning`messages (enum value`3`), start with a`3`.
-
-Each UnityUtil library gets 1000 messages per `LogLevel` by default;
-your app can use as many messages as it wants, as long as they use a base `eventIdOffset` of 1,000,000 or more.
-See [`BaseUnityUtilLogger`'s API documentation](./src/UnityUtil/Logging/BaseUnityUtilLogger.cs) for a deeper explanation of how it "partitions" the `EventId` ID space.
-The "registered" `eventIdOffset`s for the UnityUtil namespaces are shown below.
-If you are developing a library to work with UnityUtil, please avoid using these offsets, and/or submit a PR adding your library to this list
-so that other authors know not to collide with _your_ library's IDs!
-
-- 0: `UnityUtil`
-- 1000: Reserved
-- 2000: `UnityUtil.DependencyInjection`
-- 3000: `UnityUtil.Inputs`
-- 4000: `UnityUtil.Interaction`
-- 5000: `UnityUtil.Inventories`
-- 6000: `UnityUtil.Legal`
-- 7000: `UnityUtil.Logging`
-- 8000: `UnityUtil.Math`
-- 9000: `UnityUtil.Movement`
-- 10,000: `UnityUtil.Physics`
-- 11,000: `UnityUtil.Physics2D`
-- 12,000: `UnityUtil.Storage`
-- 13,000: `UnityUtil.Triggers`
-- 14,000: `UnityUtil.UI`
-- 15,000: `UnityUtil.Updating`
-- 16,000: `UnityUtil.Editor`
-
-### Math
-
-**Docs coming soon!**
-
-### Movement
-
-**Docs coming soon!**
-
-### Physics
-
-**Docs coming soon!**
-
-### Physics2D
-
-**Docs coming soon!**
-
-### Storage
-
-**Docs coming soon!**
-
-### Triggers
-
-**Docs coming soon!**
-
-### UI
-
-**Docs coming soon!**
 
 ## Support
 
