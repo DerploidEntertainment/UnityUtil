@@ -1,7 +1,7 @@
 {
   "name": "com.serilog.enrichers.unity",
   "version": "0.1.0",
-  "description": "A Serilog Enricher that enriches log events with Unity data (component hierarchies, frame counts, etc.)",
+  "description": "A Serilog Enricher that enriches log events with Unity data (frame counts, GameObject hierarchies, etc.)",
   "displayName": "Serilog Enricher: Unity",
   "unity": "2019.4",
   "author": {
