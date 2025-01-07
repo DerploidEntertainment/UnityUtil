@@ -4,6 +4,58 @@
         <name>UnityUtil</name>
     </assembly>
     <members>
+        <member name="T:UnityUtil.BuildAutomation.BuildManifest">
+            <summary>
+            Represents a Unity Build Automation (UBA) build manifest, for runtime parsing of the JSON manifest provided by UBA.
+            See the <a href="https://docs.unity.com/ugs/en-us/manual/devops/manual/build-automation/build-automation-integrations/use-build-automations-build-manifest-during-runtime">UBA build manifest docs</a>
+            for more info.
+            </summary>
+        </member>
+        <member name="P:UnityUtil.BuildAutomation.BuildManifest.ScmCommitId">
+            <summary>
+            The commit or changelist that was built.
+            </summary>
+        </member>
+        <member name="P:UnityUtil.BuildAutomation.BuildManifest.ScmBranch">
+            <summary>
+            The name of the branch that was built.
+            </summary>
+        </member>
+        <member name="P:UnityUtil.BuildAutomation.BuildManifest.BuildNumber">
+            <summary>
+            The Build Automation build number corresponding to this build.
+            </summary>
+        </member>
+        <member name="P:UnityUtil.BuildAutomation.BuildManifest.BuildStartTime">
+            <summary>
+            The UTC timestamp when the build process started.
+            </summary>
+        </member>
+        <member name="P:UnityUtil.BuildAutomation.BuildManifest.ProjectId">
+            <summary>
+            The Unity project identifier.
+            </summary>
+        </member>
+        <member name="P:UnityUtil.BuildAutomation.BuildManifest.BundleId">
+            <summary>
+            The bundleIdentifier configured in Build Automation (iOS and Android only).
+            </summary>
+        </member>
+        <member name="P:UnityUtil.BuildAutomation.BuildManifest.UnityVersion">
+            <summary>
+            The version of Unity that Build Automation used to create the build.
+            </summary>
+        </member>
+        <member name="P:UnityUtil.BuildAutomation.BuildManifest.XcodeVersion">
+            <summary>
+            The version of XCode used to build the Project (iOS only).
+            </summary>
+        </member>
+        <member name="P:UnityUtil.BuildAutomation.BuildManifest.CloudBuildTargetName">
+            <summary>
+            The name of the build target that was built.
+            </summary>
+        </member>
         <member name="F:UnityUtil.DependencyInjection.DependencyInjector._injectedTypes">
             <summary>
             This collection is only a field (rather than a local var) so as to reduce allocations in <see cref="M:UnityUtil.DependencyInjection.DependencyInjector.getDependeciesOfMethod(System.String,System.Reflection.MethodBase,System.Reflection.ParameterInfo[])"/>
