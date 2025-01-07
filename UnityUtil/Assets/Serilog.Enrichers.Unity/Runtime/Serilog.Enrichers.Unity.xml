@@ -4,9 +4,9 @@
         <name>Serilog.Enrichers.Unity</name>
     </assembly>
     <members>
-        <member name="M:Serilog.LoggerEnrichmentConfigurationExtensions.WithUnityData(Serilog.Configuration.LoggerEnrichmentConfiguration,Serilog.Enrichers.Unity.UnityLogEnricherSettings)">
+        <member name="M:Serilog.Enrichers.Unity.LoggerEnrichmentConfigurationExtensions.WithUnityData(Serilog.Configuration.LoggerEnrichmentConfiguration,Serilog.Enrichers.Unity.UnityLogEnricherSettings)">
             <summary>
-            Enriches log events with the "path" of the <see cref="T:UnityEngine.Object"/> context.
+            Enriches log events with context from the Unity engine such as frame counts, GameObject hierarchies, etc.
             For assets (e.g., <see cref="T:UnityEngine.ScriptableObject"/>s), this will simply be the <see cref="P:UnityEngine.Object.name"/>.
             For scene objects, this will be the hierarchical path of the object using <paramref name="settings"/>.
             </summary>
@@ -67,19 +67,19 @@
         <member name="P:Serilog.Enrichers.Unity.UnityLogEnricherSettings.IncludeSceneObjectPath">
             <summary>
             If <see langword="true"/>, then every log is encriched with the hierarchy path of scene objects, if applicable.
-            Use this to generate logs that more specifically identify a scene Object.
+            Use this to generate logs that more specifically identify a scene <see cref="T:UnityEngine.Object"/>.
             </summary>
         </member>
         <member name="P:Serilog.Enrichers.Unity.UnityLogEnricherSettings.ParentCount">
             <summary>
             If <see cref="P:Serilog.Enrichers.Unity.UnityLogEnricherSettings.IncludeSceneObjectPath"/> is <see langword="true"/> then,
-            for Objects that are scene objects, the name will include up to this many parent objects' names in the logs.
+            for <see cref="T:UnityEngine.Object"/>s that are scene objects, the name will include up to this many parent objects' names in the logs.
             </summary>
         </member>
         <member name="P:Serilog.Enrichers.Unity.UnityLogEnricherSettings.ParentNameSeparator">
             <summary>
             If <see cref="P:Serilog.Enrichers.Unity.UnityLogEnricherSettings.IncludeSceneObjectPath"/> is <see langword="true"/> then,
-            for Objects that are scene objects, the name of the Object and its <see cref="P:Serilog.Enrichers.Unity.UnityLogEnricherSettings.ParentCount"/> parents will be separated by this string.
+            for <see cref="T:UnityEngine.Object"/>s that are scene objects, the name of the Object and its <see cref="P:Serilog.Enrichers.Unity.UnityLogEnricherSettings.ParentCount"/> parents will be separated by this string.
             </summary>
         </member>
     </members>

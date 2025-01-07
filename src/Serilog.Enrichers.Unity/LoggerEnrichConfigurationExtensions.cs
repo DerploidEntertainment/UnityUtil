@@ -1,13 +1,11 @@
-﻿using Serilog.Configuration;
-using Serilog.Enrichers.Unity;
-using System;
+﻿using System;
 
-namespace Serilog;
+namespace Serilog.Enrichers.Unity;
 
 public static class LoggerEnrichmentConfigurationExtensions
 {
     /// <summary>
-    /// Enriches log events with the "path" of the <see cref="UnityEngine.Object"/> context.
+    /// Enriches log events with context from the Unity engine such as frame counts, GameObject hierarchies, etc.
     /// For assets (e.g., <see cref="UnityEngine.ScriptableObject"/>s), this will simply be the <see cref="UnityEngine.Object.name"/>.
     /// For scene objects, this will be the hierarchical path of the object using <paramref name="settings"/>.
     /// </summary>
