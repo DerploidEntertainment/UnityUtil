@@ -207,7 +207,7 @@
       "url": "https://unitynuget-registry.azurewebsites.net"
     },
     "org.nuget.microsoft.extensions.dependencyinjection.abstractions": {
-      "version": "8.0.1",
+      "version": "8.0.0",
       "depth": 1,
       "source": "registry",
       "dependencies": {
@@ -217,14 +217,10 @@
       "url": "https://unitynuget-registry.azurewebsites.net"
     },
     "org.nuget.microsoft.extensions.logging.abstractions": {
-      "version": "8.0.1",
+      "version": "2.2.0",
       "depth": 0,
       "source": "registry",
-      "dependencies": {
-        "org.nuget.microsoft.extensions.dependencyinjection.abstractions": "8.0.1",
-        "org.nuget.system.buffers": "4.5.1",
-        "org.nuget.system.memory": "4.5.5"
-      },
+      "dependencies": {},
       "url": "https://unitynuget-registry.azurewebsites.net"
     },
     "org.nuget.microsoft.extensions.options": {
@@ -270,7 +266,7 @@
     },
     "org.nuget.system.buffers": {
       "version": "4.5.1",
-      "depth": 1,
+      "depth": 3,
       "source": "registry",
       "dependencies": {},
       "url": "https://unitynuget-registry.azurewebsites.net"
@@ -303,7 +299,7 @@
     },
     "org.nuget.system.memory": {
       "version": "4.5.5",
-      "depth": 1,
+      "depth": 2,
       "source": "registry",
       "dependencies": {
         "org.nuget.system.buffers": "4.5.1",
@@ -314,7 +310,7 @@
     },
     "org.nuget.system.numerics.vectors": {
       "version": "4.4.0",
-      "depth": 2,
+      "depth": 3,
       "source": "registry",
       "dependencies": {},
       "url": "https://unitynuget-registry.azurewebsites.net"

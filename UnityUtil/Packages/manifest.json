@@ -11,7 +11,7 @@
     "com.unity.toolchain.win-x86_64-linux-x86_64": "2.0.10",
     "com.unity.ugui": "2.0.0",
     "org.nuget.microsoft.extensions.configuration": "8.0.0",
-    "org.nuget.microsoft.extensions.logging.abstractions": "8.0.1",
+    "org.nuget.microsoft.extensions.logging.abstractions": "2.2.0",
     "org.nuget.microsoft.extensions.options": "8.0.2",
     "org.nuget.moq": "4.20.70",
     "org.nuget.serilog": "4.0.0",
