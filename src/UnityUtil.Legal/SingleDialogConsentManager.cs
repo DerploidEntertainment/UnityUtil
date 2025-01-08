@@ -36,12 +36,6 @@ public class SingleDialogConsentManager : MonoBehaviour, IConsentManager
 
         BtnInitialConsent!.onClick.AddListener(continueWithConsent);
         BtnLegalUpdate!.onClick.AddListener(continueWithConsent);
-
-        void continueWithConsent()
-        {
-            GiveConsent();
-            Initialize();
-        }
     }
 
     public void Inject(
@@ -117,8 +111,15 @@ public class SingleDialogConsentManager : MonoBehaviour, IConsentManager
 
         else {
             _logger!.ConsentAlreadyRequested();
+            continueWithConsent();
             NoUiRequired.Invoke();
         }
+    }
+
+    private void continueWithConsent()
+    {
+        GiveConsent();
+        Initialize();
     }
 
     private DataConsentState checkConsent(IInitializableWithConsent initializableWithConsent, string name)
