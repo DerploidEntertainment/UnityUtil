@@ -25,6 +25,7 @@ public class SingleDialogConsentManager : MonoBehaviour, IConsentManager
     private ILocalPreferences? _localPreferences;
     private List<IInitializableWithConsent>? _initializablesWithConsent;
 
+    private Task? _preInitializeTask;
     private bool _legalAcceptanceRequired;
     private (bool isConsentRequired, bool hasConsent)[]? _consents;
 
@@ -34,8 +35,8 @@ public class SingleDialogConsentManager : MonoBehaviour, IConsentManager
     {
         DependencyInjector.Instance.ResolveDependenciesOf(this);
 
-        BtnInitialConsent!.onClick.AddListener(continueWithConsent);
-        BtnLegalUpdate!.onClick.AddListener(continueWithConsent);
+        BtnInitialConsent!.onClick.AddListener(async () => await continueWithConsentAsync());
+        BtnLegalUpdate!.onClick.AddListener(async () => await continueWithConsentAsync());
     }
 
     public void Inject(
@@ -81,8 +82,16 @@ public class SingleDialogConsentManager : MonoBehaviour, IConsentManager
     /// Raise the <see cref="InitialConsentRequired"/>, <see cref="LegalUpdateRequired"/>, or <see cref="NoUiRequired"/> events as necessary,
     /// depending on the consents and legal documents acceptance saved in local preferences.
     /// </summary>
-    public async Task ShowDialogIfNeededAsync()
+    /// <param name="preInitializeTask">
+    /// An optional task that must complete before all <see cref="IInitializableWithConsent"/>s are initialized.
+    /// This is useful for running actions in the background while the consent dialog is shown,
+    /// but that must still complete before continuing initialization
+    /// (connecting to databases, retrieving remote configuration, registering service dependencies, etc.).
+    /// </param>
+    public async Task ShowDialogIfNeededAsync(Task? preInitializeTask = null)
     {
+        _preInitializeTask = preInitializeTask;
+
         _consents = _initializablesWithConsent!
             .Select((x, index) => {
                 string initializableName = x is Component component ? UnityObjectExtensions.GetHierarchyNameWithType(component) : $"initializable {index}";
@@ -111,14 +120,20 @@ public class SingleDialogConsentManager : MonoBehaviour, IConsentManager
 
         else {
             _logger!.ConsentAlreadyRequested();
-            continueWithConsent();
+            await continueWithConsentAsync();
             NoUiRequired.Invoke();
         }
     }
 
-    private void continueWithConsent()
+    private async Task continueWithConsentAsync()
     {
         GiveConsent();
+
+        // Wait for other pre-initialization actions.
+        // These hopefully completed while the consent dialog was shown, but gotta be sure...
+        if (_preInitializeTask is not null)
+            await _preInitializeTask;
+
         Initialize();
     }
 
