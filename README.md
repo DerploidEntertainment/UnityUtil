@@ -32,6 +32,7 @@ so documentation content/organization are still in development.
     - `https://github.com/DerploidEntertainment/UnityUtil.git?path=/UnityUtil/Assets/<package>#main` for the latest stable version of `<package>` (see the [list of packages](#packages) below)
     - `https://github.com/DerploidEntertainment/UnityUtil.git?path=/UnityUtil/Assets/<package>#unity<unityVersion>` for the latest stable version of `<package>` built against Unity `<unityVersion>` (e.g., `unity6`)
     - `https://github.com/DerploidEntertainment/UnityUtil.git?path=/UnityUtil/Assets/<package>#<version>-unity<unityVersion>` for `<version>` of `<package>` built against Unity `<unityVersion>` (e.g., `0.1.0-unity6`)
+    - `https://github.com/DerploidEntertainment/UnityUtil.git?path=/UnityUtil/Assets/<package>#unity<unityVersion>-dev` for the latest development version of `<package>` built against Unity `<unityVersion>`. **These versions are bleeding-edge and very likely to contain bugs!**
 
 ### Updating
 
