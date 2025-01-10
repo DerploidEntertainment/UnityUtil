@@ -31,7 +31,7 @@ public class UnityMainThreadDispatcher : IUnityMainThreadDispatcher
     public UnityMainThreadDispatcher(IUpdater updater, IRuntimeIdProvider runtimeIdProvider)
     {
         _updater = updater;
-        InstanceID = runtimeIdProvider.GetId();
+        InstanceID = runtimeIdProvider.GetNewId();
 
         _updater.AddUpdate(InstanceID, processActionQueue);
     }

@@ -3,8 +3,8 @@
 /// <inheritdoc/>
 public class RuntimeIdProvider : IRuntimeIdProvider
 {
-    private static int s_nextId;
+    private int _nextId;
 
     /// <inheritdoc/>
-    public int GetId() => s_nextId++;
+    public int GetNewId() => _nextId++;
 }

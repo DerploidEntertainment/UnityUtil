@@ -10,5 +10,5 @@ public interface IRuntimeIdProvider
     /// but different integers may be generated during each run.
     /// </summary>
     /// <returns>A new, unique identifier.</returns>
-    int GetId();
+    int GetNewId();
 }

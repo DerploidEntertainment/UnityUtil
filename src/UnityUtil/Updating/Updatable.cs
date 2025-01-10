@@ -35,7 +35,7 @@ public abstract class Updatable : MonoBehaviour
     {
         DependencyInjector.Instance.ResolveDependenciesOf(this);
 
-        InstanceId = _runtimeIdProvider!.GetId();
+        InstanceId = _runtimeIdProvider!.GetNewId();
     }
 
     /// <summary>

@@ -283,7 +283,7 @@
             Provides methods for getting a unique identifier at runtime
             </summary>
         </member>
-        <member name="M:UnityUtil.IRuntimeIdProvider.GetId">
+        <member name="M:UnityUtil.IRuntimeIdProvider.GetNewId">
             <summary>
             Get a new, unique identifier. Every call to this method at runtime is guaranteed to return a new integer,
             but different integers may be generated during each run.
@@ -939,7 +939,7 @@
         <member name="T:UnityUtil.RuntimeIdProvider">
             <inheritdoc/>
         </member>
-        <member name="M:UnityUtil.RuntimeIdProvider.GetId">
+        <member name="M:UnityUtil.RuntimeIdProvider.GetNewId">
             <inheritdoc/>
         </member>
         <member name="T:UnityUtil.ShowBackingFieldAttribute">
