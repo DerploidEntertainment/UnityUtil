@@ -28,6 +28,7 @@ public class FastIndexableDictionary<TKey, TValue>
 
     private readonly Dictionary<TKey, int> _indexLookup = [];
     private readonly List<Element> _list = [];
+    private readonly object _collectionLock = new();
 
     /// <summary>
     /// Gets the number of elements contained in the <see cref="FastIndexableDictionary{TKey, TValue}"/>.
@@ -58,15 +59,23 @@ public class FastIndexableDictionary<TKey, TValue>
     /// <summary>
     /// Sets the capacity to the actual number of elements in the underlying collection, to save on memory.
     /// </summary>
-    public void TrimExcess() => _list.TrimExcess();
+    public void TrimExcess()
+    {
+        lock (_collectionLock) {
+            _indexLookup.TrimExcess();
+            _list.TrimExcess();
+        }
+    }
 
     /// <summary>
     /// Removes all elements from the <see cref="FastIndexableDictionary{TKey, TValue}"/>
     /// </summary>
     public void Clear()
     {
-        _indexLookup.Clear();
-        _list.Clear();
+        lock (_collectionLock) {
+            _indexLookup.Clear();
+            _list.Clear();
+        }
     }
 
     /// <summary>
@@ -91,15 +100,17 @@ public class FastIndexableDictionary<TKey, TValue>
     /// <exception cref="ArgumentNullException"><paramref name="key"/> is <see langword="null"/>.</exception>
     public bool Remove(TKey key)
     {
-        bool contained = _indexLookup.TryGetValue(key, out int index);
-        if (!contained)
-            return false;
+        lock (_collectionLock) {
+            bool contained = _indexLookup.TryGetValue(key, out int index);
+            if (!contained)
+                return false;
 
-        Element last = _list[^1];
-        _indexLookup[last.Key] = index;
-        _list[index] = last;
-        _indexLookup.Remove(key);
-        _list.RemoveAt(_list.Count - 1);
+            Element last = _list[^1];
+            _indexLookup[last.Key] = index;
+            _list[index] = last;
+            _indexLookup.Remove(key);
+            _list.RemoveAt(_list.Count - 1);
+        }
 
         return true;
     }
@@ -116,20 +127,22 @@ public class FastIndexableDictionary<TKey, TValue>
     /// <exception cref="ArgumentNullException"><paramref name="key"/> is <see langword="null"/>.</exception>
     public bool Remove(TKey key, out TValue value)
     {
-        bool contained = _indexLookup.Remove(key, out int index);
-        if (!contained)
-        {
-#pragma warning disable CS8601 // Possible null reference assignment. Not sure what else to do here; callers shouldn't use the out param if we return false anyway.
-            value = default;
-#pragma warning restore CS8601 // Possible null reference assignment.
-            return false;
-        }
+        lock (_collectionLock) {
+            bool contained = _indexLookup.Remove(key, out int index);
+            if (!contained)
+            {
+    #pragma warning disable CS8601 // Possible null reference assignment. Not sure what else to do here; callers shouldn't use the out param if we return false anyway.
+                value = default;
+    #pragma warning restore CS8601 // Possible null reference assignment.
+                return false;
+            }
 
-        value = _list[index].Value;
-        Element last = _list[^1];
-        _indexLookup[last.Key] = index;
-        _list[index] = last;
-        _list.RemoveAt(_list.Count - 1);
+            value = _list[index].Value;
+            Element last = _list[^1];
+            _indexLookup[last.Key] = index;
+            _list[index] = last;
+            _list.RemoveAt(_list.Count - 1);
+        }
 
         return true;
     }
@@ -143,8 +156,10 @@ public class FastIndexableDictionary<TKey, TValue>
     /// <exception cref="ArgumentException">An element with the same key already exists in the dictionary.</exception>
     public void Add(TKey key, TValue value)
     {
-        _indexLookup.Add(key, _list.Count);
-        _list.Add(new Element(key, value));
+        lock (_collectionLock) {
+            _indexLookup.Add(key, _list.Count);
+            _list.Add(new Element(key, value));
+        }
     }
 
     /// <summary>
@@ -159,10 +174,12 @@ public class FastIndexableDictionary<TKey, TValue>
     /// <exception cref="ArgumentNullException"><paramref name="key"/> is <see langword="null"/>.</exception>
     public bool TryAdd(TKey key, TValue value)
     {
-        bool added = _indexLookup.TryAdd(key, _list.Count);
-        if (added)
-            _list.Add(new Element(key, value));
-        return added;
+        lock (_collectionLock) {
+            bool added = _indexLookup.TryAdd(key, _list.Count);
+            if (added)
+                _list.Add(new Element(key, value));
+            return added;
+        }
     }
 
     /// <summary>
@@ -181,10 +198,13 @@ public class FastIndexableDictionary<TKey, TValue>
     /// <exception cref="ArgumentNullException"><paramref name="key"/> is <see langword="null"/>.</exception>
     public bool TryGetValue(TKey key, out TValue value)
     {
-        bool exists = _indexLookup.TryGetValue(key, out int index);
+        lock (_collectionLock)
+        {
+            bool exists = _indexLookup.TryGetValue(key, out int index);
 #pragma warning disable CS8601 // Possible null reference assignment. Not sure what else to do here; callers shouldn't use the out param if we return false anyway.
-        value = exists ? _list[index].Value : default;
+            value = exists ? _list[index].Value : default;
 #pragma warning restore CS8601 // Possible null reference assignment.
-        return exists;
+            return exists;
+        }
     }
 }
