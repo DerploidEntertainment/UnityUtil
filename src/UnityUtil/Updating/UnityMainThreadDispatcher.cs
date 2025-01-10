@@ -33,12 +33,12 @@ public class UnityMainThreadDispatcher : IUnityMainThreadDispatcher
         _updater = updater;
         InstanceID = runtimeIdProvider.GetId();
 
-        _updater.RegisterUpdate(InstanceID, processActionQueue);
+        _updater.AddUpdate(InstanceID, processActionQueue);
     }
 
     ~UnityMainThreadDispatcher()
     {
-        _updater.UnregisterUpdate(InstanceID);
+        _ = _updater.RemoveUpdate(InstanceID, out _);
     }
 
     private void processActionQueue(float deltaTime)

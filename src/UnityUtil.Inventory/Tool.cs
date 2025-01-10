@@ -31,7 +31,7 @@ public class Tool : Updatable
     {
         base.Awake();
 
-        RegisterUpdate(doUpdate);
+        AddUpdate(doUpdate);
     }
     private void doUpdate(float deltaTime)
     {

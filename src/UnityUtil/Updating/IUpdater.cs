@@ -6,63 +6,164 @@ public interface IUpdater
 {
 
     /// <summary>
-    /// Register an <see cref="Action"/> to be called every frame for the component with a given instance ID.
+    /// Add an <see cref="Action"/> to be called every frame for the component with <paramref name="instanceId"/>.
+    /// Each instance ID may be associated with at most one of each of type of update action (<c>Update</c>, <c>FixedUpdate</c>, <c>LateUpdate</c>).
     /// </summary>
-    /// <param name="instanceId">The instance ID of the component that will be updated every frame. Must be unique among all registered instances.</param>
+    /// <param name="instanceId">The instance ID of the component that will be updated every frame.</param>
     /// <param name="updateAction">The <see cref="Action"/> to be called every frame.</param>
-    /// <exception cref="InvalidOperationException">An Update <see cref="Action"/> has already been registered for <paramref name="instanceId"/>.</exception>
-    void RegisterUpdate(int instanceId, Action<float> updateAction);
+    /// <exception cref="ArgumentException">An <c>Update</c> has already been associated with <paramref name="instanceId"/>.</exception>
+    void AddUpdate(int instanceId, Action<float> updateAction);
     /// <summary>
-    /// Unregister an <see cref="Action"/> from being called every frame for the component with the specified instance ID.
+    /// Remove the <see cref="Action"/> called every frame for the component with <paramref name="instanceId"/>
+    /// and copy it to <paramref name="updateAction"/>.
     /// </summary>
-    /// <param name="instanceId">
-    /// The instance ID of the component that no longer needs to be updated every frame.
-    /// Must have been previously registered with <see cref="RegisterUpdate(int, Action{float})"/>.
+    /// <param name="instanceId">The instance ID of the component that no longer needs to be updated every frame.</param>
+    /// <param name="updateAction">The removed <c>Update</c> action.</param>
+    /// <returns>
+    /// <see langword="true"/> if the action is successfully found and removed; otherwise, <see langword="false"/>.
+    /// </returns>
+    bool RemoveUpdate(int instanceId, out Action<float> updateAction);
+    /// <summary>
+    /// Attempts to add an <see cref="Action"/> to be called every frame for the component with <paramref name="instanceId"/>.
+    /// </summary>
+    /// <param name="instanceId">The instance ID of the component that will be updated every frame.</param>
+    /// <param name="updateAction">The <see cref="Action"/> to be called every frame.</param>
+    /// <returns>
+    /// <see langword="true"/> if the <see cref="Action"/> was successfully added; otherwise, <see langword="false"/>.
+    /// </returns>
+    bool TryAddUpdate(int instanceId, Action<float> updateAction);
+    /// <summary>
+    /// Attempts to get the <see cref="Action"/> called every frame for the component with <paramref name="instanceId"/>.
+    /// </summary>
+    /// <param name="instanceId">The instance ID of the component that is updated every frame.</param>
+    /// <param name="updateAction">
+    /// When this method returns, contains the <c>Update</c> action associated with <paramref name="instanceId"/>, 
+    /// if found; otherwise, <see langword="null"/>. This parameter is passed uninitialized.
     /// </param>
-    /// <exception cref="InvalidOperationException">No Update <see cref="Action"/> was ever registered for <paramref name="instanceId"/>.</exception>
-    void UnregisterUpdate(int instanceId);
+    /// <returns>
+    /// <see langword="true"/> if an <c>Update</c> action is associated with <paramref name="instanceId"/>;
+    /// otherwise, <see langword="false"/>.
+    /// </returns>
+    bool TryGetUpdate(int instanceId, out Action<float> updateAction);
+    /// <summary>
+    /// Determines whether an <c>Update</c> action is associated with the component with <paramref name="instanceId"/>.
+    /// </summary>
+    /// <param name="instanceId">The instance ID of the component to check.</param>
+    /// <returns>
+    /// <see langword="true"/> if an <c>Update</c> action is associated with <paramref name="instanceId"/>; 
+    /// otherwise, <see langword="false"/>.
+    /// </returns>
+    bool ContainsUpdate(int instanceId);
 
     /// <summary>
-    /// Register an <see cref="Action"/> to be called physics every frame for the component with the specified instance ID.
+    /// Add an <see cref="Action"/> to be called every physics frame for the component with <paramref name="instanceId"/>.
+    /// Each instance ID may be associated with at most one of each of type of update action (<c>Update</c>, <c>FixedUpdate</c>, <c>LateUpdate</c>).
     /// </summary>
-    /// <param name="instanceId">The instance ID of the component that will be updated every physics frame. Must be unique among all registered instances.</param>
+    /// <param name="instanceId">The instance ID of the component that will be updated every frame.</param>
     /// <param name="fixedUpdateAction">The <see cref="Action"/> to be called every physics frame.</param>
-    /// <exception cref="InvalidOperationException">A FixedUpdate <see cref="Action"/> has already been registered for <paramref name="instanceId"/>.</exception>
-    void RegisterFixedUpdate(int instanceId, Action<float> fixedUpdateAction);
+    /// <exception cref="ArgumentException">A <c>FixedUpdate</c> has already been associated with <paramref name="instanceId"/>.</exception>
+    void AddFixedUpdate(int instanceId, Action<float> fixedUpdateAction);
     /// <summary>
-    /// Unregister an <see cref="Action"/> from being called every physics frame for the component with the specified instance ID.
+    /// Remove the <see cref="Action"/> called every physics frame for the component with <paramref name="instanceId"/>
+    /// and copy it to <paramref name="fixedUpdateAction"/>.
     /// </summary>
-    /// <param name="instanceId">
-    /// The instance ID of the component that no longer needs to be updated every physics frame.
-    /// Must have been previously registered with <see cref="RegisterFixedUpdate(int, Action{float})"/>.
+    /// <param name="instanceId">The instance ID of the component that no longer needs to be updated every physics frame.</param>
+    /// <param name="fixedUpdateAction">The removed <c>FixedUpdate</c> action.</param>
+    /// <returns>
+    /// <see langword="true"/> if the action is successfully found and removed; otherwise, <see langword="false"/>.
+    /// </returns>
+    bool RemoveFixedUpdate(int instanceId, out Action<float> fixedUpdateAction);
+    /// <summary>
+    /// Attempts to add an <see cref="Action"/> to be called every physics frame for the component with <paramref name="instanceId"/>.
+    /// </summary>
+    /// <param name="instanceId">The instance ID of the component that will be updated every physics frame.</param>
+    /// <param name="fixedUpdateAction">The <see cref="Action"/> to be called every physics frame.</param>
+    /// <returns>
+    /// <see langword="true"/> if the <see cref="Action"/> was successfully added; otherwise, <see langword="false"/>.
+    /// </returns>
+    bool TryAddFixedUpdate(int instanceId, Action<float> fixedUpdateAction);
+    /// <summary>
+    /// Attempts to get the <see cref="Action"/> called every physics frame for the component with <paramref name="instanceId"/>.
+    /// </summary>
+    /// <param name="instanceId">The instance ID of the component that is updated every physics frame.</param>
+    /// <param name="fixedUpdateAction">
+    /// When this method returns, contains the <c>FixedUpdate</c> action associated with <paramref name="instanceId"/>, 
+    /// if found; otherwise, <see langword="null"/>. This parameter is passed uninitialized.
     /// </param>
-    /// <exception cref="InvalidOperationException">No FixedUpdate <see cref="Action"/> was ever registered for <paramref name="instanceId"/>.</exception>
-    void UnregisterFixedUpdate(int instanceId);
+    /// <returns>
+    /// <see langword="true"/> if a <c>FixedUpdate</c> action is associated with <paramref name="instanceId"/>;
+    /// otherwise, <see langword="false"/>.
+    /// </returns>
+    bool TryGetFixedUpdate(int instanceId, out Action<float> fixedUpdateAction);
+    /// <summary>
+    /// Determines whether a <c>FixedUpdate</c> action is associated with the component with <paramref name="instanceId"/>.
+    /// </summary>
+    /// <param name="instanceId">The instance ID of the component to check.</param>
+    /// <returns>
+    /// <see langword="true"/> if a <c>FixedUpdate</c> action is associated with <paramref name="instanceId"/>; 
+    /// otherwise, <see langword="false"/>.
+    /// </returns>
+    bool ContainsFixedUpdate(int instanceId);
 
     /// <summary>
-    /// Register an <see cref="Action"/> to be called at the end of every frame for the component with the specified instance ID.
+    /// Register an <see cref="Action"/> to be called at the end of every frame for the component with <paramref name="instanceId"/>.
+    /// Each instance ID may be associated with at most one of each of type of update action (<c>Update</c>, <c>FixedUpdate</c>, <c>LateUpdate</c>).
     /// </summary>
-    /// <param name="instanceId">The instance ID of the component that will be updated at the end of every frame. Must be unique among all registered instances.</param>
+    /// <param name="instanceId">The instance ID of the component that will be updated every frame.</param>
     /// <param name="lateUpdateAction">The <see cref="Action"/> to be called at the end of every frame.</param>
-    /// <exception cref="InvalidOperationException">A LateUpdate <see cref="Action"/> has already been registered for <paramref name="instanceId"/>.</exception>
-    void RegisterLateUpdate(int instanceId, Action<float> lateUpdateAction);
+    /// <exception cref="ArgumentException">A <c>LateUpdate</c> has already been associated with <paramref name="instanceId"/>.</exception>
+    void AddLateUpdate(int instanceId, Action<float> lateUpdateAction);
     /// <summary>
-    /// Unregister an <see cref="Action"/> from being called at the end of every frame for the component with the specified instance ID.
+    /// Remove the <see cref="Action"/> called at the end of every frame for the component with <paramref name="instanceId"/>
+    /// and copy it to <paramref name="lateUpdateAction"/>.
     /// </summary>
-    /// <param name="instanceId">
-    /// The instance ID of the component that no longer needs to be updated at the end of every frame.
-    /// Must have been previously registered with <see cref="RegisterLateUpdate(int, Action{float})"/>.
+    /// <param name="instanceId">The instance ID of the component that no longer needs to be updated at the end of every frame.</param>
+    /// <param name="lateUpdateAction">The removed <c>LateUpdate</c> action.</param>
+    /// <returns>
+    /// <see langword="true"/> if the action is successfully found and removed; otherwise, <see langword="false"/>.
+    /// </returns>
+    bool RemoveLateUpdate(int instanceId, out Action<float> lateUpdateAction);
+    /// <summary>
+    /// Attempts to add an <see cref="Action"/> to be called at the end of every frame for the component with <paramref name="instanceId"/>.
+    /// </summary>
+    /// <param name="instanceId">The instance ID of the component that will be updated at the end of every frame.</param>
+    /// <param name="lateUpdateAction">The <see cref="Action"/> to be called at the end of every frame.</param>
+    /// <returns>
+    /// <see langword="true"/> if the <see cref="Action"/> was successfully added; otherwise, <see langword="false"/>.
+    /// </returns>
+    bool TryAddLateUpdate(int instanceId, Action<float> lateUpdateAction);
+    /// <summary>
+    /// Attempts to get the <see cref="Action"/> called at the end of every frame for the component with <paramref name="instanceId"/>.
+    /// </summary>
+    /// <param name="instanceId">The instance ID of the component that is updated at the end of every frame.</param>
+    /// <param name="lateUpdateAction">
+    /// When this method returns, contains the <c>LateUpdate</c> action associated with <paramref name="instanceId"/>, 
+    /// if found; otherwise, <see langword="null"/>. This parameter is passed uninitialized.
     /// </param>
-    /// <exception cref="InvalidOperationException">No LateUpdate <see cref="Action"/> was ever registered for <paramref name="instanceId"/>.</exception>
-    void UnregisterLateUpdate(int instanceId);
+    /// <returns>
+    /// <see langword="true"/> if a <c>LateUpdate</c> action is associated with <paramref name="instanceId"/>;
+    /// otherwise, <see langword="false"/>.
+    /// </returns>
+    bool TryGetLateUpdate(int instanceId, out Action<float> lateUpdateAction);
+    /// <summary>
+    /// Determines whether a <c>LateUpdate</c> action is associated with the component with <paramref name="instanceId"/>.
+    /// </summary>
+    /// <param name="instanceId">The instance ID of the component to check.</param>
+    /// <returns>
+    /// <see langword="true"/> if a <c>LateUpdate</c> action is associated with <paramref name="instanceId"/>; 
+    /// otherwise, <see langword="false"/>.
+    /// </returns>
+    bool ContainsLateUpdate(int instanceId);
 
     /// <summary>
     /// Sets the capacity of all underlying collections to the actual number of elements in those collections.
-    /// Depending on implementation, there may be separate collections for Update actions, FixedUpdate actions, etc.,
+    /// Depending on implementation, there may be separate collections for <c>Update</c>s, <c>FixedUpdate</c>s, etc.,
     /// the memory of which are all auto-allocated as more actions are added.
-    /// Trimming the capacity of these collections is thus an important way of saving memory, e.g., after several updatable
-    /// objects have been destroyed.
+    /// Trimming the capacity of these collections is thus an important way of saving memory,
+    /// e.g., after several updatable objects have been destroyed.
+    /// Re-allocating memory is still costly though, so avoid calling this method super often, 
+    /// ideally only during breaks in gameplay.
     /// </summary>
-    void TrimStorage();
+    void TrimExcess();
 
 }

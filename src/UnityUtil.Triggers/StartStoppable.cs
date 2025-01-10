@@ -126,7 +126,7 @@ public abstract class StartStoppable : Updatable
 
     protected virtual void DoRestart()
     {
-        RegisterUpdate(DoUpdate);
+        AddUpdate(DoUpdate);
         Running = true;
     }
     protected virtual void DoStop()
@@ -135,7 +135,7 @@ public abstract class StartStoppable : Updatable
             return;
 
         Running = false;
-        UnregisterUpdate();
+        RemoveUpdate();
     }
     protected virtual void DoPause()
     {
@@ -143,7 +143,7 @@ public abstract class StartStoppable : Updatable
             return;
 
         Running = false;
-        UnregisterUpdate();
+        RemoveUpdate();
     }
     protected virtual void DoResume()
     {
@@ -151,7 +151,7 @@ public abstract class StartStoppable : Updatable
             return;
 
         Running = true;
-        RegisterUpdate(DoUpdate);
+        AddUpdate(DoUpdate);
     }
     protected abstract void DoUpdate(float deltaTime);
 

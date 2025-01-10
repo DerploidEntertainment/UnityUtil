@@ -1,54 +1,88 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
+using Microsoft.Extensions.Logging;
 using UnityEngine;
+using UnityUtil.DependencyInjection;
 
 namespace UnityUtil.Updating;
 
 [DisallowMultipleComponent]
 public class Updater : MonoBehaviour, IUpdater
 {
-    private readonly MultiCollection<int, Action<float>> _updates = [];
-    private readonly MultiCollection<int, Action<float>> _fixed = [];
-    private readonly MultiCollection<int, Action<float>> _late = [];
+    private RootLogger<Updater>? _logger;
 
-    public void RegisterUpdate(int instanceId, Action<float> updateAction)
-    {
-        if (_updates.ContainsKey(instanceId))
-            throw new InvalidOperationException($"{this.GetHierarchyNameWithType()} has already registered an object with {nameof(instanceId)} {instanceId} for updates!");
+    private readonly FastIndexableDictionary<int, Action<float>> _updates = new();
+    private readonly FastIndexableDictionary<int, Action<float>> _fixed = new();
+    private readonly FastIndexableDictionary<int, Action<float>> _late = new();
 
-        _updates.Add(instanceId, updateAction);
-    }
-    public void UnregisterUpdate(int instanceId)
+    [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
+    private void Awake() => DependencyInjector.Instance.ResolveDependenciesOf(this);
+
+    public void Inject(ILoggerFactory loggerFactory)
     {
-        if (!_updates.Remove(instanceId))
-            throw new InvalidOperationException($"{this.GetHierarchyNameWithType()} could not unregister the update Action for the object with {nameof(instanceId)} {instanceId} because no such Action was ever registered!");
+        _logger = new(loggerFactory, context: this);
     }
 
-    public void RegisterFixedUpdate(int instanceId, Action<float> fixedUpdateAction)
+    /// <inheritdoc/>
+    public void AddUpdate(int instanceId, Action<float> updateAction)
     {
-        if (_fixed.ContainsKey(instanceId))
-            throw new InvalidOperationException($"{this.GetHierarchyNameWithType()} has already registered an object with {nameof(instanceId)} {instanceId} for FixedUpdate!");
+        try {
+            _updates.Add(instanceId, updateAction); 
+        }
+        catch (ArgumentException ex) {
+            _logger!.AlreadyAddedOtherUpdate(instanceId, ex);
+        }
+    }
+    /// <inheritdoc/>
+    public bool RemoveUpdate(int instanceId, out Action<float> updateAction) => _updates.Remove(instanceId, out updateAction);
+    /// <inheritdoc/>
+    public bool TryAddUpdate(int instanceId, Action<float> updateAction) => _updates.TryAdd(instanceId, updateAction);
+    /// <inheritdoc/>
+    public bool TryGetUpdate(int instanceId, out Action<float> updateAction) => _updates.TryGetValue(instanceId, out updateAction);
+    /// <inheritdoc/>
+    public bool ContainsUpdate(int instanceId) => _updates.ContainsKey(instanceId);
 
-        _fixed.Add(instanceId, fixedUpdateAction);
-    }
-    public void UnregisterFixedUpdate(int instanceId)
+    /// <inheritdoc/>
+    public void AddFixedUpdate(int instanceId, Action<float> fixedUpdateAction)
     {
-        if (!_fixed.Remove(instanceId))
-            throw new InvalidOperationException($"{this.GetHierarchyNameWithType()} could not unregister the FixedUpdate action for the object with {nameof(instanceId)} {instanceId} because no such action was ever registered!");
+        try
+        {
+            _fixed.Add(instanceId, fixedUpdateAction);
+        }
+        catch (ArgumentException ex)
+        {
+            _logger!.AlreadyAddedOtherFixedUpdate(instanceId, ex);
+        }
     }
+    /// <inheritdoc/>
+    public bool RemoveFixedUpdate(int instanceId, out Action<float> fixedUpdateAction) => _fixed.Remove(instanceId, out fixedUpdateAction);
+    /// <inheritdoc/>
+    public bool TryAddFixedUpdate(int instanceId, Action<float> fixedUpdateAction) => _fixed.TryAdd(instanceId, fixedUpdateAction);
+    /// <inheritdoc/>
+    public bool TryGetFixedUpdate(int instanceId, out Action<float> fixedUpdateAction) => _fixed.TryGetValue(instanceId, out fixedUpdateAction);
+    /// <inheritdoc/>
+    public bool ContainsFixedUpdate(int instanceId) => _fixed.ContainsKey(instanceId);
 
-    public void RegisterLateUpdate(int instanceId, Action<float> lateUpdateAction)
+    /// <inheritdoc/>
+    public void AddLateUpdate(int instanceId, Action<float> lateUpdateAction)
     {
-        if (_late.ContainsKey(instanceId))
-            throw new InvalidOperationException($"{this.GetHierarchyNameWithType()} has already registered an object with {nameof(instanceId)} {instanceId} for LateUpdate!");
-
-        _late.Add(instanceId, lateUpdateAction);
+        try
+        {
+            _late.Add(instanceId, lateUpdateAction);
+        }
+        catch (ArgumentException ex)
+        {
+            _logger!.AlreadyAddedOtherLateUpdate(instanceId, ex);
+        }
     }
-    public void UnregisterLateUpdate(int instanceId)
-    {
-        if (!_late.Remove(instanceId))
-            throw new InvalidOperationException($"{this.GetHierarchyNameWithType()} could not unregister the LateUpdate action for the object with {nameof(instanceId)} {instanceId} because no such action was ever registered!");
-    }
+    /// <inheritdoc/>
+    public bool RemoveLateUpdate(int instanceId, out Action<float> lateUpdateAction) => _late.Remove(instanceId, out lateUpdateAction);
+    /// <inheritdoc/>
+    public bool TryAddLateUpdate(int instanceId, Action<float> lateUpdateAction) => _late.TryAdd(instanceId, lateUpdateAction);
+    /// <inheritdoc/>
+    public bool TryGetLateUpdate(int instanceId, out Action<float> lateUpdateAction) => _late.TryGetValue(instanceId, out lateUpdateAction);
+    /// <inheritdoc/>
+    public bool ContainsLateUpdate(int instanceId) => _late.ContainsKey(instanceId);
 
     [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
     [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
@@ -74,7 +108,8 @@ public class Updater : MonoBehaviour, IUpdater
             _late[lu](Time.deltaTime);
     }
 
-    public void TrimStorage()
+    /// <inheritdoc/>
+    public void TrimExcess()
     {
         _updates.TrimExcess();
         _late.TrimExcess();

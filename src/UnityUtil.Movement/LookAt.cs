@@ -31,7 +31,7 @@ public class LookAt : Updatable
     {
         base.Awake();
 
-        RegisterUpdate(look);
+        AddUpdate(look);
     }
     private void look(float deltaTime)
     {

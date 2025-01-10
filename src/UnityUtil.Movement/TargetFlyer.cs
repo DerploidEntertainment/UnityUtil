@@ -42,7 +42,7 @@ public class TargetFlyer : Updatable
         _idleMovePeriod = Random.Range(MinMovePeriod, MaxMovePeriod);
         _idleTorquePeriod = Random.Range(MinTorquePeriod, MaxTorquePeriod);
 
-        RegisterFixedUpdate(flyOrIdle);
+        AddFixedUpdate(flyOrIdle);
     }
     private void flyOrIdle(float deltaTime)
     {

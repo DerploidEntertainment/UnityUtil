@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using UnityEngine;
 using UnityEngine.Diagnostics;
@@ -77,12 +78,38 @@ internal class RootLogger<T> : BaseUnityUtilLogger<T>
         Application.platform
     );
 
+    public void AddingSameUpdate(int instanceId) =>
+        LogWarning(id: 3, nameof(AddingSameUpdate), $"Re-adding the same Update action for {{{nameof(instanceId)}}}", instanceId);
+
+    public void AddingSameFixedUpdate(int instanceId) =>
+        LogWarning(id: 4, nameof(AddingSameFixedUpdate), $"Re-adding the same FixedUpdate action for {{{nameof(instanceId)}}}", instanceId);
+
+    public void AddingSameLateUpdate(int instanceId) =>
+        LogWarning(id: 5, nameof(AddingSameLateUpdate), $"Re-adding the same LateUpdate action for {{{nameof(instanceId)}}}", instanceId);
+
     #endregion
 
     #region Error
 
     public void AsyncCallerDisposeFail(Exception exception) =>
         LogError(id: 0, nameof(AsyncCallerDisposeFail), exception, "Threw an exception during Dispose");
+
+    #endregion
+
+    #region Exceptions
+
+    [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "For consistency")]
+    public ArgumentException AlreadyAddedOtherUpdate(int instanceId, Exception? innerException = null) =>
+        new($"An Update action has already been associated with {nameof(instanceId)} '{instanceId}'", innerException);
+
+    [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "For consistency")]
+    public ArgumentException AlreadyAddedOtherFixedUpdate(int instanceId, Exception? innerException = null) =>
+        new($"A FixedUpdate action has already been associated with {nameof(instanceId)} '{instanceId}'", innerException);
+
+    [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "For consistency")]
+    public ArgumentException AlreadyAddedOtherLateUpdate(int instanceId, Exception? innerException = null) =>
+        new($"A LateUpdate action has already been associated with {nameof(instanceId)} '{instanceId}'", innerException);
+
 
     #endregion
 }

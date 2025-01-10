@@ -31,7 +31,7 @@ public class InspectorButtonTrigger : Updatable
         Triggered.Invoke();
         CanPress = false;
         _tRefactory = 0f;
-        RegisterUpdate(updateRefactory);
+        AddUpdate(updateRefactory);
     }
 
     private void updateRefactory(float deltaTime)
@@ -42,7 +42,7 @@ public class InspectorButtonTrigger : Updatable
         }
 
         _tRefactory = 0f;
-        UnregisterUpdate();
+        RemoveUpdate();
 
         CanPress = true;
     }

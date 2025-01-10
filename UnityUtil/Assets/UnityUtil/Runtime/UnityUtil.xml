@@ -157,6 +157,127 @@
             Tag to disambiguate services of the same <see cref="F:UnityUtil.DependencyInjection.Service.ServiceType"/>.
             </summary>
         </member>
+        <member name="T:UnityUtil.FastIndexableDictionary`2">
+            <summary>
+            Represents a strongly typed dictionary of objects with constant-time insertion, removal, duplicate checks, <em>and</em> index lookup,
+            at the cost of additional memory (both a dictionary and a list are used internally).
+            </summary>
+            <remarks>
+            The indices of elements are not stable, and may change as elements are added/removed;
+            Note that this collection does <em>not</em> implement <see cref="T:System.Collections.Generic.IDictionary`2"/> as it does not
+            allow enumeration of <see cref="T:System.Collections.Generic.KeyValuePair`2"/>s.
+            Enumeration should be done via index lookups in a <see langword="for"/> loop.
+            </remarks>
+            <typeparam name="TKey">The type of the keys in the collection.</typeparam>
+            <typeparam name="TValue">The type of the values in the collection.</typeparam>
+        </member>
+        <member name="P:UnityUtil.FastIndexableDictionary`2.Count">
+            <summary>
+            Gets the number of elements contained in the <see cref="T:UnityUtil.FastIndexableDictionary`2"/>.
+            </summary>
+        </member>
+        <member name="P:UnityUtil.FastIndexableDictionary`2.Item(`0)">
+            <summary>
+            Gets or sets the value associated with the specified key.
+            </summary>
+            <param name="key">The key of the value to get or set.</param>
+            <returns>
+            The value associated with the specified key.
+            If the specified key is not found, a get operation throws a <see cref="T:System.Collections.Generic.KeyNotFoundException"/>, 
+            and a set operation creates a new element with the specified key.
+            </returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="key"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.Collections.Generic.KeyNotFoundException">The property is retrieved and <paramref name="key"/> does not exist in the collection.</exception>
+        </member>
+        <member name="P:UnityUtil.FastIndexableDictionary`2.Item(System.Int32)">
+            <summary>
+            Gets or sets the element at the specified index.
+            </summary>
+            <param name="index">The zero-based index of the element to get or set.</param>
+            <returns>The element at the specified index.</returns>
+            <exception cref="T:System.ArgumentOutOfRangeException">index is less than 0. -or- index is equal to or greater than <see cref="P:UnityUtil.FastIndexableDictionary`2.Count"/>.</exception>
+        </member>
+        <member name="M:UnityUtil.FastIndexableDictionary`2.TrimExcess">
+            <summary>
+            Sets the capacity to the actual number of elements in the underlying collection, to save on memory.
+            </summary>
+        </member>
+        <member name="M:UnityUtil.FastIndexableDictionary`2.Clear">
+            <summary>
+            Removes all elements from the <see cref="T:UnityUtil.FastIndexableDictionary`2"/>
+            </summary>
+        </member>
+        <member name="M:UnityUtil.FastIndexableDictionary`2.ContainsKey(`0)">
+            <summary>
+            Determines whether the <see cref="T:UnityUtil.FastIndexableDictionary`2"/> contains the specified key.
+            </summary>
+            <param name="key">The key to locate in the <see cref="T:UnityUtil.FastIndexableDictionary`2"/></param>
+            <returns>
+            <see langword="true"/> if the <see cref="T:UnityUtil.FastIndexableDictionary`2"/> contains an element with the specified key; 
+            otherwise, <see langword="false"/>.
+            </returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="key"/> is <see langword="null"/></exception>
+        </member>
+        <member name="M:UnityUtil.FastIndexableDictionary`2.Remove(`0)">
+            <summary>
+            Removes the value with the specified key from the <see cref="T:UnityUtil.FastIndexableDictionary`2"/>.
+            </summary>
+            <param name="key">The key of the element to remove.</param>
+            <returns>
+            <see langword="true"/> if the element is successfully found and removed; otherwise, <see langword="false"/>.
+            This method returns <see langword="false"/> if <paramref name="key"/> is not found in the <see cref="T:UnityUtil.FastIndexableDictionary`2"/>.
+            </returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="key"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="M:UnityUtil.FastIndexableDictionary`2.Remove(`0,`1@)">
+            <summary>
+            Removes the value with the specified key from the <see cref="T:UnityUtil.FastIndexableDictionary`2"/>,
+            and copies the element to the <paramref name="value"/> parameter.
+            </summary>
+            <param name="key">The key of the element to remove.</param>
+            <param name="value">The removed element.</param>
+            <returns>
+            <see langword="true"/> if the element is successfully found and removed; otherwise, <see langword="false"/>.
+            </returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="key"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="M:UnityUtil.FastIndexableDictionary`2.Add(`0,`1)">
+            <summary>
+            Adds the specified key and value to the dictionary.
+            </summary>
+            <param name="key">The key of the element to add.</param>
+            <param name="value">The value of the element to add. The value can be <see langword="null"/> for reference types.</param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="key"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentException">An element with the same key already exists in the dictionary.</exception>
+        </member>
+        <member name="M:UnityUtil.FastIndexableDictionary`2.TryAdd(`0,`1)">
+            <summary>
+            Attempts to add the specified key and value to the dictionary.
+            </summary>
+            <param name="key">The key of the element to add.</param>
+            <param name="value">The value of the element to add. It can be <see langword="null"/>.</param>
+            <returns>
+            <see langword="true"/> if the key/value pair was added to the dictionary successfully;
+            otherwise, <see langword="false"/>.
+            </returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="key"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="M:UnityUtil.FastIndexableDictionary`2.TryGetValue(`0,`1@)">
+            <summary>
+            Gets the value associated with the specified key.
+            </summary>
+            <param name="key">The key of the value to get.</param>
+            <param name="value">
+            When this method returns, contains the value associated with the specified key, if the key is found; 
+            otherwise, the default value for the type of the value parameter.
+            This parameter is passed uninitialized.
+            </param>
+            <returns>
+            <see langword="true"/> if the dictionary contains an element 
+            with the specified key; otherwise, <see langword="false"/>.
+            </returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="key"/> is <see langword="null"/>.</exception>
+        </member>
         <member name="T:UnityUtil.IRuntimeIdProvider">
             <summary>
             Provides methods for getting a unique identifier at runtime
@@ -812,19 +933,6 @@
         <member name="M:UnityUtil.Math.UniformBatchedRandomishOptionChooser.GetOptionIndex">
             <inheritdoc/>
         </member>
-        <member name="T:UnityUtil.MultiCollection`2">
-            <summary>
-            Represents a strongly typed list of objects with constant-time insertion, removal, and duplicate checks,
-            as well as low-overhead iteration, at the cost of additional memory.
-            </summary>
-            <typeparam name="TKey">The type of the keys in the collection.</typeparam>
-            <typeparam name="TValue">The type of the values in the collection.</typeparam>
-        </member>
-        <member name="M:UnityUtil.MultiCollection`2.TrimExcess">
-            <summary>
-            Sets the capacity to the actual number of elements in the underlying collection, to save on memory.
-            </summary>
-        </member>
         <member name="T:UnityUtil.RootLogger`1">
             <inheritdoc/>
         </member>
@@ -990,67 +1098,177 @@
             <param name="action">Action that will be executed from Unity's main thread.</param>
             <returns>A <see cref="T:System.Threading.Tasks.Task"/> that can be awaited until the action completes</returns>
         </member>
-        <member name="M:UnityUtil.Updating.IUpdater.RegisterUpdate(System.Int32,System.Action{System.Single})">
+        <member name="M:UnityUtil.Updating.IUpdater.AddUpdate(System.Int32,System.Action{System.Single})">
             <summary>
-            Register an <see cref="T:System.Action"/> to be called every frame for the component with a given instance ID.
+            Add an <see cref="T:System.Action"/> to be called every frame for the component with <paramref name="instanceId"/>.
+            Each instance ID may be associated with at most one of each of type of update action (<c>Update</c>, <c>FixedUpdate</c>, <c>LateUpdate</c>).
             </summary>
-            <param name="instanceId">The instance ID of the component that will be updated every frame. Must be unique among all registered instances.</param>
+            <param name="instanceId">The instance ID of the component that will be updated every frame.</param>
             <param name="updateAction">The <see cref="T:System.Action"/> to be called every frame.</param>
-            <exception cref="T:System.InvalidOperationException">An Update <see cref="T:System.Action"/> has already been registered for <paramref name="instanceId"/>.</exception>
+            <exception cref="T:System.ArgumentException">An <c>Update</c> has already been associated with <paramref name="instanceId"/>.</exception>
         </member>
-        <member name="M:UnityUtil.Updating.IUpdater.UnregisterUpdate(System.Int32)">
+        <member name="M:UnityUtil.Updating.IUpdater.RemoveUpdate(System.Int32,System.Action{System.Single}@)">
             <summary>
-            Unregister an <see cref="T:System.Action"/> from being called every frame for the component with the specified instance ID.
+            Remove the <see cref="T:System.Action"/> called every frame for the component with <paramref name="instanceId"/>
+            and copy it to <paramref name="updateAction"/>.
             </summary>
-            <param name="instanceId">
-            The instance ID of the component that no longer needs to be updated every frame.
-            Must have been previously registered with <see cref="M:UnityUtil.Updating.IUpdater.RegisterUpdate(System.Int32,System.Action{System.Single})"/>.
+            <param name="instanceId">The instance ID of the component that no longer needs to be updated every frame.</param>
+            <param name="updateAction">The removed <c>Update</c> action.</param>
+            <returns>
+            <see langword="true"/> if the action is successfully found and removed; otherwise, <see langword="false"/>.
+            </returns>
+        </member>
+        <member name="M:UnityUtil.Updating.IUpdater.TryAddUpdate(System.Int32,System.Action{System.Single})">
+            <summary>
+            Attempts to add an <see cref="T:System.Action"/> to be called every frame for the component with <paramref name="instanceId"/>.
+            </summary>
+            <param name="instanceId">The instance ID of the component that will be updated every frame.</param>
+            <param name="updateAction">The <see cref="T:System.Action"/> to be called every frame.</param>
+            <returns>
+            <see langword="true"/> if the <see cref="T:System.Action"/> was successfully added; otherwise, <see langword="false"/>.
+            </returns>
+        </member>
+        <member name="M:UnityUtil.Updating.IUpdater.TryGetUpdate(System.Int32,System.Action{System.Single}@)">
+            <summary>
+            Attempts to get the <see cref="T:System.Action"/> called every frame for the component with <paramref name="instanceId"/>.
+            </summary>
+            <param name="instanceId">The instance ID of the component that is updated every frame.</param>
+            <param name="updateAction">
+            When this method returns, contains the <c>Update</c> action associated with <paramref name="instanceId"/>, 
+            if found; otherwise, <see langword="null"/>. This parameter is passed uninitialized.
             </param>
-            <exception cref="T:System.InvalidOperationException">No Update <see cref="T:System.Action"/> was ever registered for <paramref name="instanceId"/>.</exception>
+            <returns>
+            <see langword="true"/> if an <c>Update</c> action is associated with <paramref name="instanceId"/>;
+            otherwise, <see langword="false"/>.
+            </returns>
         </member>
-        <member name="M:UnityUtil.Updating.IUpdater.RegisterFixedUpdate(System.Int32,System.Action{System.Single})">
+        <member name="M:UnityUtil.Updating.IUpdater.ContainsUpdate(System.Int32)">
             <summary>
-            Register an <see cref="T:System.Action"/> to be called physics every frame for the component with the specified instance ID.
+            Determines whether an <c>Update</c> action is associated with the component with <paramref name="instanceId"/>.
             </summary>
-            <param name="instanceId">The instance ID of the component that will be updated every physics frame. Must be unique among all registered instances.</param>
+            <param name="instanceId">The instance ID of the component to check.</param>
+            <returns>
+            <see langword="true"/> if an <c>Update</c> action is associated with <paramref name="instanceId"/>; 
+            otherwise, <see langword="false"/>.
+            </returns>
+        </member>
+        <member name="M:UnityUtil.Updating.IUpdater.AddFixedUpdate(System.Int32,System.Action{System.Single})">
+            <summary>
+            Add an <see cref="T:System.Action"/> to be called every physics frame for the component with <paramref name="instanceId"/>.
+            Each instance ID may be associated with at most one of each of type of update action (<c>Update</c>, <c>FixedUpdate</c>, <c>LateUpdate</c>).
+            </summary>
+            <param name="instanceId">The instance ID of the component that will be updated every frame.</param>
             <param name="fixedUpdateAction">The <see cref="T:System.Action"/> to be called every physics frame.</param>
-            <exception cref="T:System.InvalidOperationException">A FixedUpdate <see cref="T:System.Action"/> has already been registered for <paramref name="instanceId"/>.</exception>
+            <exception cref="T:System.ArgumentException">A <c>FixedUpdate</c> has already been associated with <paramref name="instanceId"/>.</exception>
         </member>
-        <member name="M:UnityUtil.Updating.IUpdater.UnregisterFixedUpdate(System.Int32)">
+        <member name="M:UnityUtil.Updating.IUpdater.RemoveFixedUpdate(System.Int32,System.Action{System.Single}@)">
             <summary>
-            Unregister an <see cref="T:System.Action"/> from being called every physics frame for the component with the specified instance ID.
+            Remove the <see cref="T:System.Action"/> called every physics frame for the component with <paramref name="instanceId"/>
+            and copy it to <paramref name="fixedUpdateAction"/>.
             </summary>
-            <param name="instanceId">
-            The instance ID of the component that no longer needs to be updated every physics frame.
-            Must have been previously registered with <see cref="M:UnityUtil.Updating.IUpdater.RegisterFixedUpdate(System.Int32,System.Action{System.Single})"/>.
+            <param name="instanceId">The instance ID of the component that no longer needs to be updated every physics frame.</param>
+            <param name="fixedUpdateAction">The removed <c>FixedUpdate</c> action.</param>
+            <returns>
+            <see langword="true"/> if the action is successfully found and removed; otherwise, <see langword="false"/>.
+            </returns>
+        </member>
+        <member name="M:UnityUtil.Updating.IUpdater.TryAddFixedUpdate(System.Int32,System.Action{System.Single})">
+            <summary>
+            Attempts to add an <see cref="T:System.Action"/> to be called every physics frame for the component with <paramref name="instanceId"/>.
+            </summary>
+            <param name="instanceId">The instance ID of the component that will be updated every physics frame.</param>
+            <param name="fixedUpdateAction">The <see cref="T:System.Action"/> to be called every physics frame.</param>
+            <returns>
+            <see langword="true"/> if the <see cref="T:System.Action"/> was successfully added; otherwise, <see langword="false"/>.
+            </returns>
+        </member>
+        <member name="M:UnityUtil.Updating.IUpdater.TryGetFixedUpdate(System.Int32,System.Action{System.Single}@)">
+            <summary>
+            Attempts to get the <see cref="T:System.Action"/> called every physics frame for the component with <paramref name="instanceId"/>.
+            </summary>
+            <param name="instanceId">The instance ID of the component that is updated every physics frame.</param>
+            <param name="fixedUpdateAction">
+            When this method returns, contains the <c>FixedUpdate</c> action associated with <paramref name="instanceId"/>, 
+            if found; otherwise, <see langword="null"/>. This parameter is passed uninitialized.
             </param>
-            <exception cref="T:System.InvalidOperationException">No FixedUpdate <see cref="T:System.Action"/> was ever registered for <paramref name="instanceId"/>.</exception>
+            <returns>
+            <see langword="true"/> if a <c>FixedUpdate</c> action is associated with <paramref name="instanceId"/>;
+            otherwise, <see langword="false"/>.
+            </returns>
         </member>
-        <member name="M:UnityUtil.Updating.IUpdater.RegisterLateUpdate(System.Int32,System.Action{System.Single})">
+        <member name="M:UnityUtil.Updating.IUpdater.ContainsFixedUpdate(System.Int32)">
             <summary>
-            Register an <see cref="T:System.Action"/> to be called at the end of every frame for the component with the specified instance ID.
+            Determines whether a <c>FixedUpdate</c> action is associated with the component with <paramref name="instanceId"/>.
             </summary>
-            <param name="instanceId">The instance ID of the component that will be updated at the end of every frame. Must be unique among all registered instances.</param>
+            <param name="instanceId">The instance ID of the component to check.</param>
+            <returns>
+            <see langword="true"/> if a <c>FixedUpdate</c> action is associated with <paramref name="instanceId"/>; 
+            otherwise, <see langword="false"/>.
+            </returns>
+        </member>
+        <member name="M:UnityUtil.Updating.IUpdater.AddLateUpdate(System.Int32,System.Action{System.Single})">
+            <summary>
+            Register an <see cref="T:System.Action"/> to be called at the end of every frame for the component with <paramref name="instanceId"/>.
+            Each instance ID may be associated with at most one of each of type of update action (<c>Update</c>, <c>FixedUpdate</c>, <c>LateUpdate</c>).
+            </summary>
+            <param name="instanceId">The instance ID of the component that will be updated every frame.</param>
             <param name="lateUpdateAction">The <see cref="T:System.Action"/> to be called at the end of every frame.</param>
-            <exception cref="T:System.InvalidOperationException">A LateUpdate <see cref="T:System.Action"/> has already been registered for <paramref name="instanceId"/>.</exception>
+            <exception cref="T:System.ArgumentException">A <c>LateUpdate</c> has already been associated with <paramref name="instanceId"/>.</exception>
         </member>
-        <member name="M:UnityUtil.Updating.IUpdater.UnregisterLateUpdate(System.Int32)">
+        <member name="M:UnityUtil.Updating.IUpdater.RemoveLateUpdate(System.Int32,System.Action{System.Single}@)">
             <summary>
-            Unregister an <see cref="T:System.Action"/> from being called at the end of every frame for the component with the specified instance ID.
+            Remove the <see cref="T:System.Action"/> called at the end of every frame for the component with <paramref name="instanceId"/>
+            and copy it to <paramref name="lateUpdateAction"/>.
             </summary>
-            <param name="instanceId">
-            The instance ID of the component that no longer needs to be updated at the end of every frame.
-            Must have been previously registered with <see cref="M:UnityUtil.Updating.IUpdater.RegisterLateUpdate(System.Int32,System.Action{System.Single})"/>.
-            </param>
-            <exception cref="T:System.InvalidOperationException">No LateUpdate <see cref="T:System.Action"/> was ever registered for <paramref name="instanceId"/>.</exception>
+            <param name="instanceId">The instance ID of the component that no longer needs to be updated at the end of every frame.</param>
+            <param name="lateUpdateAction">The removed <c>LateUpdate</c> action.</param>
+            <returns>
+            <see langword="true"/> if the action is successfully found and removed; otherwise, <see langword="false"/>.
+            </returns>
         </member>
-        <member name="M:UnityUtil.Updating.IUpdater.TrimStorage">
+        <member name="M:UnityUtil.Updating.IUpdater.TryAddLateUpdate(System.Int32,System.Action{System.Single})">
+            <summary>
+            Attempts to add an <see cref="T:System.Action"/> to be called at the end of every frame for the component with <paramref name="instanceId"/>.
+            </summary>
+            <param name="instanceId">The instance ID of the component that will be updated at the end of every frame.</param>
+            <param name="lateUpdateAction">The <see cref="T:System.Action"/> to be called at the end of every frame.</param>
+            <returns>
+            <see langword="true"/> if the <see cref="T:System.Action"/> was successfully added; otherwise, <see langword="false"/>.
+            </returns>
+        </member>
+        <member name="M:UnityUtil.Updating.IUpdater.TryGetLateUpdate(System.Int32,System.Action{System.Single}@)">
+            <summary>
+            Attempts to get the <see cref="T:System.Action"/> called at the end of every frame for the component with <paramref name="instanceId"/>.
+            </summary>
+            <param name="instanceId">The instance ID of the component that is updated at the end of every frame.</param>
+            <param name="lateUpdateAction">
+            When this method returns, contains the <c>LateUpdate</c> action associated with <paramref name="instanceId"/>, 
+            if found; otherwise, <see langword="null"/>. This parameter is passed uninitialized.
+            </param>
+            <returns>
+            <see langword="true"/> if a <c>LateUpdate</c> action is associated with <paramref name="instanceId"/>;
+            otherwise, <see langword="false"/>.
+            </returns>
+        </member>
+        <member name="M:UnityUtil.Updating.IUpdater.ContainsLateUpdate(System.Int32)">
+            <summary>
+            Determines whether a <c>LateUpdate</c> action is associated with the component with <paramref name="instanceId"/>.
+            </summary>
+            <param name="instanceId">The instance ID of the component to check.</param>
+            <returns>
+            <see langword="true"/> if a <c>LateUpdate</c> action is associated with <paramref name="instanceId"/>; 
+            otherwise, <see langword="false"/>.
+            </returns>
+        </member>
+        <member name="M:UnityUtil.Updating.IUpdater.TrimExcess">
             <summary>
             Sets the capacity of all underlying collections to the actual number of elements in those collections.
-            Depending on implementation, there may be separate collections for Update actions, FixedUpdate actions, etc.,
+            Depending on implementation, there may be separate collections for <c>Update</c>s, <c>FixedUpdate</c>s, etc.,
             the memory of which are all auto-allocated as more actions are added.
-            Trimming the capacity of these collections is thus an important way of saving memory, e.g., after several updatable
-            objects have been destroyed.
+            Trimming the capacity of these collections is thus an important way of saving memory,
+            e.g., after several updatable objects have been destroyed.
+            Re-allocating memory is still costly though, so avoid calling this method super often, 
+            ideally only during breaks in gameplay.
             </summary>
         </member>
         <member name="T:UnityUtil.Updating.UnityMainThreadDispatcher">
@@ -1078,44 +1296,92 @@
             Inheritors may use this value so they don't have to add duplicate dependencies on an <see cref="T:UnityUtil.IRuntimeIdProvider"/>.
             </summary>
         </member>
-        <member name="M:UnityUtil.Updating.Updatable.RegisterUpdate(System.Action{System.Single})">
+        <member name="M:UnityUtil.Updating.Updatable.AddUpdate(System.Action{System.Single})">
             <summary>
             Register <paramref name="action"/> to be called during <a href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.Update.html"><c>Update</c></a>.
             It will automatically be unsubscribed and resubscribed as the component is disabled (or destroyed) and re-enabled.
             </summary>
-            <param name="action">The action to be called during Update</param>
+            <param name="action">The action to be called during <c>Update</c></param>
         </member>
-        <member name="M:UnityUtil.Updating.Updatable.RegisterFixedUpdate(System.Action{System.Single})">
+        <member name="M:UnityUtil.Updating.Updatable.AddFixedUpdate(System.Action{System.Single})">
             <summary>
             Register <paramref name="action"/> to be called during <a href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.FixedUpdate.html"><c>FixedUpdate</c></a>.
             It will automatically be unsubscribed and resubscribed as the component is disabled (or destroyed) and re-enabled.
             </summary>
-            <param name="action">The action to be called during FixedUpdate</param>
+            <param name="action">The action to be called during <c>FixedUpdate</c></param>
         </member>
-        <member name="M:UnityUtil.Updating.Updatable.RegisterLateUpdate(System.Action{System.Single})">
+        <member name="M:UnityUtil.Updating.Updatable.AddLateUpdate(System.Action{System.Single})">
             <summary>
             Register <paramref name="action"/> to be called during <a href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.LateUpdate.html"><c>LateUpdate</c></a>.
             It will automatically be unsubscribed and resubscribed as the component is disabled (or destroyed) and re-enabled.
             </summary>
-            <param name="action">The action to be called during LateUpdate</param>
+            <param name="action">The action to be called during <c>LateUpdate</c></param>
         </member>
-        <member name="M:UnityUtil.Updating.Updatable.UnregisterUpdate">
+        <member name="M:UnityUtil.Updating.Updatable.RemoveUpdate">
             <summary>
             Unregister this component's <a href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.Update.html"><c>Update</c></a> action.
             </summary>
             <exception cref="T:System.InvalidOperationException">No <c>Update</c> action was ever registered for this component.</exception>
         </member>
-        <member name="M:UnityUtil.Updating.Updatable.UnregisterFixedUpdate">
+        <member name="M:UnityUtil.Updating.Updatable.RemoveFixedUpdate">
             <summary>
             Unregister this component's <a href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.FixedUpdate.html"><c>FixedUpdate</c></a> action.
             </summary>
             <exception cref="T:System.InvalidOperationException">No <c>FixedUpdate</c> action was ever registered for this component.</exception>
         </member>
-        <member name="M:UnityUtil.Updating.Updatable.UnregisterLateUpdate">
+        <member name="M:UnityUtil.Updating.Updatable.RemoveLateUpdate">
             <summary>
             Unregister this component's <a href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.LateUpdate.html"><c>LateUpdate</c></a> action.
             </summary>
             <exception cref="T:System.InvalidOperationException">No <c>LateUpdate</c> action was ever registered for this component.</exception>
+        </member>
+        <member name="M:UnityUtil.Updating.Updater.AddUpdate(System.Int32,System.Action{System.Single})">
+            <inheritdoc/>
+        </member>
+        <member name="M:UnityUtil.Updating.Updater.RemoveUpdate(System.Int32,System.Action{System.Single}@)">
+            <inheritdoc/>
+        </member>
+        <member name="M:UnityUtil.Updating.Updater.TryAddUpdate(System.Int32,System.Action{System.Single})">
+            <inheritdoc/>
+        </member>
+        <member name="M:UnityUtil.Updating.Updater.TryGetUpdate(System.Int32,System.Action{System.Single}@)">
+            <inheritdoc/>
+        </member>
+        <member name="M:UnityUtil.Updating.Updater.ContainsUpdate(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:UnityUtil.Updating.Updater.AddFixedUpdate(System.Int32,System.Action{System.Single})">
+            <inheritdoc/>
+        </member>
+        <member name="M:UnityUtil.Updating.Updater.RemoveFixedUpdate(System.Int32,System.Action{System.Single}@)">
+            <inheritdoc/>
+        </member>
+        <member name="M:UnityUtil.Updating.Updater.TryAddFixedUpdate(System.Int32,System.Action{System.Single})">
+            <inheritdoc/>
+        </member>
+        <member name="M:UnityUtil.Updating.Updater.TryGetFixedUpdate(System.Int32,System.Action{System.Single}@)">
+            <inheritdoc/>
+        </member>
+        <member name="M:UnityUtil.Updating.Updater.ContainsFixedUpdate(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:UnityUtil.Updating.Updater.AddLateUpdate(System.Int32,System.Action{System.Single})">
+            <inheritdoc/>
+        </member>
+        <member name="M:UnityUtil.Updating.Updater.RemoveLateUpdate(System.Int32,System.Action{System.Single}@)">
+            <inheritdoc/>
+        </member>
+        <member name="M:UnityUtil.Updating.Updater.TryAddLateUpdate(System.Int32,System.Action{System.Single})">
+            <inheritdoc/>
+        </member>
+        <member name="M:UnityUtil.Updating.Updater.TryGetLateUpdate(System.Int32,System.Action{System.Single}@)">
+            <inheritdoc/>
+        </member>
+        <member name="M:UnityUtil.Updating.Updater.ContainsLateUpdate(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:UnityUtil.Updating.Updater.TrimExcess">
+            <inheritdoc/>
         </member>
     </members>
 </doc>

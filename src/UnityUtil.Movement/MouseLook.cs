@@ -57,8 +57,8 @@ public class MouseLook : Updatable
     {
         base.Awake();
 
-        RegisterUpdate(doUpdate);
-        RegisterFixedUpdate(doFixedUpdate);
+        AddUpdate(doUpdate);
+        AddFixedUpdate(doFixedUpdate);
     }
     private void doUpdate(float deltaTime)
     {

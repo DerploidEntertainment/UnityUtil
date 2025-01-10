@@ -17,7 +17,7 @@ public class LookAtInteractor2D : Updatable
     {
         base.Awake();
 
-        RegisterUpdate(look);
+        AddUpdate(look);
     }
 
     private void look(float deltaTime)
