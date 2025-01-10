@@ -17,7 +17,7 @@ public class DependencyResolutionCounts(
     public IReadOnlyDictionary<Type, int> Uncached { get; } = uncachedResolutionCounts;
 }
 
-public class DependencyInjector
+public class DependencyInjector : IDisposable
 {
     public const string DefaultInjectTag = "Untagged";
     public const string InjectMethodName = "Inject";
@@ -45,6 +45,7 @@ public class DependencyInjector
     private readonly Dictionary<Type, Func<object>> _compiledConstructors = [];
     private readonly Dictionary<Type, int> _uncachedResolutionCounts = [];
     private readonly Dictionary<Type, int> _cachedResolutionCounts = [];
+    private bool _disposed;
 
     #region Constructors/initialization
 
@@ -396,6 +397,35 @@ public class DependencyInjector
         bool resolved = typedServices.TryGetValue(injectTag, out service);
         if (!resolved)
             throw new KeyNotFoundException($"{clientName} has a dependency of Type '{serviceType.FullName}' with tag '{injectTag}', but no matching service was registered. Did you forget to tag a service?");
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!_disposed)
+        {
+            if (disposing)
+            {
+                // TODO: dispose services that implement IDisposable here
+            }
+
+            // Clear collections (since we can't set these readonly fields to null)
+            _services.Clear();
+            _injectedTypes.Clear();
+            _cachedResolutionTypes.Clear();
+            _compiledInject.Clear();
+            _compiledConstructors.Clear();
+            _uncachedResolutionCounts.Clear();
+            _cachedResolutionCounts.Clear();
+
+            _disposed = true;
+        }
+    }
+
+    public void Dispose()
+    {
+        // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+        Dispose(disposing: true);
+        GC.SuppressFinalize(this);
     }
 
     #endregion
