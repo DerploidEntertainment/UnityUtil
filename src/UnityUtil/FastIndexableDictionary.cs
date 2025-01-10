@@ -98,22 +98,7 @@ public class FastIndexableDictionary<TKey, TValue>
     /// This method returns <see langword="false"/> if <paramref name="key"/> is not found in the <see cref="FastIndexableDictionary{TKey, TValue}"/>.
     /// </returns>
     /// <exception cref="ArgumentNullException"><paramref name="key"/> is <see langword="null"/>.</exception>
-    public bool Remove(TKey key)
-    {
-        lock (_collectionLock) {
-            bool contained = _indexLookup.TryGetValue(key, out int index);
-            if (!contained)
-                return false;
-
-            Element last = _list[^1];
-            _indexLookup[last.Key] = index;
-            _list[index] = last;
-            _indexLookup.Remove(key);
-            _list.RemoveAt(_list.Count - 1);
-        }
-
-        return true;
-    }
+    public bool Remove(TKey key) => Remove(key, out _);
 
     /// <summary>
     /// Removes the value with the specified key from the <see cref="FastIndexableDictionary{TKey, TValue}"/>,
@@ -138,9 +123,11 @@ public class FastIndexableDictionary<TKey, TValue>
             }
 
             value = _list[index].Value;
-            Element last = _list[^1];
-            _indexLookup[last.Key] = index;
-            _list[index] = last;
+            if (index < _list.Count - 1) {
+                Element last = _list[^1];
+                _indexLookup[last.Key] = index;
+                _list[index] = last;
+            }
             _list.RemoveAt(_list.Count - 1);
         }
 
