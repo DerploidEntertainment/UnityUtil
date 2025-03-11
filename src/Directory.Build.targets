@@ -10,4 +10,17 @@
     <Copy SourceFiles="%(ProjectOutput.Identity)" DestinationFolder="$(UnityDestinationFolder)" />
   </Target>
 
+  <!--
+  Update version of NuGet packages referenced by project files.
+  This doesn't ADD references that weren't already there, it just gives us a common place to update versions.
+  -->
+  <ItemGroup>
+    <PackageReference Update="SerilogAnalyzer" Version="0.15.0" />
+    <PackageReference Update="NUnit.Analyzers" Version="4.6.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Update="Unity3D" Version="3.0.0" />
+  </ItemGroup>
+
 </Project>

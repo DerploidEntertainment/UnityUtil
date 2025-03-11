@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <UnityDestinationFolder>$(UnityProjectPath)\Assets\$(MSBuildProjectName)\Runtime</UnityDestinationFolder>
@@ -7,7 +7,7 @@
   <ItemGroup>
     <Reference Include="$(UnityModulesPath)\UnityEngine.CoreModule.dll" Private="false" />
     <Reference Include="$(UnityPackageCachePath)\org.nuget.serilog\Serilog.dll" Private="false" />
-    <PackageReference Include="SerilogAnalyzer" Version="0.15.0" />
+    <PackageReference Include="SerilogAnalyzer" />
   </ItemGroup>
 
   <ItemGroup>

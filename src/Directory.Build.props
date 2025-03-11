@@ -60,7 +60,7 @@
     <RestoreAdditionalProjectSources>$(SolutionDir)\..\lib</RestoreAdditionalProjectSources>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Unity3D" Version="3.0.0" />
+    <PackageReference Include="Unity3D" />
   </ItemGroup>
   <PropertyGroup>
     <IncludeDefaultUnityAssemblyReferences>false</IncludeDefaultUnityAssemblyReferences>
