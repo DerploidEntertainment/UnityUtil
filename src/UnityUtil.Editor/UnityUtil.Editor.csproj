@@ -1,7 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <Import Project="../Logging.props" />
-  <Import Project="../OtherUnityAssemblies.props"/>
 
   <PropertyGroup>
     <UnityDestinationFolder>$(UnityProjectPath)\Assets\$(SolutionName)\Editor</UnityDestinationFolder>

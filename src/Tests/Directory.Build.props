@@ -2,7 +2,6 @@
 
   <Import Project="..\Directory.Build.props" />
 
-  <Import Project="..\OtherUnityAssemblies.props"/>
   <Import Project="..\Logging.props"/>
 
   <PropertyGroup>
