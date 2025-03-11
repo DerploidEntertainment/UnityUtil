@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 namespace Serilog.Enrichers.Unity;
 
@@ -8,43 +8,43 @@ public class UnityLogEnricherSettings
     /// If <see langword="true"/>, then every log is encriched with <see cref="Time.frameCount"/>.
     /// See the Unity Scripting API docs for <a href="https://docs.unity3d.com/ScriptReference/Time.html"><c>Time</c></a>.
     /// </summary>
-    public bool IncludeFrameCount { get; set; } = true;
+    public bool AddFrameCount { get; set; } = true;
 
     /// <summary>
     /// If <see langword="true"/>, then every log is encriched with <see cref="Time.timeSinceLevelLoad"/>.
     /// See the Unity Scripting API docs for <a href="https://docs.unity3d.com/ScriptReference/Time.html"><c>Time</c></a>.
     /// </summary>
-    public bool IncludeTimeSinceLevelLoad { get; set; } = false;
+    public bool AddTimeSinceLevelLoad { get; set; } = false;
 
     /// <summary>
     /// If <see langword="true"/>, then every log is encriched with <see cref="Time.timeSinceLevelLoadAsDouble"/>.
     /// See the Unity Scripting API docs for <a href="https://docs.unity3d.com/ScriptReference/Time.html"><c>Time</c></a>.
     /// </summary>
-    public bool IncludeTimeSinceLevelLoadAsDouble { get; set; } = false;
+    public bool AddTimeSinceLevelLoadAsDouble { get; set; } = false;
 
     /// <summary>
     /// If <see langword="true"/>, then every log is encriched with <see cref="Time.unscaledTime"/>.
     /// See the Unity Scripting API docs for <a href="https://docs.unity3d.com/ScriptReference/Time.html"><c>Time</c></a>.
     /// </summary>
-    public bool IncludeUnscaledTime { get; set; } = false;
+    public bool AddUnscaledTime { get; set; } = false;
 
     /// <summary>
     /// If <see langword="true"/>, then every log is encriched with <see cref="Time.unscaledTimeAsDouble"/>.
     /// See the Unity Scripting API docs for <a href="https://docs.unity3d.com/ScriptReference/Time.html"><c>Time</c></a>.
     /// </summary>
-    public bool IncludeUnscaledTimeAsDouble { get; set; } = false;
+    public bool AddUnscaledTimeAsDouble { get; set; } = false;
 
     /// <summary>
     /// If <see langword="true"/>, then every log is encriched with <see cref="Time.time"/>.
     /// See the Unity Scripting API docs for <a href="https://docs.unity3d.com/ScriptReference/Time.html"><c>Time</c></a>.
     /// </summary>
-    public bool IncludeTime { get; set; } = false;
+    public bool AddTime { get; set; } = false;
 
     /// <summary>
     /// If <see langword="true"/>, then every log is encriched with <see cref="Time.timeAsDouble"/>.
     /// See the Unity Scripting API docs for <a href="https://docs.unity3d.com/ScriptReference/Time.html"><c>Time</c></a>.
     /// </summary>
-    public bool IncludeTimeAsDouble { get; set; } = false;
+    public bool AddTimeAsDouble { get; set; } = false;
 
     /// <summary>
     /// If <see langword="true"/>, then every log is encriched with the hierarchy path of scene objects, if applicable.

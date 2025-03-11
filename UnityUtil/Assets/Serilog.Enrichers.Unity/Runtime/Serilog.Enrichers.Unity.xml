@@ -22,49 +22,49 @@
             then this enricher will use it to construct the context's "path".
             </summary>
         </member>
-        <member name="P:Serilog.Enrichers.Unity.UnityLogEnricherSettings.IncludeFrameCount">
+        <member name="P:Serilog.Enrichers.Unity.UnityLogEnricherSettings.AddFrameCount">
             <summary>
             If <see langword="true"/>, then every log is encriched with <see cref="P:UnityEngine.Time.frameCount"/>.
             See the Unity Scripting API docs for <a href="https://docs.unity3d.com/ScriptReference/Time.html"><c>Time</c></a>.
             </summary>
         </member>
-        <member name="P:Serilog.Enrichers.Unity.UnityLogEnricherSettings.IncludeTimeSinceLevelLoad">
+        <member name="P:Serilog.Enrichers.Unity.UnityLogEnricherSettings.AddTimeSinceLevelLoad">
             <summary>
             If <see langword="true"/>, then every log is encriched with <see cref="P:UnityEngine.Time.timeSinceLevelLoad"/>.
             See the Unity Scripting API docs for <a href="https://docs.unity3d.com/ScriptReference/Time.html"><c>Time</c></a>.
             </summary>
         </member>
-        <member name="P:Serilog.Enrichers.Unity.UnityLogEnricherSettings.IncludeTimeSinceLevelLoadAsDouble">
+        <member name="P:Serilog.Enrichers.Unity.UnityLogEnricherSettings.AddTimeSinceLevelLoadAsDouble">
             <summary>
             If <see langword="true"/>, then every log is encriched with <see cref="P:UnityEngine.Time.timeSinceLevelLoadAsDouble"/>.
             See the Unity Scripting API docs for <a href="https://docs.unity3d.com/ScriptReference/Time.html"><c>Time</c></a>.
             </summary>
         </member>
-        <member name="P:Serilog.Enrichers.Unity.UnityLogEnricherSettings.IncludeUnscaledTime">
+        <member name="P:Serilog.Enrichers.Unity.UnityLogEnricherSettings.AddUnscaledTime">
             <summary>
             If <see langword="true"/>, then every log is encriched with <see cref="P:UnityEngine.Time.unscaledTime"/>.
             See the Unity Scripting API docs for <a href="https://docs.unity3d.com/ScriptReference/Time.html"><c>Time</c></a>.
             </summary>
         </member>
-        <member name="P:Serilog.Enrichers.Unity.UnityLogEnricherSettings.IncludeUnscaledTimeAsDouble">
+        <member name="P:Serilog.Enrichers.Unity.UnityLogEnricherSettings.AddUnscaledTimeAsDouble">
             <summary>
             If <see langword="true"/>, then every log is encriched with <see cref="P:UnityEngine.Time.unscaledTimeAsDouble"/>.
             See the Unity Scripting API docs for <a href="https://docs.unity3d.com/ScriptReference/Time.html"><c>Time</c></a>.
             </summary>
         </member>
-        <member name="P:Serilog.Enrichers.Unity.UnityLogEnricherSettings.IncludeTime">
+        <member name="P:Serilog.Enrichers.Unity.UnityLogEnricherSettings.AddTime">
             <summary>
             If <see langword="true"/>, then every log is encriched with <see cref="P:UnityEngine.Time.time"/>.
             See the Unity Scripting API docs for <a href="https://docs.unity3d.com/ScriptReference/Time.html"><c>Time</c></a>.
             </summary>
         </member>
-        <member name="P:Serilog.Enrichers.Unity.UnityLogEnricherSettings.IncludeTimeAsDouble">
+        <member name="P:Serilog.Enrichers.Unity.UnityLogEnricherSettings.AddTimeAsDouble">
             <summary>
             If <see langword="true"/>, then every log is encriched with <see cref="P:UnityEngine.Time.timeAsDouble"/>.
             See the Unity Scripting API docs for <a href="https://docs.unity3d.com/ScriptReference/Time.html"><c>Time</c></a>.
             </summary>
         </member>
-        <member name="P:Serilog.Enrichers.Unity.UnityLogEnricherSettings.IncludeSceneObjectPath">
+        <member name="P:Serilog.Enrichers.Unity.UnityLogEnricherSettings.AddHierarchicalName">
             <summary>
             If <see langword="true"/>, then every log is encriched with the hierarchy path of scene objects, if applicable.
             Use this to generate logs that more specifically identify a scene <see cref="T:UnityEngine.Object"/>.

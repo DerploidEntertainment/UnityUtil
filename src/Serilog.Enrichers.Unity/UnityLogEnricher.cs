@@ -1,4 +1,4 @@
-﻿using Serilog.Core;
+using Serilog.Core;
 using Serilog.Events;
 using System;
 using System.Text;
@@ -38,25 +38,25 @@ public class UnityLogEnricher : ILogEventEnricher
 
     public void Enrich(LogEvent logEvent, ILogEventPropertyFactory propertyFactory)
     {
-        if (_unityLogEnricherSettings.IncludeFrameCount)
+        if (_unityLogEnricherSettings.AddFrameCount)
             logEvent.AddPropertyIfAbsent(new LogEventProperty(FrameCountKey, new ScalarValue(Time.frameCount)));
 
-        if (_unityLogEnricherSettings.IncludeTimeSinceLevelLoad)
+        if (_unityLogEnricherSettings.AddTimeSinceLevelLoad)
             logEvent.AddPropertyIfAbsent(new LogEventProperty(TimeSinceLevelLoadKey, new ScalarValue(Time.timeSinceLevelLoad)));
 
-        if (_unityLogEnricherSettings.IncludeTimeSinceLevelLoadAsDouble)
+        if (_unityLogEnricherSettings.AddTimeSinceLevelLoadAsDouble)
             logEvent.AddPropertyIfAbsent(new LogEventProperty(TimeSinceLevelLoadAsDoubleKey, new ScalarValue(Time.timeSinceLevelLoadAsDouble)));
 
-        if (_unityLogEnricherSettings.IncludeUnscaledTime)
+        if (_unityLogEnricherSettings.AddUnscaledTime)
             logEvent.AddPropertyIfAbsent(new LogEventProperty(UnscaledTimeKey, new ScalarValue(Time.unscaledTime)));
 
-        if (_unityLogEnricherSettings.IncludeUnscaledTimeAsDouble)
+        if (_unityLogEnricherSettings.AddUnscaledTimeAsDouble)
             logEvent.AddPropertyIfAbsent(new LogEventProperty(UnscaledTimeAsDoubleKey, new ScalarValue(Time.unscaledTimeAsDouble)));
 
-        if (_unityLogEnricherSettings.IncludeTime)
+        if (_unityLogEnricherSettings.AddTime)
             logEvent.AddPropertyIfAbsent(new LogEventProperty(TimeKey, new ScalarValue(Time.time)));
 
-        if (_unityLogEnricherSettings.IncludeTimeAsDouble)
+        if (_unityLogEnricherSettings.AddTimeAsDouble)
             logEvent.AddPropertyIfAbsent(new LogEventProperty(TimeAsDoubleKey, new ScalarValue(Time.timeAsDouble)));
 
         if (
