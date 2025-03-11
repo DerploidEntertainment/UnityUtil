@@ -60,12 +60,15 @@
     <RestoreAdditionalProjectSources>$(SolutionDir)\..\lib</RestoreAdditionalProjectSources>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Unity3D" Version="2.1.3" />
+    <PackageReference Include="Unity3D" Version="3.0.0" />
   </ItemGroup>
+  <PropertyGroup>
+    <IncludeDefaultUnityAssemblyReferences>false</IncludeDefaultUnityAssemblyReferences>
+  </PropertyGroup>
 
   <!-- Code analysis -->
   <PropertyGroup>
-    <EnableNETAnalyzers>true</EnableNETAnalyzers> <!-- Not required on .NET 5+ (https://docs.microsoft.com/en-us/dotnet/core/project-sdk/msbuild-props#enablenetanalyzers) -->
+    <EnableNETAnalyzers>true</EnableNETAnalyzers> <!-- Won't be required on .NET 5+ (https://docs.microsoft.com/en-us/dotnet/core/project-sdk/msbuild-props#enablenetanalyzers) -->
     <AnalysisMode>All</AnalysisMode>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
   </PropertyGroup>

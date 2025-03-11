@@ -1,10 +1,5 @@
 <Project>
 
-  <!-- This line must go here, not in Directory.Build.props, otherwise we'd be trying to remove UnityEngine.dll before it's been added! -->
-  <ItemGroup>
-    <Reference Remove="$(UnityEnginePath)" />
-  </ItemGroup>
-
   <Target Name="CopyOutputs" AfterTargets="AfterBuild" Condition="'$(UnityDestinationFolder)'!=''">
     <ItemGroup>
       <ProjectOutput Include="$(OutDir)/$(ProjectName).dll" />
