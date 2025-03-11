@@ -39,25 +39,25 @@ public class UnityLogEnricher : ILogEventEnricher
     public void Enrich(LogEvent logEvent, ILogEventPropertyFactory propertyFactory)
     {
         if (_unityLogEnricherSettings.AddFrameCount)
-            logEvent.AddPropertyIfAbsent(new LogEventProperty(FrameCountKey, new ScalarValue(Time.frameCount)));
+            logEvent.AddPropertyIfAbsent(propertyFactory.CreateProperty(FrameCountKey, Time.frameCount));
 
         if (_unityLogEnricherSettings.AddTimeSinceLevelLoad)
-            logEvent.AddPropertyIfAbsent(new LogEventProperty(TimeSinceLevelLoadKey, new ScalarValue(Time.timeSinceLevelLoad)));
+            logEvent.AddPropertyIfAbsent(propertyFactory.CreateProperty(TimeSinceLevelLoadKey, Time.timeSinceLevelLoad));
 
         if (_unityLogEnricherSettings.AddTimeSinceLevelLoadAsDouble)
-            logEvent.AddPropertyIfAbsent(new LogEventProperty(TimeSinceLevelLoadAsDoubleKey, new ScalarValue(Time.timeSinceLevelLoadAsDouble)));
+            logEvent.AddPropertyIfAbsent(propertyFactory.CreateProperty(TimeSinceLevelLoadAsDoubleKey, Time.timeSinceLevelLoadAsDouble));
 
         if (_unityLogEnricherSettings.AddUnscaledTime)
-            logEvent.AddPropertyIfAbsent(new LogEventProperty(UnscaledTimeKey, new ScalarValue(Time.unscaledTime)));
+            logEvent.AddPropertyIfAbsent(propertyFactory.CreateProperty(UnscaledTimeKey, Time.unscaledTime));
 
         if (_unityLogEnricherSettings.AddUnscaledTimeAsDouble)
-            logEvent.AddPropertyIfAbsent(new LogEventProperty(UnscaledTimeAsDoubleKey, new ScalarValue(Time.unscaledTimeAsDouble)));
+            logEvent.AddPropertyIfAbsent(propertyFactory.CreateProperty(UnscaledTimeAsDoubleKey, Time.unscaledTimeAsDouble));
 
         if (_unityLogEnricherSettings.AddTime)
-            logEvent.AddPropertyIfAbsent(new LogEventProperty(TimeKey, new ScalarValue(Time.time)));
+            logEvent.AddPropertyIfAbsent(propertyFactory.CreateProperty(TimeKey, Time.time));
 
         if (_unityLogEnricherSettings.AddTimeAsDouble)
-            logEvent.AddPropertyIfAbsent(new LogEventProperty(TimeAsDoubleKey, new ScalarValue(Time.timeAsDouble)));
+            logEvent.AddPropertyIfAbsent(propertyFactory.CreateProperty(TimeAsDoubleKey, Time.timeAsDouble));
 
         if (
             _unityLogEnricherSettings.IncludeSceneObjectPath
