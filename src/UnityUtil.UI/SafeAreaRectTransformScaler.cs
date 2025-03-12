@@ -1,6 +1,6 @@
-﻿using Microsoft.Extensions.Logging;
-using Sirenix.OdinInspector;
 using System.Diagnostics.CodeAnalysis;
+using Microsoft.Extensions.Logging;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityUtil.DependencyInjection;
 

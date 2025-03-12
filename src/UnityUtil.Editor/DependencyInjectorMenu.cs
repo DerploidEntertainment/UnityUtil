@@ -1,7 +1,7 @@
-﻿using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.CodeAnalysis;
+using Unity.Extensions.Logging;
 using UnityEditor;
 using UnityUtil.DependencyInjection;
-using UnityUtil.Logging;
 
 namespace UnityUtil.Editor;
 
@@ -13,7 +13,8 @@ public class DependencyInjectorMenu
 
     [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
     [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
-    private void Awake() => s_logger = new(new UnityDebugLoggerFactory(), context: this);   // Eh, this is an Editor script...so what if we hard-code the LoggerFactory
+    [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Unity message")]
+    private void Awake() => s_logger = new(new UnityDebugLoggerFactory(), context: this);   // This is an Editor script...who cares if we hard-code the LoggerFactory
 
     [MenuItem(ItemName)]
     private static void toggleRecording()

@@ -1,9 +1,9 @@
-﻿using NUnit.Framework;
 using System.Linq;
+using NUnit.Framework;
+using Unity.Extensions.Logging;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityUtil.Logging;
-using UnityUtil.Triggers;
+using UnityUtil.Editor.Tests;
 
 namespace UnityUtil.Editor.Tests.Triggers;
 

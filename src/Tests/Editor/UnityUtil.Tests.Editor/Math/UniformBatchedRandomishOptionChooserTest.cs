@@ -1,9 +1,9 @@
-using Moq;
-using NUnit.Framework;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Moq;
+using NUnit.Framework;
 using UnityUtil.Math;
 
 namespace UnityUtil.Editor.Tests.Math;
@@ -249,7 +249,7 @@ public class UniformBatchedRandomishOptionChooserTest : BaseEditModeTestFixture
             Assert.That(batch2WithoutRepeats[0], Is.Zero);
         }
         else
-            CollectionAssert.AreNotEqual(batch1WithoutRepeats, batch2WithoutRepeats);
+            Assert.That(batch2WithoutRepeats, Is.Not.EqualTo(batch1WithoutRepeats));
     }
 
     [Test]
@@ -394,7 +394,7 @@ public class UniformBatchedRandomishOptionChooserTest : BaseEditModeTestFixture
         int numAttempts = 0;
 #pragma warning disable CA2201 // Do not raise reserved exception types
         Mock<IRandomAdapter> randomAdapter = getPrngWithOptionIndexRandomization(optionCount, runCount, () =>
-            (++numAttempts == NUM_ATTEMPTS) ? throw new Exception() : LAST_OPTION);
+            ++numAttempts == NUM_ATTEMPTS ? throw new Exception() : LAST_OPTION);
 #pragma warning restore CA2201 // Do not raise reserved exception types
         UniformBatchedRandomishOptionChooser uniformBatchedRandomishOptionChooser = getRandomishOptionChooser(
             randomAdapter.Object,
@@ -408,7 +408,7 @@ public class UniformBatchedRandomishOptionChooserTest : BaseEditModeTestFixture
         uniformBatchedRandomishOptionChooser.LastOptionIndexOfPreviousBatch = LAST_OPTION;
 
         // ACT
-        Assert.Throws<Exception>(() =>
+        _ = Assert.Throws<Exception>(() =>
             uniformBatchedRandomishOptionChooser.GetBatch()
         );
 
@@ -437,7 +437,7 @@ public class UniformBatchedRandomishOptionChooserTest : BaseEditModeTestFixture
             }
         );
 
-        uniformBatchedRandomishOptionChooser.GetBatch();
+        _ = uniformBatchedRandomishOptionChooser.GetBatch();
         IReadOnlyList<int> batch2 = uniformBatchedRandomishOptionChooser.GetBatch();
 
         // Assert that a subsequent batch still includes all options,
@@ -484,12 +484,12 @@ public class UniformBatchedRandomishOptionChooserTest : BaseEditModeTestFixture
         uniformBatchedRandomishOptionChooser.BatchProviderDelegate = () => { ++numBatchesProvided; return testBatch; };
 
         for (int x = 0; x < testBatch.Length; ++x) {
-            uniformBatchedRandomishOptionChooser.GetOptionIndex();
+            _ = uniformBatchedRandomishOptionChooser.GetOptionIndex();
             Assert.That(numBatchesProvided, Is.EqualTo(1));
         }
 
         for (int x = 0; x < testBatch.Length; ++x) {
-            uniformBatchedRandomishOptionChooser.GetOptionIndex();
+            _ = uniformBatchedRandomishOptionChooser.GetOptionIndex();
             Assert.That(numBatchesProvided, Is.EqualTo(2));
         }
     }
@@ -538,14 +538,14 @@ public class UniformBatchedRandomishOptionChooserTest : BaseEditModeTestFixture
 #pragma warning disable CA1859 // Use concrete types when possible for improved performance; justification: var must be interface type to use default interface methods
         IRandomAdapter randomAdapter = getRandomAdapter();
 #pragma warning restore CA1859 // Use concrete types when possible for improved performance
-        mockedRandomAdapter.Setup(x => x.Range(It.IsAny<int>(), It.IsAny<int>()))
-            .Returns<int, int>((inclusiveMin, exclusiveMax) => randomAdapter.Range(inclusiveMin, exclusiveMax));
+        _ = mockedRandomAdapter.Setup(x => x.Range(It.IsAny<int>(), It.IsAny<int>()))
+            .Returns<int, int>(randomAdapter.Range);
 
         // Range(0, optionCount) will first be called several times to decide which options will have runs,
         // so just return actual PRNG-generated values for those calls.
         int numAttempts = 0;
-        mockedRandomAdapter.Setup(x => x.Range(0, optionCount)) // Can't use SetupSequence cause it doesn't support "do this for all following invokes"
-            .Returns(() => (numAttempts++ < runCount) ? randomAdapter.Range(0, optionCount) : optionIndexProvider());
+        _ = mockedRandomAdapter.Setup(x => x.Range(0, optionCount)) // Can't use SetupSequence cause it doesn't support "do this for all following invokes"
+            .Returns(() => numAttempts++ < runCount ? randomAdapter.Range(0, optionCount) : optionIndexProvider());
 
         return mockedRandomAdapter;
     }

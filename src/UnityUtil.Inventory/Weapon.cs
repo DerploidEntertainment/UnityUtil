@@ -1,9 +1,9 @@
 using Microsoft.Extensions.Logging;
-using Sirenix.OdinInspector;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityUtil.DependencyInjection;

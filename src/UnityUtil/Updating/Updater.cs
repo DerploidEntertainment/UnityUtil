@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Logging;
 using UnityEngine;
@@ -27,10 +27,10 @@ public class Updater : MonoBehaviour, IUpdater
     public void AddUpdate(int instanceId, Action<float> updateAction)
     {
         try {
-            _updates.Add(instanceId, updateAction); 
+            _updates.Add(instanceId, updateAction);
         }
         catch (ArgumentException ex) {
-            _logger!.AlreadyAddedOtherUpdate(instanceId, ex);
+            throw _logger!.AlreadyAddedOtherUpdate(instanceId, ex);
         }
     }
     /// <inheritdoc/>
@@ -45,13 +45,11 @@ public class Updater : MonoBehaviour, IUpdater
     /// <inheritdoc/>
     public void AddFixedUpdate(int instanceId, Action<float> fixedUpdateAction)
     {
-        try
-        {
+        try {
             _fixed.Add(instanceId, fixedUpdateAction);
         }
-        catch (ArgumentException ex)
-        {
-            _logger!.AlreadyAddedOtherFixedUpdate(instanceId, ex);
+        catch (ArgumentException ex) {
+            throw _logger!.AlreadyAddedOtherFixedUpdate(instanceId, ex);
         }
     }
     /// <inheritdoc/>
@@ -66,13 +64,11 @@ public class Updater : MonoBehaviour, IUpdater
     /// <inheritdoc/>
     public void AddLateUpdate(int instanceId, Action<float> lateUpdateAction)
     {
-        try
-        {
+        try {
             _late.Add(instanceId, lateUpdateAction);
         }
-        catch (ArgumentException ex)
-        {
-            _logger!.AlreadyAddedOtherLateUpdate(instanceId, ex);
+        catch (ArgumentException ex) {
+            throw _logger!.AlreadyAddedOtherLateUpdate(instanceId, ex);
         }
     }
     /// <inheritdoc/>

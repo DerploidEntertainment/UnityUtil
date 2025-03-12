@@ -1,5 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
 using System.Diagnostics.CodeAnalysis;
+using Microsoft.Extensions.Logging;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Rendering;

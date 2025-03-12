@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -16,7 +16,7 @@ public class InventoryItemEvent : UnityEvent<InventoryCollectible> { }
 public class Inventory : MonoBehaviour
 {
     private InventoriesLogger<Inventory>? _logger;
-    private readonly HashSet<InventoryCollectible> _collectibles = new();
+    private readonly HashSet<InventoryCollectible> _collectibles = [];
 
     public int MaxItems = 10;
     [Tooltip("If true, then this Inventory can collect multiple items with the same name.")]
@@ -33,7 +33,7 @@ public class Inventory : MonoBehaviour
     [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
     private void Awake() => DependencyInjector.Instance.ResolveDependenciesOf(this);
 
-    public InventoryCollectible[] GetCollectibles() => _collectibles.ToArray();
+    public InventoryCollectible[] GetCollectibles() => [.. _collectibles];
     public GameObject[] GetItems() => _collectibles.Select(c => c.ItemRoot!).ToArray();
     public bool Collect(InventoryCollectible collectible)
     {
@@ -54,7 +54,7 @@ public class Inventory : MonoBehaviour
         collectible.Root!.SetActive(false);
 
         // Place the collectible in the Inventory
-        _collectibles.Add(collectible);
+        _ = _collectibles.Add(collectible);
 
         // Raise the item collected event
         _logger!.Collected(collectible);
@@ -71,13 +71,12 @@ public class Inventory : MonoBehaviour
         if (!_collectibles.Contains(collectible))
             throw new InvalidOperationException($"{this.GetHierarchyNameWithType()} was told to drop an {typeof(InventoryCollectible).Name} that it never collected!");
 
-        StartCoroutine(doDrop(collectible));
+        _ = StartCoroutine(doDrop(collectible));
     }
     public void DropAll()
     {
-        InventoryCollectible[] collectibles = _collectibles.ToArray();
-        for (int c = 0; c < collectibles.Length; ++c)
-            StartCoroutine(doDrop(collectibles[c]));
+        foreach (InventoryCollectible inventoryCollectible in _collectibles)
+            _ = StartCoroutine(doDrop(inventoryCollectible));
     }
 
     private IEnumerator doDrop(InventoryCollectible collectible)
@@ -89,7 +88,7 @@ public class Inventory : MonoBehaviour
         itemTrans.parent = transform;
 
         // Remove the provided collectible from the Inventory
-        _collectibles.Remove(collectible);
+        _ = _collectibles.Remove(collectible);
 
         // Raise the item dropped event
         _logger!.Dropped(collectible);

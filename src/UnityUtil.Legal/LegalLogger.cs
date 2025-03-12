@@ -1,15 +1,14 @@
-﻿using Microsoft.Extensions.Logging;
-using System;
+﻿using System;
+using Microsoft.Extensions.Logging;
 using UnityEngine.Networking;
 using UnityUtil.Logging;
 
 namespace UnityUtil.Legal;
 
 /// <inheritdoc/>
-internal class LegalLogger<T> : BaseUnityUtilLogger<T>
+internal class LegalLogger<T>(ILoggerFactory loggerFactory, T context)
+    : BaseUnityUtilLogger<T>(loggerFactory, context, eventIdOffset: 6000)
 {
-    public LegalLogger(ILoggerFactory loggerFactory, T context)
-        : base(loggerFactory, context, eventIdOffset: 6000) { }
 
     #region Information
 

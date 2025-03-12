@@ -1,13 +1,13 @@
-﻿using Microsoft.Extensions.Logging;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Extensions.Logging;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityUtil.DependencyInjection;
 using UnityUtil.Logging;
 
-namespace UnityUtil;
+namespace UnityUtil.Editor;
 
 /// <inheritdoc/>
 internal class EditorRootLogger<T>(ILoggerFactory loggerFactory, T context)

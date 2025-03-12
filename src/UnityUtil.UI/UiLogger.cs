@@ -6,10 +6,9 @@ using UnityUtil.Logging;
 namespace UnityUtil.UI;
 
 /// <inheritdoc/>
-internal class UiLogger<T> : BaseUnityUtilLogger<T>
+internal class UiLogger<T>(ILoggerFactory loggerFactory, T context)
+    : BaseUnityUtilLogger<T>(loggerFactory, context, eventIdOffset: 14_000)
 {
-    public UiLogger(ILoggerFactory loggerFactory, T context)
-        : base(loggerFactory, context, eventIdOffset: 14_000) { }
 
     #region Information
 

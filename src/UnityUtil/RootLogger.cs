@@ -1,7 +1,7 @@
-﻿using Microsoft.Extensions.Logging;
-using System;
+﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
+using Microsoft.Extensions.Logging;
 using UnityEngine;
 using UnityEngine.Diagnostics;
 using UnityEngine.SceneManagement;
@@ -11,10 +11,9 @@ using UnityUtil.Logging;
 namespace UnityUtil;
 
 /// <inheritdoc/>
-internal class RootLogger<T> : BaseUnityUtilLogger<T>
+internal class RootLogger<T>(ILoggerFactory loggerFactory, T context)
+    : BaseUnityUtilLogger<T>(loggerFactory, context, eventIdOffset: 0)
 {
-    public RootLogger(ILoggerFactory loggerFactory, T context)
-        : base(loggerFactory, context, eventIdOffset: 0) { }
 
     #region Information
 

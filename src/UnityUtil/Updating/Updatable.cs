@@ -51,7 +51,7 @@ public abstract class Updatable : MonoBehaviour
     /// It will automatically be unsubscribed and resubscribed as the component is disabled (or destroyed) and re-enabled.
     /// </summary>
     /// <param name="action">The action to be called during <c>FixedUpdate</c></param>
-    protected void AddFixedUpdate(Action<float> action) => 
+    protected void AddFixedUpdate(Action<float> action) =>
         add(Updater!.AddFixedUpdate, ref _fixedUpdateAction, action, _logger!.AddingSameFixedUpdate, _logger!.AlreadyAddedOtherFixedUpdate);
 
     /// <summary>
@@ -59,7 +59,7 @@ public abstract class Updatable : MonoBehaviour
     /// It will automatically be unsubscribed and resubscribed as the component is disabled (or destroyed) and re-enabled.
     /// </summary>
     /// <param name="action">The action to be called during <c>LateUpdate</c></param>
-    protected void AddLateUpdate(Action<float> action) => 
+    protected void AddLateUpdate(Action<float> action) =>
         add(Updater!.AddLateUpdate, ref _lateUpdateAction, action, _logger!.AddingSameLateUpdate, _logger!.AlreadyAddedOtherLateUpdate);
 
     /// <summary>
@@ -120,8 +120,7 @@ public abstract class Updatable : MonoBehaviour
         Func<int, Exception?, ArgumentException> alreadyAddedOtherFunc
     )
     {
-        if (actionField == action)
-        {
+        if (actionField == action) {
             addSameAction(InstanceId);
             return;
         }

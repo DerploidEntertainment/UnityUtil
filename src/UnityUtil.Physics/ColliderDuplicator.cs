@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-using System;
+using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -128,7 +127,7 @@ public class ColliderDuplicator : MonoBehaviour
 
     private List<Transform> duplicateAllChildrenHierarchy(Transform newParent)
     {
-        duplicateHierarchy(transform, newParent);
+        _ = duplicateHierarchy(transform, newParent);
         return [];
     }
 
@@ -150,7 +149,7 @@ public class ColliderDuplicator : MonoBehaviour
             duplChild.localRotation = Quaternion.identity;
             duplChild.localScale = Vector3.one;
 
-            duplicateHierarchy(origChild, duplChild);
+            _ = duplicateHierarchy(origChild, duplChild);
         }
 
         return [];

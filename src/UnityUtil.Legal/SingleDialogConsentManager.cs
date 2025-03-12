@@ -1,15 +1,15 @@
-using Microsoft.Extensions.Logging;
-using Sirenix.OdinInspector;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using Sirenix.OdinInspector;
+using Unity.Extensions.Logging;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 using UnityUtil.DependencyInjection;
-using UnityUtil.Logging;
 using UnityUtil.Storage;
 
 namespace UnityUtil.Legal;

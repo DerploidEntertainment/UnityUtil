@@ -17,7 +17,7 @@ public static class LoggerEnrichmentConfigurationExtensions
         this LoggerEnrichmentConfiguration enrichmentConfiguration,
         UnityLogEnricherSettings settings
     ) =>
-        enrichmentConfiguration == null ? throw new ArgumentNullException(nameof(enrichmentConfiguration))
-        : settings == null ? throw new ArgumentNullException(nameof(settings))
+        enrichmentConfiguration is null ? throw new ArgumentNullException(nameof(enrichmentConfiguration))
+        : settings is null ? throw new ArgumentNullException(nameof(settings))
         : enrichmentConfiguration.With(new UnityLogEnricher(settings));
 }

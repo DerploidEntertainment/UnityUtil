@@ -1,6 +1,3 @@
-using Microsoft.Extensions.Logging;
-using Moq;
-using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -8,11 +5,15 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using Moq;
+using NUnit.Framework;
+using Unity.Extensions.Logging;
 using UnityEngine;
 using UnityEngine.TestTools;
-using UnityUtil.Legal;
-using UnityUtil.Logging;
+using UnityUtil.Editor.Tests;
 using UnityUtil.Storage;
+using UnityUtil.Tests.Util;
 using U = UnityEngine;
 
 namespace UnityUtil.Editor.Tests.Legal;
@@ -60,7 +61,7 @@ public class SingleDialogConsentManagerTest : BaseEditModeTestFixture
             new(LegalAcceptance.Current, new bool?[]{ true, true }),
         ];
 
-    #pragma warning disable IDE1006 // Naming Styles    // Test names don't need the -Async suffix
+#pragma warning disable IDE1006 // Naming Styles    // Test names don't need the -Async suffix
 
     #region ShowDialogIfNeededAsync
 
@@ -301,7 +302,7 @@ public class SingleDialogConsentManagerTest : BaseEditModeTestFixture
             .Range(0, consentCount)
             .Select(x => {
                 Mock<IInitializableWithConsent> initializable = new();
-                initializable.Setup(x => x.InitializeAsync(It.IsAny<bool>()))
+                _ = initializable.Setup(x => x.InitializeAsync(It.IsAny<bool>()))
                     .ThrowsAsync(new InvalidOperationException($"AH!! Consent {x} exploded!"));
                 return initializable;
             })
@@ -352,7 +353,7 @@ public class SingleDialogConsentManagerTest : BaseEditModeTestFixture
         SingleDialogConsentManager singleDialogConsentManager = getSingleDialogConsentManager(initializablesWithConsent: initializables);
 
         await singleDialogConsentManager.ShowDialogIfNeededAsync();
-        Assert.Throws<ArgumentException>(() => singleDialogConsentManager.HasConsent(missingInitializable.Object));
+        _ = Assert.Throws<ArgumentException>(() => singleDialogConsentManager.HasConsent(missingInitializable.Object));
     }
 
     [Test]
@@ -381,7 +382,7 @@ public class SingleDialogConsentManagerTest : BaseEditModeTestFixture
         SingleDialogConsentManager singleDialogConsentManager = getSingleDialogConsentManager(initializablesWithConsent: initializables);
 
         await singleDialogConsentManager.ShowDialogIfNeededAsync();
-        Assert.Throws<ArgumentException>(() => singleDialogConsentManager.OptOut(missingInitializable.Object));
+        _ = Assert.Throws<ArgumentException>(() => singleDialogConsentManager.OptOut(missingInitializable.Object));
     }
 
     [Test]
@@ -431,7 +432,7 @@ public class SingleDialogConsentManagerTest : BaseEditModeTestFixture
     private static Mock<ILegalAcceptManager> getLegalAcceptManager(LegalAcceptance legalAcceptance)
     {
         Mock<ILegalAcceptManager> legalAcceptManager = new();
-        legalAcceptManager.Setup(x => x.CheckAcceptanceAsync()).ReturnsAsync(legalAcceptance);
+        _ = legalAcceptManager.Setup(x => x.CheckAcceptanceAsync()).ReturnsAsync(legalAcceptance);
         return legalAcceptManager;
     }
 
@@ -444,9 +445,9 @@ public class SingleDialogConsentManagerTest : BaseEditModeTestFixture
         for (int x = 0; x < priorConsents.Length; x++) {
             bool? priorConsent = priorConsents[x];
             string key = $"{CONSENT_PREF_KEY_PREFIX}{x}";
-            localPreferences.Setup(x => x.HasKey(key)).Returns(priorConsent.HasValue);
+            _ = localPreferences.Setup(x => x.HasKey(key)).Returns(priorConsent.HasValue);
             if (priorConsent.HasValue)
-                localPreferences.Setup(x => x.GetInt(key)).Returns(priorConsent!.Value ? 1 : 0);
+                _ = localPreferences.Setup(x => x.GetInt(key)).Returns(priorConsent!.Value ? 1 : 0);
         }
 
         return localPreferences;
@@ -459,8 +460,8 @@ public class SingleDialogConsentManagerTest : BaseEditModeTestFixture
             .Range(0, consentCount)
             .Select(x => {
                 Mock<IInitializableWithConsent> initializable = new();
-                initializable.SetupGet(x => x.ConsentPreferenceKey).Returns($"{CONSENT_PREF_KEY_PREFIX}{x}");
-                initializable.Setup(x => x.InitializeAsync(It.IsAny<bool>())).Returns(Task.Delay(millisecondsDelay: initializeDurations[x]));
+                _ = initializable.SetupGet(x => x.ConsentPreferenceKey).Returns($"{CONSENT_PREF_KEY_PREFIX}{x}");
+                _ = initializable.Setup(x => x.InitializeAsync(It.IsAny<bool>())).Returns(Task.Delay(millisecondsDelay: initializeDurations[x]));
                 return initializable;
             })
             .ToArray();
@@ -469,8 +470,8 @@ public class SingleDialogConsentManagerTest : BaseEditModeTestFixture
     private static Mock<IInitializableWithConsent> getInitializableWithConsent(bool hasConsent)
     {
         Mock<IInitializableWithConsent> initializable = new();
-        initializable.SetupGet(x => x.ConsentPreferenceKey).Returns(CONSENT_PREF_KEY_PREFIX);
-        initializable.Setup(x => x.InitializeAsync(It.IsAny<bool>())).Returns(Task.FromResult(hasConsent));
+        _ = initializable.SetupGet(x => x.ConsentPreferenceKey).Returns(CONSENT_PREF_KEY_PREFIX);
+        _ = initializable.Setup(x => x.InitializeAsync(It.IsAny<bool>())).Returns(Task.FromResult(hasConsent));
         return initializable;
     }
 }

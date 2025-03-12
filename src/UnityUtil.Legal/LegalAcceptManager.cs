@@ -1,15 +1,15 @@
-using Microsoft.Extensions.Logging;
-using Sirenix.OdinInspector;
 using System;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using Sirenix.OdinInspector;
+using Unity.Extensions.Logging;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 using UnityUtil.DependencyInjection;
-using UnityUtil.Logging;
 using UnityUtil.Storage;
 
 namespace UnityUtil.Legal;
@@ -62,8 +62,8 @@ public class LegalAcceptManager : MonoBehaviour, ILegalAcceptManager
         _latestVersionTags = new string[Documents.Length];
         for (int x = 0; x < legalDocumentStates.Length; x++) {
             LegalDocumentState legalDocumentState = legalDocumentStates[x];
-            acceptRequired |= (legalDocumentState.CurrentTag != legalDocumentState.AcceptedTag);
-            acceptOutdated |= (acceptRequired && !string.IsNullOrEmpty(legalDocumentState.AcceptedTag));
+            acceptRequired |= legalDocumentState.CurrentTag != legalDocumentState.AcceptedTag;
+            acceptOutdated |= acceptRequired && !string.IsNullOrEmpty(legalDocumentState.AcceptedTag);
             _latestVersionTags[x] = legalDocumentState.CurrentTag;
         }
 

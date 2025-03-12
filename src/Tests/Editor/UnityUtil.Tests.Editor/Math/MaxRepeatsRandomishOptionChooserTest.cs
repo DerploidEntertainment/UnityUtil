@@ -1,8 +1,8 @@
-using Moq;
-using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Moq;
+using NUnit.Framework;
 using UnityEngine;
 using UnityUtil.Math;
 
@@ -35,7 +35,7 @@ namespace UnityUtil.Editor.Tests.Math
         public void CannotConstruct_ProbabilitiesDontSumToOne(float[] optionProbabilities)
         {
             Debug.Log($"Option probabilities: {string.Join(',', optionProbabilities)}");
-            Assert.Throws<InvalidOperationException>(() =>
+            _ = Assert.Throws<InvalidOperationException>(() =>
                 new MaxRepeatsRandomishOptionChooser(
                     Mock.Of<IRandomAdapter>(),
                     new MaxRepeatsRandomishOptionChooserConfig { MaxRepeats = 1, OptionProbabilities = optionProbabilities }
@@ -52,7 +52,7 @@ namespace UnityUtil.Editor.Tests.Math
         public void CannotConstruct_NegativeProbabilities(float[] optionProbabilities)
         {
             Debug.Log($"Option probabilities: {string.Join(',', optionProbabilities)}");
-            Assert.Throws<InvalidOperationException>(() =>
+            _ = Assert.Throws<InvalidOperationException>(() =>
                 new MaxRepeatsRandomishOptionChooser(
                     Mock.Of<IRandomAdapter>(),
                     new MaxRepeatsRandomishOptionChooserConfig { MaxRepeats = 1, OptionProbabilities = optionProbabilities }
@@ -87,7 +87,7 @@ namespace UnityUtil.Editor.Tests.Math
                 config: new MaxRepeatsRandomishOptionChooserConfig { MaxRepeats = 1, OptionProbabilities = [1f] }
             );
 
-            Assert.Throws<ArgumentOutOfRangeException>(() =>
+            _ = Assert.Throws<ArgumentOutOfRangeException>(() =>
                 maxRepeatsRandomishOptionChooser.UseOption(occurenceIndex)
             );
         }
@@ -158,7 +158,7 @@ namespace UnityUtil.Editor.Tests.Math
                 maxRepeatsRandomishOptionChooser.UseOption(0);
             Assert.That(maxRepeatsRandomishOptionChooser.OptionRepeats[0], Is.EqualTo(maxRepeats));
 
-            Assert.Throws<InvalidOperationException>(() => maxRepeatsRandomishOptionChooser.UseOption(0));
+            _ = Assert.Throws<InvalidOperationException>(() => maxRepeatsRandomishOptionChooser.UseOption(0));
         }
 
         [Test]
@@ -246,18 +246,18 @@ namespace UnityUtil.Editor.Tests.Math
             MaxRepeatsRandomishOptionChooserConfig config;
             MaxRepeatsRandomishOptionChooser randomishOptionChooser;
             var randomAdapter = new Mock<IRandomAdapter>();
-            randomAdapter.SetupSequence(x => x.Range(0f, It.IsAny<float>())).Returns(0);
+            _ = randomAdapter.SetupSequence(x => x.Range(0f, It.IsAny<float>())).Returns(0);
 
             // Uniform distribution, 1 max repeat
             randomAdapter.Invocations.Clear();
             config = new() { MaxRepeats = 1, OptionProbabilities = [0.5f, 0.5f] };
             randomishOptionChooser = getRandomishOptionChooser(randomAdapter.Object, config);
 
-            randomishOptionChooser.GetOptionIndex();
+            _ = randomishOptionChooser.GetOptionIndex();
             randomAdapter.Verify(x => x.Range(0f, 1.0f), Times.Exactly(1));
             randomAdapter.Verify(x => x.Range(0f, 0.5f), Times.Exactly(0));
 
-            randomishOptionChooser.GetOptionIndex();
+            _ = randomishOptionChooser.GetOptionIndex();
             randomAdapter.Verify(x => x.Range(0f, 1.0f), Times.Exactly(1));
             randomAdapter.Verify(x => x.Range(0f, 0.5f), Times.Exactly(1));
 
@@ -266,15 +266,15 @@ namespace UnityUtil.Editor.Tests.Math
             config = new() { MaxRepeats = 2, OptionProbabilities = [0.5f, 0.5f] };
             randomishOptionChooser = getRandomishOptionChooser(randomAdapter.Object, config);
 
-            randomishOptionChooser.GetOptionIndex();
+            _ = randomishOptionChooser.GetOptionIndex();
             randomAdapter.Verify(x => x.Range(0f, 1.0f), Times.Exactly(1));
             randomAdapter.Verify(x => x.Range(0f, 0.5f), Times.Exactly(0));
 
-            randomishOptionChooser.GetOptionIndex();
+            _ = randomishOptionChooser.GetOptionIndex();
             randomAdapter.Verify(x => x.Range(0f, 1.0f), Times.Exactly(2));
             randomAdapter.Verify(x => x.Range(0f, 0.5f), Times.Exactly(0));
 
-            randomishOptionChooser.GetOptionIndex();
+            _ = randomishOptionChooser.GetOptionIndex();
             randomAdapter.Verify(x => x.Range(0f, 1.0f), Times.Exactly(2));
             randomAdapter.Verify(x => x.Range(0f, 0.5f), Times.Exactly(1));
 
@@ -283,11 +283,11 @@ namespace UnityUtil.Editor.Tests.Math
             config = new() { MaxRepeats = 1, OptionProbabilities = [0.75f, 0.25f] };
             randomishOptionChooser = getRandomishOptionChooser(randomAdapter.Object, config);
 
-            randomishOptionChooser.GetOptionIndex();
+            _ = randomishOptionChooser.GetOptionIndex();
             randomAdapter.Verify(x => x.Range(0f, 1.0f), Times.Exactly(1));
             randomAdapter.Verify(x => x.Range(0f, 0.25f), Times.Exactly(0));
 
-            randomishOptionChooser.GetOptionIndex();
+            _ = randomishOptionChooser.GetOptionIndex();
             randomAdapter.Verify(x => x.Range(0f, 1.0f), Times.Exactly(1));
             randomAdapter.Verify(x => x.Range(0f, 0.25f), Times.Exactly(1));
 
@@ -296,15 +296,15 @@ namespace UnityUtil.Editor.Tests.Math
             config = new() { MaxRepeats = 2, OptionProbabilities = [0.75f, 0.25f] };
             randomishOptionChooser = getRandomishOptionChooser(randomAdapter.Object, config);
 
-            randomishOptionChooser.GetOptionIndex();
+            _ = randomishOptionChooser.GetOptionIndex();
             randomAdapter.Verify(x => x.Range(0f, 1.0f), Times.Exactly(1));
             randomAdapter.Verify(x => x.Range(0f, 0.25f), Times.Exactly(0));
 
-            randomishOptionChooser.GetOptionIndex();
+            _ = randomishOptionChooser.GetOptionIndex();
             randomAdapter.Verify(x => x.Range(0f, 1.0f), Times.Exactly(2));
             randomAdapter.Verify(x => x.Range(0f, 0.25f), Times.Exactly(0));
 
-            randomishOptionChooser.GetOptionIndex();
+            _ = randomishOptionChooser.GetOptionIndex();
             randomAdapter.Verify(x => x.Range(0f, 1.0f), Times.Exactly(2));
             randomAdapter.Verify(x => x.Range(0f, 0.25f), Times.Exactly(1));
         }
@@ -438,7 +438,7 @@ namespace UnityUtil.Editor.Tests.Math
             for (int x = 0; x < NUM_ITERATIONS; ++x)
                 chosenIndices.Add(randomishOptionChooser.GetOptionIndex());
 
-            CollectionAssert.AreEqual(Enumerable.Repeat(0, NUM_ITERATIONS), chosenIndices);
+            Assert.That(chosenIndices, Is.EquivalentTo(Enumerable.Repeat(0, NUM_ITERATIONS)));
         }
 
         [Test, Ignore("Haven't implemented a Chi-square goodness-of-fit test yet...")]

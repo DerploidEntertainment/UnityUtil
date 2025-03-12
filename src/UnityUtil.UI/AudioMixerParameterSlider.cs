@@ -1,13 +1,13 @@
-﻿using Microsoft.Extensions.Logging;
-using Sirenix.OdinInspector;
-using System;
+﻿using System;
 using System.Diagnostics.CodeAnalysis;
+using Microsoft.Extensions.Logging;
+using Sirenix.OdinInspector;
+using Unity.Extensions.Logging;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using UnityUtil.DependencyInjection;
-using UnityUtil.Logging;
 using UnityUtil.Storage;
 
 namespace UnityUtil.UI;
@@ -107,7 +107,7 @@ public class AudioMixerParameterSlider : MonoBehaviour
         // Update AudioMixer and preferences (if requested) whenever slider changes
         Slider!.onValueChanged.AddListener(sliderValue => {
             float newVal = transformValue(sliderValue);
-            AudioMixer.SetFloat(ExposedParameterName, newVal);
+            _ = AudioMixer.SetFloat(ExposedParameterName, newVal);
         });
 
         // If a test audio was set, then listen for PointerUp events on the slider
@@ -140,7 +140,7 @@ public class AudioMixerParameterSlider : MonoBehaviour
             _logger!.AudioMixerParameterFromPrefs(val, ExposedParameterName, AudioMixer!, prefsKey);
         }
         else {
-            AudioMixer!.GetFloat(ExposedParameterName, out val);
+            _ = AudioMixer!.GetFloat(ExposedParameterName, out val);
             _logger!.AudioMixerParameterFromInspector(val, ExposedParameterName, AudioMixer!, prefsKey);
         }
 

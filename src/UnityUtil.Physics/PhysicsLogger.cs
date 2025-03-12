@@ -5,10 +5,9 @@ using UnityUtil.Logging;
 namespace UnityUtil.Physics;
 
 /// <inheritdoc/>
-internal class PhysicsLogger<T> : BaseUnityUtilLogger<T>
+internal class PhysicsLogger<T>(ILoggerFactory loggerFactory, T context)
+    : BaseUnityUtilLogger<T>(loggerFactory, context, eventIdOffset: 10_000)
 {
-    public PhysicsLogger(ILoggerFactory loggerFactory, T context)
-        : base(loggerFactory, context, eventIdOffset: 10_000) { }
 
     #region Warning
 

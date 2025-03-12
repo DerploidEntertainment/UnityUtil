@@ -4,10 +4,9 @@ using UnityUtil.Logging;
 namespace UnityUtil.Inventory;
 
 /// <inheritdoc/>
-internal class InventoriesLogger<T> : BaseUnityUtilLogger<T>
+internal class InventoriesLogger<T>(ILoggerFactory loggerFactory, T context)
+    : BaseUnityUtilLogger<T>(loggerFactory, context, eventIdOffset: 10_000)
 {
-    public InventoriesLogger(ILoggerFactory loggerFactory, T context)
-        : base(loggerFactory, context, eventIdOffset: 10_000) { }
 
     #region Information
 

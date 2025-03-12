@@ -1,12 +1,14 @@
-﻿using Microsoft.Extensions.Logging;
-using Sirenix.OdinInspector;
-using System;
+﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using Microsoft.Extensions.Logging;
+using Sirenix.OdinInspector;
+using Unity.Extensions.Logging;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityUtil.DependencyInjection;
-using UnityUtil.Logging;
+using static UnityUtil.UI.BreakpointMode;
+using static UnityUtil.UI.BreakpointMatchMode;
 
 namespace UnityUtil.UI;
 
@@ -33,19 +35,19 @@ public class UiBreakpoints : MonoBehaviour
         "What value will breakpoints be matched against? Can be the width, height, or aspect ratio of the physical device screen, " +
         "the device's 'safe area', or a particular Camera."
     )]
-    public BreakpointMode Mode = BreakpointMode.SafeAreaAspectRatio;
+    public BreakpointMode Mode = SafeAreaAspectRatio;
 
     [Tooltip(
         $"How will breakpoints be matched against the value specified by {nameof(Mode)}? " +
         "You can use this to specify UI that applies at only a specific value, or across a range of values. " +
-        $"For example, suppose that {nameof(Mode)} is {nameof(BreakpointMode.ScreenWidth)}, " +
+        $"For example, suppose that {nameof(Mode)} is {nameof(ScreenWidth)}, " +
         "and you provide breakpoints at values of 576, 768, and 1200 on a screen that is 700 pixels wide. Then:" +
-        $"\n\t- If {nameof(MatchMode)} is {nameof(BreakpointMatchMode.AnyEqualOrGreater)}, then the 768 and 1200 breakpoints will match and have their {nameof(UiBreakpoint.Matched)} event raised" +
-        $"\n\t- If {nameof(MatchMode)} is {nameof(BreakpointMatchMode.AnyEqualOrLess)}, then only the 576 breakpoint will match" +
-        $"\n\t- If {nameof(MatchMode)} is {nameof(BreakpointMatchMode.MaxEqualOrLess)}, then only the 576 breakpoint will match (or the 768 breakpoint on a device that's exactly 768 pixels wide)" +
-        $"\n\t- If {nameof(MatchMode)} is {nameof(BreakpointMatchMode.MinEqualOrGreater)}, then only the 768 breakpoint will match"
+        $"\n\t- If {nameof(MatchMode)} is {nameof(AnyEqualOrGreater)}, then the 768 and 1200 breakpoints will match and have their {nameof(UiBreakpoint.Matched)} event raised" +
+        $"\n\t- If {nameof(MatchMode)} is {nameof(AnyEqualOrLess)}, then only the 576 breakpoint will match" +
+        $"\n\t- If {nameof(MatchMode)} is {nameof(MaxEqualOrLess)}, then only the 576 breakpoint will match (or the 768 breakpoint on a device that's exactly 768 pixels wide)" +
+        $"\n\t- If {nameof(MatchMode)} is {nameof(MinEqualOrGreater)}, then only the 768 breakpoint will match"
     )]
-    public BreakpointMatchMode MatchMode = BreakpointMatchMode.MinEqualOrGreater;
+    public BreakpointMatchMode MatchMode = MinEqualOrGreater;
 
     [ShowIf(nameof(IsCameraMode))]
     [Tooltip("This is the Camera whose height, width, or aspect ratio will be matched against the provided breakpoints.")]
@@ -73,8 +75,8 @@ public class UiBreakpoints : MonoBehaviour
     [Tooltip(
         "If no breakpoints are matched, then this UnityEvent will be raised instead, e.g., " +
         "to set any UI defaults that are not already set in the Inspector. " +
-        $"For example, when breakpoints are being matched in {nameof(Mode)} '{nameof(BreakpointMode.ScreenWidth)}' " +
-        $"and {nameof(MatchMode)} '{nameof(BreakpointMatchMode.AnyEqualOrLess)}' against a 700px-wide device, " +
+        $"For example, when breakpoints are being matched in {nameof(Mode)} '{nameof(ScreenWidth)}' " +
+        $"and {nameof(MatchMode)} '{nameof(AnyEqualOrLess)}' against a 700px-wide device, " +
         $"but the only breakpoint provided is for a value of 1200, then no breakpoint {nameof(UiBreakpoint.Matched)} events " +
         "will be raised, so this event will be raised instead."
     )]
@@ -119,12 +121,12 @@ public class UiBreakpoints : MonoBehaviour
         InvokeMatchingBreakpoints(_currentValue);
     }
 
-    public bool IsScreenMode => Mode == BreakpointMode.ScreenWidth || Mode == BreakpointMode.ScreenHeight || Mode == BreakpointMode.ScreenAspectRatio;
-    public bool IsSafeAreaMode => Mode == BreakpointMode.SafeAreaWidth || Mode == BreakpointMode.SafeAreaHeight || Mode == BreakpointMode.SafeAreaAspectRatio;
-    public bool IsCameraMode => Mode == BreakpointMode.CameraWidth || Mode == BreakpointMode.CameraHeight || Mode == BreakpointMode.CameraAspectRatio;
-    public bool IsWidthMode => Mode == BreakpointMode.ScreenWidth || Mode == BreakpointMode.SafeAreaWidth || Mode == BreakpointMode.CameraWidth;
-    public bool IsHeightMode => Mode == BreakpointMode.ScreenHeight || Mode == BreakpointMode.SafeAreaHeight || Mode == BreakpointMode.CameraHeight;
-    public bool IsAspectRatioMode => Mode == BreakpointMode.ScreenAspectRatio || Mode == BreakpointMode.SafeAreaAspectRatio || Mode == BreakpointMode.CameraAspectRatio;
+    public bool IsScreenMode => Mode is ScreenWidth or ScreenHeight or ScreenAspectRatio;
+    public bool IsSafeAreaMode => Mode is SafeAreaWidth or SafeAreaHeight or SafeAreaAspectRatio;
+    public bool IsCameraMode => Mode is CameraWidth or CameraHeight or CameraAspectRatio;
+    public bool IsWidthMode => Mode is ScreenWidth or SafeAreaWidth or CameraWidth;
+    public bool IsHeightMode => Mode is ScreenHeight or SafeAreaHeight or CameraHeight;
+    public bool IsAspectRatioMode => Mode is ScreenAspectRatio or SafeAreaAspectRatio or CameraAspectRatio;
 
     internal static bool AreBreakpointsValid(UiBreakpoint[] breakpoints)
     {
@@ -132,7 +134,8 @@ public class UiBreakpoints : MonoBehaviour
             return true;
 
         // Make sure breakpoint values are sorted strictly ascending (no duplicates)
-        for (int b = 1; b < breakpoints.Length; ++b) if (
+        for (int b = 1; b < breakpoints.Length; ++b) 
+            if (
                 breakpoints[b].Enabled && breakpoints[b - 1].Enabled &&
                 breakpoints[b].Value <= breakpoints[b - 1].Value
             )
@@ -144,17 +147,17 @@ public class UiBreakpoints : MonoBehaviour
     private float getModeValue(BreakpointMode mode)
     {
         return mode switch {
-            BreakpointMode.ScreenWidth => Screen.width,
-            BreakpointMode.ScreenHeight => Screen.height,
-            BreakpointMode.ScreenAspectRatio => (float)Screen.width / Screen.height,
+            ScreenWidth => Screen.width,
+            ScreenHeight => Screen.height,
+            ScreenAspectRatio => (float)Screen.width / Screen.height,
 
-            BreakpointMode.SafeAreaWidth => Screen.safeArea.width,
-            BreakpointMode.SafeAreaHeight => Screen.safeArea.height,
-            BreakpointMode.SafeAreaAspectRatio => Screen.safeArea.width / Screen.safeArea.height,
+            SafeAreaWidth => Screen.safeArea.width,
+            SafeAreaHeight => Screen.safeArea.height,
+            SafeAreaAspectRatio => Screen.safeArea.width / Screen.safeArea.height,
 
-            BreakpointMode.CameraWidth => Camera?.pixelWidth ?? throw getNullCameraException(),
-            BreakpointMode.CameraHeight => Camera?.pixelHeight ?? throw getNullCameraException(),
-            BreakpointMode.CameraAspectRatio => Camera?.aspect ?? throw getNullCameraException(),
+            CameraWidth => Camera?.pixelWidth ?? throw getNullCameraException(),
+            CameraHeight => Camera?.pixelHeight ?? throw getNullCameraException(),
+            CameraAspectRatio => Camera?.aspect ?? throw getNullCameraException(),
 
             _ => throw UnityObjectExtensions.SwitchDefaultException(Mode),
         };
@@ -162,7 +165,7 @@ public class UiBreakpoints : MonoBehaviour
         static Exception getNullCameraException() =>
             new InvalidOperationException(
                 $"{nameof(Camera)} must be provided when {nameof(Mode)} is " +
-                $"{nameof(BreakpointMode.CameraWidth)}, {nameof(BreakpointMode.CameraHeight)}, or {nameof(BreakpointMode.CameraAspectRatio)}."
+                $"{nameof(CameraWidth)}, {nameof(CameraHeight)}, or {nameof(CameraAspectRatio)}."
             );
     }
 
@@ -179,7 +182,7 @@ public class UiBreakpoints : MonoBehaviour
         if (Breakpoints.Length == 0)
             return;
 
-        bool shouldLog = Application.isEditor && LogDimensionsInEditor || !Application.isEditor && LogDimensionsInPlayer;
+        bool shouldLog = (Application.isEditor && LogDimensionsInEditor) || (!Application.isEditor && LogDimensionsInPlayer);
         if (shouldLog)
             _logger.UiBreakpointUpdating(Mode, MatchMode);
 
@@ -189,7 +192,7 @@ public class UiBreakpoints : MonoBehaviour
             Breakpoints[b].IsMatched = false;
 
         // Raise the "matched" event on all matching breakpoints, according to match criteria...
-        if (MatchMode == BreakpointMatchMode.MaxEqualOrLess) {
+        if (MatchMode == MaxEqualOrLess) {
             UiBreakpoint breakpoint = Breakpoints.LastOrDefault(b => b.Enabled && b.Value <= modeValue);
             if (breakpoint is not null)
                 invokeBreakpoint(breakpoint);
@@ -201,10 +204,10 @@ public class UiBreakpoints : MonoBehaviour
                     continue;
 
                 bool invoke =
-                    breakpoint.Value < modeValue && MatchMode == BreakpointMatchMode.AnyEqualOrLess
+                    (breakpoint.Value < modeValue && MatchMode == AnyEqualOrLess)
                     || breakpoint.Value == modeValue
-                    || breakpoint.Value > modeValue && (MatchMode == BreakpointMatchMode.AnyEqualOrGreater || MatchMode == BreakpointMatchMode.MinEqualOrGreater);
-                bool earlyBreak = breakpoint.Value >= modeValue && MatchMode == BreakpointMatchMode.MinEqualOrGreater;
+                    || (breakpoint.Value > modeValue && (MatchMode == AnyEqualOrGreater || MatchMode == MinEqualOrGreater));
+                bool earlyBreak = breakpoint.Value >= modeValue && MatchMode == MinEqualOrGreater;
 
                 if (invoke)
                     invokeBreakpoint(breakpoint);

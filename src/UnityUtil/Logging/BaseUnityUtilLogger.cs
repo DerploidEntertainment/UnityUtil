@@ -1,10 +1,7 @@
-﻿using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using UnityEngine;
+using Microsoft.Extensions.Logging;
 using static Microsoft.Extensions.Logging.LogLevel;
-using U = UnityEngine;
 
 namespace UnityUtil.Logging;
 

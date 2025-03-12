@@ -1,5 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
 using System;
+using Microsoft.Extensions.Logging;
 using UnityEngine;
 using UnityEngine.Events;
 

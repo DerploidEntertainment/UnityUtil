@@ -1,8 +1,8 @@
-using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Microsoft.Extensions.Logging;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using U = UnityEngine;
@@ -52,10 +52,7 @@ public class DependencyInjector : IDisposable
     /// <summary>
     /// DO NOT USE THIS CONSTRUCTOR. It exists purely for unit testing
     /// </summary>
-    internal DependencyInjector(IEnumerable<Type> cachedResolutionTypes)
-    {
-        _cachedResolutionTypes = new HashSet<Type>(cachedResolutionTypes);
-    }
+    internal DependencyInjector(IEnumerable<Type> cachedResolutionTypes) => _cachedResolutionTypes = new HashSet<Type>(cachedResolutionTypes);
 
     public bool Initialized { get; private set; }
     public void Initialize(ILoggerFactory loggerFactory) => Initialize(loggerFactory, new TypeMetadataProvider());
@@ -313,7 +310,7 @@ public class DependencyInjector : IDisposable
                     cachedParentType = clientType;
                 else {
                     compile = false;
-                    injectMethod.Invoke(client, dependencies);
+                    _ = injectMethod.Invoke(client, dependencies);
                     if (_recording)
                         _uncachedResolutionCounts[clientType] = _uncachedResolutionCounts.TryGetValue(clientType, out int count) ? count + 1 : 1;
                 }
@@ -346,7 +343,7 @@ public class DependencyInjector : IDisposable
 
         _logger?.UnregisteringSceneServices(scene);
         int sceneServiceCount = sceneServices.Sum(x => x.Value.Values.Count);
-        _services.Remove(scene.handle);
+        _ = _services.Remove(scene.handle);
         _logger?.UnregisteredAllSceneServices(scene, sceneServiceCount);
     }
 
@@ -401,10 +398,8 @@ public class DependencyInjector : IDisposable
 
     protected virtual void Dispose(bool disposing)
     {
-        if (!_disposed)
-        {
-            if (disposing)
-            {
+        if (!_disposed) {
+            if (disposing) {
                 // TODO: dispose services that implement IDisposable here
             }
 

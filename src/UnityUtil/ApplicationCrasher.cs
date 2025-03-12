@@ -1,10 +1,11 @@
-﻿using Microsoft.Extensions.Logging;
-using System;
+﻿using System;
 using System.Diagnostics.CodeAnalysis;
+using Microsoft.Extensions.Logging;
+using Unity.Extensions.Logging;
+
 using UnityEngine;
 using UnityEngine.Diagnostics;
 using UnityUtil.DependencyInjection;
-using UnityUtil.Logging;
 
 namespace UnityUtil;
 

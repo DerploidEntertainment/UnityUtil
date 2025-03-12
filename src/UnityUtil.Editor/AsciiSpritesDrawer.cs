@@ -1,8 +1,8 @@
-using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
+using Microsoft.Extensions.Logging;
 using UnityEditor;
 using UnityEngine;
 using UnityUtil.DependencyInjection;
@@ -50,7 +50,7 @@ public class AsciiSpritesDrawer : E.Editor
                 '.' => nameof(AsciiSprites.Period),
                 '/' => nameof(AsciiSprites.Slash),
 
-                (>= '0' and <= '9') => "Num" + ch,
+                >= '0' and <= '9' => "Num" + ch,
 
                 ':' => nameof(AsciiSprites.Colon),
                 ';' => nameof(AsciiSprites.Semicolon),
@@ -60,7 +60,7 @@ public class AsciiSpritesDrawer : E.Editor
                 '?' => nameof(AsciiSprites.Question),
                 '@' => nameof(AsciiSprites.AtSign),
 
-                (>= 'A' and <= 'Z') => "Upper" + ch,
+                >= 'A' and <= 'Z' => "Upper" + ch,
 
                 '[' => nameof(AsciiSprites.BracketOpen),
                 '\\' => nameof(AsciiSprites.Backslash),
@@ -69,7 +69,7 @@ public class AsciiSpritesDrawer : E.Editor
                 '_' => nameof(AsciiSprites.Underscore),
                 '`' => nameof(AsciiSprites.GraveAccent),
 
-                (>= 'a' and <= 'z') => "Lower" + ch.ToString().ToUpperInvariant(),
+                >= 'a' and <= 'z' => "Lower" + ch.ToString().ToUpperInvariant(),
 
                 '{' => nameof(AsciiSprites.CurlyBraceOpen),
                 '|' => nameof(AsciiSprites.Pipe),
@@ -115,13 +115,13 @@ public class AsciiSpritesDrawer : E.Editor
         if (GUILayout.Button("Auto-Load Lowercase Sprites"))
             loadLowercaseSpriteAssets();
 
-        serializedObject.ApplyModifiedProperties();
-        EditorGUI.EndChangeCheck();
+        _ = serializedObject.ApplyModifiedProperties();
+        _ = EditorGUI.EndChangeCheck();
 
         // Draw remaining controls in default way
         EditorGUILayout.Space();
         EditorGUILayout.LabelField("Character Sprites", EditorStyles.boldLabel);
-        DrawDefaultInspector();
+        _ = DrawDefaultInspector();
     }
 
     private void loadAllSpriteAssets()

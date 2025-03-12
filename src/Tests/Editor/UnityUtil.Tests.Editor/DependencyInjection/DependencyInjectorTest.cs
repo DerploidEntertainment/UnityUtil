@@ -1,15 +1,17 @@
-using Microsoft.Extensions.Logging;
-using Moq;
-using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
+using Microsoft.Extensions.Logging;
+using Moq;
+using NUnit.Framework;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityUtil.DependencyInjection;
-using UnityUtil.Logging;
+using UnityUtil.Editor.Tests;
+using Unity.Extensions.Logging;
+using UnityUtil.Tests.Util;
 
 namespace UnityUtil.Editor.Tests.DependencyInjection;
 
@@ -121,7 +123,7 @@ public class DependencyInjectorTest : BaseEditModeTestFixture
         var dependencyInjector = new DependencyInjector(cachedResolutionTypes: []);
         dependencyInjector.Initialize(new UnityDebugLoggerFactory());
 
-        Assert.Throws<InvalidOperationException>(() => dependencyInjector.Initialize(new UnityDebugLoggerFactory()));
+        _ = Assert.Throws<InvalidOperationException>(() => dependencyInjector.Initialize(new UnityDebugLoggerFactory()));
     }
 
     [Test]
@@ -130,7 +132,7 @@ public class DependencyInjectorTest : BaseEditModeTestFixture
         var dependencyInjector = new DependencyInjector(cachedResolutionTypes: []);
         object testService = new();
 
-        Assert.Throws<InvalidOperationException>(() => dependencyInjector.RegisterService(testService));
+        _ = Assert.Throws<InvalidOperationException>(() => dependencyInjector.RegisterService(testService));
 
         dependencyInjector.Initialize(new UnityDebugLoggerFactory());
         Assert.DoesNotThrow(() => dependencyInjector.RegisterService(testService));
@@ -142,7 +144,7 @@ public class DependencyInjectorTest : BaseEditModeTestFixture
         var dependencyInjector = new DependencyInjector(cachedResolutionTypes: []);
         Scene testScene = SceneManager.GetActiveScene();
 
-        Assert.Throws<InvalidOperationException>(() => dependencyInjector.UnregisterSceneServices(testScene));
+        _ = Assert.Throws<InvalidOperationException>(() => dependencyInjector.UnregisterSceneServices(testScene));
 
         dependencyInjector.Initialize(new UnityDebugLoggerFactory());
         Assert.DoesNotThrow(() => dependencyInjector.UnregisterSceneServices(testScene));
@@ -154,7 +156,7 @@ public class DependencyInjectorTest : BaseEditModeTestFixture
         var dependencyInjector = new DependencyInjector(cachedResolutionTypes: []);
         object testClient = new();
 
-        Assert.Throws<InvalidOperationException>(() => dependencyInjector.ResolveDependenciesOf(testClient));
+        _ = Assert.Throws<InvalidOperationException>(() => dependencyInjector.ResolveDependenciesOf(testClient));
 
         dependencyInjector.Initialize(new UnityDebugLoggerFactory());
         Assert.DoesNotThrow(() => dependencyInjector.ResolveDependenciesOf(testClient));
@@ -194,11 +196,11 @@ public class DependencyInjectorTest : BaseEditModeTestFixture
 
         // ACT/ASSERT
         dependencyInjector.RegisterService(getComponentService<TestComponent>(), TEST_TAG, scene: scene);
-        Assert.Throws<InvalidOperationException>(() =>
+        _ = Assert.Throws<InvalidOperationException>(() =>
             dependencyInjector.RegisterService(getComponentService<TestComponent>(), TEST_TAG, scene: scene));
 
         dependencyInjector.RegisterService(getComponentService<TestComponent>(), scene: scene);
-        Assert.Throws<InvalidOperationException>(() =>
+        _ = Assert.Throws<InvalidOperationException>(() =>
             dependencyInjector.RegisterService(getComponentService<TestComponent>(), scene: scene));
     }
 
@@ -212,11 +214,11 @@ public class DependencyInjectorTest : BaseEditModeTestFixture
 
         // ACT/ASSERT
         dependencyInjector.RegisterService(getComponentService<TestComponent>(), TEST_TAG, scene: scene);
-        Assert.Throws<InvalidOperationException>(() =>
+        _ = Assert.Throws<InvalidOperationException>(() =>
             dependencyInjector.RegisterService(getComponentService<TestComponent>(), TEST_TAG, scene: scene));
 
         dependencyInjector.RegisterService(getComponentService<TestComponent>(), scene: scene);
-        Assert.Throws<InvalidOperationException>(() =>
+        _ = Assert.Throws<InvalidOperationException>(() =>
             dependencyInjector.RegisterService(() => getComponentService<TestComponent>(), scene: scene));
     }
 
@@ -226,19 +228,19 @@ public class DependencyInjectorTest : BaseEditModeTestFixture
         // ARRANGE
         DependencyInjector dependencyInjector = getDependencyInjector();
         Scene otherScene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Additive);
-        SceneManager.SetActiveScene(otherScene);
+        _ = SceneManager.SetActiveScene(otherScene);
         const string TEST_TAG = "test";
 
         // ACT/ASSERT
         dependencyInjector.RegisterService(getComponentService<TestComponent>(), TEST_TAG);
-        Assert.Throws<InvalidOperationException>(() =>
+        _ = Assert.Throws<InvalidOperationException>(() =>
             dependencyInjector.RegisterService(getComponentService<TestComponent>(), TEST_TAG));
 
         dependencyInjector.RegisterService(getComponentService<TestComponent>());
-        Assert.Throws<InvalidOperationException>(() =>
+        _ = Assert.Throws<InvalidOperationException>(() =>
             dependencyInjector.RegisterService(getComponentService<TestComponent>()));
 
-        EditorSceneManager.CloseScene(otherScene, removeScene: true);
+        _ = EditorSceneManager.CloseScene(otherScene, removeScene: true);
     }
 
     [Test, Ignore("Haven't figured out a way to open a new Scene while in the unsaved scene created by the Test Runner")]
@@ -247,19 +249,19 @@ public class DependencyInjectorTest : BaseEditModeTestFixture
         // ARRANGE
         DependencyInjector dependencyInjector = getDependencyInjector();
         Scene otherScene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Additive);
-        SceneManager.SetActiveScene(otherScene);
+        _ = SceneManager.SetActiveScene(otherScene);
         const string TEST_TAG = "test";
 
         // ACT/ASSERT
         dependencyInjector.RegisterService(getComponentService<TestComponent>(), TEST_TAG);
-        Assert.Throws<InvalidOperationException>(() =>
+        _ = Assert.Throws<InvalidOperationException>(() =>
             dependencyInjector.RegisterService(getComponentService<TestComponent>(), TEST_TAG));
 
         dependencyInjector.RegisterService(getComponentService<TestComponent>());
-        Assert.Throws<InvalidOperationException>(() =>
+        _ = Assert.Throws<InvalidOperationException>(() =>
             dependencyInjector.RegisterService(getComponentService<TestComponent>()));
 
-        EditorSceneManager.CloseScene(otherScene, removeScene: true);
+        _ = EditorSceneManager.CloseScene(otherScene, removeScene: true);
     }
 
     [Test]
@@ -275,7 +277,7 @@ public class DependencyInjectorTest : BaseEditModeTestFixture
         dependencyInjector.TryGetService(typeof(object), injectTag: DependencyInjector.DefaultInjectTag, clientName: "Unit test", out Service service);
         Assert.That(service.Instance, Is.SameAs(serviceInstance));
 
-        Assert.Throws<KeyNotFoundException>(() => dependencyInjector.TryGetService(typeof(object), injectTag: "test", clientName: "Unit test", out _));
+        _ = Assert.Throws<KeyNotFoundException>(() => dependencyInjector.TryGetService(typeof(object), injectTag: "test", clientName: "Unit test", out _));
     }
 
     #endregion
@@ -304,7 +306,7 @@ public class DependencyInjectorTest : BaseEditModeTestFixture
         dependencyInjector.TryGetService(typeof(Exception), injectTag: DependencyInjector.DefaultInjectTag, clientName: "Unit test", out Service service);
 
         Assert.That(service.Instance, Is.SameAs(serviceInstance));
-        Assert.Throws<KeyNotFoundException>(() =>
+        _ = Assert.Throws<KeyNotFoundException>(() =>
             dependencyInjector.TryGetService(typeof(ApplicationException), injectTag: DependencyInjector.DefaultInjectTag, clientName: "Unit test", out _));
     }
 
@@ -343,7 +345,7 @@ public class DependencyInjectorTest : BaseEditModeTestFixture
         dependencyInjector.TryGetService(typeof(Exception), injectTag: DependencyInjector.DefaultInjectTag, clientName: "Unit test", out Service service);
 
         Assert.That(service.Instance, Is.SameAs(serviceInstance));
-        Assert.Throws<KeyNotFoundException>(() =>
+        _ = Assert.Throws<KeyNotFoundException>(() =>
             dependencyInjector.TryGetService(typeof(ApplicationException), injectTag: DependencyInjector.DefaultInjectTag, clientName: "Unit test", out _));
     }
 
@@ -368,10 +370,10 @@ public class DependencyInjectorTest : BaseEditModeTestFixture
     {
         DependencyInjector dependencyInjector = getDependencyInjector();
 
-        Assert.Throws<KeyNotFoundException>(() => dependencyInjector.TryGetService(typeof(Component), injectTag: "any", clientName: "Unit test", out _));
-        Assert.Throws<KeyNotFoundException>(() => dependencyInjector.TryGetService(typeof(Component), injectTag: "Untagged", clientName: "Unit test", out _));
-        Assert.Throws<KeyNotFoundException>(() => dependencyInjector.TryGetService(typeof(MonoBehaviour), injectTag: "any", clientName: "Unit test", out _));
-        Assert.Throws<KeyNotFoundException>(() => dependencyInjector.TryGetService(typeof(MonoBehaviour), injectTag: "Untagged", clientName: "Unit test", out _));
+        _ = Assert.Throws<KeyNotFoundException>(() => dependencyInjector.TryGetService(typeof(Component), injectTag: "any", clientName: "Unit test", out _));
+        _ = Assert.Throws<KeyNotFoundException>(() => dependencyInjector.TryGetService(typeof(Component), injectTag: "Untagged", clientName: "Unit test", out _));
+        _ = Assert.Throws<KeyNotFoundException>(() => dependencyInjector.TryGetService(typeof(MonoBehaviour), injectTag: "any", clientName: "Unit test", out _));
+        _ = Assert.Throws<KeyNotFoundException>(() => dependencyInjector.TryGetService(typeof(MonoBehaviour), injectTag: "Untagged", clientName: "Unit test", out _));
     }
 
     [Test, Ignore("Haven't figured out a way to open a new Scene while in the unsaved scene created by the Test Runner")]
@@ -408,7 +410,7 @@ public class DependencyInjectorTest : BaseEditModeTestFixture
         DependencyInjector dependencyInjector = getDependencyInjector(typeMetadataProvider: typeMetadataProvider.Object);
 
         var client = new Mock<INoDependenciesClient>();
-        client.Setup(x => x.Inject()).Callback(() => { });
+        _ = client.Setup(x => x.Inject()).Callback(() => { });
         dependencyInjector.ResolveDependenciesOf(client.Object);
 
         // Client's Inject() method takes no parameters, so it will not be called
@@ -422,7 +424,7 @@ public class DependencyInjectorTest : BaseEditModeTestFixture
         DependencyInjector dependencyInjector = getDependencyInjector(typeMetadataProvider: typeMetadataProvider.Object);
         var client = new Mock<IMultipleInjectClient>();
 
-        Assert.Throws<AmbiguousMatchException>(() => dependencyInjector.ResolveDependenciesOf(client.Object));
+        _ = Assert.Throws<AmbiguousMatchException>(() => dependencyInjector.ResolveDependenciesOf(client.Object));
     }
 
     [Test]
@@ -561,7 +563,7 @@ public class DependencyInjectorTest : BaseEditModeTestFixture
         dependencyInjector.RegisterService(new GameObject().AddComponent<TestComponent>());
 
         MultiConstructorClient genericInstance = dependencyInjector.Construct<MultiConstructorClient>();
-        var nonGenericInstance = (MultiConstructorClient)dependencyInjector.Construct(typeof(MultiConstructorClient));
+        MultiConstructorClient nonGenericInstance = dependencyInjector.Construct<MultiConstructorClient>();
 
         Assert.That(genericInstance.NumParamsInUsedConstructor, Is.EqualTo(1));
         Assert.That(nonGenericInstance.NumParamsInUsedConstructor, Is.EqualTo(1));
@@ -579,13 +581,13 @@ public class DependencyInjectorTest : BaseEditModeTestFixture
     public void Construct_CallsEmptyConstructor_IfOnlyOption()
     {
         Mock<ITypeMetadataProvider> typeMetadataProvider = getTypeMetadataProvider();
-        typeMetadataProvider
+        _ = typeMetadataProvider
             .Setup(x => x.GetMethodParameters(It.IsAny<ConstructorInfo>()))
             .Returns((ConstructorInfo constructor) => constructor.GetParameters());
         DependencyInjector dependencyInjector = getDependencyInjector(typeMetadataProvider: typeMetadataProvider.Object);
 
         // Client constructor takes no parameters, but is still invoked to instantiate an object
-        dependencyInjector.Construct<EmptyConstructorClient>();
+        _ = dependencyInjector.Construct<EmptyConstructorClient>();
         typeMetadataProvider.Verify(x => x.GetMethodParameters(It.IsAny<ConstructorInfo>()), Times.Once);
     }
 
@@ -600,11 +602,11 @@ public class DependencyInjectorTest : BaseEditModeTestFixture
         dependencyInjector.RegisterService(getComponentService<TestComponent>());
 
         // Initial, uncached resolution
-        dependencyInjector.Construct<MultiConstructorClient>();
+        _ = dependencyInjector.Construct<MultiConstructorClient>();
         mockTypeMetadataProvider.Verify(x => x.GetConstructors(typeof(MultiConstructorClient)), Times.Once);
 
         // Cached resolution
-        dependencyInjector.Construct<MultiConstructorClient>();
+        _ = dependencyInjector.Construct<MultiConstructorClient>();
         mockTypeMetadataProvider.Verify(x => x.GetConstructors(typeof(MultiConstructorClient)), Times.Once);
     }
 
@@ -616,7 +618,7 @@ public class DependencyInjectorTest : BaseEditModeTestFixture
         DependencyInjector dependencyInjector = getDependencyInjector(loggerFactory: loggerFactory);
 
         dependencyInjector.RegisterService(getComponentService<TestComponent>());
-        dependencyInjector.Construct<ConstructorSameTypeNoTagsClient>();
+        _ = dependencyInjector.Construct<ConstructorSameTypeNoTagsClient>();
 
         Assert.That(warnCount, Is.EqualTo(1));
     }
@@ -631,7 +633,7 @@ public class DependencyInjectorTest : BaseEditModeTestFixture
 
         dependencyInjector.RegisterService(getComponentService<TestComponent>(), TEST_TAG);
         dependencyInjector.RegisterService(getComponentService<TestComponent>(), "not-" + TEST_TAG);
-        dependencyInjector.Construct<ConstructorSameTypeDifferentTagsClient>();
+        _ = dependencyInjector.Construct<ConstructorSameTypeDifferentTagsClient>();
 
         Assert.That(warnCount, Is.EqualTo(0));
     }
@@ -644,7 +646,7 @@ public class DependencyInjectorTest : BaseEditModeTestFixture
         DependencyInjector dependencyInjector = getDependencyInjector(loggerFactory: loggerFactory);
 
         dependencyInjector.RegisterService(getComponentService<TestComponent>(), "test");
-        dependencyInjector.Construct<ConstructorSameTypeSameTagsClient>();
+        _ = dependencyInjector.Construct<ConstructorSameTypeSameTagsClient>();
 
         Assert.That(warnCount, Is.EqualTo(1));
     }
@@ -710,14 +712,14 @@ public class DependencyInjectorTest : BaseEditModeTestFixture
         dependencyInjector.RecordingResolutions = true;
 
         // Initial, uncached resolution
-        dependencyInjector.Construct<MultiConstructorClient>();
+        _ = dependencyInjector.Construct<MultiConstructorClient>();
         counts = dependencyInjector.ServiceResolutionCounts;
         Assert.That(counts.Uncached.Count, Is.EqualTo(0));
         Assert.That(counts.Cached.Count, Is.EqualTo(1));
         Assert.That(counts.Cached[clientType], Is.EqualTo(1));
 
         // Second, type resolution cached
-        dependencyInjector.Construct<MultiConstructorClient>();
+        _ = dependencyInjector.Construct<MultiConstructorClient>();
         counts = dependencyInjector.ServiceResolutionCounts;
         Assert.That(counts.Uncached.Count, Is.EqualTo(0));
         Assert.That(counts.Cached.Count, Is.EqualTo(1));
@@ -774,9 +776,9 @@ public class DependencyInjectorTest : BaseEditModeTestFixture
         dependencyInjector.RegisterService(getComponentService<Animator>());
 
         dependencyInjector.RecordingResolutions = false;
-        dependencyInjector.Construct<MultiConstructorClient>();
-        dependencyInjector.Construct<MultiConstructorClient>();
-        dependencyInjector.Construct<MultiConstructorClient>();
+        _ = dependencyInjector.Construct<MultiConstructorClient>();
+        _ = dependencyInjector.Construct<MultiConstructorClient>();
+        _ = dependencyInjector.Construct<MultiConstructorClient>();
         DependencyResolutionCounts counts = dependencyInjector.ServiceResolutionCounts;
 
         Assert.That(counts.Cached, Is.Empty);
@@ -797,9 +799,9 @@ public class DependencyInjectorTest : BaseEditModeTestFixture
 
         dependencyInjector.UnregisterSceneServices(activeScene);
 
-        Assert.Throws<KeyNotFoundException>(() =>
+        _ = Assert.Throws<KeyNotFoundException>(() =>
             dependencyInjector.TryGetService(typeof(object), DependencyInjector.DefaultInjectTag, clientName: "Unit test", out _));
-        Assert.Throws<KeyNotFoundException>(() =>
+        _ = Assert.Throws<KeyNotFoundException>(() =>
             dependencyInjector.TryGetService(typeof(Exception), DependencyInjector.DefaultInjectTag, clientName: "Unit test", out _));
     }
 
@@ -828,25 +830,23 @@ public class DependencyInjectorTest : BaseEditModeTestFixture
         var mock = new Mock<ITypeMetadataProvider>();
         var typeMetadataProvider = new TypeMetadataProvider();
 
-        mock.Setup(x => x.GetMethod(It.IsAny<Type>(), It.IsAny<string>(), It.IsAny<BindingFlags>()))
-            .Returns<Type, string, BindingFlags>((type, name, bindingFlags) => typeMetadataProvider.GetMethod(type, name, bindingFlags));
+        _ = mock.Setup(x => x.GetMethod(It.IsAny<Type>(), It.IsAny<string>(), It.IsAny<BindingFlags>()))
+            .Returns<Type, string, BindingFlags>(typeMetadataProvider.GetMethod);
 
-        mock.Setup(x => x.GetConstructors(It.IsAny<Type>()))
-            .Returns<Type>(type => typeMetadataProvider.GetConstructors(type));
+        _ = mock.Setup(x => x.GetConstructors(It.IsAny<Type>()))
+            .Returns<Type>(typeMetadataProvider.GetConstructors);
 
-        mock.Setup(x => x.GetMethodParameters(It.IsAny<MethodBase>()))
-            .Returns<MethodBase>(method => typeMetadataProvider.GetMethodParameters(method));
+        _ = mock.Setup(x => x.GetMethodParameters(It.IsAny<MethodBase>()))
+            .Returns<MethodBase>(typeMetadataProvider.GetMethodParameters);
 
-        mock.Setup(x => x.GetCustomAttribute<InjectTagAttribute>(It.IsAny<ParameterInfo>()))
-            .Returns<ParameterInfo>(param => typeMetadataProvider.GetCustomAttribute<InjectTagAttribute>(param));
+        _ = mock.Setup(x => x.GetCustomAttribute<InjectTagAttribute>(It.IsAny<ParameterInfo>()))
+            .Returns<ParameterInfo>(typeMetadataProvider.GetCustomAttribute<InjectTagAttribute>);
 
-        mock.Setup(x => x.CompileMethodCall(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MethodInfo>(), It.IsAny<object[]>()))
-            .Returns<string, string, MethodInfo, object[]>((methodName, paramName, injectMethod, args) =>
-                typeMetadataProvider.CompileMethodCall(methodName, paramName, injectMethod, args));
+        _ = mock.Setup(x => x.CompileMethodCall(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MethodInfo>(), It.IsAny<object[]>()))
+            .Returns<string, string, MethodInfo, object[]>(typeMetadataProvider.CompileMethodCall);
 
-        mock.Setup(x => x.CompileConstructorCall(It.IsAny<ConstructorInfo>(), It.IsAny<object[]>()))
-            .Returns<ConstructorInfo, object[]>((constructor, args) =>
-                typeMetadataProvider.CompileConstructorCall(constructor, args));
+        _ = mock.Setup(x => x.CompileConstructorCall(It.IsAny<ConstructorInfo>(), It.IsAny<object[]>()))
+            .Returns<ConstructorInfo, object[]>(typeMetadataProvider.CompileConstructorCall);
 
         return mock;
     }

@@ -4,10 +4,9 @@ using UnityUtil.Logging;
 namespace UnityUtil.Math;
 
 /// <inheritdoc/>
-internal class MathLogger<T> : BaseUnityUtilLogger<T>
+internal class MathLogger<T>(ILoggerFactory loggerFactory, T context)
+    : BaseUnityUtilLogger<T>(loggerFactory, context, eventIdOffset: 8000)
 {
-    public MathLogger(ILoggerFactory loggerFactory, T context)
-        : base(loggerFactory, context, eventIdOffset: 8000) { }
 
     #region Information
 

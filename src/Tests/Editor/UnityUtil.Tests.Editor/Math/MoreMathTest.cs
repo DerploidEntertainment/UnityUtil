@@ -25,7 +25,7 @@ public class MoreMathTest : BaseEditModeTestFixture
     public void RandomWeightedIndex_Fails_WeightsDontSumToOne(float[] indexWeights)
     {
         Debug.Log($"Index weights: {string.Join(',', indexWeights)}");
-        Assert.Throws<InvalidOperationException>(() =>
+        _ = Assert.Throws<InvalidOperationException>(() =>
             MoreMath.RandomWeightedIndex(indexWeights, getRandomAdapter())
         );
     }
@@ -38,7 +38,7 @@ public class MoreMathTest : BaseEditModeTestFixture
     public void RandomWeightedIndex_Fails_NegativeWeights(float[] indexWeights)
     {
         Debug.Log($"Index weights: {string.Join(',', indexWeights)}");
-        Assert.Throws<InvalidOperationException>(() =>
+        _ = Assert.Throws<InvalidOperationException>(() =>
             MoreMath.RandomWeightedIndex(indexWeights, getRandomAdapter())
         );
     }
@@ -51,7 +51,7 @@ public class MoreMathTest : BaseEditModeTestFixture
     public void RandomWeightedIndex_Fails_WeightsOverOne(float[] indexWeights)
     {
         Debug.Log($"Index weights: {string.Join(',', indexWeights)}");
-        Assert.Throws<InvalidOperationException>(() =>
+        _ = Assert.Throws<InvalidOperationException>(() =>
             MoreMath.RandomWeightedIndex(indexWeights, getRandomAdapter())
         );
     }
