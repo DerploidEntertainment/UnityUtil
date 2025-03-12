@@ -1,7 +1,7 @@
-﻿using Microsoft.Extensions.Logging;
-using System;
+﻿using System;
+using Microsoft.Extensions.Logging;
 
-namespace UnityUtil.Logging;
+namespace UnityUtil.Tests.Util;
 
 /// <summary>
 /// "Default" implementation of <see cref="ILogger"/> that calls provided callbacks for log messages based on their <see cref="LogLevel"/>.

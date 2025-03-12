@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <UnityDestinationFolder>$(UnityProjectPath)\Assets\$(MSBuildProjectName)\Runtime</UnityDestinationFolder>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="$(UnityPackageCachePath)\org.nuget.microsoft.extensions.logging\netstandard2.1\Microsoft.Extensions.Logging.dll" Private="false" />
+    <Reference Include="$(UnityPackageCachePath)\org.nuget.microsoft.extensions.logging.abstractions\Microsoft.Extensions.Logging.Abstractions.dll" Private="false" />
+
+    <Reference Include="$(UnityPackageCachePath)\org.nuget.serilog\Serilog.dll" Private="false" />
+    <ProjectReference Include="..\Serilog.Sinks.Unity\Serilog.Sinks.Unity.csproj" />
+    <ProjectReference Include="..\Serilog.Enrichers.Unity\Serilog.Enrichers.Unity.csproj" />
+    <PackageReference Include="SerilogAnalyzer" />
+    <Reference Include="$(UnityPackageCachePath)\org.nuget.serilog.extensions.logging\Serilog.Extensions.Logging.dll" Private="false" />
+
+    <Reference Include="$(UnityModulesPath)\UnityEngine.CoreModule.dll" Private="false" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="$(UnityProjectPath)\Assets\$(ProjectName)\package.json" />
+  </ItemGroup>
+
+</Project>

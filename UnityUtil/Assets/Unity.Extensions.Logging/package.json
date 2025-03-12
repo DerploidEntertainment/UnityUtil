@@ -1,0 +1,26 @@
+{
+  "name": "com.unity.extensions.logging",
+  "version": "0.1.0",
+  "description": "Configurable Unity-specific logging extensions for using Serilog behind Microsoft.Extensions.Logging",
+  "displayName": "Unity Logging Extensions",
+  "unity": "2019.4",
+  "documentationUrl": "https://github.com/DerploidEntertainment/UnityUtil/blob/0.1.0-unity6/src/Unity.Extensions.Logging/README.md",
+  "author": {
+    "name": "Rabadash8820",
+    "url": "https://github.com/Rabadash8820"
+  },
+  "dependencies": {
+    "org.nuget.serilog": "2.8.0",
+    "com.serilog.sinks.unity": "0.1.0",
+    "com.enrichers.sinks.unity": "0.1.0",
+    "org.nuget.serilog.extensions.logging": "2.0.0",
+    "org.nuget.microsoft.extensions.logging": "2.0.0",
+    "org.nuget.microsoft.extensions.logging.abstractions": "2.0.0"
+  },
+  "license": "MIT",
+  "keywords": [
+    "utility",
+    "logging",
+    "serilog"
+  ]
+}

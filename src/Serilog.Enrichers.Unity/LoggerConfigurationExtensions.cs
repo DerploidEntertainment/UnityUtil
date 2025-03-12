@@ -3,7 +3,7 @@ using Serilog.Configuration;
 
 namespace Serilog.Enrichers.Unity;
 
-public static class LoggerEnrichmentConfigurationExtensions
+public static class LoggerConfigurationExtensions
 {
     /// <summary>
     /// Enriches log events with context from the Unity engine such as frame counts, GameObject hierarchies, etc.

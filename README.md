@@ -43,6 +43,9 @@ As the API stabilizes, I will move this package to [OpenUPM](https://openupm.com
 ## Packages
 
 - [Serilog.Enrichers.Unity](./src/Serilog.Enrichers.Unity/README.md): Implements a Serilog enricher to dynamically add Unity data to log events like frame counts, GameObject hierarchies, etc.
+- [Serilog.Sinks.Unity](./src/Serilog.Sinks.Unity/README.md): Implements a Serilog sink that writes log events to the Unity Console
+- [Unity.Extensions.Logging](./src/Unity.Extensions.Logging/README.md): Unity-specific logging extensions to the Microsoft.Extensions.Logging library
+- [Unity.Extensions.Logging](./src/Unity.Extensions.Logging/README.md): Unity-specific logging extensions for using Serilog behind Microsoft.Extensions.Logging
 - [UnityUtil](./src/UnityUtil/README.md): utility classes and components related to dependency injection, logging, mathematics, data storage, etc.
 - [UnityUtil.Configuration.RemoteConfig](./src/UnityUtil.Configuration.RemoteConfig/README.md): Implementats a `Microsoft.Extensions.Configuration` configuration provider for Unity Remote Config
 - [UnityUtil.Inputs](./src/UnityUtil.Inputs/README.md): abstracted player inputs

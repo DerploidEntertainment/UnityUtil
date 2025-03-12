@@ -1,0 +1,12 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <Reference Include="$(UnityModulesPath)\UnityEngine.CoreModule.dll" Private="false" />
+    <Reference Include="$(UnityPackageCachePath)\org.nuget.serilog\Serilog.dll" Private="false" />
+    <PackageReference Include="SerilogAnalyzer" />
+
+    <Reference Include="$(UnityPackageCachePath)\org.nuget.serilog.extensions.logging\Serilog.Extensions.Logging.dll" Private="false" />
+    <Reference Include="$(UnityPackageCachePath)\org.nuget.microsoft.extensions.logging\netstandard2.1\Microsoft.Extensions.Logging.dll" Private="false" />
+  </ItemGroup>
+
+</Project>

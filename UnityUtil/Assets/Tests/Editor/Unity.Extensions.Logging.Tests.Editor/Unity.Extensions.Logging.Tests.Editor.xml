@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Unity.Extensions.Logging.Tests.Editor</name>
+    </assembly>
+    <members>
+        <member name="M:Unity.Extensions.Logging.Tests.Editor.TestHelpers.BuildDefaultLoggerFactoryForUnity">
+            <summary>
+            Creates a <see cref="T:Microsoft.Extensions.Logging.LoggerFactory"/> that wraps Serilog with default enricher, sink, and other configuration for Unity.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Unity.Extensions.Logging.Tests.Editor.TestLoggingComponent">
+            <summary>
+            Create an instance of this component in a test scene to verify that logging with Serilog and Microsoft.Extensions.Logging works as expected in Unity.
+            </summary>
+        </member>
+        <member name="M:Unity.Extensions.Logging.Tests.Editor.TestLoggingComponent.TestLog">
+            <summary>
+            Emits a test log with example scope properties.
+            After invoking this method via its Odin button in the Inspector, verify that:
+            <list type="number">
+            <item>The log message appears in the Unity console.</item>
+            <item>The log message includes the expected log properties.</item>
+            <item>The type name appears as the tag in the Unity log.</item>
+            <item>Clicking the log in the console highlights the component in the Hierarchy view.</item>
+            </list>
+            </summary>
+            <remarks>
+            In production code, we would just inject an <see cref="T:Microsoft.Extensions.Logging.ILoggerFactory"/> rather than using a static helper method.
+            Still, see how the Serilog configuration is encapsulated elsewhere, so we aren't <see langword="using"/> any Serilog namespaces in this file.
+            </remarks>
+        </member>
+    </members>
+</doc>

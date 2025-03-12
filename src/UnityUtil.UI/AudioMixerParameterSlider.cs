@@ -2,12 +2,12 @@
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Logging;
 using Sirenix.OdinInspector;
-using Unity.Extensions.Logging;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using UnityUtil.DependencyInjection;
+using UnityUtil.Logging;
 using UnityUtil.Storage;
 
 namespace UnityUtil.UI;

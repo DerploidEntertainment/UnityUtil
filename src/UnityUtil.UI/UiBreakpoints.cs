@@ -1,14 +1,14 @@
-﻿using System;
+using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Microsoft.Extensions.Logging;
 using Sirenix.OdinInspector;
-using Unity.Extensions.Logging;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityUtil.DependencyInjection;
-using static UnityUtil.UI.BreakpointMode;
+using UnityUtil.Logging;
 using static UnityUtil.UI.BreakpointMatchMode;
+using static UnityUtil.UI.BreakpointMode;
 
 namespace UnityUtil.UI;
 

@@ -1,6 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
 using System;
-using MEL = Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 
 namespace UnityUtil.Logging;
 
@@ -11,7 +10,7 @@ public class UnityDebugLoggerFactory : ILoggerFactory
 {
     public UnityDebugLoggerFactory() { }
 
-    public void AddProvider(MEL.ILoggerProvider provider) { }
+    public void AddProvider(ILoggerProvider provider) { }
     public ILogger CreateLogger(string categoryName) => new UnityDebugLogger();
     public void Dispose() => GC.SuppressFinalize(this);
 }

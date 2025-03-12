@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Logging;
+using Unity.Extensions.Logging;
 using static Microsoft.Extensions.Logging.LogLevel;
 
 namespace UnityUtil.Logging;
@@ -370,20 +371,13 @@ public abstract class BaseUnityUtilLogger<TCategoryName>
     {
         EventId eventId = new((int)logLevel * LogLevelAllowedIdCount + _eventIdOffset + id, name);
 
-        if (_context is not U.Object contextObj) {
+        if (_context is not UnityEngine.Object unityContext) {
             _logger.Log(logLevel, eventId, exception, message, args);
             return;
         }
 
-        var scopeProps = new Dictionary<string, object> {
-            // Include the Unity Object context as a scope property.
-            // Using the propertys name expected by Serilog.Sinks.Unity3D, to make integration with that popular log framework easier.
-            // See https://github.com/KuraiAndras/Serilog.Sinks.Unity3D/blob/master/Serilog.Sinks.Unity3D/Assets/Serilog.Sinks.Unity3D/UnityObjectEnricher.cs
-            { "%_DO_NOT_USE_UNITY_ID_DO_NOT_USE%", contextObj },
-            { "%_DO_NOT_USE_UNITY_TAG_DO_NOT_USE%", typeof(TCategoryName).Name },
-        };
-
-        using (_logger.BeginScope(scopeProps))
+        // Include the Unity GameObject or Component context as a log scope property
+        using (_logger.BeginScope((nameof(UnityLogContext), new UnityLogContext(unityContext))))
             _logger.Log(logLevel, eventId, exception, message, args);
     }
 }

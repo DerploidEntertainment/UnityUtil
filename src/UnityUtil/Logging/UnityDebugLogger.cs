@@ -1,5 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
 using System;
+using Microsoft.Extensions.Logging;
 using UnityEngine;
 using MEL = Microsoft.Extensions.Logging;
 
@@ -8,7 +8,7 @@ namespace UnityUtil.Logging;
 /// <summary>
 /// "Default" implementation of <see cref="MEL.ILogger"/> to wrap Unity's own <see cref="Debug"/> <c>Log*</c> methods.
 /// Mainly intended for Unity code that can't set up a proper logging framework via dependency injection (e.g., in Editor scripts).
-/// Most runtime code should still prefer dependency injection and one of the custom <see cref="UnityUtil"/> loggers.
+/// Most runtime code should still prefer injecting an <see cref="ILoggerFactory"/> and creating an <see cref="ILogger{TCategoryName}"/>.
 /// </summary>
 public class UnityDebugLogger : MEL.ILogger
 {
@@ -20,26 +20,14 @@ public class UnityDebugLogger : MEL.ILogger
     {
         string msg = $"{eventId} {formatter(state, exception)}";
 
-        switch (logLevel) {
-            case LogLevel.None:
-            case LogLevel.Trace:
-            case LogLevel.Debug:
-            case LogLevel.Information:
-                Debug.Log(msg);
-                break;
+        LogType logType = logLevel switch {
+            LogLevel.None or LogLevel.Trace or LogLevel.Debug or LogLevel.Information => LogType.Log,
+            LogLevel.Warning => LogType.Warning,
+            LogLevel.Error or LogLevel.Critical => LogType.Error,
+            _ => throw new NotImplementedException($"Unknown {nameof(LogLevel)}: {logLevel}")
+        };
 
-            case LogLevel.Warning:
-                Debug.LogWarning(msg);
-                break;
-
-            case LogLevel.Error:
-            case LogLevel.Critical:
-                Debug.LogError(msg);
-                break;
-
-            default:
-                throw UnityObjectExtensions.SwitchDefaultException(logLevel);
-        }
+        Debug.unityLogger.Log(logType, msg);
     }
 }
 

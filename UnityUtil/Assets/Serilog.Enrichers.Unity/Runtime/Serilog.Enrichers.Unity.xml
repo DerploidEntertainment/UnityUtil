@@ -4,22 +4,71 @@
         <name>Serilog.Enrichers.Unity</name>
     </assembly>
     <members>
-        <member name="M:Serilog.Enrichers.Unity.LoggerEnrichmentConfigurationExtensions.WithUnityData(Serilog.Configuration.LoggerEnrichmentConfiguration,Serilog.Enrichers.Unity.UnityLogEnricherSettings)">
+        <member name="M:Serilog.Enrichers.Unity.LoggerConfigurationExtensions.WithUnityData(Serilog.Configuration.LoggerEnrichmentConfiguration,Serilog.Enrichers.Unity.UnityLogEnricherSettings)">
             <summary>
-            Enriches log events with context from the Unity engine such as frame counts, GameObject hierarchies, etc.
-            For assets (e.g., <see cref="T:UnityEngine.ScriptableObject"/>s), this will simply be the <see cref="P:UnityEngine.Object.name"/>.
-            For scene objects, this will be the hierarchical path of the object using <paramref name="settings"/>.
+            Enriches log events with context from the Unity engine, such as frame counts.
             </summary>
             <param name="enrichmentConfiguration">Logger sink configuration.</param>
-            <param name="settings">Supplies settings for generating the hierarchical path of scene objects.</param>
+            <param name="unityLogEnricherSettings"><inheritdoc cref="M:Serilog.Enrichers.Unity.UnityLogEnricher.#ctor(Serilog.Enrichers.Unity.UnityLogEnricherSettings)" path="/param[@name='unityLogEnricherSettings']"/></param>
             <returns>Configuration object allowing method chaining.</returns>
         </member>
-        <member name="F:Serilog.Enrichers.Unity.UnityLogEnricher.UnityContextKey">
+        <member name="T:Serilog.Enrichers.Unity.UnityLogEnricher">
             <summary>
-            Purposefully collides with the key used by
-            <a href="https://github.com/KuraiAndras/Serilog.Sinks.Unity3D/blob/master/Serilog.Sinks.Unity3D/Assets/Serilog.Sinks.Unity3D/UnityObjectEnricher.cs">Serilog.Sinks.Unity3D's <c>UnityObjectEnricher</c></a>.
-            Ideally, that enricher (or an app-specific enricher) will add the Unity context object,
-            then this enricher will use it to construct the context's "path".
+            Enriches <see cref="T:Serilog.Events.LogEvent"/>s with information from the Unity engine.
+            </summary>
+            <param name="unityLogEnricherSettings"><inheritdoc cref="T:Serilog.Enrichers.Unity.UnityLogEnricherSettings" path="/summary"/></param>
+        </member>
+        <member name="M:Serilog.Enrichers.Unity.UnityLogEnricher.#ctor(Serilog.Enrichers.Unity.UnityLogEnricherSettings)">
+            <summary>
+            Enriches <see cref="T:Serilog.Events.LogEvent"/>s with information from the Unity engine.
+            </summary>
+            <param name="unityLogEnricherSettings"><inheritdoc cref="T:Serilog.Enrichers.Unity.UnityLogEnricherSettings" path="/summary"/></param>
+        </member>
+        <member name="T:Serilog.Enrichers.Unity.UnityLogEnricherSettings">
+            <summary>
+            Settings for a <see cref="T:Serilog.Enrichers.Unity.UnityLogEnricher"/>.
+            </summary>
+        </member>
+        <member name="P:Serilog.Enrichers.Unity.UnityLogEnricherSettings.FrameCountLogProperty">
+            <summary>
+            Name of the <see cref="T:Serilog.Events.LogEventProperty"/> that will hold the <see cref="P:UnityEngine.Time.frameCount"/>,
+            if <see cref="P:Serilog.Enrichers.Unity.UnityLogEnricherSettings.AddFrameCount"/> is <see langword="true"/>.
+            </summary>
+        </member>
+        <member name="P:Serilog.Enrichers.Unity.UnityLogEnricherSettings.TimeSinceLevelLoadLogProperty">
+            <summary>
+            Name of the <see cref="T:Serilog.Events.LogEventProperty"/> that will hold the <see cref="P:UnityEngine.Time.timeSinceLevelLoad"/>,
+            if <see cref="P:Serilog.Enrichers.Unity.UnityLogEnricherSettings.AddTimeSinceLevelLoad"/> is <see langword="true"/>.
+            </summary>
+        </member>
+        <member name="P:Serilog.Enrichers.Unity.UnityLogEnricherSettings.TimeSinceLevelLoadAsDoubleLogProperty">
+            <summary>
+            Name of the <see cref="T:Serilog.Events.LogEventProperty"/> that will hold the <see cref="P:UnityEngine.Time.timeSinceLevelLoadAsDouble"/>,
+            if <see cref="P:Serilog.Enrichers.Unity.UnityLogEnricherSettings.AddTimeSinceLevelLoadAsDouble"/> is <see langword="true"/>.
+            </summary>
+        </member>
+        <member name="P:Serilog.Enrichers.Unity.UnityLogEnricherSettings.UnscaledTimeLogProperty">
+            <summary>
+            Name of the <see cref="T:Serilog.Events.LogEventProperty"/> that will hold the <see cref="P:UnityEngine.Time.unscaledTime"/>,
+            if <see cref="P:Serilog.Enrichers.Unity.UnityLogEnricherSettings.AddUnscaledTime"/> is <see langword="true"/>.
+            </summary>
+        </member>
+        <member name="P:Serilog.Enrichers.Unity.UnityLogEnricherSettings.UnscaledTimeAsDoubleLogProperty">
+            <summary>
+            Name of the <see cref="T:Serilog.Events.LogEventProperty"/> that will hold the <see cref="P:UnityEngine.Time.unscaledTimeAsDouble"/>,
+            if <see cref="P:Serilog.Enrichers.Unity.UnityLogEnricherSettings.AddUnscaledTimeAsDouble"/> is <see langword="true"/>.
+            </summary>
+        </member>
+        <member name="P:Serilog.Enrichers.Unity.UnityLogEnricherSettings.TimeLogProperty">
+            <summary>
+            Name of the <see cref="T:Serilog.Events.LogEventProperty"/> that will hold the <see cref="P:UnityEngine.Time.time"/>,
+            if <see cref="P:Serilog.Enrichers.Unity.UnityLogEnricherSettings.AddTime"/> is <see langword="true"/>.
+            </summary>
+        </member>
+        <member name="P:Serilog.Enrichers.Unity.UnityLogEnricherSettings.TimeAsDoubleLogProperty">
+            <summary>
+            Name of the <see cref="T:Serilog.Events.LogEventProperty"/> that will hold the <see cref="P:UnityEngine.Time.timeAsDouble"/>,
+            if <see cref="P:Serilog.Enrichers.Unity.UnityLogEnricherSettings.AddTimeAsDouble"/> is <see langword="true"/>.
             </summary>
         </member>
         <member name="P:Serilog.Enrichers.Unity.UnityLogEnricherSettings.AddFrameCount">
@@ -62,24 +111,6 @@
             <summary>
             If <see langword="true"/>, then every log is encriched with <see cref="P:UnityEngine.Time.timeAsDouble"/>.
             See the Unity Scripting API docs for <a href="https://docs.unity3d.com/ScriptReference/Time.html"><c>Time</c></a>.
-            </summary>
-        </member>
-        <member name="P:Serilog.Enrichers.Unity.UnityLogEnricherSettings.AddHierarchicalName">
-            <summary>
-            If <see langword="true"/>, then every log is encriched with the hierarchy path of scene objects, if applicable.
-            Use this to generate logs that more specifically identify a scene <see cref="T:UnityEngine.Object"/>.
-            </summary>
-        </member>
-        <member name="P:Serilog.Enrichers.Unity.UnityLogEnricherSettings.ParentCount">
-            <summary>
-            If <see cref="P:Serilog.Enrichers.Unity.UnityLogEnricherSettings.IncludeSceneObjectPath"/> is <see langword="true"/> then,
-            for <see cref="T:UnityEngine.Object"/>s that are scene objects, the name will include up to this many parent objects' names in the logs.
-            </summary>
-        </member>
-        <member name="P:Serilog.Enrichers.Unity.UnityLogEnricherSettings.ParentNameSeparator">
-            <summary>
-            If <see cref="P:Serilog.Enrichers.Unity.UnityLogEnricherSettings.IncludeSceneObjectPath"/> is <see langword="true"/> then,
-            for <see cref="T:UnityEngine.Object"/>s that are scene objects, the name of the Object and its <see cref="P:Serilog.Enrichers.Unity.UnityLogEnricherSettings.ParentCount"/> parents will be separated by this string.
             </summary>
         </member>
     </members>

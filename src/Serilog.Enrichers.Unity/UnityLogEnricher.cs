@@ -1,7 +1,6 @@
+using System.Text;
 using Serilog.Core;
 using Serilog.Events;
-using System;
-using System.Text;
 using UnityEngine;
 using U = UnityEngine;
 
@@ -15,7 +14,7 @@ public class UnityLogEnricher : ILogEventEnricher
     /// Ideally, that enricher (or an app-specific enricher) will add the Unity context object,
     /// then this enricher will use it to construct the context's "path".
     /// </summary>
-    public static readonly string UnityContextKey = "%_DO_NOT_USE_UNITY_ID_DO_NOT_USE%";
+    public static readonly string UnityLogContextKey = "UnityLogContext";
 
     public static readonly string FrameCountKey = "UnityFrameCount";
     public static readonly string TimeSinceLevelLoadKey = "UnityTimeSinceLevelLoad";
@@ -61,7 +60,7 @@ public class UnityLogEnricher : ILogEventEnricher
 
         if (
             _unityLogEnricherSettings.IncludeSceneObjectPath
-            && logEvent.Properties.TryGetValue(UnityContextKey, out LogEventPropertyValue? contextPropertyValue)
+            && logEvent.Properties.TryGetValue(UnityLogContextKey, out LogEventPropertyValue? contextPropertyValue)
             && contextPropertyValue is ScalarValue contextScalarValue
             && contextScalarValue.Value is U.Object unityContext
         )

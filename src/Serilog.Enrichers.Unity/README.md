@@ -1,7 +1,5 @@
 # Serilog.Enrichers.Unity
 
-[< Back to main README](../../README.md)
-
 ![Serilog.Enrichers.Unity](../../docs-assets/serilog-enrichers.png)
 
 **Work in progress!**
