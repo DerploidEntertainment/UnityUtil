@@ -10,8 +10,8 @@
     "url": "https://github.com/Rabadash8820"
   },
   "dependencies": {
-    "org.nuget.microsoft.extensions.logging.abstractions": "2.2.0",
-    "rabadash8820.unityutil.triggers": "https://github.com/DerploidEntertainment/UnityUtil.git?path=/UnityUtil/Assets/UnityUtil.Triggers"
+    "org.nuget.microsoft.extensions.logging.abstractions": "2.0.0",
+    "rabadash8820.unityutil.triggers": "0.1.0"
   },
   "license": "MIT",
   "keywords": [
