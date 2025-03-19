@@ -24,6 +24,15 @@
       <_Parameter1>Naming</_Parameter1>
       <_Parameter2>CA1707:Identifiers should not contain underscores</_Parameter2>
     </AssemblyAttribute>
+
+    <!--
+    Apparently `Assert.Multiple` was only added in NUnit 3.7 (see release notes: https://docs.nunit.org/articles/nunit/release-notes/framework.html)
+    but Unity is using NUnit 3.5 (as of Unity 6.0), and `NUnit.Analyzers` doesn't realize that?
+    -->
+    <AssemblyAttribute Include="System.Diagnostics.CodeAnalysis.SuppressMessage">
+      <_Parameter1>Assertion</_Parameter1>
+      <_Parameter2>NUnit2045:Use Assert.Multiple</_Parameter2>
+    </AssemblyAttribute>
   </ItemGroup>
 
 </Project>
