@@ -8,15 +8,15 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
-using Unity.Extensions.Logging;
 using UnityEngine;
 using UnityEngine.TestTools;
 using UnityUtil.Editor.Tests;
+using UnityUtil.Logging;
 using UnityUtil.Storage;
 using UnityUtil.Tests.Util;
 using U = UnityEngine;
 
-namespace UnityUtil.Editor.Tests.Legal;
+namespace UnityUtil.Legal.Tests.Editor;
 
 public class SingleDialogConsentManagerTest : BaseEditModeTestFixture
 {

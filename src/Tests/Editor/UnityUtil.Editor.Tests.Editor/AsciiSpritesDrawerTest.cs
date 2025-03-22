@@ -1,6 +1,6 @@
 ﻿using NUnit.Framework;
 
-namespace UnityUtil.Editor.Tests;
+namespace UnityUtil.Editor.Tests.Editor;
 
 public class AsciiSpritesDrawerTest : BaseEditModeTestFixture
 {

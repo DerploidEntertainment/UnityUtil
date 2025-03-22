@@ -4,9 +4,10 @@ using System.Collections.Generic;
 using System.Linq;
 using Moq;
 using NUnit.Framework;
+using UnityUtil.Editor.Tests;
 using UnityUtil.Math;
 
-namespace UnityUtil.Editor.Tests.Math;
+namespace UnityUtil.Tests.Editor.Math;
 
 public class UniformBatchedRandomishOptionChooserTest : BaseEditModeTestFixture
 {

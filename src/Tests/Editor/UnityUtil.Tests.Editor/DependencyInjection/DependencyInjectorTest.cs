@@ -10,10 +10,10 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityUtil.DependencyInjection;
 using UnityUtil.Editor.Tests;
-using Unity.Extensions.Logging;
+using UnityUtil.Logging;
 using UnityUtil.Tests.Util;
 
-namespace UnityUtil.Editor.Tests.DependencyInjection;
+namespace UnityUtil.Tests.Editor.DependencyInjection;
 
 #region Test service/client types
 
