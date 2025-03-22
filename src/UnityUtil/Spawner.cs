@@ -1,6 +1,7 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System.Diagnostics.CodeAnalysis;
+using Microsoft.Extensions.Logging;
 using Sirenix.OdinInspector;
-using System.Diagnostics.CodeAnalysis;
+using Unity.Extensions.Logging;
 using UnityEngine;
 using UnityUtil.DependencyInjection;
 using UnityUtil.Math;
@@ -36,7 +37,7 @@ public enum SpawnDirection
 
 public class Spawner : MonoBehaviour
 {
-    private RootLogger<Spawner>? _logger;
+    private ILogger<Spawner>? _logger;
 
     private GameObject? _previous;
     private long _count;
@@ -85,10 +86,7 @@ public class Spawner : MonoBehaviour
     [Range(0f, 90f)]
     public float ConeHalfAngle = 30f;
 
-    public void Inject(ILoggerFactory loggerFactory)
-    {
-        _logger = new(loggerFactory, context: this);
-    }
+    public void Inject(ILoggerFactory loggerFactory) => _logger = loggerFactory.CreateLogger(this);
 
     [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
     private void Awake() => DependencyInjector.Instance.ResolveDependenciesOf(this);

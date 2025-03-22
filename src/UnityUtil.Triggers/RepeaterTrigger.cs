@@ -1,5 +1,6 @@
-using System;
+﻿using System;
 using Microsoft.Extensions.Logging;
+using Unity.Extensions.Logging;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -10,7 +11,7 @@ public class CountEvent : UnityEvent<uint> { }
 
 public class RepeaterTrigger : StartStoppable
 {
-    private TriggersLogger<RepeaterTrigger>? _logger;
+    private ILogger<RepeaterTrigger>? _logger;
 
     [Tooltip($"The time, in seconds, before the next (or first) {nameof(Tick)} event.")]
     public float TimeBeforeTick = 1f;
@@ -39,7 +40,7 @@ public class RepeaterTrigger : StartStoppable
     public float PercentProgress => TimeSincePreviousTick / TimeBeforeTick;
     public float PercentTickProgress => NumPassedTicks / NumTicks;
 
-    public void Inject(ILoggerFactory loggerFactory) => _logger = new(loggerFactory, context: this);
+    public void Inject(ILoggerFactory loggerFactory) => _logger = loggerFactory.CreateLogger(this);
 
     protected override void DoRestart()
     {

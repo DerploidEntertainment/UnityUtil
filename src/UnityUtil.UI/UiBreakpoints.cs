@@ -3,6 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Microsoft.Extensions.Logging;
 using Sirenix.OdinInspector;
+using Unity.Extensions.Logging;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityUtil.DependencyInjection;
@@ -21,7 +22,7 @@ namespace UnityUtil.UI;
 )]
 public class UiBreakpoints : MonoBehaviour
 {
-    private UiLogger<UiBreakpoints>? _logger;
+    private ILogger<UiBreakpoints>? _logger;
 
     private bool _noMatch;
 
@@ -89,7 +90,7 @@ public class UiBreakpoints : MonoBehaviour
             DependencyInjector.Instance.ResolveDependenciesOf(this);
     }
 
-    public void Inject(ILoggerFactory loggerFactory) => _logger = new(loggerFactory, context: this);
+    public void Inject(ILoggerFactory loggerFactory) => _logger = loggerFactory.CreateLogger(this);
 
     [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
     private void Start()
@@ -171,7 +172,7 @@ public class UiBreakpoints : MonoBehaviour
 
     internal void InvokeMatchingBreakpoints(float modeValue)
     {
-        _logger ??= new(new UnityDebugLoggerFactory(), context: this);
+        _logger ??= new UnityDebugLoggerFactory().CreateLogger(this);
 
         if (modeValue < 0f) {
             _logger.UiBreakpointNegativeModeValue();

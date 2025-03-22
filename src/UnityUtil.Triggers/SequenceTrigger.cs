@@ -1,7 +1,8 @@
-using Microsoft.Extensions.Logging;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
+using Microsoft.Extensions.Logging;
 using Sirenix.OdinInspector;
+using Unity.Extensions.Logging;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityUtil.DependencyInjection;
@@ -10,7 +11,7 @@ namespace UnityUtil.Triggers;
 
 public class SequenceTrigger : MonoBehaviour
 {
-    private TriggersLogger<SequenceTrigger>? _logger;
+    private ILogger<SequenceTrigger>? _logger;
 
     [Tooltip($"The current step; i.e., the index (0-based) of {nameof(StepTriggers)} that will be invoked the next time {nameof(Trigger)} is called.")]
     public int CurrentStep = 0;
@@ -25,7 +26,7 @@ public class SequenceTrigger : MonoBehaviour
     )]
     public UnityEvent[] StepTriggers = [];
 
-    public void Inject(ILoggerFactory loggerFactory) => _logger = new(loggerFactory, context: this);
+    public void Inject(ILoggerFactory loggerFactory) => _logger = loggerFactory.CreateLogger(this);
 
     [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
     [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]

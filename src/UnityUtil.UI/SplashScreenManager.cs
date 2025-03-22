@@ -1,5 +1,6 @@
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Logging;
+using Unity.Extensions.Logging;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Rendering;
@@ -9,7 +10,7 @@ namespace UnityUtil.UI;
 
 public class SplashScreenManager : MonoBehaviour, ISplashScreenManager
 {
-    private UiLogger<SplashScreenManager>? _logger;
+    private ILogger<SplashScreenManager>? _logger;
 
     [Tooltip(
         $"The behavior to apply when calling {nameof(Stop)}. " +
@@ -24,7 +25,7 @@ public class SplashScreenManager : MonoBehaviour, ISplashScreenManager
     [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
     private void Awake() => DependencyInjector.Instance.ResolveDependenciesOf(this);
 
-    public void Inject(ILoggerFactory loggerFactory) => _logger = new(loggerFactory, context: this);
+    public void Inject(ILoggerFactory loggerFactory) => _logger = loggerFactory.CreateLogger(this);
 
     public void Begin()
     {

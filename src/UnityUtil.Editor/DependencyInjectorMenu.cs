@@ -1,20 +1,22 @@
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
+using Microsoft.Extensions.Logging;
 using Unity.Extensions.Logging;
 using UnityEditor;
 using UnityUtil.DependencyInjection;
+using UnityUtil.Logging;
 
 namespace UnityUtil.Editor;
 
 public class DependencyInjectorMenu
 {
-    private static EditorRootLogger<DependencyInjectorMenu>? s_logger;  // Must be static to be used as menu commands in Unity Editor
+    private static ILogger<DependencyInjectorMenu>? s_logger;  // Must be static to be used as menu commands in Unity Editor
 
     public const string ItemName = $"{nameof(UnityUtil)}/Record dependency resolutions";
 
     [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
     [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
     [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Unity message")]
-    private void Awake() => s_logger = new(new UnityDebugLoggerFactory(), context: this);   // This is an Editor script...who cares if we hard-code the LoggerFactory
+    private void Awake() => s_logger = new UnityDebugLoggerFactory().CreateLogger<DependencyInjectorMenu>();   // This is an Editor script...who cares if we hard-code the LoggerFactory
 
     [MenuItem(ItemName)]
     private static void toggleRecording()

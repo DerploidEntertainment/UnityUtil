@@ -1,5 +1,6 @@
-﻿using Microsoft.Extensions.Logging;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
+using Microsoft.Extensions.Logging;
+using Unity.Extensions.Logging;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityUtil.DependencyInjection;
@@ -8,7 +9,7 @@ namespace UnityUtil.Triggers;
 
 public class ApplicationLifecycleTriggers : MonoBehaviour
 {
-    private TriggersLogger<ApplicationLifecycleTriggers>? _logger;
+    private ILogger<ApplicationLifecycleTriggers>? _logger;
 
     public UnityEvent Focused = new();
     public UnityEvent Unfocused = new();
@@ -20,7 +21,7 @@ public class ApplicationLifecycleTriggers : MonoBehaviour
     [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
     private void Awake() => DependencyInjector.Instance.ResolveDependenciesOf(this);
 
-    public void Inject(ILoggerFactory loggerFactory) => _logger = new(loggerFactory!, context: this);
+    public void Inject(ILoggerFactory loggerFactory) => _logger = loggerFactory.CreateLogger(this);
 
     [SuppressMessage("Code Quality", "IDE0051:Remove unused private members", Justification = "Unity message")]
     [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]

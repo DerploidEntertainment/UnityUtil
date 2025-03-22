@@ -2,6 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Logging;
 using Sirenix.OdinInspector;
+using Unity.Extensions.Logging;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.EventSystems;
@@ -32,7 +33,7 @@ public enum AudioSliderTransformation
 public class AudioMixerParameterSlider : MonoBehaviour
 {
 
-    private UiLogger<AudioMixerParameterSlider>? _logger;
+    private ILogger<AudioMixerParameterSlider>? _logger;
     private ILocalPreferences? _localPreferences;
 
     [RequiredIn(PrefabKind.NonPrefabInstance)]
@@ -91,7 +92,7 @@ public class AudioMixerParameterSlider : MonoBehaviour
 
     public void Inject(ILoggerFactory loggerFactory, ILocalPreferences localPreferences)
     {
-        _logger = new(loggerFactory, context: this);
+        _logger = loggerFactory.CreateLogger(this);
         _localPreferences = localPreferences;
     }
 
@@ -170,7 +171,7 @@ public class AudioMixerParameterSlider : MonoBehaviour
             _localPreferences.DeleteKey(prefsKey);
 
         // Use debug logger in case this is being run from the Inspector outside Play mode
-        _logger ??= new(new UnityDebugLoggerFactory(), context: this);
+        _logger ??= new UnityDebugLoggerFactory().CreateLogger(this);
         _logger.AudioMixerParameterPrefDeleted(prefsKey);
     }
 

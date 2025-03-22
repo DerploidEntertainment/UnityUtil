@@ -1,7 +1,8 @@
-using Microsoft.Extensions.Logging;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using Microsoft.Extensions.Logging;
+using Unity.Extensions.Logging;
 using UnityEngine;
 using UnityUtil.DependencyInjection;
 
@@ -23,7 +24,7 @@ public enum ChangeTriggerMode
 
 public class ColliderDuplicator : MonoBehaviour
 {
-    private PhysicsLogger<ColliderDuplicator>? _logger;
+    private ILogger<ColliderDuplicator>? _logger;
 
     private List<Transform> _duplicates = [];
 
@@ -53,7 +54,7 @@ public class ColliderDuplicator : MonoBehaviour
     [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
     private void Awake() => DependencyInjector.Instance.ResolveDependenciesOf(this);
 
-    public void Inject(ILoggerFactory loggerFactory) => _logger = new(loggerFactory, context: this);
+    public void Inject(ILoggerFactory loggerFactory) => _logger = loggerFactory.CreateLogger(this);
 
     [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
     [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]

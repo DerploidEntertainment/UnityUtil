@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Sirenix.OdinInspector;
+using Unity.Extensions.Logging;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
@@ -22,7 +23,7 @@ internal class LegalDocumentState(string currentTag)
 public class LegalAcceptManager : MonoBehaviour, ILegalAcceptManager
 {
 
-    private LegalLogger<LegalAcceptManager>? _logger;
+    private ILogger<LegalAcceptManager>? _logger;
     private ILocalPreferences? _localPreferences;
 
     private DownloadHandler? _downloadHandler;
@@ -39,7 +40,7 @@ public class LegalAcceptManager : MonoBehaviour, ILegalAcceptManager
 
     public void Inject(ILoggerFactory loggerFactory, ILocalPreferences localPreferences)
     {
-        _logger = new(loggerFactory, context: this);
+        _logger = loggerFactory.CreateLogger(this);
         _localPreferences = localPreferences;
     }
 
@@ -161,7 +162,7 @@ public class LegalAcceptManager : MonoBehaviour, ILegalAcceptManager
                 _localPreferences.DeleteKey(Documents[d].PreferencesKey);
         }
 
-        _logger ??= new(new UnityDebugLoggerFactory(), context: this);    // Use debug logger in case this is being run from the Inspector outside Play mode
+        _logger ??= new UnityDebugLoggerFactory().CreateLogger(this);    // Use debug logger in case this is being run from the Inspector outside Play mode
         _logger.LegalAcceptCleared();
     }
 

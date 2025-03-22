@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Sirenix.OdinInspector;
+using Unity.Extensions.Logging;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -20,7 +21,7 @@ namespace UnityUtil.Legal;
 /// </summary>
 public class SingleDialogConsentManager : MonoBehaviour, IConsentManager
 {
-    private LegalLogger<SingleDialogConsentManager>? _logger;
+    private ILogger<SingleDialogConsentManager>? _logger;
     private ILegalAcceptManager? _legalAcceptManager;
     private ILocalPreferences? _localPreferences;
     private List<IInitializableWithConsent>? _initializablesWithConsent;
@@ -46,7 +47,7 @@ public class SingleDialogConsentManager : MonoBehaviour, IConsentManager
         IEnumerable<IInitializableWithConsent> initializablesWithConsent
     )
     {
-        _logger = new(loggerFactory, context: this);
+        _logger = loggerFactory.CreateLogger(this);
         _legalAcceptManager = legalAcceptManager;
         _localPreferences = localPreferences;
         _initializablesWithConsent = initializablesWithConsent.ToList();
@@ -238,7 +239,7 @@ public class SingleDialogConsentManager : MonoBehaviour, IConsentManager
             _localPreferences!.DeleteKey(initializableWithConsent.ConsentPreferenceKey);
 
         // Log success (use debug logger in case this is being run from the Inspector outside Play mode)
-        _logger ??= new(new UnityDebugLoggerFactory(), context: this);
+        _logger ??= new UnityDebugLoggerFactory().CreateLogger(this);
         _logger.ConsentCleared();
     }
 }

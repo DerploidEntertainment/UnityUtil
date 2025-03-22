@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Microsoft.Extensions.Logging;
+using Unity.Extensions.Logging;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using U = UnityEngine;
@@ -30,7 +31,7 @@ public class DependencyInjector : IDisposable
 
     public ILoggerFactory? LoggerFactory { get; private set; }
     private ITypeMetadataProvider? _typeMetadataProvider;
-    private RootLogger<DependencyInjector>? _logger;
+    private ILogger<DependencyInjector>? _logger;
 
     private readonly Dictionary<int, Dictionary<Type, Dictionary<string, Service>>> _services = [];
 
@@ -63,7 +64,7 @@ public class DependencyInjector : IDisposable
 
         _typeMetadataProvider = typeMetadataProvider;
         LoggerFactory = loggerFactory;
-        _logger = new(loggerFactory, context: this);
+        _logger = loggerFactory.CreateLogger<DependencyInjector>();
 
         Initialized = true;
     }
@@ -82,7 +83,7 @@ public class DependencyInjector : IDisposable
         if (string.IsNullOrEmpty(serviceTypeName))
             serviceTypeName = instance.GetType().AssemblyQualifiedName;
 
-        Type serviceType = Type.GetType(serviceTypeName)
+        Type serviceType = Type.GetType(serviceTypeName, throwOnError: true)
             ?? throw new InvalidOperationException($"Could not load Type '{serviceTypeName}'. Make sure that you provided its assembly-qualified name and that its assembly is loaded.");
         if (!serviceType.IsAssignableFrom(instance.GetType()))
             throw new InvalidOperationException($"The service instance registered for Type '{serviceTypeName}' is not actually derived from that Type!");

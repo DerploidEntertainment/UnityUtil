@@ -1,9 +1,10 @@
-using Microsoft.Extensions.Logging;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using Microsoft.Extensions.Logging;
+using Unity.Extensions.Logging;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityUtil.DependencyInjection;
@@ -15,7 +16,7 @@ public class InventoryItemEvent : UnityEvent<InventoryCollectible> { }
 
 public class Inventory : MonoBehaviour
 {
-    private InventoriesLogger<Inventory>? _logger;
+    private ILogger<Inventory>? _logger;
     private readonly HashSet<InventoryCollectible> _collectibles = [];
 
     public int MaxItems = 10;
@@ -27,7 +28,7 @@ public class Inventory : MonoBehaviour
     public InventoryItemEvent ItemCollected = new();
     public InventoryItemEvent ItemDropped = new();
 
-    public void Inject(ILoggerFactory loggerFactory) => _logger = new(loggerFactory, context: this);
+    public void Inject(ILoggerFactory loggerFactory) => _logger = loggerFactory.CreateLogger(this);
 
     [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
     [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]

@@ -1,5 +1,6 @@
 using System;
 using Microsoft.Extensions.Logging;
+using Unity.Extensions.Logging;
 using UnityEngine;
 using UnityUtil.DependencyInjection;
 
@@ -10,7 +11,7 @@ namespace UnityUtil.Updating;
 /// </summary>
 public abstract class Updatable : MonoBehaviour
 {
-    private RootLogger<Updatable>? _logger;
+    private ILogger<Updatable>? _logger;
     private IRuntimeIdProvider? _runtimeIdProvider;
     protected IUpdater? Updater;
 
@@ -26,7 +27,7 @@ public abstract class Updatable : MonoBehaviour
 
     public void Inject(ILoggerFactory loggerFactory, IRuntimeIdProvider runtimeIdProvider, IUpdater updater)
     {
-        _logger = new(loggerFactory, context: this);
+        _logger = loggerFactory.CreateLogger(this);
         Updater = updater;
         _runtimeIdProvider = runtimeIdProvider;
     }

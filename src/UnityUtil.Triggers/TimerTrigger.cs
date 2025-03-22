@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using Unity.Extensions.Logging;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -6,7 +7,7 @@ namespace UnityUtil.Triggers;
 
 public class TimerTrigger : StartStoppable
 {
-    private TriggersLogger<TimerTrigger>? _logger;
+    private ILogger<TimerTrigger>? _logger;
 
     [Tooltip($"The duration, in seconds, before the {nameof(Timeout)} event.")]
     public float Duration = 1f;
@@ -19,7 +20,7 @@ public class TimerTrigger : StartStoppable
 
     public float PercentProgress => TimePassed / Duration;
 
-    public void Inject(ILoggerFactory loggerFactory) => _logger = new(loggerFactory, context: this);
+    public void Inject(ILoggerFactory loggerFactory) => _logger = loggerFactory.CreateLogger(this);
 
     protected override void DoRestart()
     {

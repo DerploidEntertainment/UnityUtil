@@ -1,6 +1,7 @@
-using System;
+﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Logging;
+using Unity.Extensions.Logging;
 using UnityEngine;
 using UnityUtil.DependencyInjection;
 
@@ -9,19 +10,17 @@ namespace UnityUtil.Updating;
 [DisallowMultipleComponent]
 public class Updater : MonoBehaviour, IUpdater
 {
-    private RootLogger<Updater>? _logger;
+    private ILogger<Updater>? _logger;
 
     private readonly FastIndexableDictionary<int, Action<float>> _updates = new();
     private readonly FastIndexableDictionary<int, Action<float>> _fixed = new();
     private readonly FastIndexableDictionary<int, Action<float>> _late = new();
 
     [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
+    [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
     private void Awake() => DependencyInjector.Instance.ResolveDependenciesOf(this);
 
-    public void Inject(ILoggerFactory loggerFactory)
-    {
-        _logger = new(loggerFactory, context: this);
-    }
+    public void Inject(ILoggerFactory loggerFactory) => _logger = loggerFactory.CreateLogger(this);
 
     /// <inheritdoc/>
     public void AddUpdate(int instanceId, Action<float> updateAction)

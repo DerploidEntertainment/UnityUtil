@@ -1,6 +1,7 @@
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Logging;
 using Sirenix.OdinInspector;
+using Unity.Extensions.Logging;
 using UnityEngine;
 using UnityUtil.DependencyInjection;
 
@@ -14,12 +15,12 @@ namespace UnityUtil.UI;
 /// </summary>
 public class SafeAreaRectTransformScaler : MonoBehaviour
 {
-    private UiLogger<SafeAreaRectTransformScaler>? _logger;
+    private ILogger<SafeAreaRectTransformScaler>? _logger;
 
     [RequiredIn(PrefabKind.NonPrefabInstance)]
     public RectTransform? RectTransform;
 
-    public void Inject(ILoggerFactory loggerFactory) => _logger = new(loggerFactory, context: this);
+    public void Inject(ILoggerFactory loggerFactory) => _logger = loggerFactory.CreateLogger(this);
 
     [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
     [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]

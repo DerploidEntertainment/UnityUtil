@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Logging;
+using Unity.Extensions.Logging;
 using UnityEngine;
 using UnityEngine.Diagnostics;
 using UnityUtil.DependencyInjection;
@@ -11,7 +12,7 @@ namespace UnityUtil;
 [CreateAssetMenu(menuName = $"{nameof(UnityUtil)}/{nameof(ApplicationCrasher)}", fileName = "application-crasher")]
 public class ApplicationCrasher : ScriptableObject
 {
-    private RootLogger<ApplicationCrasher>? _logger;
+    private ILogger<ApplicationCrasher>? _logger;
 
     [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
     [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
@@ -23,7 +24,7 @@ public class ApplicationCrasher : ScriptableObject
             DependencyInjector.Instance.ResolveDependenciesOf(this);
     }
 
-    public void Inject(ILoggerFactory loggerFactory) => _logger = new(loggerFactory, context: this);
+    public void Inject(ILoggerFactory loggerFactory) => _logger = loggerFactory.CreateLogger(this);
 
     public void UncaughtExceptionClr()
     {

@@ -1,9 +1,10 @@
-using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using Microsoft.Extensions.Logging;
 using Sirenix.OdinInspector;
+using Unity.Extensions.Logging;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityUtil.DependencyInjection;
@@ -18,7 +19,7 @@ public class AttackEvent : UnityEvent<Ray, RaycastHit[]> { }
 [RequireComponent(typeof(Tool))]
 public class Weapon : MonoBehaviour
 {
-    private InventoriesLogger<Weapon>? _logger;
+    private ILogger<Weapon>? _logger;
     private Tool? _tool;
     private float _accuracyLerpT;
 
@@ -29,7 +30,7 @@ public class Weapon : MonoBehaviour
 
     public float AccuracyConeHalfAngle => Mathf.LerpAngle(Info!.InitialConeHalfAngle, Info.FinalConeHalfAngle, _accuracyLerpT);
 
-    public void Inject(ILoggerFactory loggerFactory) => _logger = new(loggerFactory, context: this);
+    public void Inject(ILoggerFactory loggerFactory) => _logger = loggerFactory.CreateLogger(this);
 
     [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
     [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]

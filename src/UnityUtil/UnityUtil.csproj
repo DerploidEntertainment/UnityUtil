@@ -15,6 +15,8 @@
     
     <Reference Include="$(UnityScriptAssembliesPath)\UnityEngine.UI.dll" Private="false" />
     <Reference Include="$(UnityScriptAssembliesPath)\Unity.TextMeshPro.dll" Private="false" />
+
+    <ProjectReference Include="..\Unity.Extensions.Logging\Unity.Extensions.Logging.csproj" />
   </ItemGroup>
 
   <ItemGroup>

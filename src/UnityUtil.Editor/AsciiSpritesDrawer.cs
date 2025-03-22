@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.Logging;
+using Unity.Extensions.Logging;
 using UnityEditor;
 using UnityEngine;
 using UnityUtil.DependencyInjection;
@@ -13,12 +14,12 @@ namespace UnityUtil.Editor;
 [CustomEditor(typeof(AsciiSprites))]
 public class AsciiSpritesDrawer : E.Editor
 {
-    private EditorRootLogger<AsciiSpritesDrawer>? _logger;
+    private ILogger<AsciiSpritesDrawer>? _logger;
     private SerializedProperty? _pathProp;
     private readonly IDictionary<char, SerializedProperty> _charProps = new Dictionary<char, SerializedProperty>();
 
     public void Inject(ILoggerFactory loggerFactory) =>
-        _logger = new(loggerFactory, context: this);
+        _logger = loggerFactory.CreateLogger(this);
 
     [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
     [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
