@@ -36,7 +36,7 @@
             The <see cref="T:UnityUtil.Physics.Liftable"/> was purposefully released by throwing.
             </summary>
         </member>
-        <member name="T:UnityUtil.Physics.PhysicsLogger`1">
+        <member name="T:UnityUtil.Physics.PhysicsLoggerExtensions">
             <inheritdoc/>
         </member>
         <member name="M:UnityUtil.Physics.TorqueStabilizer.GetUpwardUnitVector">

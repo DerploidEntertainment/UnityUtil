@@ -21,7 +21,7 @@
             <exception cref="T:System.InvalidOperationException">Consent has not yet been initialized</exception>
             <exception cref="T:System.ArgumentException"><paramref name="initializableWithConsent"/> is not managed by this consent manager</exception>
         </member>
-        <member name="T:UnityUtil.Legal.LegalLogger`1">
+        <member name="T:UnityUtil.Legal.LegalLoggerExtensions">
             <inheritdoc/>
         </member>
         <member name="T:UnityUtil.Legal.SingleDialogConsentManager">
@@ -42,13 +42,13 @@
             (connecting to databases, retrieving remote configuration, registering service dependencies, etc.).
             </param>
         </member>
-        <member name="M:UnityUtil.Legal.SingleDialogConsentManager.GiveConsent">
+        <member name="M:UnityUtil.Legal.SingleDialogConsentManager.giveConsent">
             <summary>
             Give consent to all registered <see cref="T:UnityUtil.Legal.IInitializableWithConsent"/>s that did not already have consent saved in local preferences,
             and accept the latest legal documents.
             </summary>
         </member>
-        <member name="M:UnityUtil.Legal.SingleDialogConsentManager.Initialize">
+        <member name="M:UnityUtil.Legal.SingleDialogConsentManager.initialize">
             <summary>
             Initializes all registered <see cref="T:UnityUtil.Legal.IInitializableWithConsent"/>s in parallel, passing them the corresponding flag for consent.
             </summary>

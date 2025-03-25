@@ -61,7 +61,7 @@
             Type arguments are (Collector collector, Collectible collectible)
             </summary>
         </member>
-        <member name="T:UnityUtil.Inventory.InventoriesLogger`1">
+        <member name="T:UnityUtil.Inventory.InventoriesLoggerExtensions">
             <inheritdoc/>
         </member>
         <member name="T:UnityUtil.Inventory.OverheatChangedEvent">
