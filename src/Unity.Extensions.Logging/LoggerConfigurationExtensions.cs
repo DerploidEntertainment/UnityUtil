@@ -28,7 +28,7 @@ public static class LoggerConfigurationExtensions
     /// <param name="unityLogEnricherSettings"><inheritdoc cref="UnityLogEnricher(UnityLogEnricherSettings)" path="/param[@name='unityLogEnricherSettings']"/></param>
     /// <param name="unitySinkSettings">
     /// <inheritdoc cref="UnitySink(ITextFormatter, UnitySinkSettings)" path="/param[@name='unitySinkSettings']"/>
-    /// By default, <see cref="UnitySinkSettings.UnityTagLogProperty"/> is set to <c>SourceContext</c> to reuse the type name set by <c>Microsoft.Extensions.Logging</c>
+    /// By default, <see cref="UnitySinkSettings.UnityTagLogProperty"/> is set to <c>SourceContext</c> to reuse the type name set by <c>Serilog</c>
     /// as the Unity log <c>tag</c>.
     /// </param>
     /// <returns>Configuration object allowing method chaining.</returns>
@@ -42,7 +42,7 @@ public static class LoggerConfigurationExtensions
     )
     {
         unitySinkSettings ??= new UnitySinkSettings {
-            UnityTagLogProperty = "SourceContext",  // This log property is added by
+            UnityTagLogProperty = "SourceContext",  // This log property automatically added by Serilog, containing logging type name
         };
 
         if (selfLogIsUnityLogWarning)

@@ -1,9 +1,55 @@
+﻿using Serilog.Events;
 using UnityEngine;
 
 namespace Serilog.Enrichers.Unity;
 
+/// <summary>
+/// Settings for a <see cref="UnityLogEnricher"/>.
+/// </summary>
 public class UnityLogEnricherSettings
 {
+    /// <summary>
+    /// Name of the <see cref="LogEventProperty"/> that will hold the <see cref="Time.frameCount"/>,
+    /// if <see cref="AddFrameCount"/> is <see langword="true"/>.
+    /// </summary>
+    public string FrameCountLogProperty { get; set; } = "UnityFrameCount";
+
+    /// <summary>
+    /// Name of the <see cref="LogEventProperty"/> that will hold the <see cref="Time.timeSinceLevelLoad"/>,
+    /// if <see cref="AddTimeSinceLevelLoad"/> is <see langword="true"/>.
+    /// </summary>
+    public string TimeSinceLevelLoadLogProperty { get; set; } = "UnityTimeSinceLevelLoad";
+
+    /// <summary>
+    /// Name of the <see cref="LogEventProperty"/> that will hold the <see cref="Time.timeSinceLevelLoadAsDouble"/>,
+    /// if <see cref="AddTimeSinceLevelLoadAsDouble"/> is <see langword="true"/>.
+    /// </summary>
+    public string TimeSinceLevelLoadAsDoubleLogProperty { get; set; } = "UnityTimeSinceLevelLoadAsDouble";
+
+    /// <summary>
+    /// Name of the <see cref="LogEventProperty"/> that will hold the <see cref="Time.unscaledTime"/>,
+    /// if <see cref="AddUnscaledTime"/> is <see langword="true"/>.
+    /// </summary>
+    public string UnscaledTimeLogProperty { get; set; } = "UnityUnscaledTime";
+
+    /// <summary>
+    /// Name of the <see cref="LogEventProperty"/> that will hold the <see cref="Time.unscaledTimeAsDouble"/>,
+    /// if <see cref="AddUnscaledTimeAsDouble"/> is <see langword="true"/>.
+    /// </summary>
+    public string UnscaledTimeAsDoubleLogProperty { get; set; } = "UnityUnscaledTimeAsDouble";
+
+    /// <summary>
+    /// Name of the <see cref="LogEventProperty"/> that will hold the <see cref="Time.time"/>,
+    /// if <see cref="AddTime"/> is <see langword="true"/>.
+    /// </summary>
+    public string TimeLogProperty { get; set; } = "UnityTime";
+
+    /// <summary>
+    /// Name of the <see cref="LogEventProperty"/> that will hold the <see cref="Time.timeAsDouble"/>,
+    /// if <see cref="AddTimeAsDouble"/> is <see langword="true"/>.
+    /// </summary>
+    public string TimeAsDoubleLogProperty { get; set; } = "UnityTimeAsDouble";
+
     /// <summary>
     /// If <see langword="true"/>, then every log is encriched with <see cref="Time.frameCount"/>.
     /// See the Unity Scripting API docs for <a href="https://docs.unity3d.com/ScriptReference/Time.html"><c>Time</c></a>.
@@ -45,22 +91,4 @@ public class UnityLogEnricherSettings
     /// See the Unity Scripting API docs for <a href="https://docs.unity3d.com/ScriptReference/Time.html"><c>Time</c></a>.
     /// </summary>
     public bool AddTimeAsDouble { get; set; } = false;
-
-    /// <summary>
-    /// If <see langword="true"/>, then every log is encriched with the hierarchy path of scene objects, if applicable.
-    /// Use this to generate logs that more specifically identify a scene <see cref="Object"/>.
-    /// </summary>
-    public bool IncludeSceneObjectPath { get; set; } = true;
-
-    /// <summary>
-    /// If <see cref="IncludeSceneObjectPath"/> is <see langword="true"/> then,
-    /// for <see cref="Object"/>s that are scene objects, the name will include up to this many parent objects' names in the logs.
-    /// </summary>
-    public int ParentCount { get; set; } = 1;
-
-    /// <summary>
-    /// If <see cref="IncludeSceneObjectPath"/> is <see langword="true"/> then,
-    /// for <see cref="Object"/>s that are scene objects, the name of the Object and its <see cref="ParentCount"/> parents will be separated by this string.
-    /// </summary>
-    public string ParentNameSeparator { get; set; } = "/";
 }
