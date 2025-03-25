@@ -21,6 +21,7 @@ namespace UnityUtil.Legal.Tests.Editor;
 public class SingleDialogConsentManagerTest : BaseEditModeTestFixture
 {
     private const string CONSENT_PREF_KEY_PREFIX = "TEST_CONSENT_";
+
     private static TestCaseData[] getConsentStateTestCases() =>
         [
             new(LegalAcceptance.Unprovided, new bool?[]{ null }),
@@ -150,6 +151,7 @@ public class SingleDialogConsentManagerTest : BaseEditModeTestFixture
     [TestCaseSource(nameof(getConsentStateTestCases))]
     public async Task GiveConsent_OnlySetsUpdatedConsents_ForceConsentBehavior(LegalAcceptance legalAcceptance, bool?[] priorConsents)
     {
+        // ARRANGE
         string consentStrings = string.Join(",", priorConsents.Select(x => x?.ToString() ?? "Null"));
         U.Debug.Log($"Giving consent when legal acceptance is '{legalAcceptance}' and consent states are: {consentStrings}");
         Mock<IInitializableWithConsent>[] initializables = getInitializablesWithConsent(priorConsents.Length);
@@ -161,9 +163,12 @@ public class SingleDialogConsentManagerTest : BaseEditModeTestFixture
         );
         singleDialogConsentManager.ForceConsentBehavior = true;
 
+        // ACT
         await singleDialogConsentManager.ShowDialogIfNeededAsync();
-        singleDialogConsentManager.GiveConsent();
+        if (legalAcceptance != LegalAcceptance.Current || priorConsents.Any(x => x is null))
+            await singleDialogConsentManager.ContinueWithConsentAsync();
 
+        // ASSERT
         for (int index = 0; index < priorConsents.Length; index++) {
             string key = initializables[index].Object.ConsentPreferenceKey;
             if (priorConsents[index].HasValue)
@@ -189,7 +194,6 @@ public class SingleDialogConsentManagerTest : BaseEditModeTestFixture
         singleDialogConsentManager.ForceConsentBehavior = false;
 
         await singleDialogConsentManager.ShowDialogIfNeededAsync();
-        singleDialogConsentManager.GiveConsent();
 
         foreach (Mock<IInitializableWithConsent> initializable in initializables)
             localPreferences.Verify(x => x.SetInt(initializable.Object.ConsentPreferenceKey, It.IsAny<int>()), Times.Never);
@@ -204,14 +208,18 @@ public class SingleDialogConsentManagerTest : BaseEditModeTestFixture
     [TestCase(true, LegalAcceptance.Current)]
     public async Task GiveConsent_SetsLegalAcceptance_IfNotCurrent(bool forceConsentBehavior, LegalAcceptance legalAcceptance)
     {
+        // ARRANGE
         U.Debug.Log($"Giving consent when {nameof(forceConsentBehavior)} is {forceConsentBehavior} and {nameof(legalAcceptance)} is '{legalAcceptance}'...");
         Mock<ILegalAcceptManager> legalAcceptManager = getLegalAcceptManager(legalAcceptance);
         SingleDialogConsentManager singleDialogConsentManager = getSingleDialogConsentManager(legalAcceptManager: legalAcceptManager.Object);
         singleDialogConsentManager.ForceConsentBehavior = forceConsentBehavior;
 
+        // ACT
         await singleDialogConsentManager.ShowDialogIfNeededAsync();
-        singleDialogConsentManager.GiveConsent();
+        if (legalAcceptance != LegalAcceptance.Current)
+            await singleDialogConsentManager.ContinueWithConsentAsync();
 
+        // ASSERT
         legalAcceptManager.Verify(x => x.Accept(), legalAcceptance == LegalAcceptance.Current ? Times.Never : Times.Once);
     }
 
@@ -223,6 +231,7 @@ public class SingleDialogConsentManagerTest : BaseEditModeTestFixture
     [TestCaseSource(nameof(getConsentStateTestCases))]
     public async Task Initialize_InitializesAll_WithCorrectConsents_ForceConsentBehavior(LegalAcceptance legalAcceptance, bool?[] priorConsents)
     {
+        // ARRANGE
         string consentStrings = string.Join(",", priorConsents.Select(x => x?.ToString() ?? "Null"));
         U.Debug.Log($"Initializing when legal acceptance is '{legalAcceptance}' and consent states are: {consentStrings}");
         Mock<IInitializableWithConsent>[] initializables = getInitializablesWithConsent(priorConsents.Length);
@@ -234,10 +243,12 @@ public class SingleDialogConsentManagerTest : BaseEditModeTestFixture
         );
         singleDialogConsentManager.ForceConsentBehavior = true;
 
+        // ACT
         await singleDialogConsentManager.ShowDialogIfNeededAsync();
-        singleDialogConsentManager.GiveConsent();
-        singleDialogConsentManager.Initialize();
+        if (legalAcceptance != LegalAcceptance.Current || priorConsents.Any(x => x is null))
+            await singleDialogConsentManager.ContinueWithConsentAsync();
 
+        // ASSERT
         for (int index = 0; index < initializables.Length; index++) {
             Mock<IInitializableWithConsent> initializable = initializables[index];
             bool? priorConsent = priorConsents[index];
@@ -249,6 +260,7 @@ public class SingleDialogConsentManagerTest : BaseEditModeTestFixture
     [TestCaseSource(nameof(getConsentStateTestCases))]
     public async Task Initialize_InitializesAll_WithCorrectConsents_DontForceConsentBehavior(LegalAcceptance legalAcceptance, bool?[] priorConsents)
     {
+        // ARRANGE
         string consentStrings = string.Join(",", priorConsents.Select(x => x?.ToString() ?? "Null"));
         U.Debug.Log($"Initializing when legal acceptance is '{legalAcceptance}' and consent states are: {consentStrings}");
         Mock<IInitializableWithConsent>[] initializables = getInitializablesWithConsent(priorConsents.Length);
@@ -260,10 +272,12 @@ public class SingleDialogConsentManagerTest : BaseEditModeTestFixture
         );
         singleDialogConsentManager.ForceConsentBehavior = false;
 
+        // ACT
         await singleDialogConsentManager.ShowDialogIfNeededAsync();
-        singleDialogConsentManager.GiveConsent();
-        singleDialogConsentManager.Initialize();
+        if (legalAcceptance != LegalAcceptance.Current)
+            await singleDialogConsentManager.ContinueWithConsentAsync();
 
+        // ASSERT
         for (int index = 0; index < initializables.Length; index++) {
             Mock<IInitializableWithConsent> initializable = initializables[index];
             bool? priorConsent = priorConsents[index];
@@ -282,10 +296,8 @@ public class SingleDialogConsentManagerTest : BaseEditModeTestFixture
             initializablesWithConsent: initializables.Select(x => x.Object).ToArray()
         );
 
-        await singleDialogConsentManager.ShowDialogIfNeededAsync();
-        singleDialogConsentManager.GiveConsent();
         var sw = Stopwatch.StartNew();
-        singleDialogConsentManager.Initialize();
+        await singleDialogConsentManager.ShowDialogIfNeededAsync();
         sw.Stop();
 
         Assert.That(sw.Elapsed.TotalMilliseconds, Is.LessThan(initializeDurationsMs.Sum()));
@@ -311,6 +323,7 @@ public class SingleDialogConsentManagerTest : BaseEditModeTestFixture
         Exception? loggedException = null;
         SingleDialogConsentManager singleDialogConsentManager = getSingleDialogConsentManager(
             loggerFactory: new LogLevelCallbackLoggerFactory(LogLevel.Error, (_, _, ex, _) => loggedException = ex, log),
+            legalAcceptManager: getLegalAcceptManager(LegalAcceptance.Current).Object,
             initializablesWithConsent: initializables.Select(x => x.Object).ToArray()
         );
 
@@ -327,8 +340,6 @@ public class SingleDialogConsentManagerTest : BaseEditModeTestFixture
 
         // ACT
         await singleDialogConsentManager.ShowDialogIfNeededAsync();
-        singleDialogConsentManager.GiveConsent();
-        singleDialogConsentManager.Initialize();
 
         // ASSERT
         if (consentCount == 0) {

@@ -36,8 +36,8 @@ public class SingleDialogConsentManager : MonoBehaviour, IConsentManager
     {
         DependencyInjector.Instance.ResolveDependenciesOf(this);
 
-        BtnInitialConsent!.onClick.AddListener(async () => await continueWithConsentAsync());
-        BtnLegalUpdate!.onClick.AddListener(async () => await continueWithConsentAsync());
+        BtnInitialConsent!.onClick.AddListener(async () => await ContinueWithConsentAsync());
+        BtnLegalUpdate!.onClick.AddListener(async () => await ContinueWithConsentAsync());
     }
 
     public void Inject(
@@ -121,21 +121,21 @@ public class SingleDialogConsentManager : MonoBehaviour, IConsentManager
 
         else {
             _logger!.ConsentAlreadyRequested();
-            await continueWithConsentAsync();
+            await ContinueWithConsentAsync();
             NoUiRequired.Invoke();
         }
     }
 
-    private async Task continueWithConsentAsync()
+    internal async Task ContinueWithConsentAsync()
     {
-        GiveConsent();
+        giveConsent();
 
         // Wait for other pre-initialization actions.
         // These hopefully completed while the consent dialog was shown, but gotta be sure...
         if (_preInitializeTask is not null)
             await _preInitializeTask;
 
-        Initialize();
+        initialize();
     }
 
     private DataConsentState checkConsent(IInitializableWithConsent initializableWithConsent, string name)
@@ -159,7 +159,7 @@ public class SingleDialogConsentManager : MonoBehaviour, IConsentManager
     /// Give consent to all registered <see cref="IInitializableWithConsent"/>s that did not already have consent saved in local preferences,
     /// and accept the latest legal documents.
     /// </summary>
-    internal void GiveConsent()
+    private void giveConsent()
     {
         _logger!.ConsentGiveAll();
 
@@ -188,7 +188,7 @@ public class SingleDialogConsentManager : MonoBehaviour, IConsentManager
     /// See this exception's <see cref="AggregateException.InnerExceptions"/> collection for more details.
     /// </exception>
     [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Async suffix doesn't really look great on async void methods")]
-    internal async void Initialize()
+    private async void initialize()
     {
         _logger!.ConsentInitializingAll();
 
