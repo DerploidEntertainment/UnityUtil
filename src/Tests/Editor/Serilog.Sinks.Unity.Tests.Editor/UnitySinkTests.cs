@@ -4,6 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Moq;
 using NUnit.Framework;
 using Serilog.Events;
 using Serilog.Formatting.Json;
@@ -17,6 +18,37 @@ namespace Serilog.Sinks.Unity.Tests.Editor;
 public class UnitySinkTests : BaseEditModeTestFixture
 {
     [Test]
+    public void Emit_CanUseAnyUnityLogger()
+    {
+        // ARRANGE
+        var logger = new Mock<UE.ILogger>();
+        var unitySink = new UnitySink(new JsonFormatter(), logger.Object);
+
+        var logEvent = new LogEvent(
+            DateTimeOffset.UtcNow,
+            LogEventLevel.Information,
+            exception: null,
+            new MessageTemplate("What up, {Name}?", tokens: []),
+            [
+                new LogEventProperty("Name", new ScalarValue("dawg"))
+            ]
+        );
+
+        Regex expectedRegex = getExpectedJsonRegex(
+            @"What up, \{Name\}\?",
+            logPropertyRegexes: new Dictionary<string, string> {
+                { "Name", "dawg" },
+            }
+        );
+
+        // ACT
+        unitySink.Emit(logEvent);
+
+        // ASSERT
+        logger.Verify(x => x.Log(LogType.Log, It.IsRegex(expectedRegex.ToString())), Times.Once());
+    }
+
+    [Test]
     [TestCase(LogEventLevel.Verbose, LogType.Log)]
     [TestCase(LogEventLevel.Debug, LogType.Log)]
     [TestCase(LogEventLevel.Information, LogType.Log)]
@@ -28,7 +60,7 @@ public class UnitySinkTests : BaseEditModeTestFixture
         // ARRANGE
         var unitySink = new UnitySink(new JsonFormatter());
         var logEvent = new LogEvent(DateTimeOffset.UtcNow, logEventLevel, exception: null, new MessageTemplate("What up, {Name}?", tokens: []), []);
-        Regex expectedRegex = getExpectedRegex(@"What up, \{Name\}\?", logEventLevel);
+        Regex expectedRegex = getExpectedJsonRegex(@"What up, \{Name\}\?", logEventLevel);
 
         // ACT / ASSERT
         EditModeTestHelpers.ExpectLog(expectedLogType, expectedRegex);
@@ -51,7 +83,7 @@ public class UnitySinkTests : BaseEditModeTestFixture
             ]
         );
 
-        Regex expectedRegex = getExpectedRegex(
+        Regex expectedRegex = getExpectedJsonRegex(
             @"What up, \{Name\}\?",
             logPropertyRegexes: new Dictionary<string, string> {
                 { "Name", "dawg" },
@@ -71,7 +103,7 @@ public class UnitySinkTests : BaseEditModeTestFixture
         const string TAG = "Cow say";
         var unitySink = new UnitySink(
             new JsonFormatter(),
-            new UnitySinkSettings {
+            unitySinkSettings: new UnitySinkSettings {
                 UnityTagLogProperty = TAG_PROPERTY,
                 RemoveUnityTagLogPropertyIfPresent = removeUnityTagLogPropertyIfPresent
             }
@@ -91,7 +123,7 @@ public class UnitySinkTests : BaseEditModeTestFixture
             logPropertyRegexes.Add("Name", "dawg");
 
         string msgTemplateRegex = addLogEventProperty ? @"What up, \{Name\}\?" : "What up";
-        Regex expectedRegex = getExpectedRegex(msgTemplateRegex, tag: TAG, logPropertyRegexes: logPropertyRegexes);
+        Regex expectedRegex = getExpectedJsonRegex(msgTemplateRegex, tagRegex: TAG, logPropertyRegexes: logPropertyRegexes);
 
         // ACT / ASSERT
         EditModeTestHelpers.ExpectLog(LogType.Log, expectedRegex);
@@ -106,7 +138,7 @@ public class UnitySinkTests : BaseEditModeTestFixture
         UE.Object context = new GameObject().transform;
         var unitySink = new UnitySink(
             new JsonFormatter(),
-            new UnitySinkSettings {
+            unitySinkSettings: new UnitySinkSettings {
                 UnityContextLogProperty = CONTEXT_PROPERTY,
                 RemoveUnityContextLogPropertyIfPresent = removeUnityContextLogPropertyIfPresent
             }
@@ -128,7 +160,7 @@ public class UnitySinkTests : BaseEditModeTestFixture
             logPropertyRegexes.Add("Name", "dawg");
 
         string msgTemplateRegex = addLogEventProperty ? @"What up, \{Name\}\?" : "What up";
-        Regex expectedRegex = getExpectedRegex(msgTemplateRegex, logPropertyRegexes: logPropertyRegexes);
+        Regex expectedRegex = getExpectedJsonRegex(msgTemplateRegex, logPropertyRegexes: logPropertyRegexes);
 
         // ACT / ASSERT
         EditModeTestHelpers.ExpectLog(LogType.Log, expectedRegex);
@@ -145,7 +177,7 @@ public class UnitySinkTests : BaseEditModeTestFixture
         UE.Object context = new GameObject().transform;
         var unitySink = new UnitySink(
             new JsonFormatter(),
-            new UnitySinkSettings {
+            unitySinkSettings: new UnitySinkSettings {
                 UnityTagLogProperty = TAG_PROPERTY,
                 UnityContextLogProperty = CONTEXT_PROPERTY,
                 RemoveUnityTagLogPropertyIfPresent = removeUnityTagLogPropertyIfPresent,
@@ -174,7 +206,7 @@ public class UnitySinkTests : BaseEditModeTestFixture
             logPropertyRegexes.Add("Name", "dawg");
 
         string msgTemplateRegex = addLogEventProperty ? @"What up, \{Name\}\?" : "What up";
-        Regex expectedRegex = getExpectedRegex(msgTemplateRegex, logPropertyRegexes: logPropertyRegexes);
+        Regex expectedRegex = getExpectedJsonRegex(msgTemplateRegex, logPropertyRegexes: logPropertyRegexes);
 
         // ACT / ASSERT
         EditModeTestHelpers.ExpectLog(LogType.Log, expectedRegex);
@@ -198,7 +230,7 @@ public class UnitySinkTests : BaseEditModeTestFixture
             ]
         );
 
-        Regex expectedRegex = getExpectedRegex(
+        Regex expectedRegex = getExpectedJsonRegex(
             @"What up, \{Name\}\?",
             logPropertyRegexes: new Dictionary<string, string> {
                 { "Name", "dawg" },
@@ -212,14 +244,14 @@ public class UnitySinkTests : BaseEditModeTestFixture
         await Task.Run(() => unitySink.Emit(logEvent));
     }
 
-    private static Regex getExpectedRegex(
+    private static Regex getExpectedJsonRegex(
         string msgTemplateRegex,
         LogEventLevel logEventLevel = LogEventLevel.Information,
-        string? tag = null,
+        string? tagRegex = null,
         Dictionary<string, string>? logPropertyRegexes = null
     )
     {
-        string tagStr = tag is null ? "" : tag + ": ";
+        string tagStr = tagRegex is null ? "" : tagRegex + ": ";
         string logPropsStr = (logPropertyRegexes?.Count ?? 0) == 0 ? "" :
             $@",""Properties"":\{{{string.Join(",", logPropertyRegexes.Select(kv => $"\"{kv.Key}\":\"{kv.Value}\""))}\}}";
         return new(@$"{tagStr}\{{""Timestamp"":""{@"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{7}\+00:00"}"",""Level"":""{logEventLevel}"",""MessageTemplate"":""{msgTemplateRegex}""{logPropsStr}\}}");

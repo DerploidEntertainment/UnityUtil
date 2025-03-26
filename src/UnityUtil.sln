@@ -76,6 +76,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unity.Extensions.Logging", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unity.Extensions.Logging.Tests.Editor", "Tests\Editor\Unity.Extensions.Logging.Tests.Editor\Unity.Extensions.Logging.Tests.Editor.csproj", "{902CF3DF-771B-A984-1534-18AC4244F36D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Serilog.Enrichers.Unity.Tests.Editor", "Tests\Editor\Serilog.Enrichers.Unity.Tests.Editor\Serilog.Enrichers.Unity.Tests.Editor.csproj", "{5F3FA394-65FA-467F-87C9-E73D5CC0DF1F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -178,6 +180,10 @@ Global
 		{902CF3DF-771B-A984-1534-18AC4244F36D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{902CF3DF-771B-A984-1534-18AC4244F36D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{902CF3DF-771B-A984-1534-18AC4244F36D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5F3FA394-65FA-467F-87C9-E73D5CC0DF1F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F3FA394-65FA-467F-87C9-E73D5CC0DF1F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5F3FA394-65FA-467F-87C9-E73D5CC0DF1F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5F3FA394-65FA-467F-87C9-E73D5CC0DF1F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -194,6 +200,7 @@ Global
 		{B902B585-D47E-4EBF-9612-53A730C3D975} = {E98B0A74-5D14-433A-B71B-DD6AA1F623DC}
 		{3BD73EA2-D9A1-4479-9397-DC9FD5EA1814} = {E98B0A74-5D14-433A-B71B-DD6AA1F623DC}
 		{902CF3DF-771B-A984-1534-18AC4244F36D} = {E98B0A74-5D14-433A-B71B-DD6AA1F623DC}
+		{5F3FA394-65FA-467F-87C9-E73D5CC0DF1F} = {E98B0A74-5D14-433A-B71B-DD6AA1F623DC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A909A0B3-E6EC-4825-98D8-E36088C6B9CB}

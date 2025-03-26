@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Serilog.Enrichers.Unity.Tests.Editor</name>
+    </assembly>
+    <members>
+    </members>
+</doc>
