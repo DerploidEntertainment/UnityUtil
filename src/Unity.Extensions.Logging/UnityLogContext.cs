@@ -8,7 +8,7 @@ namespace Unity.Extensions.Logging;
 /// See Unity's <a href="https://docs.unity3d.com/ScriptReference/Debug.Log.html"><c>Debug.Log</c></a> docs for a description of the <c>context</c> parameter.
 /// </summary>
 /// <param name="context"><inheritdoc cref="Context" path="/summary"/></param>
-internal struct UnityLogContext(Object context)
+public struct UnityLogContext(Object context)
 {
     /// <summary>
     /// The encapsulated <see cref="Object"/> instance used for the Unity log context.

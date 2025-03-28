@@ -15,10 +15,15 @@ namespace Serilog.Sinks.Unity;
 /// <param name="textFormatter">
 /// A formatter, such as <see cref="JsonFormatter"/>, to convert the log events into text for the Unity Console.
 /// </param>
+/// <param name="logger">
+/// The Unity <see cref="UE.ILogger"/> backing this sink.
+/// If <see langword="null"/> then the default <see cref="Debug.unityLogger"/> will be used.
+/// </param>
 /// <param name="unitySinkSettings"><inheritdoc cref="UnitySinkSettings" path="/summary"/></param>
-public class UnitySink(ITextFormatter textFormatter, UnitySinkSettings? unitySinkSettings = null) : ILogEventSink
+public class UnitySink(ITextFormatter textFormatter, UE.ILogger? logger = null, UnitySinkSettings? unitySinkSettings = null) : ILogEventSink
 {
     private readonly ITextFormatter _textFormatter = textFormatter;
+    private readonly UE.ILogger _logger = logger ?? Debug.unityLogger;
     private readonly UnitySinkSettings _unitySinkSettings = unitySinkSettings ?? new UnitySinkSettings();
 
     /// <inheritdoc/>
@@ -60,15 +65,15 @@ public class UnitySink(ITextFormatter textFormatter, UnitySinkSettings? unitySin
         // https://discussions.unity.com/t/debugging-from-threads/595708/3
         // https://discussions.unity.com/t/thread-safety-and-debug-log/106140/2
         if (context == null && tag is null) // `UnityEngine.Object` overloads `==` operator and treats null differently, so we need to use that
-            Debug.unityLogger.Log(logType, message);
+            _logger.Log(logType, message);
 
         else if (context == null && tag is not null)
-            Debug.unityLogger.Log(logType, tag, message);
+            _logger.Log(logType, tag, message);
 
         else if (context != null && tag is null)
-            Debug.unityLogger.Log(logType, (object)message, context);
+            _logger.Log(logType, (object)message, context);
 
         else
-            Debug.unityLogger.Log(logType, tag, message, context);
+            _logger.Log(logType, tag, message, context);
     }
 }

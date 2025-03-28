@@ -15,7 +15,7 @@ namespace Unity.Extensions.Logging;
 /// (without affecting the destructuring of other <see cref="Object"/> log property values set by API consumers).
 /// </para>
 /// </summary>
-internal class UnityLogContextDestructuringPolicy : IDestructuringPolicy
+public sealed class UnityLogContextDestructuringPolicy : IDestructuringPolicy
 {
     /// <inheritdoc />
     public bool TryDestructure(object value, ILogEventPropertyValueFactory propertyValueFactory, [NotNullWhen(true)] out LogEventPropertyValue? result)

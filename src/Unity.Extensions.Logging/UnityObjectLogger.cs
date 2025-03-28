@@ -8,10 +8,10 @@ using UE = UnityEngine;
 namespace Unity.Extensions.Logging;
 
 /// <summary>
-/// An <see cref="MEL.ILogger"/> that adds a <see cref="UE.Object"/> instance as a scope property
+/// An <see cref="MEL.ILogger"/> that adds a <see cref="UE.Object"/>-derived instance as a scope property
 /// to all of its log messages for use by Unity-specific logging providers.
 /// </summary>
-/// <typeparam name="T"></typeparam>
+/// <typeparam name="T">A logging <see cref="UE.Object"/>-derived type</typeparam>
 public class UnityObjectLogger<T> : ILogger<T> where T : UE.Object
 {
     private readonly ILogger<T> _logger;
@@ -19,18 +19,18 @@ public class UnityObjectLogger<T> : ILogger<T> where T : UE.Object
 
     private Dictionary<string, object>? _scopeProps;
     private readonly string? _contextName;
-    private List<string>? _hierarchicalNameParts;
+    private List<string>? _hierarchyNameParts;
     private readonly Transform? _transform = null;
 
     /// <summary>
     /// Creates a new instance of <see cref="UnityObjectLogger{T}"/>.
     /// </summary>
     /// <param name="loggerFactory"><inheritdoc cref="ILoggerFactory" path="/summary"/></param>
-    /// <param name="context">The <see cref="UE.Object"/> instance to add as a scope property to all log messages for use by Unity-specific logging providers.</param>
+    /// <param name="context">The <typeparamref name="T"/> instance to add as a scope property to all log messages for use by Unity-specific logging providers.</param>
     /// <param name="unityObjectLoggerSettings"><inheritdoc cref="UnityObjectLoggerSettings" path="/summary"/></param>
     public UnityObjectLogger(
         ILoggerFactory loggerFactory,
-        UE.Object context,
+        T context,
         UnityObjectLoggerSettings? unityObjectLoggerSettings = null
     )
     {
@@ -39,22 +39,24 @@ public class UnityObjectLogger<T> : ILogger<T> where T : UE.Object
 
         _contextName = context.name;
 
-        if (_unityObjectLoggerSettings.UnityContextLogProperty is not null) {
+        if (_unityObjectLoggerSettings.EnrichWithUnityContext) {
             _scopeProps ??= [];
             _scopeProps.Add($"@{_unityObjectLoggerSettings.UnityContextLogProperty}", new UnityLogContext(context));
         }
 
-        if (_unityObjectLoggerSettings.HierarchicalNameLogProperty is not null && _unityObjectLoggerSettings.HasStaticHierarchy) {
+        if (_unityObjectLoggerSettings.EnrichWithHierarchyName) {
             _transform =
                 context is GameObject gameObject ? gameObject.transform
                 : context is Component component ? component.transform
                 : null;
-            _scopeProps ??= [];
-            _scopeProps.Add(_unityObjectLoggerSettings.HierarchicalNameLogProperty, getHierarchicalName());
+            if (_transform != null && _unityObjectLoggerSettings.HasStaticHierarchy) {
+                _scopeProps ??= [];
+                _scopeProps.Add(_unityObjectLoggerSettings.HierarchyNameLogProperty, GetHierarchyName());
 
-            // Null out fields that won't be needed again with static hierarchies
-            _hierarchicalNameParts = null;
-            _contextName = null;
+                // Null out fields that won't be needed again with static hierarchies
+                _hierarchyNameParts = null;
+                _contextName = null;
+            }
         }
     }
 
@@ -67,9 +69,9 @@ public class UnityObjectLogger<T> : ILogger<T> where T : UE.Object
     /// <inheritdoc/>
     public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
     {
-        if (_unityObjectLoggerSettings.HierarchicalNameLogProperty is not null && !_unityObjectLoggerSettings.HasStaticHierarchy) {
+        if (_unityObjectLoggerSettings.EnrichWithHierarchyName && !_unityObjectLoggerSettings.HasStaticHierarchy) {
             _scopeProps ??= [];
-            _scopeProps[_unityObjectLoggerSettings.HierarchicalNameLogProperty] = getHierarchicalName();
+            _scopeProps[_unityObjectLoggerSettings.HierarchyNameLogProperty] = GetHierarchyName();
         }
 
         if (_scopeProps is null)
@@ -80,23 +82,23 @@ public class UnityObjectLogger<T> : ILogger<T> where T : UE.Object
         }
     }
 
-    private string getHierarchicalName()
+    public string GetHierarchyName()
     {
         if (_transform is null)
             return _contextName!;   // Not set to null in ctor if hierarchy is dynamic
 
-        if (_hierarchicalNameParts is null)
-            _hierarchicalNameParts = [];
+        if (_hierarchyNameParts is null)
+            _hierarchyNameParts = [];
         else
-            _hierarchicalNameParts.Clear(); // Should be faster and generate less garbage than newing up a whole new list, at least for shallow-ish hierarchies
+            _hierarchyNameParts.Clear(); // Should be faster and generate less garbage than newing up a whole new list, at least for shallow-ish hierarchies
 
         Transform trans = _transform;
         do {
-            _hierarchicalNameParts.Add(trans.name + "");
+            _hierarchyNameParts.Add(trans.name);
             trans = trans.parent;
         } while (trans != null);
-        _hierarchicalNameParts.Reverse();
+        _hierarchyNameParts.Reverse();
 
-        return string.Join(_unityObjectLoggerSettings.ParentNameSeparator, _hierarchicalNameParts);
+        return string.Join(_unityObjectLoggerSettings.ParentNameSeparator, _hierarchyNameParts);
     }
 }

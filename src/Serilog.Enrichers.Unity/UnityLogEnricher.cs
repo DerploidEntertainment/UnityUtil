@@ -14,25 +14,25 @@ public class UnityLogEnricher(UnityLogEnricherSettings unityLogEnricherSettings)
 
     public void Enrich(LogEvent logEvent, ILogEventPropertyFactory propertyFactory)
     {
-        if (_unityLogEnricherSettings.AddFrameCount)
+        if (_unityLogEnricherSettings.WithFrameCount)
             logEvent.AddPropertyIfAbsent(propertyFactory.CreateProperty(_unityLogEnricherSettings.FrameCountLogProperty, Time.frameCount));
 
-        if (_unityLogEnricherSettings.AddTimeSinceLevelLoad)
+        if (_unityLogEnricherSettings.WithTimeSinceLevelLoad)
             logEvent.AddPropertyIfAbsent(propertyFactory.CreateProperty(_unityLogEnricherSettings.TimeSinceLevelLoadLogProperty, Time.timeSinceLevelLoad));
 
-        if (_unityLogEnricherSettings.AddTimeSinceLevelLoadAsDouble)
+        if (_unityLogEnricherSettings.WithTimeSinceLevelLoadAsDouble)
             logEvent.AddPropertyIfAbsent(propertyFactory.CreateProperty(_unityLogEnricherSettings.TimeSinceLevelLoadAsDoubleLogProperty, Time.timeSinceLevelLoadAsDouble));
 
-        if (_unityLogEnricherSettings.AddUnscaledTime)
+        if (_unityLogEnricherSettings.WithUnscaledTime)
             logEvent.AddPropertyIfAbsent(propertyFactory.CreateProperty(_unityLogEnricherSettings.UnscaledTimeLogProperty, Time.unscaledTime));
 
-        if (_unityLogEnricherSettings.AddUnscaledTimeAsDouble)
+        if (_unityLogEnricherSettings.WithUnscaledTimeAsDouble)
             logEvent.AddPropertyIfAbsent(propertyFactory.CreateProperty(_unityLogEnricherSettings.UnscaledTimeAsDoubleLogProperty, Time.unscaledTimeAsDouble));
 
-        if (_unityLogEnricherSettings.AddTime)
+        if (_unityLogEnricherSettings.WithTime)
             logEvent.AddPropertyIfAbsent(propertyFactory.CreateProperty(_unityLogEnricherSettings.TimeLogProperty, Time.time));
 
-        if (_unityLogEnricherSettings.AddTimeAsDouble)
+        if (_unityLogEnricherSettings.WithTimeAsDouble)
             logEvent.AddPropertyIfAbsent(propertyFactory.CreateProperty(_unityLogEnricherSettings.TimeAsDoubleLogProperty, Time.timeAsDouble));
     }
 }

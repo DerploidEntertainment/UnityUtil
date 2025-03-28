@@ -5,6 +5,7 @@ using Serilog.Events;
 using Serilog.Formatting;
 using Serilog.Sinks.Unity;
 using UnityEngine;
+using UE = UnityEngine;
 
 namespace Unity.Extensions.Logging;
 
@@ -17,7 +18,8 @@ public static class LoggerConfigurationExtensions
     /// Add the Unity Console to the Serilog pipeline.
     /// </summary>
     /// <param name="loggerConfiguration">Logger configuration.</param>
-    /// <param name="textFormatter"><inheritdoc cref="UnitySink(ITextFormatter, UnitySinkSettings)" path="/param[@name='textFormatter']"/></param>
+    /// <param name="textFormatter"><inheritdoc cref="UnitySink(ITextFormatter, UE.ILogger, UnitySinkSettings)" path="/param[@name='textFormatter']"/></param>
+    /// <param name="logger"><inheritdoc cref="UnitySink(ITextFormatter, UE.ILogger, UnitySinkSettings)" path="/param[@name='logger']"/></param>
     /// <param name="selfLogIsUnityLogWarning">
     /// Whether Serilog's <see cref="SelfLog"/> is set to Unity's <see cref="Debug.LogWarning(object)"/>.
     /// Useful during development, but may generate noisy warnings if trying to destructure <see cref="Object"/>s in <see cref="LogEvent"/>s.
@@ -27,7 +29,7 @@ public static class LoggerConfigurationExtensions
     /// </param>
     /// <param name="unityLogEnricherSettings"><inheritdoc cref="UnityLogEnricher(UnityLogEnricherSettings)" path="/param[@name='unityLogEnricherSettings']"/></param>
     /// <param name="unitySinkSettings">
-    /// <inheritdoc cref="UnitySink(ITextFormatter, UnitySinkSettings)" path="/param[@name='unitySinkSettings']"/>
+    /// <inheritdoc cref="UnitySink(ITextFormatter, UE.ILogger, UnitySinkSettings)" path="/param[@name='unitySinkSettings']"/>
     /// By default, <see cref="UnitySinkSettings.UnityTagLogProperty"/> is set to <c>SourceContext</c> to reuse the type name set by <c>Serilog</c>
     /// as the Unity log <c>tag</c>.
     /// </param>
@@ -35,6 +37,7 @@ public static class LoggerConfigurationExtensions
     public static LoggerConfiguration AddUnity(
         this LoggerConfiguration loggerConfiguration,
         ITextFormatter textFormatter,
+        UE.ILogger? logger = null,
         bool selfLogIsUnityLogWarning = true,
         bool setMinimumLevelFromUnityFilterLogType = true,
         UnityLogEnricherSettings? unityLogEnricherSettings = null,
@@ -42,7 +45,7 @@ public static class LoggerConfigurationExtensions
     )
     {
         unitySinkSettings ??= new UnitySinkSettings {
-            UnityTagLogProperty = "SourceContext",  // This log property automatically added by Serilog, containing logging type name
+            UnityTagLogProperty = "SourceContext",  // This log property automatically added by Serilog, contain logging type's name
         };
 
         if (selfLogIsUnityLogWarning)
@@ -64,6 +67,6 @@ public static class LoggerConfigurationExtensions
 
         return loggerConfiguration
             .Enrich.WithUnityData(unityLogEnricherSettings ?? new UnityLogEnricherSettings())
-            .WriteTo.Unity(textFormatter, unitySinkSettings);
+            .WriteTo.Unity(textFormatter, logger, unitySinkSettings);
     }
 }

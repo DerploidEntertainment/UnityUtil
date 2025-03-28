@@ -9,13 +9,14 @@
             Extends <see cref="T:Serilog.LoggerConfiguration"/> with methods to add Unity sinks.
             </summary>
         </member>
-        <member name="M:Serilog.Sinks.Unity.LoggerConfigurationExtensions.Unity(Serilog.Configuration.LoggerSinkConfiguration,Serilog.Formatting.ITextFormatter,Serilog.Sinks.Unity.UnitySinkSettings)">
+        <member name="M:Serilog.Sinks.Unity.LoggerConfigurationExtensions.Unity(Serilog.Configuration.LoggerSinkConfiguration,Serilog.Formatting.ITextFormatter,UnityEngine.ILogger,Serilog.Sinks.Unity.UnitySinkSettings)">
             <summary>
             Write log events to the Unity Console.
             </summary>
             <param name="loggerSinkConfiguration">Logger sink configuration.</param>
-            <param name="textFormatter"><inheritdoc cref="M:Serilog.Sinks.Unity.UnitySink.#ctor(Serilog.Formatting.ITextFormatter,Serilog.Sinks.Unity.UnitySinkSettings)" path="/param[@name='textFormatter']"/></param>
-            <param name="unitySinkSettings"><inheritdoc cref="M:Serilog.Sinks.Unity.UnitySink.#ctor(Serilog.Formatting.ITextFormatter,Serilog.Sinks.Unity.UnitySinkSettings)" path="/param[@name='unitySinkSettings']"/></param>
+            <param name="textFormatter"><inheritdoc cref="M:Serilog.Sinks.Unity.UnitySink.#ctor(Serilog.Formatting.ITextFormatter,UnityEngine.ILogger,Serilog.Sinks.Unity.UnitySinkSettings)" path="/param[@name='textFormatter']"/></param>
+            <param name="logger"><inheritdoc cref="M:Serilog.Sinks.Unity.UnitySink.#ctor(Serilog.Formatting.ITextFormatter,UnityEngine.ILogger,Serilog.Sinks.Unity.UnitySinkSettings)" path="/param[@name='logger']"/></param>
+            <param name="unitySinkSettings"><inheritdoc cref="M:Serilog.Sinks.Unity.UnitySink.#ctor(Serilog.Formatting.ITextFormatter,UnityEngine.ILogger,Serilog.Sinks.Unity.UnitySinkSettings)" path="/param[@name='unitySinkSettings']"/></param>
             <returns>Configuration object allowing method chaining.</returns>
         </member>
         <member name="T:Serilog.Sinks.Unity.UnitySink">
@@ -25,14 +26,22 @@
             <param name="textFormatter">
             A formatter, such as <see cref="T:Serilog.Formatting.Json.JsonFormatter"/>, to convert the log events into text for the Unity Console.
             </param>
+            <param name="logger">
+            The Unity <see cref="T:UnityEngine.ILogger"/> backing this sink.
+            If <see langword="null"/> then the default <see cref="P:UnityEngine.Debug.unityLogger"/> will be used.
+            </param>
             <param name="unitySinkSettings"><inheritdoc cref="T:Serilog.Sinks.Unity.UnitySinkSettings" path="/summary"/></param>
         </member>
-        <member name="M:Serilog.Sinks.Unity.UnitySink.#ctor(Serilog.Formatting.ITextFormatter,Serilog.Sinks.Unity.UnitySinkSettings)">
+        <member name="M:Serilog.Sinks.Unity.UnitySink.#ctor(Serilog.Formatting.ITextFormatter,UnityEngine.ILogger,Serilog.Sinks.Unity.UnitySinkSettings)">
             <summary>
             Writes log events to the Unity Console.
             </summary>
             <param name="textFormatter">
             A formatter, such as <see cref="T:Serilog.Formatting.Json.JsonFormatter"/>, to convert the log events into text for the Unity Console.
+            </param>
+            <param name="logger">
+            The Unity <see cref="T:UnityEngine.ILogger"/> backing this sink.
+            If <see langword="null"/> then the default <see cref="P:UnityEngine.Debug.unityLogger"/> will be used.
             </param>
             <param name="unitySinkSettings"><inheritdoc cref="T:Serilog.Sinks.Unity.UnitySinkSettings" path="/summary"/></param>
         </member>
@@ -47,6 +56,7 @@
         <member name="P:Serilog.Sinks.Unity.UnitySinkSettings.UnityTagLogProperty">
             <summary>
             Name of the <see cref="T:Serilog.Events.LogEventProperty"/> storing the Unity log's tag, if present.
+            If <see langword="null"/>, then <see cref="T:Serilog.Sinks.Unity.UnitySink"/> will not check the <see cref="P:Serilog.Events.LogEvent.Properties"/> for a tag.
             This property can be removed from <see cref="T:Serilog.Events.LogEvent"/>s by setting <see cref="P:Serilog.Sinks.Unity.UnitySinkSettings.RemoveUnityTagLogPropertyIfPresent"/> to <see langword="true"/>
             to avoid duplicating its value in the log message (recommended).
             See Unity's <a href="https://docs.unity3d.com/ScriptReference/Logger.Log.html"><c>Logger.Log</c></a> docs for a description of the <c>tag</c> parameter.
@@ -55,6 +65,7 @@
         <member name="P:Serilog.Sinks.Unity.UnitySinkSettings.UnityContextLogProperty">
             <summary>
             Name of the <see cref="T:Serilog.Events.LogEventProperty"/> storing the Unity log's context, if present.
+            If <see langword="null"/>, then <see cref="T:Serilog.Sinks.Unity.UnitySink"/> will not check the <see cref="P:Serilog.Events.LogEvent.Properties"/> for a context.
             This property can be removed from <see cref="T:Serilog.Events.LogEvent"/>s by setting <see cref="P:Serilog.Sinks.Unity.UnitySinkSettings.RemoveUnityContextLogPropertyIfPresent"/> to <see langword="true"/>
             to avoid trying to format <see cref="T:UnityEngine.Object"/> instances stored in the context property (recommended).
             See Unity's <a href="https://docs.unity3d.com/ScriptReference/Debug.Log.html"><c>Debug.Log</c></a> docs for a description of the <c>context</c> parameter.

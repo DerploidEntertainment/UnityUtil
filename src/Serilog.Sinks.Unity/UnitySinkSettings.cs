@@ -10,6 +10,7 @@ public class UnitySinkSettings
 {
     /// <summary>
     /// Name of the <see cref="LogEventProperty"/> storing the Unity log's tag, if present.
+    /// If <see langword="null"/>, then <see cref="UnitySink"/> will not check the <see cref="LogEvent.Properties"/> for a tag.
     /// This property can be removed from <see cref="LogEvent"/>s by setting <see cref="RemoveUnityTagLogPropertyIfPresent"/> to <see langword="true"/>
     /// to avoid duplicating its value in the log message (recommended).
     /// See Unity's <a href="https://docs.unity3d.com/ScriptReference/Logger.Log.html"><c>Logger.Log</c></a> docs for a description of the <c>tag</c> parameter.
@@ -18,6 +19,7 @@ public class UnitySinkSettings
 
     /// <summary>
     /// Name of the <see cref="LogEventProperty"/> storing the Unity log's context, if present.
+    /// If <see langword="null"/>, then <see cref="UnitySink"/> will not check the <see cref="LogEvent.Properties"/> for a context.
     /// This property can be removed from <see cref="LogEvent"/>s by setting <see cref="RemoveUnityContextLogPropertyIfPresent"/> to <see langword="true"/>
     /// to avoid trying to format <see cref="UE.Object"/> instances stored in the context property (recommended).
     /// See Unity's <a href="https://docs.unity3d.com/ScriptReference/Debug.Log.html"><c>Debug.Log</c></a> docs for a description of the <c>context</c> parameter.
