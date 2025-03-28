@@ -4,7 +4,7 @@
   "description": "Configurable Unity-specific logging extensions for using Serilog behind Microsoft.Extensions.Logging",
   "displayName": "Unity Logging Extensions",
   "unity": "2019.4",
-  "documentationUrl": "https://github.com/DerploidEntertainment/UnityUtil/blob/0.1.0-unity6/src/Unity.Extensions.Logging/README.md",
+  "documentationUrl": "https://github.com/DerploidEntertainment/UnityUtil/blob/0.1.0-unity6/src/Serilog/Unity.Extensions.Logging/README.md",
   "author": {
     "name": "Rabadash8820",
     "url": "https://github.com/Rabadash8820"

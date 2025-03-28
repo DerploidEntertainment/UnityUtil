@@ -1,0 +1,9 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <Reference Include="$(UnityModulesPath)\UnityEngine.CoreModule.dll" Private="false" />
+    <Reference Include="$(UnityPackageCachePath)\org.nuget.serilog\Serilog.dll" Private="false" />
+    <PackageReference Include="SerilogAnalyzer" />
+  </ItemGroup>
+
+</Project>

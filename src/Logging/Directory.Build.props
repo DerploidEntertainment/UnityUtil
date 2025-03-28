@@ -1,0 +1,34 @@
+<Project>
+
+  <Import Project="..\Directory.Build.props" />
+
+  <PropertyGroup>
+    <UnityDestinationFolder>$(UnityProjectPath)\Assets\$(MSBuildProjectName)\Runtime</UnityDestinationFolder>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="$(UnityProjectPath)\Assets\$(MSBuildProjectName)\package.json" />
+  </ItemGroup>
+
+  <!-- Dependencies -->
+  <ItemGroup>
+    <PackageReference Include="Unity3D" />
+  </ItemGroup>
+  <PropertyGroup>
+    <IncludeDefaultUnityAssemblyReferences>false</IncludeDefaultUnityAssemblyReferences>
+  </PropertyGroup>
+
+  <!-- CLS compliance -->
+  <ItemGroup>
+    <!--
+      Disable CLS compliance by default (other importing projects can re-enable it).
+      The Unity assemblies are not CLS-compliant, so any type that inherits from one of their types (e.g., Debug)
+      or uses one of their types in a public API is also not CLS-compliant. We don't wanna play whack-a-mole to mark every new type/member
+      with [CLSCompliant(false)] as necessary, so these libray game assemblies will not be marked CLS-compliant either.
+    -->
+    <AssemblyAttribute Include="System.CLSCompliantAttribute">
+      <_Parameter1>false</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+
+</Project>

@@ -7,17 +7,42 @@
   <PropertyGroup>
     <NunitAssembly>com.unity.ext.nunit\net40\unity-custom\nunit.framework.dll</NunitAssembly>
     <TestingProjectName>$(MSBuildProjectName.Substring(0, $(MSBuildProjectName.IndexOf(`.Tests`))))</TestingProjectName>
-    <TestingProjectPath>..\..\..\$(TestingProjectName)\$(TestingProjectName).csproj</TestingProjectPath>
+    <TestingUtilProjectName>UnityUtil.Tests.Util</TestingUtilProjectName>
+    <TestingProjectPath Condition="'$(MSBuildProjectName.SubString(0, 10))'=='UnityUtil.'">..\..\..\$(SolutionName)\$(TestingProjectName)\$(TestingProjectName).csproj</TestingProjectPath>
   </PropertyGroup>
 
   <!-- Dependencies -->
   <ItemGroup>
+    <PackageReference Include="Unity3D" />
     <Reference Include="$(NunitPath)" Private="false" />
     <PackageReference Include="NUnit.Analyzers" />
     <Reference Include="$(UnityScriptAssembliesPath)\UnityEngine.TestRunner.dll" Private="false" />
     <Reference Include="$(UnityPackageCachePath)\org.nuget.moq\netstandard2.1\Moq.dll" Private="false" />
+
+    <ProjectReference Condition="'$(MSBuildProjectName)'!='$(TestingUtilProjectName)'" Include="$(TestingProjectPath)" />
+    <ProjectReference Condition="'$(MSBuildProjectName)'!='$(TestingUtilProjectName)'" Include="..\..\$(TestingUtilProjectName)\$(TestingUtilProjectName).csproj" />
+  </ItemGroup>
+  <PropertyGroup>
+    <IncludeDefaultUnityAssemblyReferences>false</IncludeDefaultUnityAssemblyReferences>
+  </PropertyGroup>
+
+  <!-- CLS compliance -->
+  <ItemGroup>
+    <!--
+      Disable CLS compliance by default (other importing projects can re-enable it.
+      Test assemblies will never be referenced by 3rd parties, so they don't need CLS-compliance,
+      and most Unity types aren't CLS-compliant anyway.
+    -->
+    <AssemblyAttribute Include="System.CLSCompliantAttribute">
+      <_Parameter1>false</_Parameter1>
+    </AssemblyAttribute>
   </ItemGroup>
 
+  <!-- Global message suppressions -->
+  <PropertyGroup>
+    <!-- XML comments should not be a requirement in test code -->
+    <NoWarn>1591</NoWarn> <!-- Missing XML comment for publicly visible type or member -->
+  </PropertyGroup>
   <ItemGroup>
     <!-- Test method names can definitely have underscores... -->
     <AssemblyAttribute Include="System.Diagnostics.CodeAnalysis.SuppressMessage">
