@@ -4,9 +4,9 @@
         <name>Serilog.Sinks.Unity</name>
     </assembly>
     <members>
-        <member name="T:Serilog.Sinks.Unity.LoggerConfigurationExtensions">
+        <member name="T:Serilog.Sinks.Unity.LoggerSinkConfigurationExtensions">
             <summary>
-            Extends <see cref="T:Serilog.LoggerConfiguration"/> with methods to add Unity sinks.
+            Extends <see cref="T:Serilog.Configuration.LoggerSinkConfiguration"/> with Unity sinks.
             </summary>
         </member>
         <member name="M:Serilog.Sinks.Unity.LoggerSinkConfigurationExtensions.Unity(Serilog.Configuration.LoggerSinkConfiguration,Serilog.Formatting.ITextFormatter,UnityEngine.ILogger,Serilog.Sinks.Unity.UnitySinkSettings,Serilog.Events.LogEventLevel,Serilog.Core.LoggingLevelSwitch)">

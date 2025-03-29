@@ -4,7 +4,12 @@
         <name>Serilog.Enrichers.Unity</name>
     </assembly>
     <members>
-        <member name="M:Serilog.Enrichers.Unity.LoggerConfigurationExtensions.WithUnityData(Serilog.Configuration.LoggerEnrichmentConfiguration,Serilog.Enrichers.Unity.UnityLogEnricherSettings)">
+        <member name="T:Serilog.Enrichers.Unity.LoggerEnrichmentConfigurationExtensions">
+            <summary>
+            Extends <see cref="T:Serilog.Configuration.LoggerEnrichmentConfiguration"/> with Unity enrichers.
+            </summary>
+        </member>
+        <member name="M:Serilog.Enrichers.Unity.LoggerEnrichmentConfigurationExtensions.WithUnityData(Serilog.Configuration.LoggerEnrichmentConfiguration,Serilog.Enrichers.Unity.UnityLogEnricherSettings)">
             <summary>
             Enriches log events with context from the Unity engine, such as frame counts.
             </summary>
@@ -23,6 +28,9 @@
             Enriches <see cref="T:Serilog.Events.LogEvent"/>s with information from the Unity engine.
             </summary>
             <param name="unityLogEnricherSettings"><inheritdoc cref="T:Serilog.Enrichers.Unity.UnityLogEnricherSettings" path="/summary"/></param>
+        </member>
+        <member name="M:Serilog.Enrichers.Unity.UnityLogEnricher.Enrich(Serilog.Events.LogEvent,Serilog.Core.ILogEventPropertyFactory)">
+            <inheritdoc/>
         </member>
         <member name="T:Serilog.Enrichers.Unity.UnityLogEnricherSettings">
             <summary>
