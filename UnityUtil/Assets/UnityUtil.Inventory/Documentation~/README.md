@@ -1,6 +1,6 @@
-# UnityUtil.Inputs
+# UnityUtil.Inventory
 
-[< Back to main README](../../README.md)
+[< Back to main README](../../../../README.md)
 
 **Work in progress!**
 
@@ -9,6 +9,6 @@ so documentation content/organization are still in development.
 
 ## Overview
 
-A set of utility classes and components useful to any Unity project, 2D or 3D, specifically related to player input.
+A set of utility classes and components useful to any Unity project, 2D or 3D, specifically related to in-game item inventories.
 
 Copyright © 2017 - present Dan Vicarel & Contributors. All rights reserved.

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <Import Project="..\..\Logging.props" />
 
@@ -10,6 +10,7 @@
   <ItemGroup>
     <!-- Remove the package items added by Directory.Build.props -->
     <None Remove="$(UnityProjectPath)\Assets\$(MSBuildProjectName)\package.json" />
+    <None Remove="$(UnityProjectPath)\Assets\$(MSBuildProjectName)\Documentation~\README.md" />
   </ItemGroup>
 
   <ItemGroup>

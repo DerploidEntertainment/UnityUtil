@@ -4,7 +4,6 @@
   "description": "Implementats a Microsoft.Extensions.Configuration configuration provider for Unity Remote Config",
   "displayName": "Remote Config configuration provider",
   "unity": "2019.4",
-  "documentationUrl": "https://github.com/DerploidEntertainment/UnityUtil/blob/0.1.0-unity6/src/UnityUtil.Configuration.RemoteConfig/README.md",
   "author": {
     "name": "Rabadash8820",
     "url": "https://github.com/Rabadash8820"

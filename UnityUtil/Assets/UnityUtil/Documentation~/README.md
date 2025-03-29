@@ -1,6 +1,6 @@
 # UnityUtil
 
-[< Back to main README](../../README.md)
+[< Back to main README](../../../../README.md)
 
 A set of utility classes and components useful to any Unity project, 2D or 3D.
 

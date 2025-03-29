@@ -42,21 +42,21 @@ As the API stabilizes, I will move this package to [OpenUPM](https://openupm.com
 
 ## Packages
 
-- [Serilog.Enrichers.Unity](./src/Serilog.Enrichers.Unity/README.md): Implements a Serilog enricher to dynamically add Unity data to log events like frame counts, GameObject hierarchies, etc.
-- [Serilog.Sinks.Unity](./src/Serilog.Sinks.Unity/README.md): Implements a Serilog sink that writes log events to the Unity Console
-- [Unity.Extensions.Logging](./src/Unity.Extensions.Logging/README.md): Unity-specific logging extensions to the Microsoft.Extensions.Logging library
-- [Unity.Extensions.Logging](./src/Unity.Extensions.Logging/README.md): Unity-specific logging extensions for using Serilog behind Microsoft.Extensions.Logging
-- [UnityUtil](./src/UnityUtil/README.md): utility classes and components related to dependency injection, logging, mathematics, data storage, etc.
-- [UnityUtil.Configuration.RemoteConfig](./src/UnityUtil.Configuration.RemoteConfig/README.md): Implementats a `Microsoft.Extensions.Configuration` configuration provider for Unity Remote Config
-- [UnityUtil.Inputs](./src/UnityUtil.Inputs/README.md): abstracted player inputs
-- [UnityUtil.Interactors](./src/UnityUtil.Interactors/README.md): interaction with in-world objects
-- [UnityUtil.Inventory](./src/UnityUtil.Inventory/README.md): in-game item inventories
-- [UnityUtil.Legal](./src/UnityUtil.Legal/README.md): legal/privacy consent
-- [UnityUtil.Movement](./src/UnityUtil.Movement/README.md): in-game movement mechanics
-- [UnityUtil.Physics](./src/UnityUtil.Physics/README.md): 3D physics helpers
-- [UnityUtil.Physics2D](./src/UnityUtil.Physics2D/README.md): 2D physics helpers
-- [UnityUtil.Triggers](./src/UnityUtil.Triggers/README.md): event-based behavior in-game
-- [UnityUtil.UI](./src/UnityUtil.UI/README.md): in-game and in-Editor user interfaces
+- [Serilog.Enrichers.Unity](./UnityUtil/Assets/Serilog.Enrichers.Unity/Documentation~/README.md): Implements a Serilog enricher to dynamically add Unity data to log events like frame counts, GameObject hierarchies, etc.
+- [Serilog.Sinks.Unity](./UnityUtil/Assets/Serilog.Sinks.Unity/Documentation~/README.md): Implements a Serilog sink that writes log events to the Unity Console
+- [Unity.Extensions.Logging](./UnityUtil/Assets/Unity.Extensions.Logging/Documentation~/README.md): Unity-specific extension methods to Microsoft.Extensions.Logging
+- [Unity.Extensions.Serilog](./UnityUtil/Assets/Unity.Extensions.Serilog/Documentation~/README.md): Unity-specific extension methods to Serilog
+- [UnityUtil](./UnityUtil/Assets/UnityUtil/Documentation~/README.md): utility classes and components related to dependency injection, logging, mathematics, data storage, etc.
+- [UnityUtil.Configuration.RemoteConfig](./UnityUtil/Assets/UnityUtil.Configuration.RemoteConfig/Documentation~/README.md): Implementats a `Microsoft.Extensions.Configuration` configuration provider for Unity Remote Config
+- [UnityUtil.Inputs](./UnityUtil/Assets/UnityUtil.Inputs/Documentation~/README.md): abstracted player inputs
+- [UnityUtil.Interactors](./UnityUtil/Assets/UnityUtil.Interactors/Documentation~/README.md): interaction with in-world objects
+- [UnityUtil.Inventory](./UnityUtil/Assets/UnityUtil.Inventory/Documentation~/README.md): in-game item inventories
+- [UnityUtil.Legal](./UnityUtil/Assets/UnityUtil.Legal/Documentation~/README.md): legal/privacy consent
+- [UnityUtil.Movement](./UnityUtil/Assets/UnityUtil.Movement/Documentation~/README.md): in-game movement mechanics
+- [UnityUtil.Physics](./UnityUtil/Assets/UnityUtil.Physics/Documentation~/README.md): 3D physics helpers
+- [UnityUtil.Physics2D](./UnityUtil/Assets/UnityUtil.Physics2D/Documentation~/README.md): 2D physics helpers
+- [UnityUtil.Triggers](./UnityUtil/Assets/UnityUtil.Triggers/Documentation~/README.md): event-based behavior in-game
+- [UnityUtil.UI](./UnityUtil/Assets/UnityUtil.UI/Documentation~/README.md): in-game and in-Editor user interfaces
 
 ## Note on IL2CPP
 
