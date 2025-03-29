@@ -4,6 +4,7 @@ using System.Text.RegularExpressions;
 using Moq;
 using NUnit.Framework;
 using Serilog;
+using Serilog.Core;
 using Serilog.Enrichers.Unity;
 using Serilog.Events;
 using Serilog.Formatting.Json;
@@ -159,7 +160,7 @@ public class LoggerConfigurationExtensionsTests
                     LogType.Log,
                     It.Is<string>(x =>
                         x.Contains(@"""UnityLogTag"":""Cow say""")
-                        && x.Contains(@"""SourceContext"":""UnityEngine.GameObject""")
+                        && x.Contains(@$"""{Constants.SourceContextPropertyName}"":""UnityEngine.GameObject""")
                     )
                 ), Times.Once()
             );

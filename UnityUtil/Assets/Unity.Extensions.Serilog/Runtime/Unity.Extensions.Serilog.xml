@@ -26,7 +26,7 @@
             <param name="unityLogEnricherSettings"><inheritdoc cref="M:Serilog.Enrichers.Unity.UnityLogEnricher.#ctor(Serilog.Enrichers.Unity.UnityLogEnricherSettings)" path="/param[@name='unityLogEnricherSettings']"/></param>
             <param name="unitySinkSettings">
             <inheritdoc cref="M:Serilog.Sinks.Unity.UnitySink.#ctor(Serilog.Formatting.ITextFormatter,UnityEngine.ILogger,Serilog.Sinks.Unity.UnitySinkSettings)" path="/param[@name='unitySinkSettings']"/>
-            By default, <see cref="P:Serilog.Sinks.Unity.UnitySinkSettings.UnityTagLogProperty"/> is set to <c>SourceContext</c> to reuse the type name set by <c>Serilog</c>
+            By default, <see cref="P:Serilog.Sinks.Unity.UnitySinkSettings.UnityTagLogProperty"/> is set to <see cref="F:Serilog.Core.Constants.SourceContextPropertyName"/> to reuse the type name set by <c>Serilog</c>
             as the Unity log <c>tag</c>.
             </param>
             <returns>Configuration object allowing method chaining.</returns>
