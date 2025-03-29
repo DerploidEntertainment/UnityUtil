@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Microsoft.Extensions.Logging;
-using Unity.Extensions.Logging;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using U = UnityEngine;

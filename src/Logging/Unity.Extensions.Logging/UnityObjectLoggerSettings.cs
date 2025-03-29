@@ -1,5 +1,4 @@
-﻿using Serilog.Events;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Unity.Extensions.Logging;
 
@@ -18,7 +17,7 @@ public class UnityObjectLoggerSettings
     public bool EnrichWithUnityContext { get; set; } = true;
 
     /// <summary>
-    /// Name of the <see cref="LogEventProperty"/> that holds the logging <see cref="Object"/> instance.
+    /// Name of the log property that holds the logging <see cref="Object"/> instance.
     /// </summary>
     /// <remarks><inheritdoc cref="EnrichWithUnityContext" path="/remarks"/></remarks>
     public string? UnityContextLogProperty { get; set; } = "UnityLogContext";
@@ -38,7 +37,7 @@ public class UnityObjectLoggerSettings
     public bool EnrichWithHierarchyName { get; set; } = false;
 
     /// <summary>
-    /// Name of the <see cref="LogEventProperty"/> that holds the logging <see cref="Object"/> instance's hierarchy name.
+    /// Name of the log property that holds the logging <see cref="Object"/> instance's hierarchy name.
     /// </summary>
     /// <remarks><inheritdoc cref="EnrichWithHierarchyName" path="/remarks"/></remarks>
     public string HierarchyNameLogProperty { get; set; } = "UnityHierarchyName";

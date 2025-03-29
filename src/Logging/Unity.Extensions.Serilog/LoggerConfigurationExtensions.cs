@@ -7,7 +7,7 @@ using Serilog.Sinks.Unity;
 using UnityEngine;
 using UE = UnityEngine;
 
-namespace Unity.Extensions.Logging;
+namespace Unity.Extensions.Serilog;
 
 /// <summary>
 /// Extends <see cref="LoggerConfiguration"/> with methods to add Unity enricher, sink, and other configuration.
@@ -25,7 +25,7 @@ public static class LoggerConfigurationExtensions
     /// Useful during development, but may generate noisy warnings if trying to destructure <see cref="Object"/>s in <see cref="LogEvent"/>s.
     /// </param>
     /// <param name="setMinimumLevelFromUnityFilterLogType">
-    /// Whether to set <see cref="LoggerConfiguration.MinimumLevel"/> based on Unity's <see cref="UnityEngine.ILogger.filterLogType"/>.
+    /// Whether to set <see cref="LoggerConfiguration.MinimumLevel"/> based on Unity's <see cref="UE.ILogger.filterLogType"/>.
     /// </param>
     /// <param name="unityLogEnricherSettings"><inheritdoc cref="UnityLogEnricher(UnityLogEnricherSettings)" path="/param[@name='unityLogEnricherSettings']"/></param>
     /// <param name="unitySinkSettings">

@@ -41,7 +41,7 @@ public class UnityObjectLogger<T> : ILogger<T> where T : UE.Object
 
         if (_unityObjectLoggerSettings.EnrichWithUnityContext) {
             _scopeProps ??= [];
-            _scopeProps.Add($"@{_unityObjectLoggerSettings.UnityContextLogProperty}", new UnityLogContext(context));
+            _scopeProps.Add($"@{_unityObjectLoggerSettings.UnityContextLogProperty}", ValueTuple.Create(context));
         }
 
         if (_unityObjectLoggerSettings.EnrichWithHierarchyName) {

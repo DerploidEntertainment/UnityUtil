@@ -111,7 +111,7 @@ public class UnityObjectLoggerTests
 
         // ASSERT
         Assert.That(_passedScopePropDict, Is.EquivalentTo(new Dictionary<string, object> {
-            { $"@{logPropertyName}", new UnityLogContext(_loggingObject) },
+            { $"@{logPropertyName}", ValueTuple.Create(_loggingObject) },
         }));
     }
 
@@ -163,7 +163,7 @@ public class UnityObjectLoggerTests
         Assert.That(_passedScopePropDict, Is.EquivalentTo(new Dictionary<string, object> {
             { "SomeInt", 5 },
             { "SomeBool", true },
-            { $"@{unityObjectLoggerSettings.UnityContextLogProperty}", new UnityLogContext(_loggingObject) },
+            { $"@{unityObjectLoggerSettings.UnityContextLogProperty}", ValueTuple.Create(_loggingObject) },
             { unityObjectLoggerSettings.HierarchyNameLogProperty, unityObjectLogger.GetHierarchyName() },
         }));
         Assert.That(_passedScopePropStr, Is.EqualTo("DatScope"));
@@ -329,7 +329,7 @@ public class UnityObjectLoggerTests
         // ASSERT
         _logger.Verify(x => x.BeginScope(It.IsAny<It.IsAnyType>()), Times.Exactly(1));  // Just one call inside test class
         Assert.That(_passedScopePropDict, Is.EquivalentTo(new Dictionary<string, object> {
-            { $"@{unityObjectLoggerSettings.UnityContextLogProperty}", new UnityLogContext(_loggingObject) },
+            { $"@{unityObjectLoggerSettings.UnityContextLogProperty}", ValueTuple.Create(_loggingObject) },
         }));
     }
 

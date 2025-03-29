@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Serilog;
 using Serilog.Formatting.Json;
+using Unity.Extensions.Serilog;
 
 namespace Unity.Extensions.Logging.Tests.Editor;
 

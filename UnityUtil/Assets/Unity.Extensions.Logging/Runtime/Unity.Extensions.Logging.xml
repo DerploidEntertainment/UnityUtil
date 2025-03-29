@@ -4,33 +4,6 @@
         <name>Unity.Extensions.Logging</name>
     </assembly>
     <members>
-        <member name="T:Unity.Extensions.Logging.LoggerConfigurationExtensions">
-            <summary>
-            Extends <see cref="T:Serilog.LoggerConfiguration"/> with methods to add Unity enricher, sink, and other configuration.
-            </summary>
-        </member>
-        <member name="M:Unity.Extensions.Logging.LoggerConfigurationExtensions.AddUnity(Serilog.LoggerConfiguration,Serilog.Formatting.ITextFormatter,UnityEngine.ILogger,System.Boolean,System.Boolean,Serilog.Enrichers.Unity.UnityLogEnricherSettings,Serilog.Sinks.Unity.UnitySinkSettings)">
-            <summary>
-            Add the Unity Console to the Serilog pipeline.
-            </summary>
-            <param name="loggerConfiguration">Logger configuration.</param>
-            <param name="textFormatter"><inheritdoc cref="M:Serilog.Sinks.Unity.UnitySink.#ctor(Serilog.Formatting.ITextFormatter,UnityEngine.ILogger,Serilog.Sinks.Unity.UnitySinkSettings)" path="/param[@name='textFormatter']"/></param>
-            <param name="logger"><inheritdoc cref="M:Serilog.Sinks.Unity.UnitySink.#ctor(Serilog.Formatting.ITextFormatter,UnityEngine.ILogger,Serilog.Sinks.Unity.UnitySinkSettings)" path="/param[@name='logger']"/></param>
-            <param name="selfLogIsUnityLogWarning">
-            Whether Serilog's <see cref="T:Serilog.Debugging.SelfLog"/> is set to Unity's <see cref="M:UnityEngine.Debug.LogWarning(System.Object)"/>.
-            Useful during development, but may generate noisy warnings if trying to destructure <see cref="T:UnityEngine.Object"/>s in <see cref="T:Serilog.Events.LogEvent"/>s.
-            </param>
-            <param name="setMinimumLevelFromUnityFilterLogType">
-            Whether to set <see cref="P:Serilog.LoggerConfiguration.MinimumLevel"/> based on Unity's <see cref="P:UnityEngine.ILogger.filterLogType"/>.
-            </param>
-            <param name="unityLogEnricherSettings"><inheritdoc cref="M:Serilog.Enrichers.Unity.UnityLogEnricher.#ctor(Serilog.Enrichers.Unity.UnityLogEnricherSettings)" path="/param[@name='unityLogEnricherSettings']"/></param>
-            <param name="unitySinkSettings">
-            <inheritdoc cref="M:Serilog.Sinks.Unity.UnitySink.#ctor(Serilog.Formatting.ITextFormatter,UnityEngine.ILogger,Serilog.Sinks.Unity.UnitySinkSettings)" path="/param[@name='unitySinkSettings']"/>
-            By default, <see cref="P:Serilog.Sinks.Unity.UnitySinkSettings.UnityTagLogProperty"/> is set to <c>SourceContext</c> to reuse the type name set by <c>Serilog</c>
-            as the Unity log <c>tag</c>.
-            </param>
-            <returns>Configuration object allowing method chaining.</returns>
-        </member>
         <member name="M:Unity.Extensions.Logging.LoggerFactoryExtensions.CreateLogger``1(Microsoft.Extensions.Logging.ILoggerFactory,``0,Unity.Extensions.Logging.UnityObjectLoggerSettings)">
             <summary>
             
@@ -43,41 +16,6 @@
             A <see cref="T:Unity.Extensions.Logging.UnityObjectLogger`1"/> that adds <paramref name="context"/> as a scope property
             to all of its log messages for use by Unity-specific logging providers.
             </returns>
-        </member>
-        <member name="T:Unity.Extensions.Logging.UnityLogContext">
-            <summary>
-            Encapsulates a <see cref="T:UnityEngine.Object"/> instance to be used as the <c>context</c> parameter of a Unity log message.
-            Allows custom Serilog destructuring policies to reference this type rather than, e.g., instances of all <see cref="T:UnityEngine.Object"/>-derived types.
-            See Unity's <a href="https://docs.unity3d.com/ScriptReference/Debug.Log.html"><c>Debug.Log</c></a> docs for a description of the <c>context</c> parameter.
-            </summary>
-            <param name="context"><inheritdoc cref="P:Unity.Extensions.Logging.UnityLogContext.Context" path="/summary"/></param>
-        </member>
-        <member name="M:Unity.Extensions.Logging.UnityLogContext.#ctor(UnityEngine.Object)">
-            <summary>
-            Encapsulates a <see cref="T:UnityEngine.Object"/> instance to be used as the <c>context</c> parameter of a Unity log message.
-            Allows custom Serilog destructuring policies to reference this type rather than, e.g., instances of all <see cref="T:UnityEngine.Object"/>-derived types.
-            See Unity's <a href="https://docs.unity3d.com/ScriptReference/Debug.Log.html"><c>Debug.Log</c></a> docs for a description of the <c>context</c> parameter.
-            </summary>
-            <param name="context"><inheritdoc cref="P:Unity.Extensions.Logging.UnityLogContext.Context" path="/summary"/></param>
-        </member>
-        <member name="P:Unity.Extensions.Logging.UnityLogContext.Context">
-            <summary>
-            The encapsulated <see cref="T:UnityEngine.Object"/> instance used for the Unity log context.
-            </summary>
-        </member>
-        <member name="T:Unity.Extensions.Logging.UnityLogContextDestructuringPolicy">
-            <summary>
-            Policy for destructuring <see cref="T:Unity.Extensions.Logging.UnityLogContext"/> instances.
-            <para>
-            Provides a mechanism for preserving <see cref="T:UnityEngine.Object"/> instances added to a <see cref="T:Serilog.Events.LogEvent"/>'s
-            properties via <c>Microsoft.Extensions.Logging</c>'s <see cref="M:Microsoft.Extensions.Logging.LoggerExtensions.BeginScope(Microsoft.Extensions.Logging.ILogger,System.String,System.Object[])"/> method,
-            so that the instance may be used as the <c>context</c> of a Unity <see cref="M:UnityEngine.Debug.LogWarning(System.Object,UnityEngine.Object)"/> message
-            (without affecting the destructuring of other <see cref="T:UnityEngine.Object"/> log property values set by API consumers).
-            </para>
-            </summary>
-        </member>
-        <member name="M:Unity.Extensions.Logging.UnityLogContextDestructuringPolicy.TryDestructure(System.Object,Serilog.Core.ILogEventPropertyValueFactory,Serilog.Events.LogEventPropertyValue@)">
-            <inheritdoc />
         </member>
         <member name="T:Unity.Extensions.Logging.UnityObjectLogger`1">
             <summary>
@@ -118,7 +56,7 @@
         </member>
         <member name="P:Unity.Extensions.Logging.UnityObjectLoggerSettings.UnityContextLogProperty">
             <summary>
-            Name of the <see cref="T:Serilog.Events.LogEventProperty"/> that holds the logging <see cref="T:UnityEngine.Object"/> instance.
+            Name of the log property that holds the logging <see cref="T:UnityEngine.Object"/> instance.
             </summary>
             <remarks><inheritdoc cref="P:Unity.Extensions.Logging.UnityObjectLoggerSettings.EnrichWithUnityContext" path="/remarks"/></remarks>
         </member>
@@ -138,7 +76,7 @@
         </member>
         <member name="P:Unity.Extensions.Logging.UnityObjectLoggerSettings.HierarchyNameLogProperty">
             <summary>
-            Name of the <see cref="T:Serilog.Events.LogEventProperty"/> that holds the logging <see cref="T:UnityEngine.Object"/> instance's hierarchy name.
+            Name of the log property that holds the logging <see cref="T:UnityEngine.Object"/> instance's hierarchy name.
             </summary>
             <remarks><inheritdoc cref="P:Unity.Extensions.Logging.UnityObjectLoggerSettings.EnrichWithHierarchyName" path="/remarks"/></remarks>
         </member>
