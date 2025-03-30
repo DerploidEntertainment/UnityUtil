@@ -28,6 +28,8 @@ public static class LoggerConfigurationExtensions
     /// <param name="setMinimumLevelFromUnityFilterLogType">
     /// Whether to set <see cref="LoggerConfiguration.MinimumLevel"/> based on Unity's <see cref="UE.ILogger.filterLogType"/>.
     /// </param>
+    /// <param name="useUnityEnricher">Whether to use the <see cref="UnityLogEnricher"/> to enrich <see cref="LogEvent"/>s with Unity-specific properties.</param>
+    /// <param name="useUnitySink">Whether to use the <see cref="UnitySink"/> to write <see cref="LogEvent"/>s out to the Unity Debug Console (and associated log files).</param>
     /// <param name="unityLogEnricherSettings"><inheritdoc cref="UnityLogEnricher(UnityLogEnricherSettings)" path="/param[@name='unityLogEnricherSettings']"/></param>
     /// <param name="unitySinkSettings">
     /// <inheritdoc cref="UnitySink(ITextFormatter, UE.ILogger, UnitySinkSettings)" path="/param[@name='unitySinkSettings']"/>
@@ -41,6 +43,8 @@ public static class LoggerConfigurationExtensions
         UE.ILogger? logger = null,
         bool selfLogIsUnityLogWarning = true,
         bool setMinimumLevelFromUnityFilterLogType = true,
+        bool useUnityEnricher = true,
+        bool useUnitySink = true,
         UnityLogEnricherSettings? unityLogEnricherSettings = null,
         UnitySinkSettings? unitySinkSettings = null
     )
@@ -63,11 +67,15 @@ public static class LoggerConfigurationExtensions
             );
         }
 
-        if (unitySinkSettings.UnityContextLogProperty is not null)
+        if (useUnitySink && unitySinkSettings.UnityContextLogProperty is not null)
             loggerConfiguration = loggerConfiguration.Destructure.With(new UnityLogContextDestructuringPolicy());
 
-        return loggerConfiguration
-            .Enrich.WithUnityData(unityLogEnricherSettings ?? new UnityLogEnricherSettings())
-            .WriteTo.Unity(textFormatter, logger, unitySinkSettings);
+        if (useUnityEnricher)
+            loggerConfiguration = loggerConfiguration.Enrich.WithUnityData(unityLogEnricherSettings ?? new UnityLogEnricherSettings());
+
+        if (useUnitySink)
+            loggerConfiguration = loggerConfiguration.WriteTo.Unity(textFormatter, logger, unitySinkSettings);
+
+        return loggerConfiguration;
     }
 }

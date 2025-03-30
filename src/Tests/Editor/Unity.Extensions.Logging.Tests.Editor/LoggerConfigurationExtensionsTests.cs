@@ -17,8 +17,6 @@ namespace Unity.Extensions.Logging.Tests.Editor;
 
 public class LoggerConfigurationExtensionsTests
 {
-    private readonly GameObject _loggingObject = new();
-
     [Test]
     [TestCase(LogEventLevel.Verbose, LogType.Log)]
     [TestCase(LogEventLevel.Debug, LogType.Log)]
@@ -126,6 +124,83 @@ public class LoggerConfigurationExtensionsTests
 
         // ASSERT
         unityLogger.Verify(x => x.Log(LogType.Log, It.IsRegex(expectedJsonRegex)), Times.Once());
+    }
+
+    [Test]
+    public void AddUnity_CanDisableUnityLogSink([Values] bool useUnitySink)
+    {
+        // ARRANGE
+        var unityLogger = new Mock<UnityEngine.ILogger>();
+        var unitySinkSettings = new UnitySinkSettings();
+
+        global::Serilog.ILogger loggerWithTag = new LoggerConfiguration()
+            .Enrich.FromLogContext()
+            .AddUnity(
+                new JsonFormatter(),
+                unityLogger.Object,
+                useUnitySink: useUnitySink,
+                unitySinkSettings: unitySinkSettings
+            )
+            .CreateLogger()
+            .ForContext<GameObject>()
+            .ForContext("UnityLogTag", "Cow say");
+
+        // ACT
+        loggerWithTag.Information("What up?");
+
+        // ASSERT
+        // Unity logging occurred iff Unity sink was used
+        if (useUnitySink) {
+            unityLogger.Verify(x =>
+                x.Log(
+                    LogType.Log,
+                    "Cow say",
+                    It.Is<string>(x =>
+                        !x.Contains(@"""UnityLogTag"":""Cow say""")
+                        && x.Contains(@$"""{Constants.SourceContextPropertyName}"":""UnityEngine.GameObject""")
+                    )
+                ), Times.Once()
+            );
+        }
+        else {
+            unityLogger.Verify(x => x.Log(It.IsAny<LogType>(), It.IsAny<object>()), Times.Never());
+            unityLogger.Verify(x => x.Log(It.IsAny<LogType>(), It.IsAny<object>(), It.IsAny<Object>()), Times.Never());
+            unityLogger.Verify(x => x.Log(It.IsAny<LogType>(), It.IsAny<string>(), It.IsAny<object>()), Times.Never());
+            unityLogger.Verify(x => x.Log(It.IsAny<LogType>(), It.IsAny<string>(), It.IsAny<object>(), It.IsAny<Object>()), Times.Never());
+            unityLogger.Verify(x => x.Log(It.IsAny<object>()), Times.Never());
+            unityLogger.Verify(x => x.Log(It.IsAny<string>(), It.IsAny<object>()), Times.Never());
+            unityLogger.Verify(x => x.Log(It.IsAny<string>(), It.IsAny<object>(), It.IsAny<Object>()), Times.Never());
+        }
+    }
+
+    [Test]
+    public void AddUnity_CanDisableUnityLogEnricher([Values] bool useUnityEnricher)
+    {
+        // ARRANGE
+        var unityLogger = new Mock<UnityEngine.ILogger>();
+        var unityLogEnricherSettings = new UnityLogEnricherSettings();
+
+        using S.Logger logger = new LoggerConfiguration()
+            .Enrich.FromLogContext()
+            .AddUnity(
+                new JsonFormatter(),
+                unityLogger.Object,
+                useUnityEnricher: useUnityEnricher,
+                unityLogEnricherSettings: unityLogEnricherSettings
+            )
+            .CreateLogger();
+
+        // ACT
+        logger.Information("What up?");
+
+        // ASSERT
+        // Extra log property was included in log event iff enricher was used
+        unityLogger.Verify(x =>
+            x.Log(
+                LogType.Log,
+                It.Is<string>(x => Regex.Match(x, $@"""{unityLogEnricherSettings.FrameCountLogProperty}"":\d+[,}}]").Success == useUnityEnricher)
+            ), Times.Once()
+        );
     }
 
     [Test]

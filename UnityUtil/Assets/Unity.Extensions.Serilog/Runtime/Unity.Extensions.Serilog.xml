@@ -9,7 +9,7 @@
             Extends <see cref="T:Serilog.LoggerConfiguration"/> with methods to add Unity enricher, sink, and other configuration.
             </summary>
         </member>
-        <member name="M:Unity.Extensions.Serilog.LoggerConfigurationExtensions.AddUnity(Serilog.LoggerConfiguration,Serilog.Formatting.ITextFormatter,UnityEngine.ILogger,System.Boolean,System.Boolean,Serilog.Enrichers.Unity.UnityLogEnricherSettings,Serilog.Sinks.Unity.UnitySinkSettings)">
+        <member name="M:Unity.Extensions.Serilog.LoggerConfigurationExtensions.AddUnity(Serilog.LoggerConfiguration,Serilog.Formatting.ITextFormatter,UnityEngine.ILogger,System.Boolean,System.Boolean,System.Boolean,System.Boolean,Serilog.Enrichers.Unity.UnityLogEnricherSettings,Serilog.Sinks.Unity.UnitySinkSettings)">
             <summary>
             Add the Unity Console to the Serilog pipeline.
             </summary>
@@ -23,6 +23,8 @@
             <param name="setMinimumLevelFromUnityFilterLogType">
             Whether to set <see cref="P:Serilog.LoggerConfiguration.MinimumLevel"/> based on Unity's <see cref="P:UnityEngine.ILogger.filterLogType"/>.
             </param>
+            <param name="useUnityEnricher">Whether to use the <see cref="T:Serilog.Enrichers.Unity.UnityLogEnricher"/> to enrich <see cref="T:Serilog.Events.LogEvent"/>s with Unity-specific properties.</param>
+            <param name="useUnitySink">Whether to use the <see cref="T:Serilog.Sinks.Unity.UnitySink"/> to write <see cref="T:Serilog.Events.LogEvent"/>s out to the Unity Debug Console (and associated log files).</param>
             <param name="unityLogEnricherSettings"><inheritdoc cref="M:Serilog.Enrichers.Unity.UnityLogEnricher.#ctor(Serilog.Enrichers.Unity.UnityLogEnricherSettings)" path="/param[@name='unityLogEnricherSettings']"/></param>
             <param name="unitySinkSettings">
             <inheritdoc cref="M:Serilog.Sinks.Unity.UnitySink.#ctor(Serilog.Formatting.ITextFormatter,UnityEngine.ILogger,Serilog.Sinks.Unity.UnitySinkSettings)" path="/param[@name='unitySinkSettings']"/>
