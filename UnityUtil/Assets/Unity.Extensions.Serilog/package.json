@@ -11,7 +11,7 @@
   "dependencies": {
     "org.nuget.serilog": "2.8.0",
     "com.serilog.sinks.unity": "0.1.0",
-    "com.enrichers.sinks.unity": "0.1.0"
+    "com.serilog.enrichers.unity": "0.1.0"
   },
   "license": "MIT",
   "keywords": [
