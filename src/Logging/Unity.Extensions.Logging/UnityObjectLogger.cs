@@ -39,12 +39,12 @@ public class UnityObjectLogger<T> : ILogger<T> where T : UE.Object
 
         _contextName = context.name;
 
-        if (_unityObjectLoggerSettings.EnrichWithUnityContext) {
+        if (_unityObjectLoggerSettings.AddUnityContext) {
             _scopeProps ??= [];
             _scopeProps.Add($"@{_unityObjectLoggerSettings.UnityContextLogProperty}", ValueTuple.Create(context));
         }
 
-        if (_unityObjectLoggerSettings.EnrichWithHierarchyName) {
+        if (_unityObjectLoggerSettings.AddHierarchyName) {
             _transform =
                 context is GameObject gameObject ? gameObject.transform
                 : context is Component component ? component.transform
@@ -69,7 +69,7 @@ public class UnityObjectLogger<T> : ILogger<T> where T : UE.Object
     /// <inheritdoc/>
     public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
     {
-        if (_unityObjectLoggerSettings.EnrichWithHierarchyName && !_unityObjectLoggerSettings.HasStaticHierarchy) {
+        if (_unityObjectLoggerSettings.AddHierarchyName && !_unityObjectLoggerSettings.HasStaticHierarchy) {
             _scopeProps ??= [];
             _scopeProps[_unityObjectLoggerSettings.HierarchyNameLogProperty] = GetHierarchyName();
         }
@@ -82,6 +82,11 @@ public class UnityObjectLogger<T> : ILogger<T> where T : UE.Object
         }
     }
 
+    /// <summary>
+    /// Gets the hierarchy name of the logging <see cref="UE.Object"/> instance.
+    /// </summary>
+    /// <remarks><inheritdoc cref="UnityObjectLoggerSettings.AddHierarchyName" path="/remarks"/></remarks>
+    /// <returns>The hierarchy name of the logging <see cref="UE.Object"/> instance.</returns>
     public string GetHierarchyName()
     {
         if (_transform is null)

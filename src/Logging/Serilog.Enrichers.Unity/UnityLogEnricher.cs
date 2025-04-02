@@ -8,10 +8,11 @@ namespace Serilog.Enrichers.Unity;
 /// Enriches <see cref="LogEvent"/>s with information from the Unity engine.
 /// </summary>
 /// <param name="unityLogEnricherSettings"><inheritdoc cref="UnityLogEnricherSettings" path="/summary"/></param>
-public class UnityLogEnricher(UnityLogEnricherSettings unityLogEnricherSettings) : ILogEventEnricher
+public class UnityLogEnricher(UnityLogEnricherSettings? unityLogEnricherSettings = null) : ILogEventEnricher
 {
-    private readonly UnityLogEnricherSettings _unityLogEnricherSettings = unityLogEnricherSettings;
+    private readonly UnityLogEnricherSettings _unityLogEnricherSettings = unityLogEnricherSettings ?? new UnityLogEnricherSettings();
 
+    /// <inheritdoc/>
     public void Enrich(LogEvent logEvent, ILogEventPropertyFactory propertyFactory)
     {
         if (_unityLogEnricherSettings.WithFrameCount)

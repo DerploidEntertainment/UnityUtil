@@ -14,12 +14,12 @@ public class UnityObjectLoggerSettings
     /// <remarks>
     /// This instance will be used as <c>context</c> for Unity's <see cref="Debug.Log(object, Object)"/> method.
     /// </remarks>
-    public bool EnrichWithUnityContext { get; set; } = true;
+    public bool AddUnityContext { get; set; } = true;
 
     /// <summary>
     /// Name of the log property that holds the logging <see cref="Object"/> instance.
     /// </summary>
-    /// <remarks><inheritdoc cref="EnrichWithUnityContext" path="/remarks"/></remarks>
+    /// <remarks><inheritdoc cref="AddUnityContext" path="/remarks"/></remarks>
     public string? UnityContextLogProperty { get; set; } = "UnityLogContext";
 
     /// <summary>
@@ -29,17 +29,19 @@ public class UnityObjectLoggerSettings
     /// For <see cref="GameObject"/> and <see cref="Component"/>-derived instances, the hierarchy name is
     /// the name of the object's transform and all parent transforms, separated by <see cref="ParentNameSeparator"/>.
     /// For all other <see cref="Object"/> instances, the hierarchy name is simply the object's <see cref="Object.name"/>.
+    /// This information is useful in logs from built Unity players where you can't click on a log in the Editor,
+    /// but still want to know <em>which</em> instance of a type generated a log.
     /// Note that computing this name requires walking the logging <see cref="Object"/>'s transform hierarchy on every log event,
     /// which could get expensive for deeply childed objects.
     /// If the object's transform hierarchy does not change over the course of its lifetime then
     /// set <see cref="HasStaticHierarchy"/> to <see langword="true"/> so that the hierarchy name can be cached.
     /// </remarks>
-    public bool EnrichWithHierarchyName { get; set; } = false;
+    public bool AddHierarchyName { get; set; } = false;
 
     /// <summary>
     /// Name of the log property that holds the logging <see cref="Object"/> instance's hierarchy name.
     /// </summary>
-    /// <remarks><inheritdoc cref="EnrichWithHierarchyName" path="/remarks"/></remarks>
+    /// <remarks><inheritdoc cref="AddHierarchyName" path="/remarks"/></remarks>
     public string HierarchyNameLogProperty { get; set; } = "UnityHierarchyName";
 
     /// <summary>

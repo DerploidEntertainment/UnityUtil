@@ -2,8 +2,6 @@
 
   <ItemGroup>
     <Reference Include="$(UnityPackageCachePath)\org.nuget.serilog\Serilog.dll" Private="false" />
-    <ProjectReference Include="..\Serilog.Sinks.Unity\Serilog.Sinks.Unity.csproj" />
-    <ProjectReference Include="..\Serilog.Enrichers.Unity\Serilog.Enrichers.Unity.csproj" />
     <PackageReference Include="SerilogAnalyzer" />
 
     <Reference Include="$(UnityModulesPath)\UnityEngine.CoreModule.dll" Private="false" />

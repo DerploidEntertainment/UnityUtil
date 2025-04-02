@@ -80,7 +80,7 @@ public class UnityObjectLoggerTests
         var eventId = new EventId(id: 5, nameof(Log_SimpleMessageTemplate_LogsExpectedLogTypeAndMessage));
 
         // ACT
-        unityObjectLogger.Log(logLevel, eventId, MSG);
+        unityObjectLogger.Log(logLevel, eventId, MSG, exception: null, formatter: (state, ex) => "");
 
         // ASSERT
         _logger.Verify(x => x.BeginScope(It.IsAny<Dictionary<string, object?>>()), Times.Once());
@@ -101,7 +101,7 @@ public class UnityObjectLoggerTests
         const string MSG = "What up?";
 
         var unityObjectLoggerSettings = new UnityObjectLoggerSettings {
-            EnrichWithUnityContext = true,
+            AddUnityContext = true,
             UnityContextLogProperty = logPropertyName,
         };
         var unityObjectLogger = new UnityObjectLogger<GameObject>(_loggerFactory.Object, _loggingObject, unityObjectLoggerSettings);
@@ -124,8 +124,8 @@ public class UnityObjectLoggerTests
         const string MSG = "What up?";
 
         var unityObjectLoggerSettings = new UnityObjectLoggerSettings {
-            EnrichWithUnityContext = false,
-            EnrichWithHierarchyName = true,
+            AddUnityContext = false,
+            AddHierarchyName = true,
             HierarchyNameLogProperty = logPropertyName,
         };
         var unityObjectLogger = new UnityObjectLogger<GameObject>(_loggerFactory.Object, _loggingObject, unityObjectLoggerSettings);
@@ -144,14 +144,14 @@ public class UnityObjectLoggerTests
         const string MSG = "What up, {Name}?";
 
         var unityObjectLoggerSettings = new UnityObjectLoggerSettings {
-            EnrichWithUnityContext = true,
-            EnrichWithHierarchyName = true,
+            AddUnityContext = true,
+            AddHierarchyName = true,
         };
         var unityObjectLogger = new UnityObjectLogger<GameObject>(_loggerFactory.Object, _loggingObject, unityObjectLoggerSettings);
 
         // ACT
         using (unityObjectLogger.BeginScope("DatScope"))
-        using (unityObjectLogger.BeginScope(("SomeString", "Value")))    // Stored as a string array. Support for storing it as a key/val pair isn't added til Serilog.Extensions.Logging 2.0.0, but our libraries are depending on the earliest dependency versions possible.
+        using (unityObjectLogger.BeginScope(("SomeString", "Value")))    // Stored as a string array. Support for storing it as a key/val pair isn't added til Serilog.Extensions.Logging 9.0.0, but our libraries are depending on the earliest dependency versions possible.
         using (unityObjectLogger.BeginScope(new Dictionary<string, object> {
             { "SomeInt", 5 },
             { "SomeBool", true },
@@ -186,7 +186,7 @@ public class UnityObjectLoggerTests
         var loggingObject = new GameObject(objectName);
 
         var unityObjectLoggerSettings = new UnityObjectLoggerSettings {
-            EnrichWithHierarchyName = true,
+            AddHierarchyName = true,
             HierarchyNameLogProperty = "UnityHierarchyName",
             ParentNameSeparator = parentNameSeparator,
             HasStaticHierarchy = hasStaticHierarchy,
@@ -225,7 +225,7 @@ public class UnityObjectLoggerTests
         var unityObjectLogger = new UnityObjectLogger<GameObject>(
             _loggerFactory.Object,
             loggingTransform!.gameObject,
-            new UnityObjectLoggerSettings { EnrichWithHierarchyName = true, ParentNameSeparator = parentNameSeparator }
+            new UnityObjectLoggerSettings { AddHierarchyName = true, ParentNameSeparator = parentNameSeparator }
         );
 
         // ACT
@@ -249,7 +249,7 @@ public class UnityObjectLoggerTests
             _loggerFactory.Object,
             loggingObject,
             new UnityObjectLoggerSettings {
-                EnrichWithHierarchyName = true,
+                AddHierarchyName = true,
                 ParentNameSeparator = ">",
                 HasStaticHierarchy = false
             }
@@ -284,7 +284,7 @@ public class UnityObjectLoggerTests
         var unityObjectLogger = new UnityObjectLogger<TestLoggingComponent>(
             _loggerFactory.Object,
             loggingComponent,
-            new UnityObjectLoggerSettings { EnrichWithHierarchyName = true, ParentNameSeparator = ">" }
+            new UnityObjectLoggerSettings { AddHierarchyName = true, ParentNameSeparator = ">" }
         );
 
         // ACT
@@ -306,7 +306,7 @@ public class UnityObjectLoggerTests
         var unityObjectLogger = new UnityObjectLogger<DerpObject>(
             _loggerFactory.Object,
             loggingObject,
-            new UnityObjectLoggerSettings { EnrichWithHierarchyName = true }
+            new UnityObjectLoggerSettings { AddHierarchyName = true }
         );
 
         // ACT
@@ -338,8 +338,8 @@ public class UnityObjectLoggerTests
     {
         // ARRANGE
         var unityObjectLoggerSettings = new UnityObjectLoggerSettings {
-            EnrichWithUnityContext = false,
-            EnrichWithHierarchyName = false,
+            AddUnityContext = false,
+            AddHierarchyName = false,
         };
         var unityObjectLogger = new UnityObjectLogger<GameObject>(_loggerFactory.Object, _loggingObject, unityObjectLoggerSettings);
 

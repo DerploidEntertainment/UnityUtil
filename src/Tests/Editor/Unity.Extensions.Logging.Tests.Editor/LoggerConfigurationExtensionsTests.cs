@@ -32,8 +32,8 @@ public class LoggerConfigurationExtensionsTests
         var unityLogger = new Mock<UnityEngine.ILogger>();
         using S.Logger logger = new LoggerConfiguration()
             .Enrich.FromLogContext()
-            .AddUnity(new JsonFormatter(), unityLogger.Object)
-            .MinimumLevel.Verbose()   // Overwrites MinimumLevel from previous extension method calls
+            .MinimumLevel.Is(logLevel)
+            .WriteTo.Unity(new JsonFormatter(), unityLogger.Object)
             .CreateLogger();
 
         // ACT
@@ -51,11 +51,13 @@ public class LoggerConfigurationExtensionsTests
         var unityLogger = new Mock<UnityEngine.ILogger>();
         _ = unityLogger.SetupGet(x => x.filterLogType).Returns(LogType.Log);    // Lowest Unity log type
 
-        using S.Logger logger = new LoggerConfiguration()
+        LoggerConfiguration loggerConfiguration = new LoggerConfiguration()
             .Enrich.FromLogContext()
-            .MinimumLevel.Fatal() // Highest log level, ignores all but Fatal logs unless overriden by Unity
-            .AddUnity(new JsonFormatter(), unityLogger.Object, setMinimumLevelFromUnityFilterLogType: setMinimumLevelFromUnityFilterLogType)
-            .CreateLogger();
+            .MinimumLevel.Fatal()   // Highest log level, ignores all but Fatal logs unless overriden by Unity
+            .WriteTo.Unity(new JsonFormatter(), unityLogger.Object);
+        if (setMinimumLevelFromUnityFilterLogType)
+            loggerConfiguration = loggerConfiguration.MinimumLevel.IsUnityFilterLogType(unityLogger.Object);
+        using S.Logger logger = loggerConfiguration.CreateLogger();
 
         // ACT
         logger.Information("What up?");   // Lowest log level
@@ -78,7 +80,8 @@ public class LoggerConfigurationExtensionsTests
 
         using S.Logger logger = new LoggerConfiguration()
             .Enrich.FromLogContext()
-            .AddUnity(new JsonFormatter(), unityLogger.Object)
+            .Enrich.WithUnityData()
+            .WriteTo.Unity(new JsonFormatter(), unityLogger.Object)
             .CreateLogger();
 
         string expectedJsonRegex = getExpectedJsonRegex(
@@ -109,12 +112,11 @@ public class LoggerConfigurationExtensionsTests
 
         using S.Logger logger = new LoggerConfiguration()
             .Enrich.FromLogContext()
-            .AddUnity(
-                new JsonFormatter(),
-                unityLogger.Object,
-                unityLogEnricherSettings: new() { WithFrameCount = false },
-                unitySinkSettings: new() { UnityTagLogProperty = null, UnityContextLogProperty = null }
-            )
+            .Enrich.WithUnityData(new() { WithFrameCount = false })
+            .WriteTo.Unity(new JsonFormatter(), unityLogger.Object, new() {
+                UnityTagLogProperty = null,
+                UnityContextLogProperty = null
+            })
             .CreateLogger();
 
         string expectedJsonRegex = getExpectedJsonRegex(@"What up\?");
@@ -133,14 +135,12 @@ public class LoggerConfigurationExtensionsTests
         var unityLogger = new Mock<UnityEngine.ILogger>();
         var unitySinkSettings = new UnitySinkSettings();
 
-        global::Serilog.ILogger loggerWithTag = new LoggerConfiguration()
+        var loggerConfiguration = new LoggerConfiguration();
+        if (useUnitySink)
+            loggerConfiguration = loggerConfiguration.WriteTo.Unity(new JsonFormatter(), unityLogger.Object, unitySinkSettings);
+        global::Serilog.ILogger loggerWithTag = loggerConfiguration
             .Enrich.FromLogContext()
-            .AddUnity(
-                new JsonFormatter(),
-                unityLogger.Object,
-                useUnitySink: useUnitySink,
-                unitySinkSettings: unitySinkSettings
-            )
+            .Enrich.WithUnityData()
             .CreateLogger()
             .ForContext<GameObject>()
             .ForContext("UnityLogTag", "Cow say");
@@ -154,10 +154,10 @@ public class LoggerConfigurationExtensionsTests
             unityLogger.Verify(x =>
                 x.Log(
                     LogType.Log,
-                    "Cow say",
+                    "UnityEngine.GameObject",
                     It.Is<string>(x =>
-                        !x.Contains(@"""UnityLogTag"":""Cow say""")
-                        && x.Contains(@$"""{Constants.SourceContextPropertyName}"":""UnityEngine.GameObject""")
+                        x.Contains(@"""UnityLogTag"":""Cow say""")
+                        && !x.Contains(@$"""{Constants.SourceContextPropertyName}"":""UnityEngine.GameObject""")
                     )
                 ), Times.Once()
             );
@@ -180,14 +180,12 @@ public class LoggerConfigurationExtensionsTests
         var unityLogger = new Mock<UnityEngine.ILogger>();
         var unityLogEnricherSettings = new UnityLogEnricherSettings();
 
-        using S.Logger logger = new LoggerConfiguration()
+        var loggerConfiguration = new LoggerConfiguration();
+        if (useUnityEnricher)
+            loggerConfiguration = loggerConfiguration.Enrich.WithUnityData(unityLogEnricherSettings);
+        using S.Logger logger = loggerConfiguration
             .Enrich.FromLogContext()
-            .AddUnity(
-                new JsonFormatter(),
-                unityLogger.Object,
-                useUnityEnricher: useUnityEnricher,
-                unityLogEnricherSettings: unityLogEnricherSettings
-            )
+            .WriteTo.Unity(new JsonFormatter(), unityLogger.Object)
             .CreateLogger();
 
         // ACT
@@ -215,11 +213,7 @@ public class LoggerConfigurationExtensionsTests
 
         global::Serilog.ILogger loggerWithTag = new LoggerConfiguration()
             .Enrich.FromLogContext()
-            .AddUnity(
-                new JsonFormatter(),
-                unityLogger.Object,
-                unitySinkSettings: useExplicitSinkSettings ? unitySinkSettings : null
-            )
+            .WriteTo.Unity(new JsonFormatter(), unityLogger.Object, useExplicitSinkSettings ? unitySinkSettings : null)
             .CreateLogger()
             .ForContext<GameObject>()
             .ForContext("UnityLogTag", "Cow say");
@@ -263,11 +257,8 @@ public class LoggerConfigurationExtensionsTests
 
         using S.Logger logger = new LoggerConfiguration()
             .Enrich.FromLogContext()
-            .AddUnity(
-                new JsonFormatter(),
-                unityLogger.Object,
-                unityLogEnricherSettings: useExplicitEnricherSettings ? unityLogEnricherSettings : null
-            )
+            .Enrich.WithUnityData(useExplicitEnricherSettings ? unityLogEnricherSettings : null)
+            .WriteTo.Unity(new JsonFormatter(), unityLogger.Object)
             .CreateLogger();
 
         // ACT

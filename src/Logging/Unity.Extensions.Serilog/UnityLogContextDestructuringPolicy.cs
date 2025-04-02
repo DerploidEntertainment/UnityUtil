@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 using Serilog.Context;
 using Serilog.Core;
 using Serilog.Events;
@@ -21,8 +22,8 @@ public sealed class UnityLogContextDestructuringPolicy : IDestructuringPolicy
     /// <inheritdoc />
     public bool TryDestructure(object value, ILogEventPropertyValueFactory propertyValueFactory, [NotNullWhen(true)] out LogEventPropertyValue? result)
     {
-        if (value is ValueTuple<UE.Object> context) {
-            result = new ScalarValue(context.Item1);
+        if (value is ITuple tuple && tuple.Length == 1 && tuple[0] is UE.Object context) {
+            result = new ScalarValue(context);
             return true;
         }
 

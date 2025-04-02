@@ -3,7 +3,10 @@ using Serilog.Configuration;
 
 namespace Serilog.Enrichers.Unity;
 
-public static class LoggerConfigurationExtensions
+/// <summary>
+/// Extends <see cref="LoggerEnrichmentConfiguration"/> with Unity enrichers.
+/// </summary>
+public static class LoggerEnrichmentConfigurationExtensions
 {
     /// <summary>
     /// Enriches log events with context from the Unity engine, such as frame counts.
@@ -13,9 +16,8 @@ public static class LoggerConfigurationExtensions
     /// <returns>Configuration object allowing method chaining.</returns>
     public static LoggerConfiguration WithUnityData(
         this LoggerEnrichmentConfiguration enrichmentConfiguration,
-        UnityLogEnricherSettings unityLogEnricherSettings
+        UnityLogEnricherSettings? unityLogEnricherSettings = null
     ) =>
         enrichmentConfiguration is null ? throw new ArgumentNullException(nameof(enrichmentConfiguration))
-        : unityLogEnricherSettings is null ? throw new ArgumentNullException(nameof(unityLogEnricherSettings))
         : enrichmentConfiguration.With(new UnityLogEnricher(unityLogEnricherSettings));
 }

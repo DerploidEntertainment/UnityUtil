@@ -9,9 +9,7 @@
     "url": "https://github.com/Rabadash8820"
   },
   "dependencies": {
-    "org.nuget.serilog": "2.8.0",
-    "com.serilog.sinks.unity": "0.1.0",
-    "com.serilog.enrichers.unity": "0.1.0"
+    "org.nuget.serilog": "2.8.0"
   },
   "license": "MIT",
   "keywords": [

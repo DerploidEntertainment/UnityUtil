@@ -3,7 +3,7 @@
 namespace UnityUtil.Inventory;
 
 /// <inheritdoc/>
-internal static class InventoriesLoggerExtensions
+internal static class InventoryLoggerExtensions
 {
     #region Information
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using Microsoft.Extensions.Logging;
@@ -15,10 +16,12 @@ internal static class RootLoggerExtensions
 {
     #region Information
 
+    private static readonly Dictionary<string, object?> SCOPE_PROPS_REGISTERED_SERVICE = []; // Cheaper than allocating new dictionary each time
     public static void RegisteredService(this MEL.ILogger logger, Service service, Scene? scene)
     {
-        string msg = $"Successfully registered service of type '{{serviceType}}' and tag '{{tag}}'{(scene.HasValue ? $" from scene '{{{nameof(scene)}}}'" : "")}";
-        logger.LogInformation(new EventId(id: 0, nameof(RegisteredService)), msg, service.ServiceType.Name, service.InjectTag, scene?.name);
+        SCOPE_PROPS_REGISTERED_SERVICE["scene"] = scene?.name;
+        using (logger.BeginScope(SCOPE_PROPS_REGISTERED_SERVICE))
+            logger.LogInformation(new EventId(id: 0, nameof(RegisteredService)), "Successfully registered service of type '{serviceType}' and tag '{tag}'", service.ServiceType.Name, service.InjectTag);
     }
 
     public static void ToggledRecordingDependencyResolution(this MEL.ILogger logger, bool isRecording) =>
@@ -31,7 +34,7 @@ internal static class RootLoggerExtensions
         logger.LogInformation(new EventId(id: 0, nameof(UnregisteredAllSceneServices)), $"Successfully unregistered all {{{nameof(count)}}} services from scene '{{{nameof(scene)}}}'", count, scene.name);
 
     public static void ResolvedMethodServiceParameter(this MEL.ILogger logger, string clientName, string tag, ParameterInfo parameter) =>
-        logger.LogInformation(new EventId(id: 0, nameof(ResolvedMethodServiceParameter)), $"{{{nameof(clientName)}}} had dependency of Type {{serviceType}}{(string.IsNullOrEmpty(tag) ? "" : $" with tag {{{nameof(tag)}}}")} injected into {{{nameof(parameter)}}}", clientName, parameter.ParameterType.FullName, tag, parameter.Name);
+        logger.LogInformation(new EventId(id: 0, nameof(ResolvedMethodServiceParameter)), $"{{{nameof(clientName)}}} had dependency of Type {{serviceType}} and tag '{{{nameof(tag)}}}' injected into {{{nameof(parameter)}}}", clientName, parameter.ParameterType.FullName, tag, parameter.Name);
 
     public static void Spawning(this MEL.ILogger logger, string spawnedObjectName) =>
         logger.LogInformation(new EventId(id: 0, nameof(Spawning)), $"Spawning {{{nameof(spawnedObjectName)}}}", spawnedObjectName);
@@ -87,6 +90,7 @@ internal static class RootLoggerExtensions
     #endregion
 
     #region Exceptions
+#pragma warning disable IDE0060 // Remove unused parameter; we need `this` params for extension methods! Not sure why Roslyn doesn't know that...
 
     [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "For consistency")]
     public static ArgumentException AlreadyAddedOtherUpdate(this MEL.ILogger logger, int instanceId, Exception? innerException = null) =>
@@ -100,6 +104,6 @@ internal static class RootLoggerExtensions
     public static ArgumentException AlreadyAddedOtherLateUpdate(this MEL.ILogger logger, int instanceId, Exception? innerException = null) =>
         new($"A LateUpdate action has already been associated with {nameof(instanceId)} '{instanceId}'", innerException);
 
-
+#pragma warning restore IDE0060 // Remove unused parameter
     #endregion
 }
