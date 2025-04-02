@@ -6,7 +6,7 @@
     <PackageReference Include="SerilogAnalyzer" />
 
     <Reference Include="$(UnityPackageCachePath)\org.nuget.serilog.extensions.logging\Serilog.Extensions.Logging.dll" Private="false" />
-    <Reference Include="$(UnityPackageCachePath)\org.nuget.microsoft.extensions.logging\netstandard2.1\Microsoft.Extensions.Logging.dll" Private="false" />
+    <Reference Include="$(UnityPackageCachePath)\org.nuget.microsoft.extensions.logging\Microsoft.Extensions.Logging.dll" Private="false" />
 
     <Reference Include="$(SirenixAssembliesPath)\Sirenix.OdinInspector.Attributes.dll" Private="false"/>
 
