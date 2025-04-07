@@ -20,7 +20,7 @@ so documentation content/organization are still in development.
 ## Installing
 
 1. Make sure you have both [Git](https://git-scm.com/) and [Git LFS](https://git-lfs.github.com/) installed before adding this package to your Unity project.
-2. Add the [UnityNuGet](https://github.com/xoofx/UnityNuGet) scoped registry so that you can install NuGet packages through the Unity Package Manager.
+2. Add the [UnityNuGet](https://github.com/bdovaz/UnityNuGet) scoped registry so that you can install NuGet packages through the Unity Package Manager.
 3. Install dependencies in your Unity project. This is an opinionated list of 3rd party assets/packages that UnityUtil leverages for certain features.
     Unfortunately, some of these assets cost money. In the future, UnityUtil's features will be broken up into separate packages,
     so that users can ignore specific packages and not spend money on their Asset Store dependencies.
