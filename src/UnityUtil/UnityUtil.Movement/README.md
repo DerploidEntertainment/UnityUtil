@@ -1,6 +1,6 @@
-# UnityUtil.Triggers
+# UnityUtil.Movement
 
-[< Back to main README](../../../../README.md)
+[< Back to main README](../../../README.md)
 
 **Work in progress!**
 
@@ -9,6 +9,6 @@ so documentation content/organization are still in development.
 
 ## Overview
 
-A set of utility classes and components useful to any 2D Unity project, specifically related to triggering event-based behavior in-game.
+A set of utility classes and components useful to any Unity project, 2D or 3D, specifically related to in-game movement mechanics.
 
 Copyright © 2017 - present Dan Vicarel & Contributors. All rights reserved.

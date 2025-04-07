@@ -1,6 +1,6 @@
 # UnityUtil.Interactors
 
-[< Back to main README](../../../../README.md)
+[< Back to main README](../../../README.md)
 
 **Work in progress!**
 

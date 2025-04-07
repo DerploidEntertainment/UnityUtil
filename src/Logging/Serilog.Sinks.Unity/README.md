@@ -1,10 +1,10 @@
 # Serilog.Sinks.Unity
 
-![Serilog.Sinks.Unity](../../../../docs-assets/serilog-sinks.png)
+![Serilog.Sinks.Unity](../../../docs-assets/serilog-sinks.png)
 
 ## Overview
 
-This package contains a [Serilog](https://serilog.net/) sink that writes logs to the Unity Console window, optionally including `tag` strings or `context` objects.
+This package contains a [Serilog](https://serilog.net/) sink that writes logs to the Unity Console window, optionally including `tag` strings and `context` objects.
 
 This package is a "spiritual successor" to [KuraiAndras/Serilog.Sinks.Unity3D](https://github.com/KuraiAndras/Serilog.Sinks.Unity3D),
 which has not been well maintained since December 2022, and lacks some important configuration options and documentation.
@@ -35,9 +35,9 @@ This package has only been tested on Unity 6, but it _should_ work with earlier 
 > [!NOTE]
 > Consider installing the following packages as well to get the best developer experience with Serilog in Unity projects:
 >
-> - [Serilog.Enrichers.Unity](../../Serilog.Enrichers.Unity/Documentation~/README.md) to enrich log events with additional Unity data
-> - [Unity.Extensions.Serilog](../../Unity.Extensions.Serilog/Documentation~/README.md) for some other useful Serilog extension methods for Unity
-> - [Unity.Extensions.Logging](../../Unity.Extensions.Logging/Documentation~/README.md) for some other useful Microsoft.Extensions.Logging extension methods for Unity
+> - [Serilog.Enrichers.Unity](../Serilog.Enrichers.Unity/README.md) to enrich log events with additional Unity data
+> - [Unity.Extensions.Logging](../Unity.Extensions.Logging/README.md) for some other useful Microsoft.Extensions.Logging extension methods for Unity
+> - [Unity.Extensions.Serilog](../Unity.Extensions.Serilog/README.md) for some other useful Serilog extension methods for Unity
 
 To use this sink with default settings, simply add the following to your app startup code:
 
@@ -106,6 +106,9 @@ var logger = new Serilog.LoggerConfiguration()
 // In logging code...
 logger.Information("Hello, my tag is '{UnityLogTag}'", "TestTag");
 ```
+
+You might change the property name, e.g., to avoid collisions with property names added by other enrichers,
+or if you wanted to save a few bytes with shorter property names in your production logs.
 
 To keep the tag out of your log message templates, you could instead use Serilog's `LogContext` like so:
 
@@ -181,6 +184,9 @@ var logger = new Serilog.LoggerConfiguration()
     .CreateLogger();
 ```
 
+You might change the property name, e.g., to avoid collisions with property names added by other enrichers,
+or if you wanted to save a few bytes with shorter property names in your production logs.
+
 However, _setting_ this log property is quite tricky.
 Serilog tries to serialize objects of unknown type (including `UnityEngine.Object`-derived types) by calling their `ToString()` method;
 therefore, you cannot simply pass a `UnityEngine.Object` instance to `logger.Information()` or the related Serilog log methods.
@@ -192,10 +198,10 @@ or [destructuring policy](https://github.com/serilog/serilog/wiki/Structured-Dat
 to preserve the original, unserialized object instance.
 
 If that all sounds daunting, you can just use the `UnityLogContextDestructuringPolicy` from
-[Unity.Extensions.Serilog](../../Unity.Extensions.Serilog/Documentation~/README.md).
+[Unity.Extensions.Serilog](../Unity.Extensions.Serilog/README.md).
 That policy is in a separate library in case you need to preserve Unity objects for other sinks too.
 Also consider using Serilog behind Microsoft.Extensions.Logging.Abstractions;
-if so, you can reference [Unity.Extensions.Logging](../../Unity.Extensions.Serilog/Documentation~/README.md),
+if you do then you can reference [Unity.Extensions.Logging](../Unity.Extensions.Logging/README.md),
 which provides a `UnityObjectLogger` that automatically adds the logging Unity object instance to log events.
 
 If you don't want this sink to look for a `context` object at all, then just set `UnityContextLogProperty` to `null`:

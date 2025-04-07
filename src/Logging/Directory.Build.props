@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <None Include="$(UnityProjectPath)\Assets\$(MSBuildProjectName)\package.json" />
-    <None Include="$(UnityProjectPath)\Assets\$(MSBuildProjectName)\Documentation~\README.md" />
   </ItemGroup>
 
   <!-- Dependencies -->

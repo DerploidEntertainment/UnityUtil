@@ -66,6 +66,9 @@ _logger = _loggerFactory.CreateLogger(this, new UnityObjectLoggerSettings {
 });
 ```
 
+You might change the property name, e.g., to avoid collisions with property names added by other enrichers,
+or if you wanted to save a few bytes with shorter property names in your production logs.
+
 If you don't want to include the scope property at all, then you can disable it like so:
 
 ```cs
@@ -119,7 +122,8 @@ class MyLoggingType : UnityEngine.Object    // MonoBehaviour, ScriptableObject, 
 ```
 
 The name of the scope property is `UnityHierarchyName` by default.
-You might want a different property name, e.g., to save a few bytes with shorter property names in your production logs.
+You might want to change the property name, e.g., to avoid collisions with property names added by other libraries,
+or if you wanted to save a few bytes with shorter property names in your production logs.
 You can change the property name like so:
 
 ```cs
@@ -159,9 +163,9 @@ _logger = _loggerFactory.CreateLogger(this, new UnityObjectLoggerSettings {
 When using the [Serilog logging provider](https://github.com/serilog/serilog-extensions-logging),
 consider installing the following packages as well to get the best developer experience in Unity projects:
 
-- [Serilog.Enrichers.Unity](../../Serilog.Enrichers.Unity/Documentation~/README.md) to enrich log events with additional Unity data
-- [Serilog.Sinks.Unity](../../Serilog.Sinks.Unity/Documentation~/README.md) or [Serilog.Sinks.Unity3D](https://github.com/KuraiAndras/Serilog.Sinks.Unity3D) to add Unity as a Serilog sink
-- [Unity.Extensions.Serilog](../../Unity.Extensions.Serilog/Documentation~/README.md) for some other useful Serilog extension methods for Unity,
+- [Serilog.Enrichers.Unity](../Serilog.Enrichers.Unity/README.md) to enrich log events with additional Unity data
+- [Serilog.Sinks.Unity](../Serilog.Sinks.Unity/README.md) or [Serilog.Sinks.Unity3D](https://github.com/KuraiAndras/Serilog.Sinks.Unity3D) to add Unity as a Serilog sink
+- [Unity.Extensions.Serilog](../Unity.Extensions.Serilog/README.md) for some other useful Serilog extension methods for Unity,
     including a destructuring policy needed to preserve the object `context` instance added by this (or any other) package.
 
 ## Legal

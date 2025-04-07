@@ -30,9 +30,9 @@ This package has only been tested on Unity 6, but it _should_ work with earlier 
 > [!NOTE]
 > Consider installing the following packages as well to get the best developer experience with Serilog in Unity projects:
 >
-> - [Serilog.Enrichers.Unity](../../Serilog.Enrichers.Unity/Documentation~/README.md) to enrich log events with additional Unity data
-> - [Serilog.Sinks.Unity](../../Serilog.Sinks.Unity/Documentation~/README.md) or [Serilog.Sinks.Unity3D](https://github.com/KuraiAndras/Serilog.Sinks.Unity3D) to add Unity as a Serilog sink
-> - [Unity.Extensions.Logging](../../Unity.Extensions.Logging/Documentation~/README.md) for some other useful Microsoft.Extensions.Logging extension methods for Unity
+> - [Serilog.Enrichers.Unity](../Serilog.Enrichers.Unity/README.md) to enrich log events with additional Unity data
+> - [Serilog.Sinks.Unity](../Serilog.Sinks.Unity/README.md) or [Serilog.Sinks.Unity3D](https://github.com/KuraiAndras/Serilog.Sinks.Unity3D) to add Unity as a Serilog sink
+> - [Unity.Extensions.Logging](../Unity.Extensions.Logging/README.md) for some other useful Microsoft.Extensions.Logging extension methods for Unity
 
 ### Set `SelfLog`
 
@@ -75,7 +75,7 @@ when you click on the message in the Unity Console, Unity will highlight that ob
 This feature is very powerful when debugging in the Editor.
 See the [`Debug.Log()`](https://docs.unity3d.com/ScriptReference/Debug.Log.html) manual page for more info.
 
-The Unity sinks provided by [Serilog.Sinks.Unity](../../Serilog.Sinks.Unity/Documentation~/README.md) and [Serilog.Sinks.Unity3D](https://github.com/KuraiAndras/Serilog.Sinks.Unity3D) can both set the `context` to the value of a log property; however, _setting_ this log property is quite tricky.
+The Unity sinks provided by [Serilog.Sinks.Unity](../Serilog.Sinks.Unity/README.md) and [Serilog.Sinks.Unity3D](https://github.com/KuraiAndras/Serilog.Sinks.Unity3D) can both set the `context` to the value of a log property; however, _setting_ this log property is quite tricky.
 Serilog tries to serialize objects of unknown type (including `UnityEngine.Object`-derived types) by calling their `ToString()` method;
 therefore, you cannot simply pass a `UnityEngine.Object` instance to `logger.Information()` or the related Serilog log methods.
 Sinks would ignore the log property's serialized string value and your log messages would not have the desired `context`
@@ -114,12 +114,17 @@ and the name of the property must be prefixed with the [_structure capturing ope
 This allows Serilog to "destructure" the property and extract the object instance wrapped in the `ValueTuple`,
 without changing how all `UnityEngine.Object` instances are destructured/formatted in your app.
 
+> [!WARNING]
+> If your sink does not correctly consume this log property and/or remove it from the log event,
+> then you will likely get `Maximum destructuring depth reached` exceptions from Unity through Serilog's `SelfLog`
+> (assuming you have [enabled it](#set-selflog)).
+
 You can use any log property name with `Serilog.Sinks.Unity`, as long as that sink is configured to _expect_ that log property
 (it can also be configured to _remove_ that log property, since it's value is presumably not needed other than for `context`).
 For the older `Serilog.Sinks.Unity3D` sink, the log property _must_ be named `%_DO_NOT_USE_UNITY_ID_DO_NOT_USE%`, and it will not be removed from the log event.
 
 Also consider using Serilog behind Microsoft.Extensions.Logging.Abstractions;
-if so, you can reference [Unity.Extensions.Logging](../../Unity.Extensions.Serilog/Documentation~/README.md),
+if you do then you can reference [Unity.Extensions.Logging](../Unity.Extensions.Logging/README.md),
 which provides a `UnityObjectLogger` that automatically adds the context log property,
 making your logging code less verbose (no extra `using` statements):
 

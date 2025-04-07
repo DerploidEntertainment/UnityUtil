@@ -1,6 +1,6 @@
 # Serilog.Enrichers.Unity
 
-![Serilog.Enrichers.Unity](../../../../docs-assets/serilog-enrichers.png)
+![Serilog.Enrichers.Unity](../../../docs-assets/serilog-enrichers.png)
 
 ## Overview
 
@@ -32,9 +32,9 @@ This package has only been tested on Unity 6, but it _should_ work with earlier 
 > [!NOTE]
 > Consider installing the following packages as well to get the best developer experience with Serilog in Unity projects:
 >
-> - [Serilog.Sinks.Unity](../../Serilog.Sinks.Unity/Documentation~/README.md) or [Serilog.Sinks.Unity3D](https://github.com/KuraiAndras/Serilog.Sinks.Unity3D) to add Unity as a Serilog sink
-> - [Unity.Extensions.Serilog](../../Unity.Extensions.Serilog/Documentation~/README.md) for some other useful Serilog extension methods for Unity
-> - [Unity.Extensions.Logging](../../Unity.Extensions.Logging/Documentation~/README.md) for some other useful Microsoft.Extensions.Logging extension methods for Unity
+> - [Serilog.Sinks.Unity](../Serilog.Sinks.Unity/README.md) or [Serilog.Sinks.Unity3D](https://github.com/KuraiAndras/Serilog.Sinks.Unity3D) to add Unity as a Serilog sink
+> - [Unity.Extensions.Logging](../Unity.Extensions.Logging/README.md) for some other useful Microsoft.Extensions.Logging extension methods for Unity
+> - [Unity.Extensions.Serilog](../Unity.Extensions.Serilog/README.md) for some other useful Serilog extension methods for Unity
 
 To use this enricher with default settings, simply add code like the following:
 
@@ -61,7 +61,8 @@ var logger = new Serilog.LoggerConfiguration()
 This would add a `LogEventProperty` to your `LogEvent`s with name `"UT"`
 and value equal to Unity's [`Time.unscaledTime`](https://docs.unity3d.com/ScriptReference/Time-unscaledTime.html) at the time of the log.
 
-You might change the property names, e.g., if you wanted to save a few bytes with shorter property names in your production logs.
+You might change the property name, e.g., to avoid collisions with property names added by other enrichers,
+or if you wanted to save a few bytes with shorter property names in your production logs.
 
 > [!NOTE]
 > You can easily add additional, unchanging properties from Unity not covered by this enricher
