@@ -10,6 +10,7 @@
   <ItemGroup>
     <!-- Remove the package items added by Directory.Build.props -->
     <None Remove="$(UnityProjectPath)\Assets\$(MSBuildProjectName)\package.json" />
+    <None Remove="$(UnityProjectPath)\Assets\$(MSBuildProjectName)\.gitattributes" />
   </ItemGroup>
 
   <ItemGroup>

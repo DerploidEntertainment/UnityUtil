@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <None Include="$(UnityProjectPath)\Assets\$(MSBuildProjectName)\package.json" />
+    <None Include="$(UnityProjectPath)\Assets\$(MSBuildProjectName)\.gitattributes" />
   </ItemGroup>
 
   <!-- Dependencies -->
