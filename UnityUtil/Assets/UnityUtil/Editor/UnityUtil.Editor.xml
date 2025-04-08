@@ -4,18 +4,15 @@
         <name>UnityUtil.Editor</name>
     </assembly>
     <members>
+        <member name="T:UnityUtil.Editor.EditorRootLoggerExtensions">
+            <inheritdoc/>
+        </member>
         <member name="M:UnityUtil.Editor.ForceReserializeAssetsMenu.ForceReserializeAllAssets">
             <summary>
             This is mainly meant to be called after upgrading a project to a new Unity version,
             but see <a href="https://docs.unity3d.com/ScriptReference/AssetDatabase.ForceReserializeAssets.html">the docs</a>
             for other use cases and examples.
             </summary>
-        </member>
-        <member name="T:UnityUtil.EditorRootLogger`1">
-            <inheritdoc/>
-        </member>
-        <member name="M:UnityUtil.EditorRootLogger`1.#ctor(Microsoft.Extensions.Logging.ILoggerFactory,`0)">
-            <inheritdoc/>
         </member>
     </members>
 </doc>

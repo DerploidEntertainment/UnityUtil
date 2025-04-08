@@ -2,29 +2,61 @@
 
   <Import Project="..\Directory.Build.props" />
 
-  <Import Project="..\OtherUnityAssemblies.props"/>
   <Import Project="..\Logging.props"/>
 
   <PropertyGroup>
     <NunitAssembly>com.unity.ext.nunit\net40\unity-custom\nunit.framework.dll</NunitAssembly>
     <TestingProjectName>$(MSBuildProjectName.Substring(0, $(MSBuildProjectName.IndexOf(`.Tests`))))</TestingProjectName>
-    <TestingProjectPath>..\..\..\$(TestingProjectName)\$(TestingProjectName).csproj</TestingProjectPath>
+    <TestingUtilProjectName>UnityUtil.Tests.Util</TestingUtilProjectName>
+    <TestingProjectPath Condition="'$(MSBuildProjectName.SubString(0, 10))'=='UnityUtil.'">..\..\..\$(SolutionName)\$(TestingProjectName)\$(TestingProjectName).csproj</TestingProjectPath>
   </PropertyGroup>
 
   <!-- Dependencies -->
   <ItemGroup>
+    <PackageReference Include="Unity3D" />
     <Reference Include="$(NunitPath)" Private="false" />
-    <Reference Include="$(UnityPackageCachePath)\org.nuget.moq\netstandard2.1\Moq.dll" Private="false" />
-    <PackageReference Include="NUnit.Analyzers" Version="3.2.0" />
-
+    <PackageReference Include="NUnit.Analyzers" />
     <Reference Include="$(UnityScriptAssembliesPath)\UnityEngine.TestRunner.dll" Private="false" />
+    <Reference Include="$(UnityPackageCachePath)\org.nuget.moq\$(TargetFramework)\Moq.dll" Private="false" />
+
+    <ProjectReference Condition="'$(MSBuildProjectName)'!='$(TestingUtilProjectName)'" Include="$(TestingProjectPath)" />
+    <ProjectReference Condition="'$(MSBuildProjectName)'!='$(TestingUtilProjectName)'" Include="..\..\$(TestingUtilProjectName)\$(TestingUtilProjectName).csproj" />
+  </ItemGroup>
+  <PropertyGroup>
+    <IncludeDefaultUnityAssemblyReferences>false</IncludeDefaultUnityAssemblyReferences>
+  </PropertyGroup>
+
+  <!-- CLS compliance -->
+  <ItemGroup>
+    <!--
+      Disable CLS compliance by default (other importing projects can re-enable it.
+      Test assemblies will never be referenced by 3rd parties, so they don't need CLS-compliance,
+      and most Unity types aren't CLS-compliant anyway.
+    -->
+    <AssemblyAttribute Include="System.CLSCompliantAttribute">
+      <_Parameter1>false</_Parameter1>
+    </AssemblyAttribute>
   </ItemGroup>
 
+  <!-- Global message suppressions -->
+  <PropertyGroup>
+    <!-- XML comments should not be a requirement in test code -->
+    <NoWarn>1591</NoWarn> <!-- Missing XML comment for publicly visible type or member -->
+  </PropertyGroup>
   <ItemGroup>
     <!-- Test method names can definitely have underscores... -->
     <AssemblyAttribute Include="System.Diagnostics.CodeAnalysis.SuppressMessage">
       <_Parameter1>Naming</_Parameter1>
       <_Parameter2>CA1707:Identifiers should not contain underscores</_Parameter2>
+    </AssemblyAttribute>
+
+    <!--
+    Apparently `Assert.Multiple` was only added in NUnit 3.7 (see release notes: https://docs.nunit.org/articles/nunit/release-notes/framework.html)
+    but Unity is using NUnit 3.5 (as of Unity 6.0), and `NUnit.Analyzers` doesn't realize that?
+    -->
+    <AssemblyAttribute Include="System.Diagnostics.CodeAnalysis.SuppressMessage">
+      <_Parameter1>Assertion</_Parameter1>
+      <_Parameter2>NUnit2045:Use Assert.Multiple</_Parameter2>
     </AssemblyAttribute>
   </ItemGroup>
 

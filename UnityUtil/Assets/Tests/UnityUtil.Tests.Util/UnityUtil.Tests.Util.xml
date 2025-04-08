@@ -4,5 +4,29 @@
         <name>UnityUtil.Tests.Util</name>
     </assembly>
     <members>
+        <member name="T:UnityUtil.Tests.Util.LogLevelCallbackLogger">
+            <summary>
+            "Default" implementation of <see cref="T:Microsoft.Extensions.Logging.ILogger"/> that calls provided callbacks for log messages based on their <see cref="T:Microsoft.Extensions.Logging.LogLevel"/>.
+            Mainly intended for testing code that needs to verify that loggers were invoked in specific ways.
+            Most runtime code should still prefer dependency injection and one of the custom <see cref="N:UnityUtil"/> loggers.
+            </summary>
+        </member>
+        <member name="M:UnityUtil.Tests.Util.LogLevelCallbackLogger.#ctor(Microsoft.Extensions.Logging.LogLevel,System.Action{Microsoft.Extensions.Logging.LogLevel,Microsoft.Extensions.Logging.EventId,System.Exception,System.String},System.Action{Microsoft.Extensions.Logging.LogLevel,Microsoft.Extensions.Logging.EventId,System.Exception,System.String})">
+            <summary>
+            "Default" implementation of <see cref="T:Microsoft.Extensions.Logging.ILogger"/> that calls provided callbacks for log messages based on their <see cref="T:Microsoft.Extensions.Logging.LogLevel"/>.
+            Mainly intended for testing code that needs to verify that loggers were invoked in specific ways.
+            Most runtime code should still prefer dependency injection and one of the custom <see cref="N:UnityUtil"/> loggers.
+            </summary>
+        </member>
+        <member name="T:UnityUtil.Tests.Util.LogLevelCallbackLoggerFactory">
+            <summary>
+            "Default" implementation of <see cref="T:Microsoft.Extensions.Logging.ILoggerFactory"/> that creates instances of <see cref="T:UnityUtil.Tests.Util.LogLevelCallbackLogger"/>.
+            </summary>
+        </member>
+        <member name="M:UnityUtil.Tests.Util.LogLevelCallbackLoggerFactory.#ctor(Microsoft.Extensions.Logging.LogLevel,System.Action{Microsoft.Extensions.Logging.LogLevel,Microsoft.Extensions.Logging.EventId,System.Exception,System.String},System.Action{Microsoft.Extensions.Logging.LogLevel,Microsoft.Extensions.Logging.EventId,System.Exception,System.String})">
+            <summary>
+            "Default" implementation of <see cref="T:Microsoft.Extensions.Logging.ILoggerFactory"/> that creates instances of <see cref="T:UnityUtil.Tests.Util.LogLevelCallbackLogger"/>.
+            </summary>
+        </member>
     </members>
 </doc>

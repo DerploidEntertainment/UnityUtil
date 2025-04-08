@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <Reference Include="$(UnityModulesPath)\UnityEngine.CoreModule.dll" Private="false" />
+    <Reference Include="$(UnityPackageCachePath)\org.nuget.serilog\Serilog.dll" Private="false" />
+    <PackageReference Include="SerilogAnalyzer" />
+
+    <Reference Include="$(UnityPackageCachePath)\org.nuget.serilog.extensions.logging\Serilog.Extensions.Logging.dll" Private="false" />
+    <Reference Include="$(UnityPackageCachePath)\org.nuget.microsoft.extensions.logging\Microsoft.Extensions.Logging.dll" Private="false" />
+
+    <Reference Include="$(SirenixAssembliesPath)\Sirenix.OdinInspector.Attributes.dll" Private="false"/>
+
+    <ProjectReference Include="..\..\..\Logging\Unity.Extensions.Logging\Unity.Extensions.Logging.csproj" />
+    <ProjectReference Include="..\..\..\Logging\Unity.Extensions.Serilog\Unity.Extensions.Serilog.csproj" />
+    <ProjectReference Include="..\..\..\Logging\Serilog.Enrichers.Unity\Serilog.Enrichers.Unity.csproj" />
+    <ProjectReference Include="..\..\..\Logging\Serilog.Sinks.Unity\Serilog.Sinks.Unity.csproj" />
+  </ItemGroup>
+
+</Project>

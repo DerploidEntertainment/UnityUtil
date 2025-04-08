@@ -1,12 +1,13 @@
-using Moq;
-using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using Moq;
+using NUnit.Framework;
 using UnityEngine;
+using UnityUtil.Editor.Tests;
 using UnityUtil.Math;
 
-namespace UnityUtil.Editor.Tests.Math;
+namespace UnityUtil.Tests.Editor.Math;
 
 public class MoreMathTest : BaseEditModeTestFixture
 {
@@ -25,7 +26,7 @@ public class MoreMathTest : BaseEditModeTestFixture
     public void RandomWeightedIndex_Fails_WeightsDontSumToOne(float[] indexWeights)
     {
         Debug.Log($"Index weights: {string.Join(',', indexWeights)}");
-        Assert.Throws<InvalidOperationException>(() =>
+        _ = Assert.Throws<InvalidOperationException>(() =>
             MoreMath.RandomWeightedIndex(indexWeights, getRandomAdapter())
         );
     }
@@ -38,7 +39,7 @@ public class MoreMathTest : BaseEditModeTestFixture
     public void RandomWeightedIndex_Fails_NegativeWeights(float[] indexWeights)
     {
         Debug.Log($"Index weights: {string.Join(',', indexWeights)}");
-        Assert.Throws<InvalidOperationException>(() =>
+        _ = Assert.Throws<InvalidOperationException>(() =>
             MoreMath.RandomWeightedIndex(indexWeights, getRandomAdapter())
         );
     }
@@ -51,7 +52,7 @@ public class MoreMathTest : BaseEditModeTestFixture
     public void RandomWeightedIndex_Fails_WeightsOverOne(float[] indexWeights)
     {
         Debug.Log($"Index weights: {string.Join(',', indexWeights)}");
-        Assert.Throws<InvalidOperationException>(() =>
+        _ = Assert.Throws<InvalidOperationException>(() =>
             MoreMath.RandomWeightedIndex(indexWeights, getRandomAdapter())
         );
     }

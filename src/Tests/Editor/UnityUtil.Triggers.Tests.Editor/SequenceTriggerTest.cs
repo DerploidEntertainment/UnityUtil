@@ -1,11 +1,11 @@
-﻿using NUnit.Framework;
 using System.Linq;
+using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityUtil.Editor.Tests;
 using UnityUtil.Logging;
-using UnityUtil.Triggers;
 
-namespace UnityUtil.Editor.Tests.Triggers;
+namespace UnityUtil.Triggers.Tests.Editor;
 
 public class SequenceTriggerTest : BaseEditModeTestFixture
 {

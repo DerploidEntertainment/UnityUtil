@@ -1,7 +1,6 @@
 ﻿using NUnit.Framework;
-using UnityUtil.Triggers;
 
-namespace UnityUtil.Editor.Tests.Triggers;
+namespace UnityUtil.Triggers.Tests.Editor;
 
 internal class TestConditionalTriggerWrapper<T> where T : ConditionalTrigger
 {

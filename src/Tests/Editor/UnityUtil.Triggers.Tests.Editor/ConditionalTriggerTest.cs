@@ -1,9 +1,9 @@
-﻿using NUnit.Framework;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
+using NUnit.Framework;
 using UnityEngine;
-using UnityUtil.Triggers;
+using UnityUtil.Editor.Tests;
 
-namespace UnityUtil.Editor.Tests.Triggers;
+namespace UnityUtil.Triggers.Tests.Editor;
 
 [SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses", Justification = "Instantiated when added to test Game Objects")]
 internal class MockConditionalTrigger : ConditionalTrigger

@@ -4,13 +4,13 @@
   "description": "A set of utility classes and components useful to any Unity project, 2D or 3D, specifically related to in-game movement mechanics.",
   "displayName": "UnityUtil.Movement",
   "unity": "2019.4",
-  "documentationUrl": "https://github.com/DerploidEntertainment/UnityUtil/blob/0.1.0-unity6/src/UnityUtil.Movement/README.md",
+  "documentationUrl": "https://github.com/DerploidEntertainment/UnityUtil/blob/unity6-dev/src/UnityUtil/UnityUtil.Movement/README.md",
   "author": {
     "name": "Rabadash8820",
     "url": "https://github.com/Rabadash8820"
   },
   "dependencies": {
-    "org.nuget.microsoft.extensions.logging.abstractions": "2.2.0",
+    "org.nuget.microsoft.extensions.logging.abstractions": "2.0.0",
     "com.unity.modules.physics": "1.0.0"
   },
   "license": "MIT",

@@ -1,13 +1,13 @@
-﻿using NUnit.Framework;
-using NUnit.Framework.Constraints;
 using System;
 using System.Linq;
+using NUnit.Framework;
+using NUnit.Framework.Constraints;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityUtil.Editor.Tests;
 using UnityUtil.Logging;
-using UnityUtil.UI;
 
-namespace UnityUtil.Editor.Tests.UI;
+namespace UnityUtil.UI.Tests.Editor;
 
 public class UiBreakpointsTest : BaseEditModeTestFixture
 {
@@ -161,8 +161,8 @@ public class UiBreakpointsTest : BaseEditModeTestFixture
     [Test]
     public void CannotConstructUiBreakpoint_NegativeValue()
     {
-        Assert.Throws<ArgumentOutOfRangeException>(() => new UiBreakpoint(-2f));
-        Assert.Throws<ArgumentOutOfRangeException>(() => new UiBreakpoint(-1f));
+        _ = Assert.Throws<ArgumentOutOfRangeException>(() => new UiBreakpoint(-2f));
+        _ = Assert.Throws<ArgumentOutOfRangeException>(() => new UiBreakpoint(-1f));
         Assert.DoesNotThrow(() => new UiBreakpoint(0f));
         Assert.DoesNotThrow(() => new UiBreakpoint(1f));
     }

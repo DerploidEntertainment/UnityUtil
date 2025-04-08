@@ -1,14 +1,9 @@
 <Project>
 
   <Import Project="..\Directory.Build.props"/>
-  
+
   <PropertyGroup>
     <UnityDestinationFolder>$(UnityProjectPath)\Assets\Tests\Editor\$(MSBuildProjectName)</UnityDestinationFolder>
   </PropertyGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="$(TestingProjectPath)" />
-    <ProjectReference Include="..\..\UnityUtil.Tests.Util\UnityUtil.Tests.Util.csproj" />
-  </ItemGroup>
 
 </Project>

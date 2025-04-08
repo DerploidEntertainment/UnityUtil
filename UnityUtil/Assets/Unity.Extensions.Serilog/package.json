@@ -1,0 +1,21 @@
+{
+  "name": "com.unity.extensions.serilog",
+  "version": "0.1.0",
+  "description": "Unity-specific logging extension methods for Serilog.",
+  "displayName": "Unity Serilog Extensions",
+  "unity": "2019.4",
+  "documentationUrl": "https://github.com/DerploidEntertainment/UnityUtil/blob/unity6-dev/src/Logging/Unity.Extensions.Serilog/README.md",
+  "author": {
+    "name": "Rabadash8820",
+    "url": "https://github.com/Rabadash8820"
+  },
+  "dependencies": {
+    "org.nuget.serilog": "2.8.0"
+  },
+  "license": "MIT",
+  "keywords": [
+    "utility",
+    "logging",
+    "serilog"
+  ]
+}

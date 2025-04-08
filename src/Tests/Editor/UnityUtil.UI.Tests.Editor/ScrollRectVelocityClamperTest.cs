@@ -2,10 +2,10 @@
 using Moq;
 using NUnit.Framework;
 using UnityEngine;
-using UnityUtil.UI;
+using UnityUtil.Editor.Tests;
 using UnityUtil.Updating;
 
-namespace UnityUtil.Editor.Tests.UI;
+namespace UnityUtil.UI.Tests.Editor;
 
 public class ScrollRectVelocityClamperTest : BaseEditModeTestFixture
 {

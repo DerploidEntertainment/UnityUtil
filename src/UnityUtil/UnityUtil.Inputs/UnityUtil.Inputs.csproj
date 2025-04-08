@@ -1,0 +1,12 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="..\..\Logging.props" />
+
+  <ItemGroup>
+    <Reference Include="$(UnityModulesPath)\UnityEngine.CoreModule.dll" Private="false" />
+    <Reference Include="$(UnityModulesPath)\UnityEngine.InputLegacyModule.dll" Private="false" />
+
+    <ProjectReference Include="..\UnityUtil.Triggers\UnityUtil.Triggers.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,8 +1,8 @@
 ﻿using NUnit.Framework;
 using UnityEngine;
-using UnityUtil.Triggers;
+using UnityUtil.Editor.Tests;
 
-namespace UnityUtil.Editor.Tests.Triggers;
+namespace UnityUtil.Triggers.Tests.Editor;
 
 public class ToggleTriggerTest : BaseEditModeTestFixture
 {

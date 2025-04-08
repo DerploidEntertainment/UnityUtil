@@ -1,0 +1,15 @@
+﻿ <Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TestingProjectPath>..\..\..\Logging\$(TestingProjectName)\$(TestingProjectName).csproj</TestingProjectPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="$(UnityModulesPath)\UnityEngine.CoreModule.dll" Private="false" />
+    <Reference Include="$(UnityPackageCachePath)\org.nuget.serilog\Serilog.dll" Private="false" />
+    <PackageReference Include="SerilogAnalyzer" />
+
+    <ProjectReference Include="..\..\..\Logging\Serilog.Enrichers.Unity\Serilog.Enrichers.Unity.csproj" />
+  </ItemGroup>
+
+</Project>

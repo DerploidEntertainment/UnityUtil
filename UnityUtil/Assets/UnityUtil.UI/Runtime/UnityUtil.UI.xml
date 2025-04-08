@@ -38,7 +38,7 @@
             See this <a href="https://www.programmersought.com/article/1195140410/">weird and obscure source</a> :P
             </summary>
         </member>
-        <member name="T:UnityUtil.UI.UiLogger`1">
+        <member name="T:UnityUtil.UI.UiLoggerExtensions">
             <inheritdoc/>
         </member>
     </members>
