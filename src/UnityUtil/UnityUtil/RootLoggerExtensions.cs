@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using Microsoft.Extensions.Logging;
 using UnityEngine;
@@ -78,32 +77,6 @@ internal static class RootLoggerExtensions
         Application.platform
     );
 
-    public static void AddingSameUpdate(this MEL.ILogger logger, int instanceId) =>
-        logger.LogWarning(new EventId(id: 0, nameof(AddingSameUpdate)), $"Re-adding the same Update action for {{{nameof(instanceId)}}}", instanceId);
-
-    public static void AddingSameFixedUpdate(this MEL.ILogger logger, int instanceId) =>
-        logger.LogWarning(new EventId(id: 0, nameof(AddingSameFixedUpdate)), $"Re-adding the same FixedUpdate action for {{{nameof(instanceId)}}}", instanceId);
-
-    public static void AddingSameLateUpdate(this MEL.ILogger logger, int instanceId) =>
-        logger.LogWarning(new EventId(id: 0, nameof(AddingSameLateUpdate)), $"Re-adding the same LateUpdate action for {{{nameof(instanceId)}}}", instanceId);
-
     #endregion
 
-    #region Exceptions
-#pragma warning disable IDE0060 // Remove unused parameter; we need `this` params for extension methods! Not sure why Roslyn doesn't know that...
-
-    [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "For consistency")]
-    public static ArgumentException AlreadyAddedOtherUpdate(this MEL.ILogger logger, int instanceId, Exception? innerException = null) =>
-        new($"An Update action has already been associated with {nameof(instanceId)} '{instanceId}'", innerException);
-
-    [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "For consistency")]
-    public static ArgumentException AlreadyAddedOtherFixedUpdate(this MEL.ILogger logger, int instanceId, Exception? innerException = null) =>
-        new($"A FixedUpdate action has already been associated with {nameof(instanceId)} '{instanceId}'", innerException);
-
-    [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "For consistency")]
-    public static ArgumentException AlreadyAddedOtherLateUpdate(this MEL.ILogger logger, int instanceId, Exception? innerException = null) =>
-        new($"A LateUpdate action has already been associated with {nameof(instanceId)} '{instanceId}'", innerException);
-
-#pragma warning restore IDE0060 // Remove unused parameter
-    #endregion
 }

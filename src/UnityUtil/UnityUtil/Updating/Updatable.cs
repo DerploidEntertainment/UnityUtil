@@ -1,8 +1,9 @@
 using System;
 using Microsoft.Extensions.Logging;
-using Unity.Extensions.Logging;
 using UnityEngine;
 using UnityUtil.DependencyInjection;
+using MEL = Microsoft.Extensions.Logging;
+using static Microsoft.Extensions.Logging.LogLevel;
 
 namespace UnityUtil.Updating;
 
@@ -45,7 +46,7 @@ public abstract class Updatable : MonoBehaviour
     /// </summary>
     /// <param name="action">The action to be called during <c>Update</c></param>
     protected void AddUpdate(Action<float> action) =>
-        add(Updater!.AddUpdate, ref _updateAction, action, _logger!.AddingSameUpdate, _logger!.AlreadyAddedOtherUpdate);
+        add("Update", Updater!.AddUpdate, ref _updateAction, action);
 
     /// <summary>
     /// Register <paramref name="action"/> to be called during <a href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.FixedUpdate.html"><c>FixedUpdate</c></a>.
@@ -53,7 +54,7 @@ public abstract class Updatable : MonoBehaviour
     /// </summary>
     /// <param name="action">The action to be called during <c>FixedUpdate</c></param>
     protected void AddFixedUpdate(Action<float> action) =>
-        add(Updater!.AddFixedUpdate, ref _fixedUpdateAction, action, _logger!.AddingSameFixedUpdate, _logger!.AlreadyAddedOtherFixedUpdate);
+        add("FixedUpdate", Updater!.AddFixedUpdate, ref _fixedUpdateAction, action);
 
     /// <summary>
     /// Register <paramref name="action"/> to be called during <a href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.LateUpdate.html"><c>LateUpdate</c></a>.
@@ -61,7 +62,7 @@ public abstract class Updatable : MonoBehaviour
     /// </summary>
     /// <param name="action">The action to be called during <c>LateUpdate</c></param>
     protected void AddLateUpdate(Action<float> action) =>
-        add(Updater!.AddLateUpdate, ref _lateUpdateAction, action, _logger!.AddingSameLateUpdate, _logger!.AlreadyAddedOtherLateUpdate);
+        add("LateUpdate", Updater!.AddLateUpdate, ref _lateUpdateAction, action);
 
     /// <summary>
     /// Unregister this component's <a href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.Update.html"><c>Update</c></a> action.
@@ -114,25 +115,31 @@ public abstract class Updatable : MonoBehaviour
     }
 
     private void add(
+        string updateType,
         Action<int, Action<float>> addAction,
         ref Action<float>? actionField,
-        Action<float> action,
-        Action<int> addSameAction,
-        Func<int, Exception?, ArgumentException> alreadyAddedOtherFunc
+        Action<float> action
     )
     {
         if (actionField == action) {
-            addSameAction(InstanceId);
+            log_AddingSameUpdate(updateType, InstanceId);
             return;
         }
-
-        // If we ARE enabled, then action is already added, so the Add call below will already throw
-        if (actionField is not null && !enabled)
-            throw alreadyAddedOtherFunc(InstanceId, null);
 
         actionField = action;
 
         if (enabled)
             addAction(InstanceId, action);
     }
+
+    #region LoggerMessages
+
+    private static readonly Action<MEL.ILogger, string, int, Exception?> ADDING_SAME_UPDATE_ACTION =
+        LoggerMessage.Define<string, int>(Warning,
+            new EventId(id: 0, nameof(log_AddingSameUpdate)),
+            "Re-adding the same {UpdateType} action for instance ID '{InstanceId}'"
+        );
+    private void log_AddingSameUpdate(string updateType, int instanceId) => ADDING_SAME_UPDATE_ACTION(_logger!, updateType, instanceId, null);
+
+    #endregion
 }

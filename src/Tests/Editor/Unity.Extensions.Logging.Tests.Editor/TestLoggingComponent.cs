@@ -32,7 +32,7 @@ public class TestLoggingComponent : MonoBehaviour
         _logger ??= TestHelpers.BuildDefaultLoggerFactoryForUnity().CreateLogger(this);
 
         using (_logger!.BeginScope("DatScope"))
-        using (_logger!.BeginScope(("SomeString", "Value")))    // Stored as a string array. Support for storing it as a key/val pair isn't added til Serilog.Extensions.Logging 2.0.0, but our libraries are depending on the earliest dependency versions possible.
+        using (_logger!.BeginScope(("SomeString", "Value")))    // Stored as a string array. Support for storing it as a key/val pair isn't added til Serilog.Extensions.Logging 9.0.0, but our libraries are depending on the earliest dependency versions possible.
         using (_logger!.BeginScope(new Dictionary<string, object> {
             { "SomeInt", 5 },
             { "SomeBool", true },

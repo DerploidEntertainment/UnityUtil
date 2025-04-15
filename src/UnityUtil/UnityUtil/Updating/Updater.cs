@@ -29,7 +29,7 @@ public class Updater : MonoBehaviour, IUpdater
             _updates.Add(instanceId, updateAction);
         }
         catch (ArgumentException ex) {
-            throw _logger!.AlreadyAddedOtherUpdate(instanceId, ex);
+            throw GetAlreadyAddedUpdateException(nameof(Update), instanceId, ex);
         }
     }
     /// <inheritdoc/>
@@ -48,7 +48,7 @@ public class Updater : MonoBehaviour, IUpdater
             _fixed.Add(instanceId, fixedUpdateAction);
         }
         catch (ArgumentException ex) {
-            throw _logger!.AlreadyAddedOtherFixedUpdate(instanceId, ex);
+            throw GetAlreadyAddedUpdateException(nameof(FixedUpdate), instanceId, ex);
         }
     }
     /// <inheritdoc/>
@@ -67,7 +67,7 @@ public class Updater : MonoBehaviour, IUpdater
             _late.Add(instanceId, lateUpdateAction);
         }
         catch (ArgumentException ex) {
-            throw _logger!.AlreadyAddedOtherLateUpdate(instanceId, ex);
+            throw GetAlreadyAddedUpdateException(nameof(LateUpdate), instanceId, ex);
         }
     }
     /// <inheritdoc/>
@@ -110,4 +110,7 @@ public class Updater : MonoBehaviour, IUpdater
         _late.TrimExcess();
         _fixed.TrimExcess();
     }
+
+    public static InvalidOperationException GetAlreadyAddedUpdateException(string updateType, int instanceId, Exception? innerException = null) =>
+        new($"An {updateType} action has already been associated with {nameof(instanceId)} '{instanceId}'", innerException);
 }

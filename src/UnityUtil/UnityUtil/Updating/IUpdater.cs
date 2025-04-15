@@ -11,7 +11,7 @@ public interface IUpdater
     /// </summary>
     /// <param name="instanceId">The instance ID of the component that will be updated every frame.</param>
     /// <param name="updateAction">The <see cref="Action"/> to be called every frame.</param>
-    /// <exception cref="ArgumentException">An <c>Update</c> has already been associated with <paramref name="instanceId"/>.</exception>
+    /// <exception cref="InvalidOperationException">An <c>Update</c> has already been associated with <paramref name="instanceId"/>.</exception>
     void AddUpdate(int instanceId, Action<float> updateAction);
     /// <summary>
     /// Remove the <see cref="Action"/> called every frame for the component with <paramref name="instanceId"/>
@@ -61,7 +61,7 @@ public interface IUpdater
     /// </summary>
     /// <param name="instanceId">The instance ID of the component that will be updated every frame.</param>
     /// <param name="fixedUpdateAction">The <see cref="Action"/> to be called every physics frame.</param>
-    /// <exception cref="ArgumentException">A <c>FixedUpdate</c> has already been associated with <paramref name="instanceId"/>.</exception>
+    /// <exception cref="InvalidOperationException">A <c>FixedUpdate</c> has already been associated with <paramref name="instanceId"/>.</exception>
     void AddFixedUpdate(int instanceId, Action<float> fixedUpdateAction);
     /// <summary>
     /// Remove the <see cref="Action"/> called every physics frame for the component with <paramref name="instanceId"/>
@@ -111,7 +111,7 @@ public interface IUpdater
     /// </summary>
     /// <param name="instanceId">The instance ID of the component that will be updated every frame.</param>
     /// <param name="lateUpdateAction">The <see cref="Action"/> to be called at the end of every frame.</param>
-    /// <exception cref="ArgumentException">A <c>LateUpdate</c> has already been associated with <paramref name="instanceId"/>.</exception>
+    /// <exception cref="InvalidOperationException">A <c>LateUpdate</c> has already been associated with <paramref name="instanceId"/>.</exception>
     void AddLateUpdate(int instanceId, Action<float> lateUpdateAction);
     /// <summary>
     /// Remove the <see cref="Action"/> called at the end of every frame for the component with <paramref name="instanceId"/>

@@ -255,8 +255,6 @@ public class UnityObjectLoggerTests
             }
         );
 
-        var eventId = new EventId(id: 5, nameof(GetHierarchyName_ReturnsCorrectName_DifferentHierarchies));
-
         // ACT
         loggingObject.transform.SetParent(parent1.transform);
         string hierarchyName1 = unityObjectLogger.GetHierarchyName();

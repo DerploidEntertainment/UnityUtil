@@ -1,7 +1,8 @@
 ﻿using System;
-using Microsoft.Extensions.Logging;
+using Unity.Extensions.Logging;
 
-namespace Unity.Extensions.Logging;
+// Putting in this namespace so consumers don't need an extra `using`
+namespace Microsoft.Extensions.Logging;
 
 /// <summary>
 /// Extends <see cref="ILoggerFactory"/> with methods for creating Unity-specific loggers.

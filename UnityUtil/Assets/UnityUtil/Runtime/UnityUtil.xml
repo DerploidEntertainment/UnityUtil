@@ -720,7 +720,7 @@
             </summary>
             <param name="instanceId">The instance ID of the component that will be updated every frame.</param>
             <param name="updateAction">The <see cref="T:System.Action"/> to be called every frame.</param>
-            <exception cref="T:System.ArgumentException">An <c>Update</c> has already been associated with <paramref name="instanceId"/>.</exception>
+            <exception cref="T:System.InvalidOperationException">An <c>Update</c> has already been associated with <paramref name="instanceId"/>.</exception>
         </member>
         <member name="M:UnityUtil.Updating.IUpdater.RemoveUpdate(System.Int32,System.Action{System.Single}@)">
             <summary>
@@ -774,7 +774,7 @@
             </summary>
             <param name="instanceId">The instance ID of the component that will be updated every frame.</param>
             <param name="fixedUpdateAction">The <see cref="T:System.Action"/> to be called every physics frame.</param>
-            <exception cref="T:System.ArgumentException">A <c>FixedUpdate</c> has already been associated with <paramref name="instanceId"/>.</exception>
+            <exception cref="T:System.InvalidOperationException">A <c>FixedUpdate</c> has already been associated with <paramref name="instanceId"/>.</exception>
         </member>
         <member name="M:UnityUtil.Updating.IUpdater.RemoveFixedUpdate(System.Int32,System.Action{System.Single}@)">
             <summary>
@@ -828,7 +828,7 @@
             </summary>
             <param name="instanceId">The instance ID of the component that will be updated every frame.</param>
             <param name="lateUpdateAction">The <see cref="T:System.Action"/> to be called at the end of every frame.</param>
-            <exception cref="T:System.ArgumentException">A <c>LateUpdate</c> has already been associated with <paramref name="instanceId"/>.</exception>
+            <exception cref="T:System.InvalidOperationException">A <c>LateUpdate</c> has already been associated with <paramref name="instanceId"/>.</exception>
         </member>
         <member name="M:UnityUtil.Updating.IUpdater.RemoveLateUpdate(System.Int32,System.Action{System.Single}@)">
             <summary>
