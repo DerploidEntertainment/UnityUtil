@@ -3,13 +3,14 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Microsoft.Extensions.Logging;
 using Sirenix.OdinInspector;
-using Unity.Extensions.Logging;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityUtil.DependencyInjection;
 using UnityUtil.Logging;
+using static Microsoft.Extensions.Logging.LogLevel;
 using static UnityUtil.UI.BreakpointMatchMode;
 using static UnityUtil.UI.BreakpointMode;
+using MEL = Microsoft.Extensions.Logging;
 
 namespace UnityUtil.UI;
 
@@ -84,6 +85,7 @@ public class UiBreakpoints : MonoBehaviour
     public UnityEvent NoBreakpointMatched = new();
 
     [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
+    [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
     private void Awake()
     {
         if (DependencyInjector.Instance.Initialized)
@@ -93,6 +95,7 @@ public class UiBreakpoints : MonoBehaviour
     public void Inject(ILoggerFactory loggerFactory) => _logger = loggerFactory.CreateLogger(this);
 
     [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
+    [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
     private void Start()
     {
         // Using Start rather than Awake cause we don't want to mess with breakpoints being raised by Awake during Edit Mode tests
@@ -107,6 +110,7 @@ public class UiBreakpoints : MonoBehaviour
     /// See this <a href="https://www.programmersought.com/article/1195140410/">weird and obscure source</a> :P
     /// </summary>
     [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
+    [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
     private void OnRectTransformDimensionsChange()
     {
         if (!RecheckMatchesOnResize)
@@ -135,7 +139,7 @@ public class UiBreakpoints : MonoBehaviour
             return true;
 
         // Make sure breakpoint values are sorted strictly ascending (no duplicates)
-        for (int b = 1; b < breakpoints.Length; ++b) 
+        for (int b = 1; b < breakpoints.Length; ++b)
             if (
                 breakpoints[b].Enabled && breakpoints[b - 1].Enabled &&
                 breakpoints[b].Value <= breakpoints[b - 1].Value
@@ -175,7 +179,7 @@ public class UiBreakpoints : MonoBehaviour
         _logger ??= new UnityDebugLoggerFactory().CreateLogger(this);
 
         if (modeValue < 0f) {
-            _logger.UiBreakpointNegativeModeValue();
+            log_UiBreakpointNegativeModeValue();
             return;
         }
 
@@ -185,7 +189,7 @@ public class UiBreakpoints : MonoBehaviour
 
         bool shouldLog = (Application.isEditor && LogDimensionsInEditor) || (!Application.isEditor && LogDimensionsInPlayer);
         if (shouldLog)
-            _logger.UiBreakpointUpdating(Mode, MatchMode);
+            log_UiBreakpointUpdating(Mode, MatchMode);
 
         // Reset all UI breakpoints to not-matched state
         _noMatch = true;
@@ -230,4 +234,58 @@ public class UiBreakpoints : MonoBehaviour
         }
     }
 
+    #region LoggerMessages
+
+    private static readonly Action<MEL.ILogger, string, string, string, string, Exception?> LOG_CURR_SAFE_AREA_ACTION =
+        LoggerMessage.Define<string, string, string, string>(Information,
+            new EventId(id: 0, nameof(log_CurrentSafeArea)),
+            "Current anchors of {RectTransform}: ({Anchors}). " +
+            "Updating for current screen ({ScreenDimensions}) and safe area ({SafeAreaDimensions})."
+        );
+    private void log_CurrentSafeArea(RectTransform rectTransform) =>
+        // We can only pass up to 6 params to Actions created by LoggerMessage.Define().
+        // Methods with the [LoggerMessage] attr could take more, but that isn't available until MEL 6.0.0: https://learn.microsoft.com/en-us/dotnet/core/whats-new/dotnet-6#microsoftextensions-apis
+        // And we want to depend on the lowest MEL version possible.
+        LOG_CURR_SAFE_AREA_ACTION(_logger!,
+            rectTransform.GetHierarchyNameWithType(),
+            $"({rectTransform.anchorMin}, {rectTransform.anchorMax})",
+            $"({Screen.width} x {Screen.height})",
+            $"({Screen.safeArea.width} x {Screen.safeArea.height})",
+            null
+        );
+
+
+    private static readonly Action<MEL.ILogger, string, string, Exception?> LOG_NEW_SAFE_AREA_ACTION =
+        LoggerMessage.Define<string, string>(Information, new EventId(id: 0, nameof(log_NewSafeArea)), "New anchors of {RectTransform}: {Anchors}");
+    private void log_NewSafeArea(RectTransform rectTransform) =>
+        LOG_NEW_SAFE_AREA_ACTION(_logger!,
+            rectTransform.GetHierarchyNameWithType(),
+            $"({rectTransform.anchorMin}, {rectTransform.anchorMax})",
+            null
+        );
+
+
+    private static readonly Action<MEL.ILogger, string, string, BreakpointMode, BreakpointMatchMode, Exception?> LOG_UPDATING_ACTION =
+        LoggerMessage.Define<string, string, BreakpointMode, BreakpointMatchMode>(Information,
+            new EventId(id: 0, nameof(log_UiBreakpointUpdating)),
+            "Current screen dimensions are ({ScreenDimensions}) (screen), ({SafeAreaDimensions}) (safe area). " +
+            $"Updating breakpoints with {nameof(BreakpointMode)} {{Mode}} and {nameof(BreakpointMatchMode)} {{MatchMode}}..."
+        );
+    private void log_UiBreakpointUpdating(BreakpointMode mode, BreakpointMatchMode matchMode) =>
+        LOG_UPDATING_ACTION(_logger!,
+            $"({Screen.width} x {Screen.height})",
+            $"({Screen.safeArea.width} x {Screen.safeArea.height})",
+            mode, matchMode,
+            null
+        );
+
+
+    private static readonly Action<MEL.ILogger, Exception?> LOG_NEGATIVE_MODE_ACTION =
+        LoggerMessage.Define(Warning,
+            new EventId(id: 0, nameof(log_UiBreakpointNegativeModeValue)),
+            "UI breakpoints can only be matched against non-negative values. You can ignore this warning if you just restarted the Editor."
+        );
+    private void log_UiBreakpointNegativeModeValue() => LOG_NEGATIVE_MODE_ACTION(_logger!, null);
+
+    #endregion
 }

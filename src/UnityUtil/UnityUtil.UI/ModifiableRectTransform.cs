@@ -1,13 +1,26 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
+using Microsoft.Extensions.Logging;
+using UnityEngine;
+using UnityUtil.DependencyInjection;
+using static Microsoft.Extensions.Logging.LogLevel;
+using MEL = Microsoft.Extensions.Logging;
 
 namespace UnityUtil.UI;
 
 [RequireComponent(typeof(RectTransform))]
 public class ModifiableRectTransform : MonoBehaviour
 {
+    private ILogger<ModifiableRectTransform>? _logger;
 
     private RectTransform? _rectTransform;
     private RectTransform RectTransform => _rectTransform ??= GetComponent<RectTransform>();
+
+    [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
+    [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
+    private void Awake() => DependencyInjector.Instance.ResolveDependenciesOf(this);
+
+    public void Inject(ILoggerFactory loggerFactory) => _logger = loggerFactory.CreateLogger(this);
 
     public void SetAnchoredPositionX(float value) { if (!hasRect()) return; Vector2 curr = RectTransform.anchoredPosition; curr.x = value; RectTransform.anchoredPosition = curr; }
     public void SetAnchoredPositionY(float value) { if (!hasRect()) return; Vector2 curr = RectTransform.anchoredPosition; curr.y = value; RectTransform.anchoredPosition = curr; }
@@ -40,10 +53,19 @@ public class ModifiableRectTransform : MonoBehaviour
     private bool hasRect()
     {
         if (RectTransform == null) {
-            Debug.LogWarning($"Could not get the {nameof(RectTransform)} of this {nameof(ModifiableRectTransform)}. No values will be changed. Try enterring Play Mode once to correct this.");
+            log_NoRectTransform();
             return false;
         }
         return true;
     }
 
+    #region LoggerMessages
+
+    private static readonly Action<MEL.ILogger, Exception?> LOG_NO_RECTTRANSFORM_ACTION = LoggerMessage.Define(Warning,
+        new EventId(id: 0, nameof(log_NoRectTransform)),
+        $"Could not get the {nameof(RectTransform)} of this {nameof(ModifiableRectTransform)}. No values will be changed. Try enterring Play Mode once to correct this."
+    );
+    private void log_NoRectTransform() => LOG_NO_RECTTRANSFORM_ACTION(_logger!, null);
+
+    #endregion
 }
