@@ -1,7 +1,9 @@
-﻿using Microsoft.Extensions.Logging;
-using Unity.Extensions.Logging;
+﻿using System;
+using Microsoft.Extensions.Logging;
 using UnityEngine;
 using UnityEngine.Events;
+using static Microsoft.Extensions.Logging.LogLevel;
+using MEL = Microsoft.Extensions.Logging;
 
 namespace UnityUtil.Triggers;
 
@@ -27,7 +29,7 @@ public class TimerTrigger : StartStoppable
         base.DoRestart();
 
         if (Logging)
-            _logger!.TimerTriggerStarted();
+            log_Started();
 
         TimePassed = 0f;
     }
@@ -36,7 +38,7 @@ public class TimerTrigger : StartStoppable
         base.DoStop();
 
         if (Logging)
-            _logger!.TimerTriggerStopped();
+            log_Stopped();
         Stopped.Invoke();
     }
     protected override void DoPause()
@@ -44,14 +46,14 @@ public class TimerTrigger : StartStoppable
         base.DoStop();
 
         if (Logging)
-            _logger!.TimerTriggerPaused();
+            log_Paused();
     }
     protected override void DoResume()
     {
         base.DoResume();
 
         if (Logging)
-            _logger!.TimerTriggerResumed();
+            log_Resumed();
     }
     protected override void DoUpdate(float deltaTime)
     {
@@ -62,11 +64,37 @@ public class TimerTrigger : StartStoppable
 
         // Once the timer is up, raise the Timeout event
         if (Logging)
-            _logger!.TimerTriggerTimedOut();
+            log_TimedOut();
         Timeout.Invoke();
         if (Running)   // May now be false if any UnityEvents manually stopped this timer
             DoStop();
     }
 
+    #region LoggerMessages
 
+    private static readonly Action<MEL.ILogger, Exception?> LOG_STARTED_ACTION =
+        LoggerMessage.Define(Information, new EventId(id: 0, nameof(log_Started)), "Started");
+    private void log_Started() => LOG_STARTED_ACTION(_logger!, null);
+
+
+    private static readonly Action<MEL.ILogger, Exception?> LOG_STOPPED_ACTION =
+        LoggerMessage.Define(Information, new EventId(id: 0, nameof(log_Stopped)), "Stopped");
+    private void log_Stopped() => LOG_STOPPED_ACTION(_logger!, null);
+
+
+    private static readonly Action<MEL.ILogger, Exception?> LOG_PAUSED_ACTION =
+        LoggerMessage.Define(Information, new EventId(id: 0, nameof(log_Paused)), "Paused");
+    private void log_Paused() => LOG_PAUSED_ACTION(_logger!, null);
+
+
+    private static readonly Action<MEL.ILogger, Exception?> LOG_RESUMED_ACTION =
+        LoggerMessage.Define(Information, new EventId(id: 0, nameof(log_Resumed)), "Resumed");
+    private void log_Resumed() => LOG_RESUMED_ACTION(_logger!, null);
+
+
+    private static readonly Action<MEL.ILogger, Exception?> LOG_TIMED_OUT_ACTION =
+        LoggerMessage.Define(Information, new EventId(id: 0, nameof(log_TimedOut)), "Timed out");
+    private void log_TimedOut() => LOG_TIMED_OUT_ACTION(_logger!, null);
+
+    #endregion
 }

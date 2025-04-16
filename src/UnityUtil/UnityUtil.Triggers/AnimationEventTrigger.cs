@@ -1,10 +1,14 @@
-﻿using Sirenix.OdinInspector;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using Microsoft.Extensions.Logging;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityUtil.DependencyInjection;
+using static Microsoft.Extensions.Logging.LogLevel;
+using MEL = Microsoft.Extensions.Logging;
 
 namespace UnityUtil.Triggers;
 
@@ -18,6 +22,7 @@ public class NamedAnimationEvent
 [RequireComponent(typeof(Animator))]
 public class AnimationEventTrigger : MonoBehaviour
 {
+    private ILogger<AnimationEventTrigger>? _logger;
 
     private Dictionary<string, UnityEvent> _triggerDict = [];
 
@@ -27,7 +32,14 @@ public class AnimationEventTrigger : MonoBehaviour
 
     [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
     [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
-    private void Awake() => _triggerDict = _triggers.ToDictionary(x => x.Name, x => x.Trigger);
+    private void Awake()
+    {
+        DependencyInjector.Instance.ResolveDependenciesOf(this);
+
+        _triggerDict = _triggers.ToDictionary(x => x.Name, x => x.Trigger);
+    }
+
+    public void Inject(ILoggerFactory loggerFactory) => _logger = loggerFactory.CreateLogger(this);
 
     /// <summary>
     /// Warning! This method is not meant to be called programmatically.
@@ -37,16 +49,31 @@ public class AnimationEventTrigger : MonoBehaviour
     public void Trigger(string eventName)
     {
         if (!_triggerDict.TryGetValue(eventName, out UnityEvent trigger)) {
-            Debug.LogWarning($"No trigger associate with named AnimationEvent '{eventName}'");
+            log_NoTrigger(eventName);
             return;
         }
 
         if (trigger is null) {
-            Debug.LogWarning($"Trigger associated with named AnimationEvent '{eventName}' cannot be null");
+            log_NullTrigger(eventName);
             return;
         }
 
         trigger.Invoke();
     }
 
+    #region LoggerMessages
+
+    private static readonly Action<MEL.ILogger, string, Exception?> LOG_NO_TRIGGER_ACTION = LoggerMessage.Define<string>(Warning,
+        new EventId(id: 0, nameof(log_NoTrigger)),
+        "No trigger associated with AnimationEvent '{EventName}'"
+    );
+    private void log_NoTrigger(string eventName) => LOG_NO_TRIGGER_ACTION(_logger!, eventName, null);
+
+    private static readonly Action<MEL.ILogger, string, Exception?> LOG_NULL_TRIGGER_ACTION = LoggerMessage.Define<string>(Warning,
+        new EventId(id: 0, nameof(log_NullTrigger)),
+        "Trigger associated with AnimationEvent '{EventName}' cannot be null"
+    );
+    private void log_NullTrigger(string eventName) => LOG_NULL_TRIGGER_ACTION(_logger!, eventName, null);
+
+    #endregion
 }

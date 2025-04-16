@@ -21,8 +21,5 @@
             Trigger event is raised every time the encapsulated number is incremented the specified number of times
             </summary>
         </member>
-        <member name="T:UnityUtil.Triggers.TriggersLoggerExtensions">
-            <inheritdoc/>
-        </member>
     </members>
 </doc>
