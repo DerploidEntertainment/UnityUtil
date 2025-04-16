@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Microsoft.Extensions.Logging;
-using Unity.Extensions.Logging;
 using UnityEngine;
 using UnityUtil.DependencyInjection;
+using static Microsoft.Extensions.Logging.LogLevel;
+using MEL = Microsoft.Extensions.Logging;
 
 namespace UnityUtil.Physics;
 
@@ -187,7 +189,7 @@ public class ColliderDuplicator : MonoBehaviour
         }
 
         else {
-            _logger!.DuplicateColliderFail(collider);
+            log_Failed(collider);
             return;
         }
 
@@ -216,4 +218,14 @@ public class ColliderDuplicator : MonoBehaviour
         }
     }
 
+    #region LoggerMessages
+
+    private static readonly Action<MEL.ILogger, string, Exception?> LOG_FAILED_ACTION =
+        LoggerMessage.Define<string>(Warning,
+            new EventId(id: 0, nameof(log_Failed)),
+            "Collider '{Collider}' is not a BoxCollider, SphereCollider, or CapsuleCollider, so it will not be duplicated"
+        );
+    private void log_Failed(Collider collider) => LOG_FAILED_ACTION(_logger!, collider.GetHierarchyName(), null);
+
+    #endregion
 }
