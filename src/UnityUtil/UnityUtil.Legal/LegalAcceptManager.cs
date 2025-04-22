@@ -5,13 +5,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Sirenix.OdinInspector;
-using Unity.Extensions.Logging;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 using UnityUtil.DependencyInjection;
 using UnityUtil.Logging;
 using UnityUtil.Storage;
+using static Microsoft.Extensions.Logging.LogLevel;
+using MEL = Microsoft.Extensions.Logging;
 
 namespace UnityUtil.Legal;
 internal class LegalDocumentState(string currentTag)
@@ -69,11 +70,14 @@ public class LegalAcceptManager : MonoBehaviour, ILegalAcceptManager
         }
 
         if (acceptRequired) {
-            _logger!.LegalAcceptRequired(acceptOutdated);
+            if (acceptOutdated)
+                log_AcceptRequired_OutOfDate();
+            else
+                log_AcceptRequired_FirstTime();
             return acceptOutdated ? LegalAcceptance.Stale : LegalAcceptance.Unprovided;
         }
         else {
-            _logger!.LegalAcceptAlreadyAcceptedAll();
+            log_AlreadyAcceptedAll();
             return LegalAcceptance.Current;
         }
     }
@@ -96,7 +100,7 @@ public class LegalAcceptManager : MonoBehaviour, ILegalAcceptManager
             reqOp.completed += _ => onRequestCompleted();
         }
         catch (Exception ex) {
-            _logger!.LegalDocumentFetchLatestFailed(doc, req);
+            log_FetchLatestFailed(doc, req);
             req?.Dispose();
             tcs.SetException(ex);
         }
@@ -109,7 +113,7 @@ public class LegalAcceptManager : MonoBehaviour, ILegalAcceptManager
             // Parse the tag from the response
             string? currentTag = null;
             if (req.result != UnityWebRequest.Result.Success)
-                _logger!.LegalDocumentFetchLatestErrorCode(doc, req);
+                log_FetchLatestErrorCode(doc, req);
             else
                 currentTag = req.GetResponseHeader(doc.TagHeader);
 
@@ -120,11 +124,11 @@ public class LegalAcceptManager : MonoBehaviour, ILegalAcceptManager
             if (string.IsNullOrEmpty(currentTag)) {
                 if (string.IsNullOrEmpty(acceptedTag)) {
                     currentTag = Guid.NewGuid().ToString();
-                    _logger!.LegalDocumentHeaderParseFailedFirstTime(doc.TagHeader, currentTag);
+                    log_HeaderParseFailedFirstTime(doc.TagHeader, currentTag);
                 }
                 else {
                     currentTag = acceptedTag;
-                    _logger!.LegalDocumentHeaderParseFailed(doc.TagHeader);
+                    log_HeaderParseFailed(doc.TagHeader);
                 }
             }
 
@@ -141,7 +145,7 @@ public class LegalAcceptManager : MonoBehaviour, ILegalAcceptManager
     {
         for (int v = 0; v < _latestVersionTags.Length; ++v) {
             _localPreferences!.SetString(Documents[v].PreferencesKey, _latestVersionTags[v].ToString());
-            _logger!.LegalDocumentAccepted(Documents[v]);
+            log_DocumentAccepted(Documents[v]);
         }
 
         HasAccepted = true;
@@ -163,7 +167,77 @@ public class LegalAcceptManager : MonoBehaviour, ILegalAcceptManager
         }
 
         _logger ??= new UnityDebugLoggerFactory().CreateLogger(this);    // Use debug logger in case this is being run from the Inspector outside Play mode
-        _logger.LegalAcceptCleared();
+        log_AcceptCleared();
     }
 
+    #region LoggerMessages
+
+    private static readonly Action<MEL.ILogger, Exception?> LOG_ACCEPT_REQUIRED_1ST_TIME_ACTION = LoggerMessage.Define(Information,
+        new EventId(id: 0, nameof(log_AcceptRequired_FirstTime)),
+        $"User must accept latest versions of all legal documents for the first time"
+    );
+    private void log_AcceptRequired_FirstTime() => LOG_ACCEPT_REQUIRED_1ST_TIME_ACTION(_logger!, null);
+
+
+    private static readonly Action<MEL.ILogger, Exception?> LOG_ACCEPT_REQUIRED_OUT_OF_DATE_ACTION = LoggerMessage.Define(Information,
+        new EventId(id: 0, nameof(log_AcceptRequired_OutOfDate)),
+        $"User must accept latest versions of all legal documents because the versions that they last accepted are out of date"
+    );
+    private void log_AcceptRequired_OutOfDate() => LOG_ACCEPT_REQUIRED_OUT_OF_DATE_ACTION(_logger!, null);
+
+
+    private static readonly Action<MEL.ILogger, Exception?> LOG_ALREADY_ACCEPTED_ALL_ACTION = LoggerMessage.Define(Information,
+        new EventId(id: 0, nameof(log_AlreadyAcceptedAll)),
+        "User already accepted latest versions of all legal documents"
+    );
+    private void log_AlreadyAcceptedAll() => LOG_ALREADY_ACCEPTED_ALL_ACTION(_logger!, null);
+
+
+    private static readonly Action<MEL.ILogger, string, string, Exception?> LOG_DOC_ACCEPTED_ACTION = LoggerMessage.Define<string, string>(Information,
+        new EventId(id: 0, nameof(log_DocumentAccepted)),
+        "Legal document with latest header '{Header}' is now accepted by user and saved to local preferences key '{PreferencesKey}', so user won't need to accept it again"
+    );
+    private void log_DocumentAccepted(LegalDocument legalDocument) =>
+        LOG_DOC_ACCEPTED_ACTION(_logger!, legalDocument.TagHeader, legalDocument.PreferencesKey, null);
+
+
+    private static readonly Action<MEL.ILogger, Exception?> LOG_ACCEPT_CLEARED_ACTION = LoggerMessage.Define(Information,
+        new EventId(id: 0, nameof(log_AcceptCleared)),
+        "Accepted tags for all legal documents have been cleared"
+    );
+    private void log_AcceptCleared() => LOG_ACCEPT_CLEARED_ACTION(_logger!, null);
+
+
+    private static readonly Action<MEL.ILogger, string, string, Exception?> LOG_FETCH_LATEST_FAILED_ACTION = LoggerMessage.Define<string, string>(Warning,
+        new EventId(id: 0, nameof(log_FetchLatestFailed)),
+        "Unable to fetch latest version of legal document with {Uri}. Error received: {Error}"
+    );
+    private void log_FetchLatestFailed(LegalDocument legalDocument, UnityWebRequest? webRequest) =>
+        LOG_FETCH_LATEST_FAILED_ACTION(_logger!, legalDocument.LatestVersionUri!.Uri, webRequest?.error ?? "", null);
+
+
+    private static readonly Action<MEL.ILogger, string, string, Exception?> LOG_FETCH_LATEST_ERROR_CODE_ACTION = LoggerMessage.Define<string, string>(Warning,
+        new EventId(id: 0, nameof(log_FetchLatestErrorCode)),
+        "Unable to fetch latest version of legal document with {Uri}. Error received: {Error}"
+    );
+    private void log_FetchLatestErrorCode(LegalDocument legalDocument, UnityWebRequest? webRequest) =>
+        LOG_FETCH_LATEST_ERROR_CODE_ACTION(_logger!, legalDocument.LatestVersionUri!.Uri, webRequest?.error ?? "", null);
+
+
+    private static readonly Action<MEL.ILogger, string, string, Exception?> LOG_HEADER_PARSE_FAILED_1ST_TIME_ACTION = LoggerMessage.Define<string, string>(Warning,
+        new EventId(id: 0, nameof(log_HeaderParseFailedFirstTime)),
+        "Document tag from header '{Header}' was empty or could not be parsed. Using random GUID tag '{Tag}' instead."
+    );
+    private void log_HeaderParseFailedFirstTime(string header, string tag) =>
+        LOG_HEADER_PARSE_FAILED_1ST_TIME_ACTION(_logger!, header, tag, null);
+
+
+    private static readonly Action<MEL.ILogger, string, Exception?> LOG_HEADER_PARSE_FAILED_ACTION = LoggerMessage.Define<string>(Warning,
+        new EventId(id: 0, nameof(log_HeaderParseFailed)),
+        "Document tag from header '{Header}' was empty or could not be parsed. User has already accepted a previous version, so acceptance won't be required again."
+    );
+    private void log_HeaderParseFailed(string header) =>
+        LOG_HEADER_PARSE_FAILED_ACTION(_logger!, header, null);
+
+    #endregion
 }
