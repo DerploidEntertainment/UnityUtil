@@ -52,7 +52,7 @@ public class DependencyInjector : IDisposable
     /// <summary>
     /// DO NOT USE THIS CONSTRUCTOR. It exists purely for unit testing
     /// </summary>
-    internal DependencyInjector(IEnumerable<Type> cachedResolutionTypes) => _cachedResolutionTypes = new HashSet<Type>(cachedResolutionTypes);
+    internal DependencyInjector(IEnumerable<Type> cachedResolutionTypes) => _cachedResolutionTypes = [.. cachedResolutionTypes];
 
     public bool Initialized { get; private set; }
     public void Initialize(ILoggerFactory loggerFactory) => Initialize(loggerFactory, new TypeMetadataProvider());
@@ -198,11 +198,12 @@ public class DependencyInjector : IDisposable
     public void CacheResolution(Type clientType) => _cachedResolutionTypes.Add(clientType);
 
     /// <summary>
-    /// Gets/sets the number of times that each service <see cref="Type"/> has been resolved at runtime.
+    /// Gets the number of times that each service <see cref="Type"/> has been resolved at runtime.
     /// </summary>
-    public DependencyResolutionCounts ServiceResolutionCounts => new(
-        cachedResolutionCounts: _cachedResolutionCounts,
-        uncachedResolutionCounts: _uncachedResolutionCounts
+    public DependencyResolutionCounts GetServiceResolutionCounts() => new(
+        // Ensure that counts in this object remain even if field dictionaries are cleared
+        cachedResolutionCounts: _cachedResolutionCounts.ToDictionary(x => x.Key, x => x.Value),
+        uncachedResolutionCounts: _uncachedResolutionCounts.ToDictionary(x => x.Key, x => x.Value)
     );
 
     /// <summary>

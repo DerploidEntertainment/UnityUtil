@@ -94,9 +94,9 @@
             Toggles recording how many times service <see cref="T:System.Type"/>s are resolved at runtime, for optimization purposes.
             </summary>
         </member>
-        <member name="P:UnityUtil.DependencyInjection.DependencyInjector.ServiceResolutionCounts">
+        <member name="M:UnityUtil.DependencyInjection.DependencyInjector.GetServiceResolutionCounts">
             <summary>
-            Gets/sets the number of times that each service <see cref="T:System.Type"/> has been resolved at runtime.
+            Gets the number of times that each service <see cref="T:System.Type"/> has been resolved at runtime.
             </summary>
         </member>
         <member name="M:UnityUtil.DependencyInjection.DependencyInjector.Construct``1">

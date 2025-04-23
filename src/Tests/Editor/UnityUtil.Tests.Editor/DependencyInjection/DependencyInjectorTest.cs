@@ -674,7 +674,7 @@ public class DependencyInjectorTest : BaseEditModeTestFixture
         // Initial, uncached resolution
         var uncacheClient = new TestClient();
         dependencyInjector.ResolveDependenciesOf(uncacheClient);
-        counts = dependencyInjector.ServiceResolutionCounts;
+        counts = dependencyInjector.GetServiceResolutionCounts();
         Assert.That(counts.Uncached.Count, Is.EqualTo(1));
         Assert.That(counts.Uncached[clientType], Is.EqualTo(1));
         Assert.That(counts.Cached.Count, Is.EqualTo(1));
@@ -683,7 +683,7 @@ public class DependencyInjectorTest : BaseEditModeTestFixture
         // Second, base type resolution cached
         var cacheClient = new TestClient();
         dependencyInjector.ResolveDependenciesOf(cacheClient);
-        counts = dependencyInjector.ServiceResolutionCounts;
+        counts = dependencyInjector.GetServiceResolutionCounts();
         Assert.That(counts.Uncached.Count, Is.EqualTo(1));
         Assert.That(counts.Uncached[clientType], Is.EqualTo(2));
         Assert.That(counts.Cached.Count, Is.EqualTo(1));
@@ -691,7 +691,7 @@ public class DependencyInjectorTest : BaseEditModeTestFixture
 
         // Clears cached resolutions
         dependencyInjector.RecordingResolutions = false;
-        counts = dependencyInjector.ServiceResolutionCounts;
+        counts = dependencyInjector.GetServiceResolutionCounts();
         Assert.That(counts.Uncached.Count, Is.Zero);
         Assert.That(counts.Cached.Count, Is.Zero);
     }
@@ -713,21 +713,21 @@ public class DependencyInjectorTest : BaseEditModeTestFixture
 
         // Initial, uncached resolution
         _ = dependencyInjector.Construct<MultiConstructorClient>();
-        counts = dependencyInjector.ServiceResolutionCounts;
+        counts = dependencyInjector.GetServiceResolutionCounts();
         Assert.That(counts.Uncached.Count, Is.EqualTo(0));
         Assert.That(counts.Cached.Count, Is.EqualTo(1));
         Assert.That(counts.Cached[clientType], Is.EqualTo(1));
 
         // Second, type resolution cached
         _ = dependencyInjector.Construct<MultiConstructorClient>();
-        counts = dependencyInjector.ServiceResolutionCounts;
+        counts = dependencyInjector.GetServiceResolutionCounts();
         Assert.That(counts.Uncached.Count, Is.EqualTo(0));
         Assert.That(counts.Cached.Count, Is.EqualTo(1));
         Assert.That(counts.Cached[clientType], Is.EqualTo(2));
 
         // Clears cached resolutions
         dependencyInjector.RecordingResolutions = false;
-        counts = dependencyInjector.ServiceResolutionCounts;
+        counts = dependencyInjector.GetServiceResolutionCounts();
         Assert.That(counts.Uncached.Count, Is.Zero);
         Assert.That(counts.Cached.Count, Is.Zero);
     }
@@ -746,7 +746,7 @@ public class DependencyInjectorTest : BaseEditModeTestFixture
         dependencyInjector.RecordingResolutions = false;
 
         // ASSERT
-        DependencyResolutionCounts counts = dependencyInjector.ServiceResolutionCounts;
+        DependencyResolutionCounts counts = dependencyInjector.GetServiceResolutionCounts();
         Assert.That(counts.Uncached.Count, Is.Zero);
         Assert.That(counts.Cached.Count, Is.Zero);
     }
@@ -761,7 +761,7 @@ public class DependencyInjectorTest : BaseEditModeTestFixture
         dependencyInjector.ResolveDependenciesOf(new TestClientBase());
         dependencyInjector.ResolveDependenciesOf(new TestClientBase());
         dependencyInjector.ResolveDependenciesOf(new TestClientBase());
-        DependencyResolutionCounts counts = dependencyInjector.ServiceResolutionCounts;
+        DependencyResolutionCounts counts = dependencyInjector.GetServiceResolutionCounts();
 
         Assert.That(counts.Cached, Is.Empty);
         Assert.That(counts.Uncached, Is.Empty);
@@ -779,7 +779,7 @@ public class DependencyInjectorTest : BaseEditModeTestFixture
         _ = dependencyInjector.Construct<MultiConstructorClient>();
         _ = dependencyInjector.Construct<MultiConstructorClient>();
         _ = dependencyInjector.Construct<MultiConstructorClient>();
-        DependencyResolutionCounts counts = dependencyInjector.ServiceResolutionCounts;
+        DependencyResolutionCounts counts = dependencyInjector.GetServiceResolutionCounts();
 
         Assert.That(counts.Cached, Is.Empty);
         Assert.That(counts.Uncached, Is.Empty);
