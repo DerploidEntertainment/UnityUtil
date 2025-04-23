@@ -94,9 +94,9 @@
             Toggles recording how many times service <see cref="T:System.Type"/>s are resolved at runtime, for optimization purposes.
             </summary>
         </member>
-        <member name="P:UnityUtil.DependencyInjection.DependencyInjector.ServiceResolutionCounts">
+        <member name="M:UnityUtil.DependencyInjection.DependencyInjector.GetServiceResolutionCounts">
             <summary>
-            Gets/sets the number of times that each service <see cref="T:System.Type"/> has been resolved at runtime.
+            Gets the number of times that each service <see cref="T:System.Type"/> has been resolved at runtime.
             </summary>
         </member>
         <member name="M:UnityUtil.DependencyInjection.DependencyInjector.Construct``1">
@@ -289,18 +289,6 @@
             but different integers may be generated during each run.
             </summary>
             <returns>A new, unique identifier.</returns>
-        </member>
-        <member name="T:UnityUtil.Logging.UnityDebugLogger">
-            <summary>
-            "Default" implementation of <see cref="T:Microsoft.Extensions.Logging.ILogger"/> to wrap Unity's own <see cref="T:UnityEngine.Debug"/> <c>Log*</c> methods.
-            Mainly intended for Unity code that can't set up a proper logging framework via dependency injection (e.g., in Editor scripts).
-            Most runtime code should still prefer injecting an <see cref="T:Microsoft.Extensions.Logging.ILoggerFactory"/> and creating an <see cref="T:Microsoft.Extensions.Logging.ILogger`1"/>.
-            </summary>
-        </member>
-        <member name="T:UnityUtil.Logging.UnityDebugLoggerFactory">
-            <summary>
-            "Default" implementation of <see cref="T:Microsoft.Extensions.Logging.ILoggerFactory"/> that creates instances of <see cref="T:UnityUtil.Logging.UnityDebugLogger"/>.
-            </summary>
         </member>
         <member name="T:UnityUtil.QuantityEvent">
             <summary>
@@ -567,9 +555,6 @@
             </summary>
         </member>
         <member name="M:UnityUtil.Math.UniformBatchedRandomishOptionChooser.GetOptionIndex">
-            <inheritdoc/>
-        </member>
-        <member name="T:UnityUtil.RootLoggerExtensions">
             <inheritdoc/>
         </member>
         <member name="T:UnityUtil.RuntimeIdProvider">

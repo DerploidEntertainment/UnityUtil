@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Logging;
 using Sirenix.OdinInspector;
@@ -8,8 +8,9 @@ using UnityEngine.Audio;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using UnityUtil.DependencyInjection;
-using UnityUtil.Logging;
 using UnityUtil.Storage;
+using static Microsoft.Extensions.Logging.LogLevel;
+using MEL = Microsoft.Extensions.Logging;
 
 namespace UnityUtil.UI;
 
@@ -97,6 +98,7 @@ public class AudioMixerParameterSlider : MonoBehaviour
     }
 
     [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
+    [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
     private void Awake()
     {
         DependencyInjector.Instance.ResolveDependenciesOf(this);
@@ -119,7 +121,7 @@ public class AudioMixerParameterSlider : MonoBehaviour
             if (StoreParameterInPreferences) {
                 float newVal = transformValue(Slider.value);
                 _localPreferences!.SetFloat(FinalPreferencesKey, newVal);
-                _logger!.AudioMixerParameterValueSaved(newVal, ExposedParameterName, AudioMixer, FinalPreferencesKey);
+                log_ParameterValueSaved(newVal, ExposedParameterName, AudioMixer, FinalPreferencesKey);
             }
 #pragma warning disable IDE0031 // Use null propagation. C# doesn't allow overloading null-coalescing operators, so they don't work with Unity Objects' custom null logic...
             if (TestAudio != null)
@@ -130,6 +132,7 @@ public class AudioMixerParameterSlider : MonoBehaviour
     }
 
     [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
+    [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
     private void Start()
     {
         // Initialize audio parameters from preferences, if requested
@@ -138,11 +141,11 @@ public class AudioMixerParameterSlider : MonoBehaviour
         string prefsKey = FinalPreferencesKey;
         if (StoreParameterInPreferences && _localPreferences!.HasKey(prefsKey)) {
             val = _localPreferences.GetFloat(prefsKey);
-            _logger!.AudioMixerParameterFromPrefs(val, ExposedParameterName, AudioMixer!, prefsKey);
+            log_ParameterFromPrefs(ExposedParameterName, AudioMixer!, prefsKey, val);
         }
         else {
             _ = AudioMixer!.GetFloat(ExposedParameterName, out val);
-            _logger!.AudioMixerParameterFromInspector(val, ExposedParameterName, AudioMixer!, prefsKey);
+            log_ParameterFromInspector(prefsKey, ExposedParameterName, AudioMixer!, val);
         }
 
         Slider!.value = untransformValue(val);   // This will trigger onValueChanged and thus initialize the AudioMixer as well
@@ -172,7 +175,45 @@ public class AudioMixerParameterSlider : MonoBehaviour
 
         // Use debug logger in case this is being run from the Inspector outside Play mode
         _logger ??= new UnityDebugLoggerFactory().CreateLogger(this);
-        _logger.AudioMixerParameterPrefDeleted(prefsKey);
+        log_ParameterPrefDeleted(prefsKey);
     }
+
+    #region LoggerMessages
+
+    private static readonly Action<MEL.ILogger, string, string, string, float, Exception?> LOG_PARAM_FROM_PREFS_ACTION =
+        LoggerMessage.Define<string, string, string, float>(Information,
+            new EventId(id: 0, nameof(log_ParameterFromPrefs)),
+            "Loading parameter '{Parameter}' for AudioMixer '{AudioMixer}' from preference key '{PreferenceKey}': {Value}"
+        );
+    private void log_ParameterFromPrefs(string parameter, AudioMixer audioMixer, string preferencesKey, float value) =>
+        LOG_PARAM_FROM_PREFS_ACTION(_logger!, parameter, audioMixer.name, preferencesKey, value, null);
+
+
+    private static readonly Action<MEL.ILogger, string, string, string, float, Exception?> LOG_PARAM_FROM_INSPECTOR_ACTION =
+        LoggerMessage.Define<string, string, string, float>(Information,
+            new EventId(id: 0, nameof(log_ParameterFromInspector)),
+            "Not using local preferences or key '{PreferenceKey}' could not be found. Loading parameter '{Parameter}' directly from {AudioMixer} instead: {Value}"
+        );
+    private void log_ParameterFromInspector(string preferencesKey, string parameter, AudioMixer audioMixer, float value) =>
+        LOG_PARAM_FROM_INSPECTOR_ACTION(_logger!, preferencesKey, parameter, audioMixer.name, value, null);
+
+
+    private static readonly Action<MEL.ILogger, float, string, string, string, Exception?> LOG_PARAM_VALUE_SAVED_ACTION =
+        LoggerMessage.Define<float, string, string, string>(Information,
+            new EventId(id: 0, nameof(log_ParameterValueSaved)),
+            "Saved value ({Value}) of parameter '{Parameter}' of {AudioMixer} to preference key '{PreferenceKey}'"
+        );
+    private void log_ParameterValueSaved(float value, string parameter, AudioMixer audioMixer, string preferencesKey) =>
+        LOG_PARAM_VALUE_SAVED_ACTION(_logger!, value, parameter, audioMixer.name, preferencesKey, null);
+
+
+    private static readonly Action<MEL.ILogger, string, Exception?> LOG_PREF_DELETED_ACTION =
+        LoggerMessage.Define<string>(Information,
+            new EventId(id: 0, nameof(log_ParameterPrefDeleted)),
+            "Deleted preference key '{PreferenceKey}'"
+        );
+    private void log_ParameterPrefDeleted(string preferencesKey) => LOG_PREF_DELETED_ACTION(_logger!, preferencesKey, null);
+
+    #endregion
 
 }

@@ -4,10 +4,11 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Microsoft.Extensions.Logging;
-using Unity.Extensions.Logging;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityUtil.DependencyInjection;
+using static Microsoft.Extensions.Logging.LogLevel;
+using MEL = Microsoft.Extensions.Logging;
 
 namespace UnityUtil.Inventory;
 
@@ -35,7 +36,7 @@ public class Inventory : MonoBehaviour
     private void Awake() => DependencyInjector.Instance.ResolveDependenciesOf(this);
 
     public InventoryCollectible[] GetCollectibles() => [.. _collectibles];
-    public GameObject[] GetItems() => _collectibles.Select(c => c.ItemRoot!).ToArray();
+    public GameObject[] GetItems() => [.. _collectibles.Select(c => c.ItemRoot!)];
     public bool Collect(InventoryCollectible collectible)
     {
         if (collectible == null)
@@ -58,7 +59,7 @@ public class Inventory : MonoBehaviour
         _ = _collectibles.Add(collectible);
 
         // Raise the item collected event
-        _logger!.Collected(collectible);
+        log_Collected(collectible);
         ItemCollected.Invoke(collectible);
 
         return true;
@@ -92,7 +93,7 @@ public class Inventory : MonoBehaviour
         _ = _collectibles.Remove(collectible);
 
         // Raise the item dropped event
-        _logger!.Dropped(collectible);
+        log_Dropped(collectible);
         ItemDropped.Invoke(collectible);
 
         // Prevent its re-collection for the requested duration
@@ -103,4 +104,20 @@ public class Inventory : MonoBehaviour
             collectible.CollidersToToggle[c].enabled = true;
     }
 
+    #region LoggerMessages
+
+    private static readonly Action<MEL.ILogger, string, Exception?> LOG_COLLECTED_ACTION = LoggerMessage.Define<string>(Information,
+        new EventId(id: 0, nameof(log_Collected)),
+        "Collected {Collectible}"
+    );
+    private void log_Collected(InventoryCollectible collectible) => LOG_COLLECTED_ACTION(_logger!, collectible.ItemRoot!.GetHierarchyName(), null);
+
+
+    private static readonly Action<MEL.ILogger, string, Exception?> LOG_DROPPED_ACTION = LoggerMessage.Define<string>(Information,
+        new EventId(id: 0, nameof(log_Dropped)),
+        "Dropped {Collectible}"
+    );
+    private void log_Dropped(InventoryCollectible collectible) => LOG_DROPPED_ACTION(_logger!, collectible.ItemRoot!.GetHierarchyName(), null);
+
+    #endregion
 }

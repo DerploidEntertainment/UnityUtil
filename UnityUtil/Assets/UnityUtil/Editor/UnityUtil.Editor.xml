@@ -4,8 +4,11 @@
         <name>UnityUtil.Editor</name>
     </assembly>
     <members>
-        <member name="T:UnityUtil.Editor.EditorRootLoggerExtensions">
-            <inheritdoc/>
+        <member name="F:UnityUtil.Editor.DependencyInjectorMenu.LOGGER">
+            <summary>
+            Must be static to be used in menu commands in Unity Editor.
+            This is an Editor script, so who cares if we hard-code the <see cref="T:Microsoft.Extensions.Logging.ILoggerFactory"/>...
+            </summary>
         </member>
         <member name="M:UnityUtil.Editor.ForceReserializeAssetsMenu.ForceReserializeAllAssets">
             <summary>

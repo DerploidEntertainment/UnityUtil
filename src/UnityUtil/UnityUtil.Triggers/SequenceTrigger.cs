@@ -1,11 +1,13 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using Microsoft.Extensions.Logging;
 using Sirenix.OdinInspector;
-using Unity.Extensions.Logging;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityUtil.DependencyInjection;
+using static Microsoft.Extensions.Logging.LogLevel;
+using MEL = Microsoft.Extensions.Logging;
 
 namespace UnityUtil.Triggers;
 
@@ -49,7 +51,7 @@ public class SequenceTrigger : MonoBehaviour
     public void Trigger()
     {
         if (StepTriggers[CurrentStep] is null) {
-            _logger!.SequenceTriggerNullStep(CurrentStep);
+            log_NullStep(CurrentStep);
             return;
         }
 
@@ -68,5 +70,12 @@ public class SequenceTrigger : MonoBehaviour
             Trigger();
     }
 
+    #region LoggerMessages
+
+    private static readonly Action<MEL.ILogger, int, Exception?> LOG_NULL_STEP_ACTION =
+        LoggerMessage.Define<int>(Warning, new EventId(id: 0, nameof(log_NullStep)), "Triggered at step {Step}, but the trigger was null");
+    private void log_NullStep(int step) => LOG_NULL_STEP_ACTION(_logger!, step, null);
+
+    #endregion
 }
 

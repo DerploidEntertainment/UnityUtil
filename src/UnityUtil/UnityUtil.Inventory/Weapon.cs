@@ -4,11 +4,12 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Microsoft.Extensions.Logging;
 using Sirenix.OdinInspector;
-using Unity.Extensions.Logging;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityUtil.DependencyInjection;
 using UnityUtil.Math;
+using static Microsoft.Extensions.Logging.LogLevel;
+using MEL = Microsoft.Extensions.Logging;
 using U = UnityEngine;
 
 namespace UnityUtil.Inventory;
@@ -62,7 +63,7 @@ public class Weapon : MonoBehaviour
                 break;
 
             default:
-                _logger!.WeaponGizmosUnknownPhysicsCastShape(Info.PhysicsCastShape);
+                log_UnknownPhysicsCastShape(Info.PhysicsCastShape);
                 break;
         }
     }
@@ -90,11 +91,11 @@ public class Weapon : MonoBehaviour
         IEnumerable<RaycastHit> orderedHits = hits.OrderBy(h => h.distance);
         if (!Info.AttackAllInRange)
             orderedHits = orderedHits.Take((int)Info.MaxAttacks);
-        hits = orderedHits.ToArray();
+        hits = [.. orderedHits];
         Attacked.Invoke(ray, hits);
 
         // Adjust accuracy for the next attack, assuming the base Tool is automatic
-        _accuracyLerpT = (Info.AccuracyLerpTime == 0 ? 1f : _accuracyLerpT + (1f / _tool!.Info!.AutomaticUseRate) / Info.AccuracyLerpTime);
+        _accuracyLerpT = Info.AccuracyLerpTime == 0 ? 1f : _accuracyLerpT + 1f / _tool!.Info!.AutomaticUseRate / Info.AccuracyLerpTime;
         RaycastHit[] rayAttackHits()
         {
             RaycastHit[] rayHits = [];
@@ -167,4 +168,13 @@ public class Weapon : MonoBehaviour
         }
     }
 
+    #region LoggerMessages
+
+    private static readonly Action<MEL.ILogger, PhysicsCastShape, Exception?> LOG_UNKNOWN_SHAPE_ACTION = LoggerMessage.Define<PhysicsCastShape>(Warning,
+        new EventId(id: 0, nameof(log_UnknownPhysicsCastShape)),
+        $"Could not draw {nameof(Weapon)} Gizmos for {nameof(PhysicsCastShape)} {{Shape}}"
+    );
+    private void log_UnknownPhysicsCastShape(PhysicsCastShape shape) => LOG_UNKNOWN_SHAPE_ACTION(_logger!, shape, null);
+
+    #endregion
 }

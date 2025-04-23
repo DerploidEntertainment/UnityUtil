@@ -156,6 +156,37 @@ _logger = _loggerFactory.CreateLogger(this, new UnityObjectLoggerSettings {
 });
 ```
 
+### UnityDebugLogger(Factory)
+
+This package also contains default implementations of the `Microsoft.Extensions.Logging` ("MEL") interfaces:
+
+Such code makes of two types:
+
+1. `UnityDebugLogger`, which implements `MEL.ILogger` such that `Log()` just logs directly to the Unity Console
+1. `UnityDebugLoggerFactory`, which implements `MEL.ILoggerFactory` such that `CreateLogger()` returns a `UnityDebugLogger` instance
+
+You can use these types like so:
+
+```cs
+using Unity.Extensions.Logging;
+
+ILogger<T> logger = new UnityDebugLoggerFactory().CreateLogger<T>();
+logger.LogInformation("Hello, world!");
+```
+
+These types are useful anywhere that setting up a full logging pipeline is impossible or unnecessary,
+and you just want a quick one-liner to set up Unity logging behind a MEL `ILogger` instance, such as:
+
+1. In automated tests using the Unity Test Framework where you just want log messages to show in the Console for debugging
+1. In Unity Editor scripts that may not have access to your usual runtime `ILoggerFactory`s
+1. In methods tagged with Unity's `[MenuItem]` attribute or Odin's `[Button]` attribute
+1. In `static` types or types tagged with `[ExecuteInEditMode]`
+1. In `ScriptableObject` lifecycle methods like `Awake()` and `OnValidate()`
+
+> [!TIP]
+> If you really don't care where log messages end up (particularly in automated tests) then
+> consider using MEL's built-in `NullLoggerFactory` type.
+
 ## Notes for specific logging providers
 
 ### Serilog

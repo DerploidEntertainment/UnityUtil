@@ -1,10 +1,12 @@
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Logging;
-using Unity.Extensions.Logging;
 using UnityEngine;
 using UnityUtil.DependencyInjection;
 using UnityUtil.Triggers;
+using static Microsoft.Extensions.Logging.LogLevel;
+using MEL = Microsoft.Extensions.Logging;
 
 namespace UnityUtil.UI;
 
@@ -22,8 +24,8 @@ public class UiStack : MonoBehaviour
 
     public void PushUi(SimpleTrigger popTrigger)
     {
-        if (popTrigger == null) {
-            _logger!.UiStackPushNullTrigger();
+        if (popTrigger == null) {   // Null could be passed via UnityEvents in Editor
+            log_UiStackPushNullTrigger();
             return;
         }
 
@@ -38,4 +40,14 @@ public class UiStack : MonoBehaviour
         popTrigger.Trigger();
     }
 
+    #region LoggerMessages
+
+    private static readonly Action<MEL.ILogger, Exception?> LOG_PUSH_NULL_TRIGGER_ACTION =
+        LoggerMessage.Define(Information,
+            new EventId(id: 0, nameof(log_UiStackPushNullTrigger)),
+            "A trigger must be provided when pushing to the UI stack, so that the correct actions can be triggered when this UI is popped later"
+        );
+    private void log_UiStackPushNullTrigger() => LOG_PUSH_NULL_TRIGGER_ACTION(_logger!, null);
+
+    #endregion
 }

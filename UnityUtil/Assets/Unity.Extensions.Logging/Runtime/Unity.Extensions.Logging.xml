@@ -22,6 +22,44 @@
             to all of its log messages for use by Unity-specific logging providers.
             </returns>
         </member>
+        <member name="T:Unity.Extensions.Logging.UnityDebugLogger">
+            <summary>
+            "Default" implementation of <see cref="T:Microsoft.Extensions.Logging.ILogger"/> to wrap Unity's own <see cref="T:UnityEngine.Debug"/> <c>Log*</c> methods.
+            Mainly intended for Unity code that can't set up a proper logging framework via dependency injection (e.g., in Editor scripts).
+            Most runtime code should still prefer injecting an <see cref="T:Microsoft.Extensions.Logging.ILoggerFactory"/> and creating an <see cref="T:Microsoft.Extensions.Logging.ILogger`1"/>.
+            </summary>
+        </member>
+        <member name="M:Unity.Extensions.Logging.UnityDebugLogger.BeginScope``1(``0)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Unity.Extensions.Logging.UnityDebugLogger.IsEnabled(Microsoft.Extensions.Logging.LogLevel)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Unity.Extensions.Logging.UnityDebugLogger.Log``1(Microsoft.Extensions.Logging.LogLevel,Microsoft.Extensions.Logging.EventId,``0,System.Exception,System.Func{``0,System.Exception,System.String})">
+            <inheritdoc/>
+        </member>
+        <member name="T:Unity.Extensions.Logging.UnityDebugLoggerFactory">
+            <summary>
+            "Default" implementation of <see cref="T:Microsoft.Extensions.Logging.ILoggerFactory"/> that creates instances of <see cref="T:Unity.Extensions.Logging.UnityDebugLogger"/>.
+            </summary>
+        </member>
+        <member name="M:Unity.Extensions.Logging.UnityDebugLoggerFactory.AddProvider(Microsoft.Extensions.Logging.ILoggerProvider)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Unity.Extensions.Logging.UnityDebugLoggerFactory.CreateLogger(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Unity.Extensions.Logging.UnityDebugLoggerFactory.Dispose(System.Boolean)">
+            <summary>
+            Implementation of .NET Dispose pattern
+            </summary>
+            <param name="disposing">
+            <see langword="true"/> if called from <see cref="M:Unity.Extensions.Logging.UnityDebugLoggerFactory.Dispose"/>; otherwise, <see langword="false"/>.
+            </param>
+        </member>
+        <member name="M:Unity.Extensions.Logging.UnityDebugLoggerFactory.Dispose">
+            <inheritdoc/>
+        </member>
         <member name="T:Unity.Extensions.Logging.UnityObjectLogger`1">
             <summary>
             An <see cref="T:Microsoft.Extensions.Logging.ILogger"/> that adds a <see cref="T:UnityEngine.Object"/>-derived instance as a scope property

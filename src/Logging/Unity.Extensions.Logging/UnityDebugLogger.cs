@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 using UnityEngine;
 using MEL = Microsoft.Extensions.Logging;
 
-namespace UnityUtil.Logging;
+namespace Unity.Extensions.Logging;
 
 /// <summary>
 /// "Default" implementation of <see cref="MEL.ILogger"/> to wrap Unity's own <see cref="Debug"/> <c>Log*</c> methods.
@@ -12,10 +12,13 @@ namespace UnityUtil.Logging;
 /// </summary>
 public class UnityDebugLogger : MEL.ILogger
 {
-    public UnityDebugLogger() { }
-
+    /// <inheritdoc/>
     public IDisposable? BeginScope<TState>(TState state) where TState : notnull => null;
+
+    /// <inheritdoc/>
     public bool IsEnabled(LogLevel logLevel) => true;
+
+    /// <inheritdoc/>
     public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
     {
         string msg = $"{eventId} {formatter(state, exception)}";

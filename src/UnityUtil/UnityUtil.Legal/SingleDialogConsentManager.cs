@@ -10,8 +10,9 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 using UnityUtil.DependencyInjection;
-using UnityUtil.Logging;
 using UnityUtil.Storage;
+using static Microsoft.Extensions.Logging.LogLevel;
+using MEL = Microsoft.Extensions.Logging;
 
 namespace UnityUtil.Legal;
 
@@ -50,7 +51,7 @@ public class SingleDialogConsentManager : MonoBehaviour, IConsentManager
         _logger = loggerFactory.CreateLogger(this);
         _legalAcceptManager = legalAcceptManager;
         _localPreferences = localPreferences;
-        _initializablesWithConsent = initializablesWithConsent.ToList();
+        _initializablesWithConsent = [.. initializablesWithConsent];
         _consents = new (bool isConsentRequired, bool hasConsent)[_initializablesWithConsent.Count];
     }
 
@@ -93,7 +94,8 @@ public class SingleDialogConsentManager : MonoBehaviour, IConsentManager
     {
         _preInitializeTask = preInitializeTask;
 
-        _consents = _initializablesWithConsent!
+        _consents = [
+            .. _initializablesWithConsent!
             .Select((x, index) => {
                 string initializableName = x is Component component ? UnityObjectExtensions.GetHierarchyNameWithType(component) : $"initializable {index}";
                 DataConsentState dataConsentState = checkConsent(x, initializableName);
@@ -103,24 +105,24 @@ public class SingleDialogConsentManager : MonoBehaviour, IConsentManager
                 bool hasConsent = dataConsentState == DataConsentState.Given;
                 return (isConsentRequired, hasConsent);
             })
-            .ToArray();
+        ];
 
         LegalAcceptance legalAcceptance = await _legalAcceptManager!.CheckAcceptanceAsync();
 
         if (Array.FindIndex(_consents, x => x.isConsentRequired) > -1 || legalAcceptance == LegalAcceptance.Unprovided) {
             _legalAcceptanceRequired = legalAcceptance == LegalAcceptance.Unprovided;
-            _logger!.ConsentNeedsRequested();
+            log_NeedsRequested();
             InitialConsentRequired.Invoke();
         }
 
         else if (legalAcceptance == LegalAcceptance.Stale) {
             _legalAcceptanceRequired = true;
-            _logger!.ConsentRequestedLegalDocUpdated();
+            log_RequestedLegalDocUpdated();
             LegalUpdateRequired.Invoke();
         }
 
         else {
-            _logger!.ConsentAlreadyRequested();
+            log_AlreadyRequested();
             await ContinueWithConsentAsync();
             NoUiRequired.Invoke();
         }
@@ -142,16 +144,16 @@ public class SingleDialogConsentManager : MonoBehaviour, IConsentManager
     {
         if (_localPreferences!.HasKey(initializableWithConsent.ConsentPreferenceKey)) {
             DataConsentState dataConsentState = _localPreferences.GetInt(initializableWithConsent.ConsentPreferenceKey) == 1 ? DataConsentState.Given : DataConsentState.Denied;
-            _logger!.InitializableConsentAlreadyRequested(name, dataConsentState);
+            log_InitializableConsentAlreadyRequested(name, dataConsentState);
             return dataConsentState;
         }
 
         if (Application.isEditor && !ForceConsentBehavior) {
-            _logger!.InitializableConsentNotRequired(name);
+            log_InitializableConsentNotRequired(name);
             return DataConsentState.NotRequired;
         }
 
-        _logger!.InitializableConsentNeedsRequested(name);
+        log_InitializableConsentNeedsRequested(name);
         return DataConsentState.StillRequired;
     }
 
@@ -161,14 +163,14 @@ public class SingleDialogConsentManager : MonoBehaviour, IConsentManager
     /// </summary>
     private void giveConsent()
     {
-        _logger!.ConsentGiveAll();
+        log_GiveAll();
 
         // Store that consents were given, so we don't request consent again every startup
         int index = 0;
         foreach (IInitializableWithConsent initializableWithConsent in _initializablesWithConsent!) {
             (bool isConsentRequired, bool hasConsent) = _consents![index];
             if (isConsentRequired) {
-                _logger!.InitializableConsentSaving(initializableWithConsent);
+                log_InitializableConsentSaving(initializableWithConsent);
                 _localPreferences!.SetInt(initializableWithConsent.ConsentPreferenceKey, 1);
                 hasConsent = true;
             }
@@ -190,7 +192,7 @@ public class SingleDialogConsentManager : MonoBehaviour, IConsentManager
     [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Async suffix doesn't really look great on async void methods")]
     private async void initialize()
     {
-        _logger!.ConsentInitializingAll();
+        log_InitializingAll();
 
         var task = Task.WhenAll(
             _initializablesWithConsent!.Select((x, index) => x.InitializeAsync(_consents![index].hasConsent))
@@ -204,7 +206,7 @@ public class SingleDialogConsentManager : MonoBehaviour, IConsentManager
             await task.ConfigureAwait(true);
         }
         catch {
-            _logger!.ConsentInitializingAllFailed(task.Exception);
+            log_InitializingAllFailed(task.Exception);
         }
     }
 
@@ -222,7 +224,7 @@ public class SingleDialogConsentManager : MonoBehaviour, IConsentManager
         if (index == -1)
             throw new ArgumentException($"Provided {nameof(initializableWithConsent)} was not in the set provided to this {nameof(SingleDialogConsentManager)}", nameof(initializableWithConsent));
 
-        _logger!.ConsentOptingOut(initializableWithConsent);
+        log_OptingOut(initializableWithConsent);
         _localPreferences!.SetInt(initializableWithConsent.ConsentPreferenceKey, 0);
     }
 
@@ -240,6 +242,95 @@ public class SingleDialogConsentManager : MonoBehaviour, IConsentManager
 
         // Log success (use debug logger in case this is being run from the Inspector outside Play mode)
         _logger ??= new UnityDebugLoggerFactory().CreateLogger(this);
-        _logger.ConsentCleared();
+        log_Cleared();
     }
+
+    #region LoggerMessages
+
+    private static readonly Action<MEL.ILogger, Exception?> LOG_NEEDS_REQUESTED_ACTION = LoggerMessage.Define(Information,
+        new EventId(id: 0, nameof(log_NeedsRequested)),
+        "At least one consent still needs requested. Activating initial consent UI..."
+    );
+    private void log_NeedsRequested() => LOG_NEEDS_REQUESTED_ACTION(_logger!, null);
+
+
+    private static readonly Action<MEL.ILogger, Exception?> LOG_REQUESTED_LEGAL_DOC_UPDATED_ACTION = LoggerMessage.Define(Information,
+        new EventId(id: 0, nameof(log_RequestedLegalDocUpdated)),
+        "All consents already requested, but at least one legal doc has been updated. Activating UI to get updated legal acceptance..."
+    );
+    private void log_RequestedLegalDocUpdated() => LOG_REQUESTED_LEGAL_DOC_UPDATED_ACTION(_logger!, null);
+
+
+    private static readonly Action<MEL.ILogger, Exception?> LOG_ALREADY_REQUESTED_ACTION = LoggerMessage.Define(Information,
+        new EventId(id: 0, nameof(log_AlreadyRequested)),
+        "All consents already requested or not required. Skipping consent UI..."
+    );
+    private void log_AlreadyRequested() => LOG_ALREADY_REQUESTED_ACTION(_logger!, null);
+
+
+    private static readonly Action<MEL.ILogger, string, DataConsentState, Exception?> LOG_INITIALIZABLE_CONSENT_ALREADY_REQUESTED_ACTION = LoggerMessage.Define<string, DataConsentState>(Information,
+        new EventId(id: 0, nameof(log_InitializableConsentAlreadyRequested)),
+        "Consent for initializable '{Initializable}' already in state {DataConsentState}"
+    );
+    private void log_InitializableConsentAlreadyRequested(string initializableName, DataConsentState dataConsentState) =>
+        LOG_INITIALIZABLE_CONSENT_ALREADY_REQUESTED_ACTION(_logger!, initializableName, dataConsentState, null);
+
+
+    private static readonly Action<MEL.ILogger, string, Exception?> LOG_INITIALIZABLE_CONSENT_NOT_REQUIRED_ACTION = LoggerMessage.Define<string>(Information,
+        new EventId(id: 0, nameof(log_InitializableConsentNotRequired)),
+        "Consent for initializable '{Initializable}' does not need need to be requested in the Unity Editor when not forcing consent behavior"
+    );
+    private void log_InitializableConsentNotRequired(string initializableName) => LOG_INITIALIZABLE_CONSENT_NOT_REQUIRED_ACTION(_logger!, initializableName, null);
+
+
+    private static readonly Action<MEL.ILogger, string, Exception?> LOG_INITIALIZABLE_CONSENT_NEEDS_REQURESTED_ACTION = LoggerMessage.Define<string>(Information,
+        new EventId(id: 0, nameof(log_InitializableConsentNeedsRequested)),
+        "Consent for initializable '{Initializable}' will need to be requested"
+    );
+    private void log_InitializableConsentNeedsRequested(string initializableName) => LOG_INITIALIZABLE_CONSENT_NEEDS_REQURESTED_ACTION(_logger!, initializableName, null);
+
+
+    private static readonly Action<MEL.ILogger, Exception?> LOG_GIVE_ALL_ACTION = LoggerMessage.Define(Information,
+        new EventId(id: 0, nameof(log_GiveAll)),
+        "Giving data consent to all managers for which consent had not yet been requested..."
+    );
+    private void log_GiveAll() => LOG_GIVE_ALL_ACTION(_logger!, null);
+
+
+    private static readonly Action<MEL.ILogger, string, Exception?> LOG_INITIALIZABLE_CONSENT_SAVING_ACTION = LoggerMessage.Define<string>(Information,
+        new EventId(id: 0, nameof(log_InitializableConsentSaving)),
+        "Saving consent to local preference key '{PreferenceKey}' so we don't need to request it again..."
+    );
+    private void log_InitializableConsentSaving(IInitializableWithConsent initializable) =>
+        LOG_INITIALIZABLE_CONSENT_SAVING_ACTION(_logger!, initializable.ConsentPreferenceKey, null);
+
+
+    private static readonly Action<MEL.ILogger, Exception?> LOG_INIT_ALL_ACTION = LoggerMessage.Define(Information,
+        new EventId(id: 0, nameof(log_InitializingAll)),
+        "Initializing all data consent managers in parallel..."
+    );
+    private void log_InitializingAll() => LOG_INIT_ALL_ACTION(_logger!, null);
+
+
+    private static readonly Action<MEL.ILogger, string, Exception?> LOG_OPTING_OUT_ACTION = LoggerMessage.Define<string>(Information,
+        new EventId(id: 0, nameof(log_OptingOut)),
+        "Opting out of data consent for initializable with preference key '{PreferenceKey}'. This cannot be undone."
+    );
+    private void log_OptingOut(IInitializableWithConsent initializable) => LOG_OPTING_OUT_ACTION(_logger!, initializable.ConsentPreferenceKey, null);
+
+
+    private static readonly Action<MEL.ILogger, Exception?> LOG_CLEARED_ACTION = LoggerMessage.Define(Information,
+        new EventId(id: 0, nameof(log_Cleared)),
+        "Cleared all data consents from preferences"
+    );
+    private void log_Cleared() => LOG_CLEARED_ACTION(_logger!, null);
+
+
+    private static readonly Action<MEL.ILogger, Exception?> LOG_INIT_ALL_FAILED_ACTION = LoggerMessage.Define(Error,
+        new EventId(id: 0, nameof(log_InitializingAllFailed)),
+        $"Initializing all {nameof(IInitializableWithConsent)}s failed"
+    );
+    private void log_InitializingAllFailed(AggregateException aggregateException) => LOG_INIT_ALL_FAILED_ACTION(_logger!, aggregateException.Flatten());
+
+    #endregion
 }

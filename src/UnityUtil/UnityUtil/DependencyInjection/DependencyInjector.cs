@@ -6,6 +6,8 @@ using Microsoft.Extensions.Logging;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using U = UnityEngine;
+using MEL = Microsoft.Extensions.Logging;
+using static Microsoft.Extensions.Logging.LogLevel;
 
 namespace UnityUtil.DependencyInjection;
 
@@ -52,7 +54,7 @@ public class DependencyInjector : IDisposable
     /// <summary>
     /// DO NOT USE THIS CONSTRUCTOR. It exists purely for unit testing
     /// </summary>
-    internal DependencyInjector(IEnumerable<Type> cachedResolutionTypes) => _cachedResolutionTypes = new HashSet<Type>(cachedResolutionTypes);
+    internal DependencyInjector(IEnumerable<Type> cachedResolutionTypes) => _cachedResolutionTypes = [.. cachedResolutionTypes];
 
     public bool Initialized { get; private set; }
     public void Initialize(ILoggerFactory loggerFactory) => Initialize(loggerFactory, new TypeMetadataProvider());
@@ -84,7 +86,7 @@ public class DependencyInjector : IDisposable
 
         Type serviceType = Type.GetType(serviceTypeName, throwOnError: true)
             ?? throw new InvalidOperationException($"Could not load Type '{serviceTypeName}'. Make sure that you provided its assembly-qualified name and that its assembly is loaded.");
-        if (!serviceType.IsAssignableFrom(instance.GetType()))
+        if (!serviceType.IsInstanceOfType(instance))
             throw new InvalidOperationException($"The service instance registered for Type '{serviceTypeName}' is not actually derived from that Type!");
 
         RegisterService(serviceType, instance, injectTag, scene);
@@ -153,7 +155,7 @@ public class DependencyInjector : IDisposable
             throw new InvalidOperationException($"Attempt to register multiple services with Type '{service.ServiceType.Name}' and tag '{service.InjectTag}'{(scene.HasValue ? $" from scene '{scene.Value.name}'" : "")}");
         else {
             typedServices.Add(service.InjectTag, service);
-            _logger?.RegisteredService(service, scene);
+            log_RegisteredService(service, scene);
         }
     }
 
@@ -191,18 +193,20 @@ public class DependencyInjector : IDisposable
                 _uncachedResolutionCounts.Clear();
             }
 
-            _logger?.ToggledRecordingDependencyResolution(_recording);
+            if (_logger is not null)
+                log_ToggledRecordingDependencyResolution(_recording);
         }
     }
 
     public void CacheResolution(Type clientType) => _cachedResolutionTypes.Add(clientType);
 
     /// <summary>
-    /// Gets/sets the number of times that each service <see cref="Type"/> has been resolved at runtime.
+    /// Gets the number of times that each service <see cref="Type"/> has been resolved at runtime.
     /// </summary>
-    public DependencyResolutionCounts ServiceResolutionCounts => new(
-        cachedResolutionCounts: _cachedResolutionCounts,
-        uncachedResolutionCounts: _uncachedResolutionCounts
+    public DependencyResolutionCounts GetServiceResolutionCounts() => new(
+        // Ensure that counts in this object remain even if field dictionaries are cleared
+        cachedResolutionCounts: _cachedResolutionCounts.ToDictionary(x => x.Key, x => x.Value),
+        uncachedResolutionCounts: _uncachedResolutionCounts.ToDictionary(x => x.Key, x => x.Value)
     );
 
     /// <summary>
@@ -242,7 +246,7 @@ public class DependencyInjector : IDisposable
             return Activator.CreateInstance(clientType);
 
         foreach ((ConstructorInfo constructor, ParameterInfo[] parameters) in constructors) {
-            object[] dependencies = [];
+            object[] dependencies;
             string clientName = $"{parameters.Length}-parameter constructor of Type {clientType.Name}";
             try { dependencies = getDependeciesOfMethod(clientName, constructor, parameters); }
             catch (KeyNotFoundException) { continue; }
@@ -337,14 +341,14 @@ public class DependencyInjector : IDisposable
         throwIfUninitialized(nameof(UnregisterSceneServices));
 
         if (!_services.TryGetValue(scene.handle, out Dictionary<Type, Dictionary<string, Service>>? sceneServices)) {
-            _logger?.UnregisterMissingSceneService(scene);
+            log_UnregisterMissingSceneService(scene);
             return;
         }
 
-        _logger?.UnregisteringSceneServices(scene);
+        log_UnregisteringSceneServices(scene);
         int sceneServiceCount = sceneServices.Sum(x => x.Value.Values.Count);
         _ = _services.Remove(scene.handle);
-        _logger?.UnregisteredAllSceneServices(scene, sceneServiceCount);
+        log_UnregisteredAllSceneServices(scene, sceneServiceCount);
     }
 
     /// <summary>
@@ -371,12 +375,12 @@ public class DependencyInjector : IDisposable
             // Warn if a dependency with this Type and tag has already been injected
             bool firstInjection = _injectedTypes.Add((paramType, tag));
             if (!firstInjection)
-                _logger?.MethodHasMultipleDependenciesOfType(clientName, paramType, tag);
+                log_MethodHasMultipleDependenciesOfType(clientName, paramType, tag);
 
             TryGetService(paramType, tag, clientName, out Service service);
             dependencies[p] = service.Instance;
 
-            _logger?.ResolvedMethodServiceParameter(clientName, tag, parameters[p]);
+            log_ResolvedMethodServiceParameter(clientName, tag, parameters[p]);
         }
 
         return dependencies;
@@ -425,4 +429,78 @@ public class DependencyInjector : IDisposable
 
     #endregion
 
+    #region LoggerMessages
+
+    private static readonly Action<MEL.ILogger, Type, string, Exception?> LOG_REGISTERED_SERVICE_ACTION =
+        LoggerMessage.Define<Type, string>(Information,
+            new EventId(id: 0, nameof(log_RegisteredService)),
+            "Successfully registered service of Type '{ServiceType}' and tag '{Tag}'"
+        );
+    private static readonly Action<MEL.ILogger, Type, string, string, Exception?> LOG_REGISTERED_SCENE_SERVICE_ACTION =
+        LoggerMessage.Define<Type, string, string>(Information,
+            new EventId(id: 0, nameof(log_RegisteredService)),
+            "Successfully registered service of Type '{ServiceType}' and tag '{Tag}' from scene '{Scene}'"
+        );
+    private void log_RegisteredService(Service service, Scene? scene)
+    {
+        if (scene is null)
+            LOG_REGISTERED_SERVICE_ACTION(_logger!, service.ServiceType, service.InjectTag, null);
+        else
+            LOG_REGISTERED_SCENE_SERVICE_ACTION(_logger!, service.ServiceType, service.InjectTag, scene.Value.name, null);
+    }
+
+
+    private static readonly Action<MEL.ILogger, bool, Exception?> LOG_TOGGLED_RECORDING_DEPENDENCY_RESOLUTION_ACTION =
+        LoggerMessage.Define<bool>(Information,
+            new EventId(id: 0, nameof(log_ToggledRecordingDependencyResolution)),
+            "Recording dependency resolutions: {IsRecording}"
+        );
+    private void log_ToggledRecordingDependencyResolution(bool isRecording) =>
+        LOG_TOGGLED_RECORDING_DEPENDENCY_RESOLUTION_ACTION(_logger!, isRecording, null);
+
+
+    private static readonly Action<MEL.ILogger, string, Exception?> LOG_UNREGISTERING_SCENE_SERVICES_ACTION =
+        LoggerMessage.Define<string>(Information,
+            new EventId(id: 0, nameof(log_UnregisteringSceneServices)),
+            "Unregistering services from scene '{Scene}'..."
+        );
+    private void log_UnregisteringSceneServices(Scene scene) => LOG_UNREGISTERING_SCENE_SERVICES_ACTION(_logger!, scene.name, null);
+
+
+    private static readonly Action<MEL.ILogger, int, string, Exception?> LOG_UNREGISTERED_ALL_SCENE_SERVICES_ACTION =
+        LoggerMessage.Define<int, string>(Information,
+            new EventId(id: 0, nameof(log_UnregisteredAllSceneServices)),
+            "Successfully unregistered all {Count} services from scene '{Scene}'"
+        );
+    private void log_UnregisteredAllSceneServices(Scene scene, int count) =>
+        LOG_UNREGISTERED_ALL_SCENE_SERVICES_ACTION(_logger!, count, scene.name, null);
+
+
+    private static readonly Action<MEL.ILogger, string, Type, string, string, Exception?> LOG_RESOLVED_METHOD_SERVICE_PARAM_ACTION =
+        LoggerMessage.Define<string, Type, string, string>(Information,
+            new EventId(id: 0, nameof(log_ResolvedMethodServiceParameter)),
+            "Client '{Client}' had dependency of Type '{ServiceType}' and tag '{Tag}' injected into parameter '{Parameter}'"
+        );
+    private void log_ResolvedMethodServiceParameter(string clientName, string tag, ParameterInfo parameter) =>
+        LOG_RESOLVED_METHOD_SERVICE_PARAM_ACTION(_logger!, clientName, parameter.ParameterType, tag, parameter.Name, null);
+
+
+    private static readonly Action<MEL.ILogger, string, Exception?> LOG_UNREGISTER_MISSING_SCENE_SERVICE_ACTION =
+        LoggerMessage.Define<string>(Warning,
+            new EventId(id: 0, nameof(log_UnregisterMissingSceneService)),
+            "Cannot unregister services from scene '{Scene}' as none have been registered. Are you trying to destroy multiple service collections from the same scene?"
+        );
+    private void log_UnregisterMissingSceneService(Scene scene) =>
+        LOG_UNREGISTER_MISSING_SCENE_SERVICE_ACTION(_logger!, scene.name, null);
+
+
+    private static readonly Action<MEL.ILogger, string, Type, string, Exception?> LOG_METHOD_HAS_MULTIPLE_DEPS_OF_TYPE_ACTION =
+        LoggerMessage.Define<string, Type, string>(Warning,
+            new EventId(id: 0, nameof(log_MethodHasMultipleDependenciesOfType)),
+            "Client '{Client}' has multiple dependencies of Type '{ServiceType}' with tag '{Tag}'"
+        );
+    private void log_MethodHasMultipleDependenciesOfType(string clientName, Type serviceType, string tag) =>
+        LOG_METHOD_HAS_MULTIPLE_DEPS_OF_TYPE_ACTION(_logger!, clientName, serviceType, tag, null);
+
+    #endregion
 }

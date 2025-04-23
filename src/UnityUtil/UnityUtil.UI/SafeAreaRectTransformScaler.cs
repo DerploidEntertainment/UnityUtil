@@ -1,9 +1,11 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Logging;
 using Sirenix.OdinInspector;
-using Unity.Extensions.Logging;
 using UnityEngine;
 using UnityUtil.DependencyInjection;
+using static Microsoft.Extensions.Logging.LogLevel;
+using MEL = Microsoft.Extensions.Logging;
 
 namespace UnityUtil.UI;
 
@@ -28,7 +30,7 @@ public class SafeAreaRectTransformScaler : MonoBehaviour
 
     public void ScaleRectTransform()
     {
-        _logger!.CurrentSafeArea(RectTransform!);
+        log_CurrentSafeArea(RectTransform!);
 
         // Calculations inspired by this article: https://connect.unity.com/p/updating-your-gui-for-the-iphone-x-and-other-notched-devices
         Rect safeArea = Screen.safeArea;
@@ -36,6 +38,38 @@ public class SafeAreaRectTransformScaler : MonoBehaviour
         RectTransform!.anchorMin = safeArea.position * scaleVect;
         RectTransform.anchorMax = (safeArea.position + safeArea.size) * scaleVect;
 
-        _logger!.NewSafeArea(RectTransform);
+        log_NewSafeArea(RectTransform);
     }
+
+    #region LoggerMessages
+
+    private static readonly Action<MEL.ILogger, string, string, string, string, Exception?> LOG_CURR_SAFE_AREA_ACTION =
+        LoggerMessage.Define<string, string, string, string>(Information,
+            new EventId(id: 0, nameof(log_CurrentSafeArea)),
+            "Current anchors of {RectTransform}: ({Anchors}). " +
+            "Updating for current screen ({ScreenDimensions}) and safe area ({SafeAreaDimensions})."
+        );
+    private void log_CurrentSafeArea(RectTransform rectTransform) =>
+        // We can only pass up to 6 params to Actions created by LoggerMessage.Define().
+        // Methods with the [LoggerMessage] attr could take more, but that isn't available until MEL 6.0.0: https://learn.microsoft.com/en-us/dotnet/core/whats-new/dotnet-6#microsoftextensions-apis
+        // And we want to depend on the lowest MEL version possible.
+        LOG_CURR_SAFE_AREA_ACTION(_logger!,
+            rectTransform.GetHierarchyNameWithType(),
+            $"({rectTransform.anchorMin}, {rectTransform.anchorMax})",
+            $"({Screen.width} x {Screen.height})",
+            $"({Screen.safeArea.width} x {Screen.safeArea.height})",
+            null
+        );
+
+
+    private static readonly Action<MEL.ILogger, string, string, Exception?> LOG_NEW_SAFE_AREA_ACTION =
+        LoggerMessage.Define<string, string>(Information, new EventId(id: 0, nameof(log_NewSafeArea)), "New anchors of {RectTransform}: {Anchors}");
+    private void log_NewSafeArea(RectTransform rectTransform) =>
+        LOG_NEW_SAFE_AREA_ACTION(_logger!,
+            rectTransform.GetHierarchyNameWithType(),
+            $"({rectTransform.anchorMin}, {rectTransform.anchorMax})",
+            null
+        );
+
+    #endregion
 }
