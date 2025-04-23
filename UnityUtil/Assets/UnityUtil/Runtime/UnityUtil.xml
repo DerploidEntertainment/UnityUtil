@@ -569,9 +569,6 @@
         <member name="M:UnityUtil.Math.UniformBatchedRandomishOptionChooser.GetOptionIndex">
             <inheritdoc/>
         </member>
-        <member name="T:UnityUtil.RootLoggerExtensions">
-            <inheritdoc/>
-        </member>
         <member name="T:UnityUtil.RuntimeIdProvider">
             <inheritdoc/>
         </member>

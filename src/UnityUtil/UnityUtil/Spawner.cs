@@ -1,11 +1,13 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Logging;
 using Sirenix.OdinInspector;
-using Unity.Extensions.Logging;
 using UnityEngine;
 using UnityUtil.DependencyInjection;
 using UnityUtil.Math;
 using U = UnityEngine;
+using MEL = Microsoft.Extensions.Logging;
+using static Microsoft.Extensions.Logging.LogLevel;
 
 namespace UnityUtil;
 
@@ -98,7 +100,7 @@ public class Spawner : MonoBehaviour
             Destroy(_previous);
 
         string newName = $"{BaseName}{(DestroyPrevious ? "" : "_" + _count)}";
-        _logger!.Spawning(newName);
+        log_Spawning(newName);
 
         // Instantiating a Prefab can sometimes give a GameObject or a Transform...we want the GameObject
         GameObject obj = (SpawnParent == null) ?
@@ -150,4 +152,15 @@ public class Spawner : MonoBehaviour
 #endif
                 _ => throw UnityObjectExtensions.SwitchDefaultException(SpawnDirection),
             };
+
+    #region LoggerMessages
+
+    private static readonly Action<MEL.ILogger, string, Exception?> LOG_SPAWNING_ACTION =
+        LoggerMessage.Define<string>(Information,
+            new EventId(id: 0, nameof(log_Spawning)),
+            "Spawning object '{Object}'"
+        );
+    private void log_Spawning(string spawnedObjectName) => LOG_SPAWNING_ACTION(_logger!, spawnedObjectName, null);
+
+    #endregion
 }
