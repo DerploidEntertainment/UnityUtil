@@ -9,7 +9,6 @@
     <Reference Include="$(UnityModulesPath)\UnityEngine.PhysicsModule.dll" Private="false" />
     <Reference Include="$(UnityModulesPath)\UnityEngine.UIModule.dll" Private="false" />
 
-    <Reference Include="$(UnityScriptAssembliesPath)\UnityEngine.UI.dll" Private="false" />
     <Reference Include="$(UnityScriptAssembliesPath)\Unity.TextMeshPro.dll" Private="false" />
 
     <ProjectReference Include="..\..\Logging\Unity.Extensions.Logging\Unity.Extensions.Logging.csproj" />
