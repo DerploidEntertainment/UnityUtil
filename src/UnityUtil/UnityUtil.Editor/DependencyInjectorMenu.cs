@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Microsoft.Extensions.Logging;
+using Unity.Extensions.Logging;
 using UnityEditor;
 using UnityUtil.DependencyInjection;
-using UnityUtil.Logging;
 using static Microsoft.Extensions.Logging.LogLevel;
 
 namespace UnityUtil.Editor;

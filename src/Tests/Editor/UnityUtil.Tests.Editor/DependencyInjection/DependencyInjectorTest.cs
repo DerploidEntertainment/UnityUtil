@@ -5,12 +5,12 @@ using System.Reflection;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
+using Unity.Extensions.Logging;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityUtil.DependencyInjection;
 using UnityUtil.Editor.Tests;
-using UnityUtil.Logging;
 using UnityUtil.Tests.Util;
 
 namespace UnityUtil.Tests.Editor.DependencyInjection;

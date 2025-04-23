@@ -290,18 +290,6 @@
             </summary>
             <returns>A new, unique identifier.</returns>
         </member>
-        <member name="T:UnityUtil.Logging.UnityDebugLogger">
-            <summary>
-            "Default" implementation of <see cref="T:Microsoft.Extensions.Logging.ILogger"/> to wrap Unity's own <see cref="T:UnityEngine.Debug"/> <c>Log*</c> methods.
-            Mainly intended for Unity code that can't set up a proper logging framework via dependency injection (e.g., in Editor scripts).
-            Most runtime code should still prefer injecting an <see cref="T:Microsoft.Extensions.Logging.ILoggerFactory"/> and creating an <see cref="T:Microsoft.Extensions.Logging.ILogger`1"/>.
-            </summary>
-        </member>
-        <member name="T:UnityUtil.Logging.UnityDebugLoggerFactory">
-            <summary>
-            "Default" implementation of <see cref="T:Microsoft.Extensions.Logging.ILoggerFactory"/> that creates instances of <see cref="T:UnityUtil.Logging.UnityDebugLogger"/>.
-            </summary>
-        </member>
         <member name="T:UnityUtil.QuantityEvent">
             <summary>
             Type arguments are (float oldValue, float newValue)

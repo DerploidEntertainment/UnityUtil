@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "org.nuget.microsoft.extensions.logging.abstractions": "2.0.0",
+    "com.unity.extensions.logging": "0.1.0",
     "com.unity.modules.androidjni": "1.0.0",
     "com.unity.modules.animation": "1.0.0",
     "com.unity.modules.physics": "1.0.0"

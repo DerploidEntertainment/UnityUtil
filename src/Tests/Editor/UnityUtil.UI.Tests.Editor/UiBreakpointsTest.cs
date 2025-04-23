@@ -2,10 +2,10 @@ using System;
 using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.Constraints;
+using Unity.Extensions.Logging;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityUtil.Editor.Tests;
-using UnityUtil.Logging;
 
 namespace UnityUtil.UI.Tests.Editor;
 
