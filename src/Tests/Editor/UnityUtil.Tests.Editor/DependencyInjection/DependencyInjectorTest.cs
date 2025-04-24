@@ -115,23 +115,75 @@ internal class ConstructorSameTypeSameTagsClient(
 
 public class DependencyInjectorTest : BaseEditModeTestFixture
 {
-    #region Initialization tests
+    #region Initialization/disposal tests
+
+    [Test]
+    public void Initialize_SetsInitialized()
+    {
+        // ARRANGE
+        var dependencyInjector = new DependencyInjector(cachedResolutionTypes: []);
+
+        // ACT / ASSERT
+        Assert.That(dependencyInjector.Initialized, Is.False);
+        dependencyInjector.Initialize(new UnityDebugLoggerFactory());
+        Assert.That(dependencyInjector.Initialized, Is.True);
+    }
+
+    [Test]
+    public void Dispose_SetsDisposed()
+    {
+        // ARRANGE
+        var dependencyInjector = new DependencyInjector(cachedResolutionTypes: []);
+
+        // ACT / ASSERT
+        Assert.That(dependencyInjector.Disposed, Is.False);
+        dependencyInjector.Dispose();
+        Assert.That(dependencyInjector.Disposed, Is.True);
+    }
+
+    [Test]
+    public void Cannot_Initialize_IfDisposed()
+    {
+        // ARRANGE
+        var dependencyInjector = new DependencyInjector(cachedResolutionTypes: []);
+
+        // ACT / ASSERT
+        dependencyInjector.Initialize(new UnityDebugLoggerFactory());
+        dependencyInjector.Dispose();
+        _ = Assert.Throws<InvalidOperationException>(() => dependencyInjector.Initialize(new UnityDebugLoggerFactory()));
+    }
 
     [Test]
     public void Cannot_Initialize_MultipleTimes()
     {
+        // ARRANGE
         var dependencyInjector = new DependencyInjector(cachedResolutionTypes: []);
-        dependencyInjector.Initialize(new UnityDebugLoggerFactory());
 
+        // ACT / ASSERT
+        dependencyInjector.Initialize(new UnityDebugLoggerFactory());
         _ = Assert.Throws<InvalidOperationException>(() => dependencyInjector.Initialize(new UnityDebugLoggerFactory()));
+    }
+
+    [Test]
+    public void Cannot_Register_IfDisposed()
+    {
+        // ARRANGE
+        var dependencyInjector = new DependencyInjector(cachedResolutionTypes: []);
+        object testService = new();
+
+        // ACT / ASSERT
+        dependencyInjector.Dispose();
+        _ = Assert.Throws<InvalidOperationException>(() => dependencyInjector.RegisterService(testService));
     }
 
     [Test]
     public void Cannot_Register_UntilInitialized()
     {
+        // ARRANGE
         var dependencyInjector = new DependencyInjector(cachedResolutionTypes: []);
         object testService = new();
 
+        // ACT / ASSERT
         _ = Assert.Throws<InvalidOperationException>(() => dependencyInjector.RegisterService(testService));
 
         dependencyInjector.Initialize(new UnityDebugLoggerFactory());
@@ -139,11 +191,25 @@ public class DependencyInjectorTest : BaseEditModeTestFixture
     }
 
     [Test]
-    public void Cannot_Unegister_UntilInitialized()
+    public void Cannot_Unegister_IfDisposed()
     {
+        // ARRANGE
         var dependencyInjector = new DependencyInjector(cachedResolutionTypes: []);
         Scene testScene = SceneManager.GetActiveScene();
 
+        // ACT / ASSERT
+        dependencyInjector.Dispose();
+        _ = Assert.Throws<InvalidOperationException>(() => dependencyInjector.UnregisterSceneServices(testScene));
+    }
+
+    [Test]
+    public void Cannot_Unegister_UntilInitialized()
+    {
+        // ARRANGE
+        var dependencyInjector = new DependencyInjector(cachedResolutionTypes: []);
+        Scene testScene = SceneManager.GetActiveScene();
+
+        // ACT / ASSERT
         _ = Assert.Throws<InvalidOperationException>(() => dependencyInjector.UnregisterSceneServices(testScene));
 
         dependencyInjector.Initialize(new UnityDebugLoggerFactory());
@@ -151,15 +217,53 @@ public class DependencyInjectorTest : BaseEditModeTestFixture
     }
 
     [Test]
-    public void Cannot_Resolve_UntilInitialized()
+    public void Cannot_Resolve_IfDisposed()
     {
+        // ARRANGE
         var dependencyInjector = new DependencyInjector(cachedResolutionTypes: []);
         object testClient = new();
 
+        // ACT / ASSERT
+        dependencyInjector.Dispose();
+        _ = Assert.Throws<InvalidOperationException>(() => dependencyInjector.ResolveDependenciesOf(testClient));
+    }
+
+    [Test]
+    public void Cannot_Resolve_UntilInitialized()
+    {
+        // ARRANGE
+        var dependencyInjector = new DependencyInjector(cachedResolutionTypes: []);
+        object testClient = new();
+
+        // ACT / ASSERT
         _ = Assert.Throws<InvalidOperationException>(() => dependencyInjector.ResolveDependenciesOf(testClient));
 
         dependencyInjector.Initialize(new UnityDebugLoggerFactory());
         Assert.DoesNotThrow(() => dependencyInjector.ResolveDependenciesOf(testClient));
+    }
+
+    [Test]
+    public void Cannot_Construct_IfDisposed()
+    {
+        // ARRANGE
+        var dependencyInjector = new DependencyInjector(cachedResolutionTypes: []);
+
+        // ACT / ASSERT
+        dependencyInjector.Dispose();
+        _ = Assert.Throws<InvalidOperationException>(() => dependencyInjector.Construct<EmptyConstructorClient>());
+    }
+
+    [Test]
+    public void Cannot_Construct_UntilInitialized()
+    {
+        // ARRANGE
+        var dependencyInjector = new DependencyInjector(cachedResolutionTypes: []);
+
+        // ACT / ASSERT
+        _ = Assert.Throws<InvalidOperationException>(() => dependencyInjector.Construct<EmptyConstructorClient>());
+
+        dependencyInjector.Initialize(new UnityDebugLoggerFactory());
+        Assert.DoesNotThrow(() => dependencyInjector.Construct<EmptyConstructorClient>());
     }
 
     #endregion
@@ -172,8 +276,8 @@ public class DependencyInjectorTest : BaseEditModeTestFixture
         DependencyInjector dependencyInjector = getDependencyInjector();
         const string TEST_TAG = "test";
 
-        Assert.DoesNotThrow(() => dependencyInjector.RegisterService(getComponentService<TestComponent>(), TEST_TAG));
-        Assert.DoesNotThrow(() => dependencyInjector.RegisterService(getComponentService<TestComponent>(), "not-" + TEST_TAG));
+        Assert.DoesNotThrow(() => dependencyInjector.RegisterService(getComponentService<TestComponent>(), injectTag: TEST_TAG));
+        Assert.DoesNotThrow(() => dependencyInjector.RegisterService(getComponentService<TestComponent>(), injectTag: "not-" + TEST_TAG));
     }
 
     [Test]
@@ -182,8 +286,8 @@ public class DependencyInjectorTest : BaseEditModeTestFixture
         DependencyInjector dependencyInjector = getDependencyInjector();
         const string TEST_TAG = "test";
 
-        Assert.DoesNotThrow(() => dependencyInjector.RegisterService(() => getComponentService<TestComponent>(), TEST_TAG));
-        Assert.DoesNotThrow(() => dependencyInjector.RegisterService(() => getComponentService<TestComponent>(), "not-" + TEST_TAG));
+        Assert.DoesNotThrow(() => dependencyInjector.RegisterService(() => getComponentService<TestComponent>(), injectTag: TEST_TAG));
+        Assert.DoesNotThrow(() => dependencyInjector.RegisterService(() => getComponentService<TestComponent>(), injectTag: "not-" + TEST_TAG));
     }
 
     [Test]
@@ -195,13 +299,13 @@ public class DependencyInjectorTest : BaseEditModeTestFixture
         const string TEST_TAG = "test";
 
         // ACT/ASSERT
-        dependencyInjector.RegisterService(getComponentService<TestComponent>(), TEST_TAG, scene: scene);
+        dependencyInjector.RegisterService(getComponentService<TestComponent>(), scene, injectTag: TEST_TAG);
         _ = Assert.Throws<InvalidOperationException>(() =>
-            dependencyInjector.RegisterService(getComponentService<TestComponent>(), TEST_TAG, scene: scene));
+            dependencyInjector.RegisterService(getComponentService<TestComponent>(), scene, injectTag: TEST_TAG));
 
-        dependencyInjector.RegisterService(getComponentService<TestComponent>(), scene: scene);
+        dependencyInjector.RegisterService(getComponentService<TestComponent>(), scene);
         _ = Assert.Throws<InvalidOperationException>(() =>
-            dependencyInjector.RegisterService(getComponentService<TestComponent>(), scene: scene));
+            dependencyInjector.RegisterService(getComponentService<TestComponent>(), scene));
     }
 
     [Test]
@@ -213,13 +317,13 @@ public class DependencyInjectorTest : BaseEditModeTestFixture
         const string TEST_TAG = "test";
 
         // ACT/ASSERT
-        dependencyInjector.RegisterService(getComponentService<TestComponent>(), TEST_TAG, scene: scene);
+        dependencyInjector.RegisterService(getComponentService<TestComponent>(), scene, injectTag: TEST_TAG);
         _ = Assert.Throws<InvalidOperationException>(() =>
-            dependencyInjector.RegisterService(getComponentService<TestComponent>(), TEST_TAG, scene: scene));
+            dependencyInjector.RegisterService(getComponentService<TestComponent>(), scene, injectTag: TEST_TAG));
 
-        dependencyInjector.RegisterService(getComponentService<TestComponent>(), scene: scene);
+        dependencyInjector.RegisterService(getComponentService<TestComponent>(), scene);
         _ = Assert.Throws<InvalidOperationException>(() =>
-            dependencyInjector.RegisterService(() => getComponentService<TestComponent>(), scene: scene));
+            dependencyInjector.RegisterService(() => getComponentService<TestComponent>(), scene));
     }
 
     [Test, Ignore("Haven't figured out a way to open a new Scene while in the unsaved scene created by the Test Runner")]
@@ -232,9 +336,9 @@ public class DependencyInjectorTest : BaseEditModeTestFixture
         const string TEST_TAG = "test";
 
         // ACT/ASSERT
-        dependencyInjector.RegisterService(getComponentService<TestComponent>(), TEST_TAG);
+        dependencyInjector.RegisterService(getComponentService<TestComponent>(), injectTag: TEST_TAG);
         _ = Assert.Throws<InvalidOperationException>(() =>
-            dependencyInjector.RegisterService(getComponentService<TestComponent>(), TEST_TAG));
+            dependencyInjector.RegisterService(getComponentService<TestComponent>(), injectTag: TEST_TAG));
 
         dependencyInjector.RegisterService(getComponentService<TestComponent>());
         _ = Assert.Throws<InvalidOperationException>(() =>
@@ -253,9 +357,9 @@ public class DependencyInjectorTest : BaseEditModeTestFixture
         const string TEST_TAG = "test";
 
         // ACT/ASSERT
-        dependencyInjector.RegisterService(getComponentService<TestComponent>(), TEST_TAG);
+        dependencyInjector.RegisterService(getComponentService<TestComponent>(), injectTag: TEST_TAG);
         _ = Assert.Throws<InvalidOperationException>(() =>
-            dependencyInjector.RegisterService(getComponentService<TestComponent>(), TEST_TAG));
+            dependencyInjector.RegisterService(getComponentService<TestComponent>(), injectTag: TEST_TAG));
 
         dependencyInjector.RegisterService(getComponentService<TestComponent>());
         _ = Assert.Throws<InvalidOperationException>(() =>
@@ -317,7 +421,7 @@ public class DependencyInjectorTest : BaseEditModeTestFixture
         TestComponent serviceInstance = getComponentService<TestComponent>();
         const string TEST_TAG = "test";
 
-        dependencyInjector.RegisterService(serviceInstance, TEST_TAG);
+        dependencyInjector.RegisterService(serviceInstance, injectTag: TEST_TAG);
         dependencyInjector.TryGetService(typeof(TestComponent), TEST_TAG, clientName: "Unit test", out Service service);
 
         Assert.That(service.Instance, Is.SameAs(serviceInstance));
@@ -354,7 +458,7 @@ public class DependencyInjectorTest : BaseEditModeTestFixture
     {
         DependencyInjector dependencyInjector = getDependencyInjector();
         TestComponent serviceInstance = new GameObject().AddComponent<TestComponent>();
-        dependencyInjector.RegisterService(() => serviceInstance, "test");
+        dependencyInjector.RegisterService(() => serviceInstance, injectTag: "test");
 
         dependencyInjector.TryGetService(typeof(TestComponent), injectTag: "test", clientName: "Unit test", out Service service);
 
@@ -506,8 +610,8 @@ public class DependencyInjectorTest : BaseEditModeTestFixture
         DependencyInjector dependencyInjector = getDependencyInjector(loggerFactory: loggerFactory);
         const string TEST_TAG = "test";
 
-        dependencyInjector.RegisterService(getComponentService<TestComponent>(), TEST_TAG);
-        dependencyInjector.RegisterService(getComponentService<TestComponent>(), "not-" + TEST_TAG);
+        dependencyInjector.RegisterService(getComponentService<TestComponent>(), injectTag: TEST_TAG);
+        dependencyInjector.RegisterService(getComponentService<TestComponent>(), injectTag: "not-" + TEST_TAG);
         dependencyInjector.ResolveDependenciesOf(new SameTypeDifferentTagsClient());
 
         Assert.That(warnCount, Is.EqualTo(0));
@@ -519,7 +623,7 @@ public class DependencyInjectorTest : BaseEditModeTestFixture
         int warnCount = 0;
         ILoggerFactory loggerFactory = new LogLevelCallbackLoggerFactory(LogLevel.Warning, (_, _, _, _) => ++warnCount);
         DependencyInjector dependencyInjector = getDependencyInjector(loggerFactory: loggerFactory);
-        dependencyInjector.RegisterService(getComponentService<TestComponent>(), "test");
+        dependencyInjector.RegisterService(getComponentService<TestComponent>(), injectTag: "test");
 
         dependencyInjector.ResolveDependenciesOf(new SameTypeSameTagsClient());
 
@@ -631,8 +735,8 @@ public class DependencyInjectorTest : BaseEditModeTestFixture
         DependencyInjector dependencyInjector = getDependencyInjector(loggerFactory: loggerFactory);
         const string TEST_TAG = "test";
 
-        dependencyInjector.RegisterService(getComponentService<TestComponent>(), TEST_TAG);
-        dependencyInjector.RegisterService(getComponentService<TestComponent>(), "not-" + TEST_TAG);
+        dependencyInjector.RegisterService(getComponentService<TestComponent>(), injectTag: TEST_TAG);
+        dependencyInjector.RegisterService(getComponentService<TestComponent>(), injectTag: "not-" + TEST_TAG);
         _ = dependencyInjector.Construct<ConstructorSameTypeDifferentTagsClient>();
 
         Assert.That(warnCount, Is.EqualTo(0));
@@ -645,7 +749,7 @@ public class DependencyInjectorTest : BaseEditModeTestFixture
         ILoggerFactory loggerFactory = new LogLevelCallbackLoggerFactory(LogLevel.Warning, (_, _, _, _) => ++warnCount);
         DependencyInjector dependencyInjector = getDependencyInjector(loggerFactory: loggerFactory);
 
-        dependencyInjector.RegisterService(getComponentService<TestComponent>(), "test");
+        dependencyInjector.RegisterService(getComponentService<TestComponent>(), injectTag: "test");
         _ = dependencyInjector.Construct<ConstructorSameTypeSameTagsClient>();
 
         Assert.That(warnCount, Is.EqualTo(1));
@@ -794,8 +898,8 @@ public class DependencyInjectorTest : BaseEditModeTestFixture
     {
         DependencyInjector dependencyInjector = getDependencyInjector();
         Scene activeScene = SceneManager.GetActiveScene();
-        dependencyInjector.RegisterService(new object(), scene: SceneManager.GetActiveScene());
-        dependencyInjector.RegisterService(new InvalidOperationException(), scene: SceneManager.GetActiveScene());
+        dependencyInjector.RegisterService(new object(), SceneManager.GetActiveScene());
+        dependencyInjector.RegisterService(new InvalidOperationException(), SceneManager.GetActiveScene());
 
         dependencyInjector.UnregisterSceneServices(activeScene);
 

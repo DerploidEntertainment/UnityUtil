@@ -28,7 +28,9 @@ public class DependencyInjector : IDisposable
 
     private const int DEFAULT_SCENE_HANDLE = -1;
 
-    public static readonly DependencyInjector Instance = new([]) { RecordingResolutions = U.Device.Application.isEditor };
+    public static readonly DependencyInjector Instance = new(cachedResolutionTypes: []) {
+        RecordingResolutions = U.Device.Application.isEditor
+    };
 
     public ILoggerFactory? LoggerFactory { get; private set; }
     private ITypeMetadataProvider? _typeMetadataProvider;
@@ -47,7 +49,6 @@ public class DependencyInjector : IDisposable
     private readonly Dictionary<Type, Func<object>> _compiledConstructors = [];
     private readonly Dictionary<Type, int> _uncachedResolutionCounts = [];
     private readonly Dictionary<Type, int> _cachedResolutionCounts = [];
-    private bool _disposed;
 
     #region Constructors/initialization
 
@@ -60,6 +61,8 @@ public class DependencyInjector : IDisposable
     public void Initialize(ILoggerFactory loggerFactory) => Initialize(loggerFactory, new TypeMetadataProvider());
     internal void Initialize(ILoggerFactory loggerFactory, ITypeMetadataProvider typeMetadataProvider)
     {
+        if (Disposed)
+            throw new InvalidOperationException($"Cannot initialize a disposed {nameof(DependencyInjector)}!");
         if (Initialized)
             throw new InvalidOperationException($"Cannot initialize a {nameof(DependencyInjector)} multiple times!");
 
@@ -69,17 +72,19 @@ public class DependencyInjector : IDisposable
 
         Initialized = true;
     }
-    private void throwIfUninitialized(string methodName)
+    private void throwIfInvalidState(string methodName)
     {
+        if (Disposed)
+            throw new InvalidOperationException($"Cannot call {methodName}() on a disposed {nameof(DependencyInjector)}");
         if (!Initialized)
-            throw new InvalidOperationException($"Must call {nameof(Initialize)}() on a {nameof(DependencyInjector)} before calling its '{methodName}' method.");
+            throw new InvalidOperationException($"Must call {nameof(Initialize)}() on a {nameof(DependencyInjector)} before calling {methodName}()");
     }
 
     #endregion
 
     #region Service registration
 
-    public void RegisterService(string serviceTypeName, object instance, string injectTag = DefaultInjectTag, Scene? scene = null)
+    public void RegisterService(string serviceTypeName, object instance, Scene? scene = null, string injectTag = DefaultInjectTag)
     {
         if (string.IsNullOrEmpty(serviceTypeName))
             serviceTypeName = instance.GetType().AssemblyQualifiedName;
@@ -89,17 +94,17 @@ public class DependencyInjector : IDisposable
         if (!serviceType.IsInstanceOfType(instance))
             throw new InvalidOperationException($"The service instance registered for Type '{serviceTypeName}' is not actually derived from that Type!");
 
-        RegisterService(serviceType, instance, injectTag, scene);
+        RegisterService(serviceType, instance, scene, injectTag);
     }
-    public void RegisterService<TInstance>(TInstance instance, string injectTag = DefaultInjectTag, Scene? scene = null) where TInstance : class => RegisterService(typeof(TInstance), instance, injectTag, scene);
-    public void RegisterService<TService, TInstance>(TInstance instance, string injectTag = DefaultInjectTag, Scene? scene = null) where TInstance : class, TService => RegisterService(typeof(TService), instance, injectTag, scene);
-    public void RegisterService(Type serviceType, object instance, string injectTag = DefaultInjectTag, Scene? scene = null)
+    public void RegisterService<TInstance>(TInstance instance, Scene? scene = null, string injectTag = DefaultInjectTag) where TInstance : class => RegisterService(typeof(TInstance), instance, scene, injectTag);
+    public void RegisterService<TService, TInstance>(TInstance instance, Scene? scene = null, string injectTag = DefaultInjectTag) where TInstance : class, TService => RegisterService(typeof(TService), instance, scene, injectTag);
+    public void RegisterService(Type serviceType, object instance, Scene? scene = null, string injectTag = DefaultInjectTag)
     {
         var service = new Service(serviceType, injectTag, instance);
         registerService(service, scene);
     }
 
-    public void RegisterService(string serviceTypeName, Func<object> instanceFactory, string injectTag = DefaultInjectTag, Scene? scene = null)
+    public void RegisterService(string serviceTypeName, Func<object> instanceFactory, Scene? scene = null, string injectTag = DefaultInjectTag)
     {
         if (string.IsNullOrEmpty(serviceTypeName))
             serviceTypeName = instanceFactory.GetType().AssemblyQualifiedName;
@@ -109,11 +114,11 @@ public class DependencyInjector : IDisposable
         if (!serviceType.IsAssignableFrom(instanceFactory.GetType()))
             throw new InvalidOperationException($"The service instance registered for Type '{serviceTypeName}' is not actually derived from that Type!");
 
-        RegisterService(serviceType, instanceFactory, injectTag, scene);
+        RegisterService(serviceType, instanceFactory, scene, injectTag);
     }
-    public void RegisterService<TInstance>(Func<TInstance> instanceFactory, string injectTag = DefaultInjectTag, Scene? scene = null) where TInstance : class => RegisterService(typeof(TInstance), instanceFactory, injectTag, scene);
-    public void RegisterService<TService, TInstance>(Func<TInstance> instanceFactory, string injectTag = DefaultInjectTag, Scene? scene = null) where TInstance : class, TService => RegisterService(typeof(TService), instanceFactory, injectTag, scene);
-    public void RegisterService(Type serviceType, Func<object> instanceFactory, string injectTag = DefaultInjectTag, Scene? scene = null)
+    public void RegisterService<TInstance>(Func<TInstance> instanceFactory, Scene? scene = null, string injectTag = DefaultInjectTag) where TInstance : class => RegisterService(typeof(TInstance), instanceFactory, scene, injectTag);
+    public void RegisterService<TService, TInstance>(Func<TInstance> instanceFactory, Scene? scene = null, string injectTag = DefaultInjectTag) where TInstance : class, TService => RegisterService(typeof(TService), instanceFactory, scene, injectTag);
+    public void RegisterService(Type serviceType, Func<object> instanceFactory, Scene? scene = null, string injectTag = DefaultInjectTag)
     {
         var service = new Service(serviceType, injectTag, instanceFactory);
         registerService(service, scene);
@@ -127,7 +132,7 @@ public class DependencyInjector : IDisposable
     /// </exception>
     private void registerService(Service service, Scene? scene = null)
     {
-        throwIfUninitialized(nameof(RegisterService));
+        throwIfInvalidState(nameof(RegisterService));
 
         // Check if the provided service is for logging
         if (service.ServiceType == typeof(ILoggerFactory) && LoggerFactory == null)
@@ -226,7 +231,7 @@ public class DependencyInjector : IDisposable
     /// <exception cref="InvalidOperationException">Could not resolve all dependencies (parameters) of any public constructor on <paramref name="clientType"/>.</exception>
     public object Construct(Type clientType)
     {
-        throwIfUninitialized(nameof(Construct));
+        throwIfInvalidState(nameof(Construct));
 
         // Use compiled constructor, if it exists
         if (_compiledConstructors.TryGetValue(clientType, out Func<object> compiledConstructor)) {
@@ -278,7 +283,7 @@ public class DependencyInjector : IDisposable
     /// <param name="client">A client with service dependencies that need to be resolved.</param>
     public void ResolveDependenciesOf(object client)
     {
-        throwIfUninitialized(nameof(ResolveDependenciesOf));
+        throwIfInvalidState(nameof(ResolveDependenciesOf));
 
         // Resolve dependencies by calling every Inject method in the client's inheritance hierarchy.
         // If the client's type or any of its inherited types have cached inject methods, then
@@ -338,7 +343,7 @@ public class DependencyInjector : IDisposable
 
     public void UnregisterSceneServices(Scene scene)
     {
-        throwIfUninitialized(nameof(UnregisterSceneServices));
+        throwIfInvalidState(nameof(UnregisterSceneServices));
 
         if (!_services.TryGetValue(scene.handle, out Dictionary<Type, Dictionary<string, Service>>? sceneServices)) {
             log_UnregisterMissingSceneService(scene);
@@ -400,24 +405,29 @@ public class DependencyInjector : IDisposable
             throw new KeyNotFoundException($"{clientName} has a dependency of Type '{serviceType.FullName}' with tag '{injectTag}', but no matching service was registered. Did you forget to tag a service?");
     }
 
+    #endregion
+
+    public bool Disposed { get; private set; }
+
     protected virtual void Dispose(bool disposing)
     {
-        if (!_disposed) {
-            if (disposing) {
-                // TODO: dispose services that implement IDisposable here
-            }
+        if (Disposed)
+            return;
 
-            // Clear collections (since we can't set these readonly fields to null)
-            _services.Clear();
-            _injectedTypes.Clear();
-            _cachedResolutionTypes.Clear();
-            _compiledInject.Clear();
-            _compiledConstructors.Clear();
-            _uncachedResolutionCounts.Clear();
-            _cachedResolutionCounts.Clear();
-
-            _disposed = true;
+        if (disposing) {
+            // TODO: dispose services that implement IDisposable here
         }
+
+        // Clear collections (since we can't set these readonly fields to null)
+        _services.Clear();
+        _injectedTypes.Clear();
+        _cachedResolutionTypes.Clear();
+        _compiledInject.Clear();
+        _compiledConstructors.Clear();
+        _uncachedResolutionCounts.Clear();
+        _cachedResolutionCounts.Clear();
+
+        Disposed = true;
     }
 
     public void Dispose()
@@ -426,8 +436,6 @@ public class DependencyInjector : IDisposable
         Dispose(disposing: true);
         GC.SuppressFinalize(this);
     }
-
-    #endregion
 
     #region LoggerMessages
 

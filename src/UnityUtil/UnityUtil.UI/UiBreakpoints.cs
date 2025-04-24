@@ -15,7 +15,7 @@ using MEL = Microsoft.Extensions.Logging;
 namespace UnityUtil.UI;
 
 [RequireComponent(typeof(RectTransform))]   // So the OnRectTransformDimensionsChange message gets called
-[ExecuteAlways]                             // So the OnRectTransformDimensionsChange message gets called in the Editor too...kind of a necessity for UI tweaking
+[ExecuteAlways] // So the OnRectTransformDimensionsChange message gets called in the Editor too...kind of a necessity for UI tweaking
 [TypeInfoBox(
     "Note that changes to some fields may not take effect until the next time the UI value is updated " +
     "(e.g., by changing the size of the Game window or the frustum of the Camera).\n\n" +
@@ -88,7 +88,7 @@ public class UiBreakpoints : MonoBehaviour
     [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
     private void Awake()
     {
-        if (DependencyInjector.Instance.Initialized)
+        if (DependencyInjector.Instance.Initialized && !DependencyInjector.Instance.Disposed)
             DependencyInjector.Instance.ResolveDependenciesOf(this);
     }
 
@@ -116,11 +116,12 @@ public class UiBreakpoints : MonoBehaviour
         if (!RecheckMatchesOnResize)
             return;
 
-        if (Application.isEditor) _currentDimensions =
-            IsScreenMode ? new Vector2(Screen.width, Screen.height) :
-            IsSafeAreaMode ? new Vector2(Screen.safeArea.width, Screen.safeArea.height) :
-            Camera != null ? new Vector2(Camera.pixelWidth, Camera.pixelHeight) :
-            Vector2.zero;
+        if (Application.isEditor)
+            _currentDimensions =
+                IsScreenMode ? new Vector2(Screen.width, Screen.height) :
+                IsSafeAreaMode ? new Vector2(Screen.safeArea.width, Screen.safeArea.height) :
+                Camera != null ? new Vector2(Camera.pixelWidth, Camera.pixelHeight) :
+                Vector2.zero;
         _currentValue = getModeValue(Mode);
 
         InvokeMatchingBreakpoints(_currentValue);
