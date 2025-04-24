@@ -64,7 +64,7 @@ and value equal to Unity's [`Time.unscaledTime`](https://docs.unity3d.com/Script
 You might change the property name, e.g., to avoid collisions with property names added by other enrichers,
 or if you wanted to save a few bytes with shorter property names in your production logs.
 
-> [!NOTE]
+> [!TIP]
 > You can easily add additional, unchanging properties from Unity not covered by this enricher
 > using Serilog's built-in `Enrich.WithProperty()` method. For example:
 
