@@ -26,6 +26,8 @@ public abstract class Updatable : MonoBehaviour
     private Action<float>? _fixedUpdateAction;
     private Action<float>? _lateUpdateAction;
 
+    private bool _onEnableCalled;
+
     public void Inject(ILoggerFactory loggerFactory, IRuntimeIdProvider runtimeIdProvider, IUpdater updater)
     {
         _logger = loggerFactory.CreateLogger(this);
@@ -102,6 +104,8 @@ public abstract class Updatable : MonoBehaviour
             Updater!.AddFixedUpdate(InstanceId, _fixedUpdateAction);
         if (_lateUpdateAction is not null)
             Updater!.AddLateUpdate(InstanceId, _lateUpdateAction);
+
+        _onEnableCalled = true;
     }
 
     protected virtual void OnDisable()
@@ -112,6 +116,8 @@ public abstract class Updatable : MonoBehaviour
             _ = Updater!.RemoveFixedUpdate(InstanceId, out _);
         if (_lateUpdateAction is not null)
             _ = Updater!.RemoveLateUpdate(InstanceId, out _);
+
+        _onEnableCalled = false;
     }
 
     private void add(
@@ -128,7 +134,7 @@ public abstract class Updatable : MonoBehaviour
 
         actionField = action;
 
-        if (enabled)
+        if (_onEnableCalled)
             addAction(InstanceId, action);
     }
 
