@@ -71,6 +71,12 @@
             Type arguments are (Collector collector, Collectible collectible)
             </summary>
         </member>
+        <member name="M:UnityUtil.Inventory.LookAtRaycast.GetUpwardUnitVector">
+            <summary>
+            Returns the unit vector that this <see cref="T:UnityUtil.Inventory.LookAtRaycast"/> will use to rotate towards what its associated <see cref="F:UnityUtil.Inventory.LookAtRaycast.RaycastingTransform"/> is looking at.
+            </summary>
+            <returns>The unit vector that this <see cref="T:UnityUtil.Inventory.LookAtRaycast"/> will use to rotate towards what its associated <see cref="F:UnityUtil.Inventory.LookAtRaycast.RaycastingTransform"/> is looking at.</returns>
+        </member>
         <member name="T:UnityUtil.Inventory.OverheatChangedEvent">
             <summary>
             Type arguments are (bool isOverheated)
@@ -80,12 +86,6 @@
             <summary>
             The current charge of this <see cref="T:UnityUtil.Inventory.Tool"/>.  0 is completely uncharged, 1 is completely charged.
             </summary>
-        </member>
-        <member name="M:UnityUtil.Movement.LookAtRaycast.GetUpwardUnitVector">
-            <summary>
-            Returns the unit vector that this <see cref="T:UnityUtil.Movement.LookAtRaycast"/> will use to rotate towards what its associated <see cref="F:UnityUtil.Movement.LookAtRaycast.RaycastingTransform"/> is looking at.
-            </summary>
-            <returns>The unit vector that this <see cref="T:UnityUtil.Movement.LookAtRaycast"/> will use to rotate towards what its associated <see cref="F:UnityUtil.Movement.LookAtRaycast.RaycastingTransform"/> is looking at.</returns>
         </member>
     </members>
 </doc>

@@ -5,9 +5,9 @@ using System.Reflection;
 using Microsoft.Extensions.Logging;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using U = UnityEngine;
-using MEL = Microsoft.Extensions.Logging;
 using static Microsoft.Extensions.Logging.LogLevel;
+using MEL = Microsoft.Extensions.Logging;
+using U = UnityEngine;
 
 namespace UnityUtil.DependencyInjection;
 

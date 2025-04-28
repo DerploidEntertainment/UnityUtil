@@ -187,7 +187,7 @@ public class UiBreakpointsTest : BaseEditModeTestFixture
         breakpoints = getBreakpoints(0f, 1f, 2f);
         Assert.That(UiBreakpoints.AreBreakpointsValid(breakpoints), Is.True);
 
-        static UiBreakpoint[] getBreakpoints(params float[] values) => values.Select(val => new UiBreakpoint(val)).ToArray();
+        static UiBreakpoint[] getBreakpoints(params float[] values) => [.. values.Select(val => new UiBreakpoint(val))];
     }
 
     [Test]
@@ -217,7 +217,7 @@ public class UiBreakpointsTest : BaseEditModeTestFixture
         breakpoints = getBreakpoints(2f, 1f, 0f);
         Assert.That(UiBreakpoints.AreBreakpointsValid(breakpoints), Is.False);
 
-        static UiBreakpoint[] getBreakpoints(params float[] values) => values.Select(val => new UiBreakpoint(val)).ToArray();
+        static UiBreakpoint[] getBreakpoints(params float[] values) => [.. values.Select(val => new UiBreakpoint(val))];
     }
 
     [Test]

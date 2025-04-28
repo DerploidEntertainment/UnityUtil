@@ -2,8 +2,8 @@ using System;
 using Microsoft.Extensions.Logging;
 using UnityEngine;
 using UnityUtil.DependencyInjection;
-using MEL = Microsoft.Extensions.Logging;
 using static Microsoft.Extensions.Logging.LogLevel;
+using MEL = Microsoft.Extensions.Logging;
 
 namespace UnityUtil.Updating;
 

@@ -1,5 +1,5 @@
-﻿using Sirenix.OdinInspector;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace UnityUtil.Inventory;
@@ -7,8 +7,6 @@ namespace UnityUtil.Inventory;
 [RequireComponent(typeof(Tool))]
 public class ProjectileTool : MonoBehaviour
 {
-    private Tool? _tool;
-
     [RequiredIn(PrefabKind.NonPrefabInstance)]
     public ProjectileToolInfo? Info;
 
@@ -20,8 +18,8 @@ public class ProjectileTool : MonoBehaviour
     [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
     private void Awake()
     {
-        _tool = GetComponent<Tool>();
-        _tool.Used.AddListener(spawnProjectile);
+        Tool? tool = GetComponent<Tool>();
+        tool.Used.AddListener(spawnProjectile);
     }
 
     private void spawnProjectile()

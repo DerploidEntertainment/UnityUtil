@@ -31,11 +31,11 @@ public class PushDetonator2D : MonoBehaviour
     {
         // Apply an explosion force to all unique Rigidbodies among these Colliders
         // Upwards modifier adjusts to gravity
-        Rigidbody2D[] rigidbodies = colliders
+        Rigidbody2D[] rigidbodies = [.. colliders
             .Select(c => c.attachedRigidbody)
             .Where(rb => rb != null && rb != SafeRigidbody)
             .Distinct()
-            .ToArray();
+        ];
         for (int rb = 0; rb < rigidbodies.Length; ++rb) {
             Rigidbody2D rigidbody = rigidbodies[rb];
             Vector2 explosionPos = (Vector2)_detonator!.transform.position + ExplosionUpwardsModifier * U.Physics2D.gravity.normalized;

@@ -2,9 +2,9 @@
 // Inspired by Unite 2017 talk: "Game Architecture with Scriptable Objects"
 // ----------------------------------------------------------------------------
 
-using Sirenix.OdinInspector;
 using System;
 using System.Diagnostics.CodeAnalysis;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
 

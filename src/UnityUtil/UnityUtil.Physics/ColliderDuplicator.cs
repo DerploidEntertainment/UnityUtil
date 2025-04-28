@@ -28,8 +28,6 @@ public class ColliderDuplicator : MonoBehaviour
 {
     private ILogger<ColliderDuplicator>? _logger;
 
-    private List<Transform> _duplicates = [];
-
     [Tooltip("Each Collider selected for duplication will be duplicated under each of these GameObjects.")]
     public Transform? NewParentOfDuplicates;
 
@@ -63,11 +61,12 @@ public class ColliderDuplicator : MonoBehaviour
     private void Start()
     {
         // Create duplicate Colliders
-        _duplicates = createDuplicates(NewParentOfDuplicates);
+
+        List<Transform> duplicates = createDuplicates(NewParentOfDuplicates);
 
         // Parent these Colliders to the requested object
         // This must happen in a separate loop, or else we duplicate the duplicates also!
-        foreach (Transform child in _duplicates) {
+        foreach (Transform child in duplicates) {
             child.parent = NewParentOfDuplicates;
             child.localPosition = Vector3.zero;
             child.localRotation = Quaternion.identity;

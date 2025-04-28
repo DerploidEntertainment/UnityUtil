@@ -336,7 +336,7 @@ public class UniformBatchedRandomishOptionChooserTest : BaseEditModeTestFixture
 
         int[] batch = (int[])uniformBatchedRandomishOptionChooser.GetBatch();
 
-        int[] optionRunLengths = batch.GroupBy(x => x).Select(g => g.Count()).ToArray();
+        int[] optionRunLengths = [.. batch.GroupBy(x => x).Select(g => g.Count())];
         Assert.That(optionRunLengths, Is.All.InRange(1, maxRepeatsPerRun));
     }
 

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
+using System;
 using UnityEngine;
 
 namespace UnityUtil;
@@ -234,7 +233,7 @@ public class AsciiSprites : ScriptableObject
             case '~': return ref Tilde;
 
             default: throw new ArgumentOutOfRangeException(nameof(charCode), charCode, $"Can only return Sprites for the {NumPrintables} printable ASCII characters (codes 32-{32 + NumPrintables}), but character code '{charCode}' was requested!");
-        };
+        }
     }
 
 }

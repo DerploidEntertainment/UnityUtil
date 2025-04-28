@@ -1,6 +1,6 @@
-﻿using Sirenix.OdinInspector;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace UnityUtil.Inventory;

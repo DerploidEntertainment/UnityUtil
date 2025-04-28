@@ -1,6 +1,5 @@
-﻿using Sirenix.OdinInspector;
-using System;
-using UnityEngine;
+﻿using System;
+using Sirenix.OdinInspector;
 
 namespace UnityUtil;
 

@@ -129,14 +129,7 @@ public abstract class StartStoppable : Updatable
         AddUpdate(DoUpdate);
         Running = true;
     }
-    protected virtual void DoStop()
-    {
-        if (!Running)
-            return;
-
-        Running = false;
-        RemoveUpdate();
-    }
+    protected virtual void DoStop() => DoPause();
     protected virtual void DoPause()
     {
         if (!Running)

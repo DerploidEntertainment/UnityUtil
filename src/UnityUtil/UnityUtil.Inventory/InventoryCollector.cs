@@ -1,13 +1,11 @@
-﻿using Sirenix.OdinInspector;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace UnityUtil.Inventory;
 
 public class InventoryCollector : MonoBehaviour
 {
-    private SphereCollider? _sphere;
-
     [RequiredIn(PrefabKind.NonPrefabInstance)]
     public Inventory? Inventory;
     public float Radius = 1f;
@@ -16,9 +14,9 @@ public class InventoryCollector : MonoBehaviour
     [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
     private void Awake()
     {
-        _sphere = gameObject.AddComponent<SphereCollider>();
-        _sphere.radius = Radius;
-        _sphere.isTrigger = true;
+        SphereCollider? sphere = gameObject.AddComponent<SphereCollider>();
+        sphere.radius = Radius;
+        sphere.isTrigger = true;
     }
 
     [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]

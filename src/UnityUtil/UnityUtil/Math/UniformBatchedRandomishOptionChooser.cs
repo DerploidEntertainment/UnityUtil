@@ -109,12 +109,12 @@ public class UniformBatchedRandomishOptionChooser : IRandomishOptionChooser
         }
 
         // Generate a random sequence of option indices with the runs determined above.
-        // I tried doing this in a way that wouldn't require a separate collection of "available options";
-        // unfortunately, it always required inserting into a List (an O(n) worst-case operation).
+        // I tried doing this in a way that wouldn't require a separate collection of "available options".
+        // Unfortunately, it always required inserting into a List (an O(n) worst-case operation).
         // Doing this repeatedly is probably slower in the long run than just allocating one additional collection and pulling from it.
         int currBatchIndex = 0;
         int[] batch = new int[batchCount];
-        int[] availableOptions = Enumerable.Range(0, _config.OptionCount).ToArray();
+        int[] availableOptions = [.. Enumerable.Range(0, _config.OptionCount)];
         for (int opt = 0; opt < _config.OptionCount; ++opt) {
             int randAvailableIndex = _randomAdapter.Range(0, _config.OptionCount - opt);
             int randOpt = availableOptions[randAvailableIndex];

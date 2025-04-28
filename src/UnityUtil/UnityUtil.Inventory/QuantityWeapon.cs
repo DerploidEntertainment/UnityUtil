@@ -1,6 +1,6 @@
-﻿using Sirenix.OdinInspector;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace UnityUtil.Inventory;
@@ -8,8 +8,6 @@ namespace UnityUtil.Inventory;
 [RequireComponent(typeof(Weapon))]
 public class QuantityWeapon : MonoBehaviour
 {
-    private Weapon? _weapon;
-
     [RequiredIn(PrefabKind.NonPrefabInstance)]
     public QuantityWeaponInfo? Info;
 
@@ -17,8 +15,8 @@ public class QuantityWeapon : MonoBehaviour
     [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
     private void Awake()
     {
-        _weapon = GetComponent<Weapon>();
-        _weapon.Attacked.AddListener(decreaseQuantity);
+        Weapon? weapon = GetComponent<Weapon>();
+        weapon.Attacked.AddListener(decreaseQuantity);
     }
     private void decreaseQuantity(Ray ray, RaycastHit[] hits)
     {

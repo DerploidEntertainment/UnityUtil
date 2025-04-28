@@ -1,6 +1,6 @@
-﻿using Sirenix.OdinInspector;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine;
 using UnityUtil.DependencyInjection;

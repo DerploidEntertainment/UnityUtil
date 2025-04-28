@@ -29,12 +29,12 @@ public class HurtDetonator : MonoBehaviour
     {
         // Change all unique Quantities among these Colliders
         // Change amount decreases linearly with distance from the explosion
-        ManagedQuantity[] quantities = colliders
+        ManagedQuantity[] quantities = [.. colliders
             .Select(x => x.attachedRigidbody?.GetComponent<ManagedQuantity>())
             .Where(x => x != null)
             .Select(x => x!)
             .Distinct()
-            .ToArray();
+        ];
         for (int h = 0; h < quantities.Length; ++h) {
             ManagedQuantity health = quantities[h];
             float dist = Vector3.Distance(health.transform.position, transform.position);

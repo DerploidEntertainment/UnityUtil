@@ -95,7 +95,7 @@ public class Weapon : MonoBehaviour
         Attacked.Invoke(ray, hits);
 
         // Adjust accuracy for the next attack, assuming the base Tool is automatic
-        _accuracyLerpT = Info.AccuracyLerpTime == 0 ? 1f : _accuracyLerpT + 1f / _tool!.Info!.AutomaticUseRate / Info.AccuracyLerpTime;
+        _accuracyLerpT = Info.AccuracyLerpTime == 0f ? 1f : _accuracyLerpT + 1f / _tool!.Info!.AutomaticUseRate / Info.AccuracyLerpTime;
         RaycastHit[] rayAttackHits()
         {
             RaycastHit[] rayHits = [];

@@ -1,11 +1,10 @@
 using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
-using UnityUtil.Inventory;
 using UnityUtil.Physics;
 using UnityUtil.Updating;
 using U = UnityEngine;
 
-namespace UnityUtil.Movement;
+namespace UnityUtil.Inventory;
 
 public class LookAtRaycast : Updatable
 {
@@ -33,7 +32,7 @@ public class LookAtRaycast : Updatable
 
     [Tooltip(
         $"If the {nameof(RaycastingTransform)} is associated with a {nameof(Weapon)}, " +
-        $"then providing its {nameof(Inventory.WeaponInfo)} here will override {nameof(Range)} and {nameof(LayerMask)}, " +
+        $"then providing its {nameof(UnityUtil.Inventory.WeaponInfo)} here will override {nameof(Range)} and {nameof(LayerMask)}, " +
         $"which might be less error-prone during development."
     )]
     public WeaponInfo? WeaponInfo;

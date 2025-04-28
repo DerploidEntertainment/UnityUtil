@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Logging;
-using Unity.Extensions.Logging;
 using UnityEngine;
 using UnityUtil.DependencyInjection;
 

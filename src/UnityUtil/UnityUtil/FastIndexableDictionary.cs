@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 
 namespace UnityUtil;
 
@@ -114,11 +111,10 @@ public class FastIndexableDictionary<TKey, TValue>
     {
         lock (_collectionLock) {
             bool contained = _indexLookup.Remove(key, out int index);
-            if (!contained)
-            {
-    #pragma warning disable CS8601 // Possible null reference assignment. Not sure what else to do here; callers shouldn't use the out param if we return false anyway.
+            if (!contained) {
+#pragma warning disable CS8601 // Possible null reference assignment. Not sure what else to do here; callers shouldn't use the out param if we return false anyway.
                 value = default;
-    #pragma warning restore CS8601 // Possible null reference assignment.
+#pragma warning restore CS8601 // Possible null reference assignment.
                 return false;
             }
 
@@ -185,8 +181,7 @@ public class FastIndexableDictionary<TKey, TValue>
     /// <exception cref="ArgumentNullException"><paramref name="key"/> is <see langword="null"/>.</exception>
     public bool TryGetValue(TKey key, out TValue value)
     {
-        lock (_collectionLock)
-        {
+        lock (_collectionLock) {
             bool exists = _indexLookup.TryGetValue(key, out int index);
 #pragma warning disable CS8601 // Possible null reference assignment. Not sure what else to do here; callers shouldn't use the out param if we return false anyway.
             value = exists ? _list[index].Value : default;

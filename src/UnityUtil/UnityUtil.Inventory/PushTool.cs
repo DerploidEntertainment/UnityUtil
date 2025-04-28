@@ -1,8 +1,8 @@
-﻿using Sirenix.OdinInspector;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace UnityUtil.Inventory;
@@ -10,7 +10,6 @@ namespace UnityUtil.Inventory;
 [RequireComponent(typeof(Weapon))]
 public class PushTool : MonoBehaviour
 {
-    private Weapon? _weapon;
     private readonly HashSet<Rigidbody> _pushedRigidbodies = [];
 
     [RequiredIn(PrefabKind.NonPrefabInstance)]
@@ -23,8 +22,8 @@ public class PushTool : MonoBehaviour
     [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
     private void Awake()
     {
-        _weapon = GetComponent<Weapon>();
-        _weapon.Attacked.AddListener(push);
+        Weapon? weapon = GetComponent<Weapon>();
+        weapon.Attacked.AddListener(push);
     }
     private void push(Ray ray, RaycastHit[] hits)
     {

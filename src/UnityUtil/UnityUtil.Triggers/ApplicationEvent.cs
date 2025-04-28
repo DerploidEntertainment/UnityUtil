@@ -3,8 +3,8 @@
 // See: https://github.com/roboryantron/Unite2017/blob/master/Assets/Code/Events/GameEvent.cs
 // ----------------------------------------------------------------------------
 
-using Sirenix.OdinInspector;
 using System;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace UnityUtil.Triggers;

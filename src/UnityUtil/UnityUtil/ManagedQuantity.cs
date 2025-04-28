@@ -12,7 +12,6 @@ public class QuantityEvent : UnityEvent<float, float> { }
 
 public class ManagedQuantity : MonoBehaviour
 {
-
     public enum ChangeMode
     {
         Absolute,

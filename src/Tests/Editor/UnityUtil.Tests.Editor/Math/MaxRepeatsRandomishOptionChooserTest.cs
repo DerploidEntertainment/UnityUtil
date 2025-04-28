@@ -25,6 +25,8 @@ public class MaxRepeatsRandomishOptionChooserTest : BaseEditModeTestFixture
         );
 
     [Test]
+
+    // Probabilities don't sum to one
     [TestCase(new[] { 0f })]
     [TestCase(new[] { 1.01f })]
     [TestCase(new[] { 200f })]
@@ -33,24 +35,14 @@ public class MaxRepeatsRandomishOptionChooserTest : BaseEditModeTestFixture
     [TestCase(new[] { 0.25f, 0.85f })]
     [TestCase(new[] { 0.1f, 0.1f })]
     [TestCase(new[] { 0.2f, 0.5f })]
-    public void CannotConstruct_ProbabilitiesDontSumToOne(float[] optionProbabilities)
-    {
-        Debug.Log($"Option probabilities: {string.Join(',', optionProbabilities)}");
-        _ = Assert.Throws<InvalidOperationException>(() =>
-            new MaxRepeatsRandomishOptionChooser(
-                Mock.Of<IRandomAdapter>(),
-                new MaxRepeatsRandomishOptionChooserConfig { MaxRepeats = 1, OptionProbabilities = optionProbabilities }
-            )
-        );
-    }
 
-    [Test]
+    // Negative probabilities
     [TestCase(new[] { -1f })]
     [TestCase(new[] { -1f, 2f })]
     [TestCase(new[] { -0.5f, -0.5f })]
     [TestCase(new[] { -0.5f, 0.5f })]
     [TestCase(new[] { 0.5f, -0.25f, 0.75f })]
-    public void CannotConstruct_NegativeProbabilities(float[] optionProbabilities)
+    public void CannotConstruct_ProbabilitiesDontSumToOne(float[] optionProbabilities)
     {
         Debug.Log($"Option probabilities: {string.Join(',', optionProbabilities)}");
         _ = Assert.Throws<InvalidOperationException>(() =>

@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
@@ -65,7 +64,7 @@ public class LookAtInteractor : Updatable
     {
         if (DrawRay) {
             Gizmos.color = RayColor;
-            float range = Range == Mathf.Infinity ? 1000f : Range;
+            float range = Range < Mathf.Infinity ? Range : 1000f;
             Gizmos.DrawLine(transform.position, transform.TransformPoint(Vector3.forward * range));
         }
     }

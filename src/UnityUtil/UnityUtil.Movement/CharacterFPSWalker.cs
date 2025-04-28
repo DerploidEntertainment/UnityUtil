@@ -7,7 +7,7 @@ using U = UnityEngine;
 
 namespace UnityUtil.Movement;
 
-public class CharacterFPSWalker : Updatable
+public class CharacterFpsWalker : Updatable
 {
     private float _oldHeight;
 

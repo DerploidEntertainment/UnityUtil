@@ -1,7 +1,7 @@
-﻿using Sirenix.OdinInspector;
-using System;
+﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine;
 using UD = UnityEngine.Device;

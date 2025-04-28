@@ -56,7 +56,7 @@ public class MaxRepeatsRandomishOptionChooser : IRandomishOptionChooser
             throw new InvalidOperationException($"The sum of all {nameof(_config.OptionProbabilities)} must equal 1 (± {ProbabilitySumTolerance}).");
 
         _repeats = new int[_config.OptionProbabilities.Count];
-        _repeatRingBuffer = Enumerable.Repeat(-1, _config.MaxRepeats).ToArray();
+        _repeatRingBuffer = [.. Enumerable.Repeat(-1, _config.MaxRepeats)];
     }
 
     /// <summary>
@@ -105,7 +105,7 @@ public class MaxRepeatsRandomishOptionChooser : IRandomishOptionChooser
     /// </remarks>
     public int GetOptionIndex()
     {
-        float val = (float)_randomAdapter.Range(0f, TotalProbability);
+        float val = _randomAdapter.Range(0f, TotalProbability);
 
         int index = -1;
         float sum = 0f;

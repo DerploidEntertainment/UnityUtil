@@ -153,12 +153,13 @@ public class SequenceTriggerTest : BaseEditModeTestFixture
         string affectedTxt = "";
         SequenceTrigger trigger = getSequenceTrigger(2);
         trigger.CurrentStep = 0;
-        trigger.StepTriggers = Enumerable.Range(0, 2).Select(e => {
-            var unityEvent = new UnityEvent();
-            unityEvent.AddListener(() => affectedTxt = $"Trigger {e}");
-            return unityEvent;
-        })
-        .ToArray();
+        trigger.StepTriggers = [
+            .. Enumerable.Range(0, 2).Select(e => {
+                var unityEvent = new UnityEvent();
+                unityEvent.AddListener(() => affectedTxt = $"Trigger {e}");
+                return unityEvent;
+            })
+        ];
 
         trigger.Step();
         trigger.Trigger();

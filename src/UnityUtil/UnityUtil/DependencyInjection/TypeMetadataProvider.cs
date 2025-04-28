@@ -19,7 +19,7 @@ internal class TypeMetadataProvider : ITypeMetadataProvider
         return Expression.Lambda<Action<object>>(
             body: Expression.Call(instance: Expression.Convert(clientParam, method.DeclaringType), method, argExprs),
             name: methodName,
-            parameters: new[] { clientParam }
+            parameters: [clientParam]
         ).Compile();
     }
 

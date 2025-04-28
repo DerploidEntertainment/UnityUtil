@@ -21,7 +21,7 @@ public sealed class RandomAdapter(RandomConfig config) : IRandomAdapter
     /// <inheritdoc/>
     public Random Rand => _rand ??= new Random(Seed);
 
-    private int getOrGenerateSeed() => 
+    private int getOrGenerateSeed() =>
         _config.Seed == ""
             ? (int)DateTime.Now.Ticks
         : int.TryParse(_config.Seed, out int intVal)

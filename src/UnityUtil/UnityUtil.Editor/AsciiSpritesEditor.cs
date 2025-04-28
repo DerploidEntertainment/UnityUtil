@@ -71,7 +71,7 @@ public class AsciiSpritesEditor : E.Editor
                 '}' => nameof(AsciiSprites.CurlyBraceClose),
                 '~' => nameof(AsciiSprites.Tilde),
 
-                _ => throw new ArgumentOutOfRangeException(nameof(ch), ch, $"Can only define Sprites for the {AsciiSprites.NumPrintables} printable ASCII characters (codes 32-{32 + AsciiSprites.NumPrintables}), but character code '{ch}' was requested!")
+                _ => throw new InvalidOperationException($"Can only define Sprites for the {AsciiSprites.NumPrintables} printable ASCII characters (codes 32-{32 + AsciiSprites.NumPrintables}), but character code '{ch}' was requested!")
             };
             _charProps[ch] = serializedObject.FindProperty(propPath);
         }

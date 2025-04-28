@@ -5,9 +5,9 @@ using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityUtil.DependencyInjection;
 using UnityUtil.Math;
-using U = UnityEngine;
-using MEL = Microsoft.Extensions.Logging;
 using static Microsoft.Extensions.Logging.LogLevel;
+using MEL = Microsoft.Extensions.Logging;
+using U = UnityEngine;
 
 namespace UnityUtil;
 

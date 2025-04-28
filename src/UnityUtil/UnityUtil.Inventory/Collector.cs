@@ -13,17 +13,14 @@ public class CollectEvent : UnityEvent<Collector, Collectible> { }
 
 public class Collector : MonoBehaviour
 {
-
-    private SphereCollider? _sphere;
-
     public float Radius = 1f;
     public CollectEvent Collected = new();
 
     protected virtual void Awake()
     {
-        _sphere = gameObject.AddComponent<SphereCollider>();
-        _sphere.radius = Radius;
-        _sphere.isTrigger = true;
+        SphereCollider? sphere = gameObject.AddComponent<SphereCollider>();
+        sphere.radius = Radius;
+        sphere.isTrigger = true;
     }
 
     [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]

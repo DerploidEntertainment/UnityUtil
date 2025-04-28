@@ -78,7 +78,7 @@ public static class MoreMath
 
         int[] resultIndices = new int[count];
 
-        int[] sourceIndices = Enumerable.Range(0, sourceCount).ToArray();
+        int[] sourceIndices = [.. Enumerable.Range(0, sourceCount)];
         for (int r = 0; r < count; ++r) {
             int s = randomAdapter.Range(0, sourceCount - r);
             resultIndices[r] = sourceIndices[s];

@@ -9,9 +9,9 @@ namespace UnityUtil.DependencyInjection;
 public interface ITypeMetadataProvider
 {
     ParameterInfo[] GetMethodParameters(MethodBase method);
-    T? GetCustomAttribute<T>(ParameterInfo element) where T : Attribute;
-    MethodInfo GetMethod(Type classType, string name, BindingFlags bindingAttr);
+    T? GetCustomAttribute<T>(ParameterInfo parameter) where T : Attribute;
+    MethodInfo GetMethod(Type classType, string name, BindingFlags bindingFlags);
     ConstructorInfo[] GetConstructors(Type classType);
-    Action<object> CompileMethodCall(string methodName, string paramName, MethodInfo injectMethod, object[] arguments);
+    Action<object> CompileMethodCall(string methodName, string paramName, MethodInfo method, object[] arguments);
     Func<object> CompileConstructorCall(ConstructorInfo constructor, object[] arguments);
 }

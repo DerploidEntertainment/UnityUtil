@@ -147,9 +147,14 @@
             <summary>
             Inject the service configured with this field's <see cref="T:System.Type"/> and an optional Inspector tag.
             </summary>
+            <remarks></remarks>
+            <param name="tag">The service <see cref="T:UnityEngine.Object"/> with this tag (set in the Inspector) will be injected.  Use when registering multiple services with the same Type.</param>
         </member>
         <member name="M:UnityUtil.DependencyInjection.InjectTagAttribute.#ctor(System.String)">
-            <summary></summary>
+            <summary>
+            Inject the service configured with this field's <see cref="T:System.Type"/> and an optional Inspector tag.
+            </summary>
+            <remarks></remarks>
             <param name="tag">The service <see cref="T:UnityEngine.Object"/> with this tag (set in the Inspector) will be injected.  Use when registering multiple services with the same Type.</param>
         </member>
         <member name="P:UnityUtil.DependencyInjection.InjectTagAttribute.Tag">

@@ -12,7 +12,23 @@ public class LogLevelCallbackLoggerFactory(
     Action<LogLevel, EventId, Exception?, string>? alwaysCallback = null
 ) : ILoggerFactory
 {
+    private bool _disposed;
+
     public void AddProvider(ILoggerProvider provider) { }
     public ILogger CreateLogger(string categoryName) => new LogLevelCallbackLogger(level, levelCallback, alwaysCallback);
-    public void Dispose() => GC.SuppressFinalize(this);
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (_disposed)
+            return;
+
+        _disposed = true;
+    }
+
+    public void Dispose()
+    {
+        // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+        Dispose(disposing: true);
+        GC.SuppressFinalize(this);
+    }
 }

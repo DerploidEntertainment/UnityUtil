@@ -1,12 +1,11 @@
 using System;
-using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Logging;
+using Unity.Extensions.Logging;
 using UnityEngine;
 using UnityEngine.Diagnostics;
 using UnityUtil.DependencyInjection;
-using MEL = Microsoft.Extensions.Logging;
 using static Microsoft.Extensions.Logging.LogLevel;
-using Unity.Extensions.Logging;
+using MEL = Microsoft.Extensions.Logging;
 
 namespace UnityUtil;
 
