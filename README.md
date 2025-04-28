@@ -2,9 +2,8 @@
 
 A set of utility classes and components useful to any Unity project, 2D or 3D.
 
-**Work in progress!**
-
-This package has been under open-source development since ~2017, but only since late 2022 has it been seriously considered for "usability" by 3rd parties,
+> [!NOTE]
+> Work in progress! This package has been under open-source development since ~2017, but only since late 2022 has it been seriously considered for "usability" by 3rd parties,
 so documentation content/organization are still in development.
 
 ## Contents
