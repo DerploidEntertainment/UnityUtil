@@ -47,6 +47,18 @@
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
   </PropertyGroup>
 
+  <!--
+  Ensure C#9 records and init properties are supported in all projects.
+  It's okay to use this NuGet package outside of the Unity project,
+  as it just adds a source generator to add the internal `IsExternalInit` class during builds.
+  -->
+  <ItemGroup>
+    <PackageReference Include="IsExternalInit" Version="1.0.3">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
   <!-- Global message suppressions -->
   <ItemGroup>
     <!-- I think this is justified for occasional squashing and logging... -->
