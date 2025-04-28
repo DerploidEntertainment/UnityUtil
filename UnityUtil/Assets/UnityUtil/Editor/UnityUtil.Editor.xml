@@ -4,18 +4,28 @@
         <name>UnityUtil.Editor</name>
     </assembly>
     <members>
+        <member name="T:System.Runtime.CompilerServices.IsExternalInit">
+            <summary>
+                Reserved to be used by the compiler for tracking metadata.
+                This class should not be used by developers in source code.
+            </summary>
+            <remarks>
+                This definition is provided by the <i>IsExternalInit</i> NuGet package (https://www.nuget.org/packages/IsExternalInit).
+                Please see https://github.com/manuelroemer/IsExternalInit for more information.
+            </remarks>
+        </member>
+        <member name="F:UnityUtil.Editor.DependencyInjectorMenu.LOGGER">
+            <summary>
+            Must be static to be used in menu commands in Unity Editor.
+            This is an Editor script, so who cares if we hard-code the <see cref="T:Microsoft.Extensions.Logging.ILoggerFactory"/>...
+            </summary>
+        </member>
         <member name="M:UnityUtil.Editor.ForceReserializeAssetsMenu.ForceReserializeAllAssets">
             <summary>
             This is mainly meant to be called after upgrading a project to a new Unity version,
             but see <a href="https://docs.unity3d.com/ScriptReference/AssetDatabase.ForceReserializeAssets.html">the docs</a>
             for other use cases and examples.
             </summary>
-        </member>
-        <member name="T:UnityUtil.EditorRootLogger`1">
-            <inheritdoc/>
-        </member>
-        <member name="M:UnityUtil.EditorRootLogger`1.#ctor(Microsoft.Extensions.Logging.ILoggerFactory,`0)">
-            <inheritdoc/>
         </member>
     </members>
 </doc>

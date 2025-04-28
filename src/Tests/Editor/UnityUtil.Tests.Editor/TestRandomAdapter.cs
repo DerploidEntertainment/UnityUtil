@@ -1,7 +1,7 @@
 using System;
 using UnityUtil.Math;
 
-namespace UnityUtil.Editor.Tests;
+namespace UnityUtil.Tests.Editor;
 
 public class TestRandomAdapter : IRandomAdapter
 {

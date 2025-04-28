@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="..\..\Logging.props" />
+
+  <PropertyGroup>
+    <!-- Override the default destination folder set by Directory.Build.props -->
+    <UnityDestinationFolder>$(UnityProjectPath)\Assets\$(SolutionName)\Editor</UnityDestinationFolder>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Remove the package items added by Directory.Build.props -->
+    <None Remove="$(UnityProjectPath)\Assets\$(MSBuildProjectName)\package.json" />
+    <None Remove="$(UnityProjectPath)\Assets\$(MSBuildProjectName)\.gitattributes" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\$(SolutionName)\UnityUtil.csproj" />
+
+    <Reference Include="$(SirenixAssembliesPath)\Sirenix.OdinInspector.Editor.dll" Private="false" />
+    <Reference Include="$(UnityEditorPath)" Private="false" />
+    <Reference Include="$(UnityScriptAssembliesPath)\UnityEngine.TestRunner.dll" Private="false" />
+
+    <Reference Include="$(UnityModulesPath)\UnityEngine.dll" Private="false" />
+    <Reference Include="$(UnityModulesPath)\UnityEngine.CoreModule.dll" Private="false" />
+    <Reference Include="$(UnityModulesPath)\UnityEngine.IMGUIModule.dll" Private="false" />
+  </ItemGroup>
+
+</Project>

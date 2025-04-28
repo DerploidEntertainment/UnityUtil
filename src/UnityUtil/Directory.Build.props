@@ -1,0 +1,51 @@
+<Project>
+
+  <Import Project="..\Directory.Build.props" />
+
+  <PropertyGroup>
+    <UnityDestinationFolder>$(UnityProjectPath)\Assets\$(MSBuildProjectName)\Runtime</UnityDestinationFolder>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="$(UnityProjectPath)\Assets\$(MSBuildProjectName)\package.json" />
+    <None Include="$(UnityProjectPath)\Assets\$(MSBuildProjectName)\.gitattributes" />
+  </ItemGroup>
+
+  <!-- CLS compliance -->
+  <ItemGroup>
+    <!--
+      Disable CLS compliance by default (other importing projects can re-enable it).
+      The Unity assemblies are not CLS-compliant, so any type that inherits from one of their types (e.g., MonoBehaviour)
+      or uses one of their types in a public API is also not CLS-compliant. We don't wanna play whack-a-mole to mark every new type/member
+      with [CLSCompliant(false)] as necessary, so these libray game assemblies will not be marked CLS-compliant either.
+    -->
+    <AssemblyAttribute Include="System.CLSCompliantAttribute">
+      <_Parameter1>false</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+
+  <!-- Dependencies -->
+  <ItemGroup>
+    <PackageReference Include="Unity3D" />
+  </ItemGroup>
+  <PropertyGroup>
+    <IncludeDefaultUnityAssemblyReferences>false</IncludeDefaultUnityAssemblyReferences>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="$(SirenixAssembliesPath)\Sirenix.OdinInspector.Attributes.dll" Private="false"/>
+  </ItemGroup>
+
+  <!-- Global message suppressions -->
+  <PropertyGroup>
+    <!-- We've already written a lot of code without XML comments. Until more are written, this warning is just a distraction. -->
+    <NoWarn>1591</NoWarn> <!-- Missing XML comment for publicly visible type or member -->
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- Unity components often need public fields, and I don't want to play whack-a-mole on every one of them -->
+    <AssemblyAttribute Include="System.Diagnostics.CodeAnalysis.SuppressMessage">
+      <_Parameter1>Design</_Parameter1>
+      <_Parameter2>CA1051:Do not declare visible instance fields</_Parameter2>
+    </AssemblyAttribute>
+  </ItemGroup>
+
+</Project>

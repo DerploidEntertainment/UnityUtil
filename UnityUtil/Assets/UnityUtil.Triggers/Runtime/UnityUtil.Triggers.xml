@@ -4,6 +4,16 @@
         <name>UnityUtil.Triggers</name>
     </assembly>
     <members>
+        <member name="T:System.Runtime.CompilerServices.IsExternalInit">
+            <summary>
+                Reserved to be used by the compiler for tracking metadata.
+                This class should not be used by developers in source code.
+            </summary>
+            <remarks>
+                This definition is provided by the <i>IsExternalInit</i> NuGet package (https://www.nuget.org/packages/IsExternalInit).
+                Please see https://github.com/manuelroemer/IsExternalInit for more information.
+            </remarks>
+        </member>
         <member name="M:UnityUtil.Triggers.AnimationEventTrigger.Trigger(System.String)">
             <summary>
             Warning! This method is not meant to be called programmatically.
@@ -20,9 +30,6 @@
             <summary>
             Trigger event is raised every time the encapsulated number is incremented the specified number of times
             </summary>
-        </member>
-        <member name="T:UnityUtil.Triggers.TriggersLogger`1">
-            <inheritdoc/>
         </member>
     </members>
 </doc>

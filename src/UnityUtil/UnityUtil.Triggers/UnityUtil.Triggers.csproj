@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="..\..\Logging.props" />
+
+  <ItemGroup>
+    <Reference Include="$(UnityModulesPath)\UnityEngine.AnimationModule.dll" Private="false" />
+    <Reference Include="$(UnityModulesPath)\UnityEngine.CoreModule.dll" Private="false" />
+    <Reference Include="$(UnityModulesPath)\UnityEngine.Physics2DModule.dll" Private="false" />
+    <Reference Include="$(UnityModulesPath)\UnityEngine.PhysicsModule.dll" Private="false" />
+
+    <ProjectReference Include="..\UnityUtil\UnityUtil.csproj" />
+  </ItemGroup>
+
+</Project>

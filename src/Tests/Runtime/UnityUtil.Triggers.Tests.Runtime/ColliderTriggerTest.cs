@@ -1,5 +1,5 @@
-﻿using NUnit.Framework;
-using System.Collections;
+﻿using System.Collections;
+using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.TestTools;
@@ -32,7 +32,7 @@ public class ColliderTriggerTest : BasePlayModeTestFixture
     public IEnumerator CollisionCanTrigger()
     {
         int numTriggers = 0;
-        ColliderEnterTrigger trigger = getTriggerObject<ColliderEnterTrigger>(isTrigger: false, () => ++numTriggers);
+        _ = getTriggerObject<ColliderEnterTrigger>(isTrigger: false, () => ++numTriggers);
         Collider testCollider = getCollidingObject();
         Rigidbody collidingRb = testCollider.GetComponent<Rigidbody>();
 
@@ -73,7 +73,7 @@ public class ColliderTriggerTest : BasePlayModeTestFixture
     public IEnumerator CollisionStopCanTrigger()
     {
         int numTriggers = 0;
-        ColliderExitTrigger trigger = getTriggerObject<ColliderExitTrigger>(isTrigger: false, () => ++numTriggers);
+        _ = getTriggerObject<ColliderExitTrigger>(isTrigger: false, () => ++numTriggers);
         Collider testCollider = getCollidingObject();
         Rigidbody collidingRb = testCollider.GetComponent<Rigidbody>();
 
@@ -171,7 +171,7 @@ public class ColliderTriggerTest : BasePlayModeTestFixture
     public IEnumerator NoRigidbodyCollisionCanTrigger()
     {
         int numTriggers = 0;
-        ColliderEnterTrigger trigger = getTriggerObject<ColliderEnterTrigger>(isTrigger: false, () => ++numTriggers, useGravity: true);
+        _ = getTriggerObject<ColliderEnterTrigger>(isTrigger: false, () => ++numTriggers, useGravity: true);
         Collider testCollider = getCollidingObject(hasRigidbody: false);
 
         // Position test object below trigger-collider

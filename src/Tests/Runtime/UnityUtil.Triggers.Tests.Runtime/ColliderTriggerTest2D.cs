@@ -1,5 +1,5 @@
-﻿using NUnit.Framework;
-using System.Collections;
+﻿using System.Collections;
+using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.TestTools;
@@ -32,7 +32,7 @@ public class ColliderTriggerTest2D : BasePlayModeTestFixture
     public IEnumerator CollisionCanTrigger()
     {
         int numTriggers = 0;
-        ColliderEnterTrigger2D trigger = getTriggerObject<ColliderEnterTrigger2D>(isTrigger: false, () => ++numTriggers);
+        _ = getTriggerObject<ColliderEnterTrigger2D>(isTrigger: false, () => ++numTriggers);
         Collider2D testCollider = getCollidingObject();
         Rigidbody2D collidingRb = testCollider.GetComponent<Rigidbody2D>();
 
@@ -73,7 +73,7 @@ public class ColliderTriggerTest2D : BasePlayModeTestFixture
     public IEnumerator CollisionStopCanTrigger()
     {
         int numTriggers = 0;
-        ColliderExitTrigger2D trigger = getTriggerObject<ColliderExitTrigger2D>(isTrigger: false, () => ++numTriggers);
+        _ = getTriggerObject<ColliderExitTrigger2D>(isTrigger: false, () => ++numTriggers);
         Collider2D testCollider = getCollidingObject();
         Rigidbody2D collidingRb = testCollider.GetComponent<Rigidbody2D>();
 
@@ -171,7 +171,7 @@ public class ColliderTriggerTest2D : BasePlayModeTestFixture
     public IEnumerator NoRigidbodyCollisionCanTrigger()
     {
         int numTriggers = 0;
-        ColliderEnterTrigger2D trigger = getTriggerObject<ColliderEnterTrigger2D>(isTrigger: false, () => ++numTriggers, useGravity: true);
+        _ = getTriggerObject<ColliderEnterTrigger2D>(isTrigger: false, () => ++numTriggers, useGravity: true);
         Collider2D testCollider = getCollidingObject(hasRigidbody: false);
 
         // Position test object below trigger-Collider2D

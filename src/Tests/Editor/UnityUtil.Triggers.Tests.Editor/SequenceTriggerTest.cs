@@ -1,11 +1,11 @@
-﻿using NUnit.Framework;
 using System.Linq;
+using NUnit.Framework;
+using Unity.Extensions.Logging;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityUtil.Logging;
-using UnityUtil.Triggers;
+using UnityUtil.Editor.Tests;
 
-namespace UnityUtil.Editor.Tests.Triggers;
+namespace UnityUtil.Triggers.Tests.Editor;
 
 public class SequenceTriggerTest : BaseEditModeTestFixture
 {
@@ -153,12 +153,13 @@ public class SequenceTriggerTest : BaseEditModeTestFixture
         string affectedTxt = "";
         SequenceTrigger trigger = getSequenceTrigger(2);
         trigger.CurrentStep = 0;
-        trigger.StepTriggers = Enumerable.Range(0, 2).Select(e => {
-            var unityEvent = new UnityEvent();
-            unityEvent.AddListener(() => affectedTxt = $"Trigger {e}");
-            return unityEvent;
-        })
-        .ToArray();
+        trigger.StepTriggers = [
+            .. Enumerable.Range(0, 2).Select(e => {
+                var unityEvent = new UnityEvent();
+                unityEvent.AddListener(() => affectedTxt = $"Trigger {e}");
+                return unityEvent;
+            })
+        ];
 
         trigger.Step();
         trigger.Trigger();

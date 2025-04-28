@@ -4,6 +4,16 @@
         <name>UnityUtil</name>
     </assembly>
     <members>
+        <member name="T:System.Runtime.CompilerServices.IsExternalInit">
+            <summary>
+                Reserved to be used by the compiler for tracking metadata.
+                This class should not be used by developers in source code.
+            </summary>
+            <remarks>
+                This definition is provided by the <i>IsExternalInit</i> NuGet package (https://www.nuget.org/packages/IsExternalInit).
+                Please see https://github.com/manuelroemer/IsExternalInit for more information.
+            </remarks>
+        </member>
         <member name="T:UnityUtil.BuildAutomation.BuildManifest">
             <summary>
             Represents a Unity Build Automation (UBA) build manifest, for runtime parsing of the JSON manifest provided by UBA.
@@ -94,9 +104,9 @@
             Toggles recording how many times service <see cref="T:System.Type"/>s are resolved at runtime, for optimization purposes.
             </summary>
         </member>
-        <member name="P:UnityUtil.DependencyInjection.DependencyInjector.ServiceResolutionCounts">
+        <member name="M:UnityUtil.DependencyInjection.DependencyInjector.GetServiceResolutionCounts">
             <summary>
-            Gets/sets the number of times that each service <see cref="T:System.Type"/> has been resolved at runtime.
+            Gets the number of times that each service <see cref="T:System.Type"/> has been resolved at runtime.
             </summary>
         </member>
         <member name="M:UnityUtil.DependencyInjection.DependencyInjector.Construct``1">
@@ -137,9 +147,14 @@
             <summary>
             Inject the service configured with this field's <see cref="T:System.Type"/> and an optional Inspector tag.
             </summary>
+            <remarks></remarks>
+            <param name="tag">The service <see cref="T:UnityEngine.Object"/> with this tag (set in the Inspector) will be injected.  Use when registering multiple services with the same Type.</param>
         </member>
         <member name="M:UnityUtil.DependencyInjection.InjectTagAttribute.#ctor(System.String)">
-            <summary></summary>
+            <summary>
+            Inject the service configured with this field's <see cref="T:System.Type"/> and an optional Inspector tag.
+            </summary>
+            <remarks></remarks>
             <param name="tag">The service <see cref="T:UnityEngine.Object"/> with this tag (set in the Inspector) will be injected.  Use when registering multiple services with the same Type.</param>
         </member>
         <member name="P:UnityUtil.DependencyInjection.InjectTagAttribute.Tag">
@@ -290,379 +305,6 @@
             </summary>
             <returns>A new, unique identifier.</returns>
         </member>
-        <member name="T:UnityUtil.Logging.BaseUnityUtilLogger`1">
-            <summary>
-            Base class for custom loggers in <see cref="N:UnityUtil"/> components.
-            Derived types can define methods that provide statically-typed parameters to specific log messages
-            and abstract away their log levels and other log properties.
-            </summary>
-            <typeparam name="TCategoryName">The type that is logging. It's type name will be appended as the "category" of all its log messages.</typeparam>
-            <remarks>
-            <para>
-            Defining all log messages in a single class means that developers only have to look within a single type
-            to find log <see cref="T:Microsoft.Extensions.Logging.EventId"/> conflicts, inconsistent log property names, inconsistent language/grammar, etc.
-            It also provides a single type to modify when migrating log frameworks
-            (though this is less of an issue with the <see cref="N:Microsoft.Extensions.Logging.Abstractions"/> namespace).
-            </para>
-            <para>
-            Each method of a derived class should be referenced by at most one call site;
-            if a method is no longer referenced then it should be deleted, effectively deleting its inner log message.
-            </para>
-            <para>
-            Every log message must have a unique integer ID, so that specific messages can be searched in log files and storage systems.
-            This means that all log events are sharing the same "space" of event IDs, both within components of the <see cref="N:UnityUtil"/> namespaces,
-            and the components of your own application.
-            To prevent conflicts, we divide this space into six "subspaces" or "ranges" for each <see cref="T:Microsoft.Extensions.Logging.LogLevel"/>, with 100,000,000 unique IDs each.
-            </para>
-            These ID ranges are:
-            <list type="table">
-                <listheader>
-                    <term>Log level</term>
-                    <term>ID Range Start</term>
-                    <term>ID Range End</term>
-                </listheader>
-                <item>
-                    <term><see cref="F:Microsoft.Extensions.Logging.LogLevel.Trace"/></term>
-                    <term>0</term>
-                    <term>99,999,999</term>
-                </item>
-                <item>
-                    <term><see cref="F:Microsoft.Extensions.Logging.LogLevel.Debug"/></term>
-                    <term>100,000,000</term>
-                    <term>199,999,999</term>
-                </item>
-                <item>
-                    <term><see cref="F:Microsoft.Extensions.Logging.LogLevel.Information"/></term>
-                    <term>200,000,000</term>
-                    <term>299,999,999</term>
-                </item>
-                <item>
-                    <term><see cref="F:Microsoft.Extensions.Logging.LogLevel.Warning"/></term>
-                    <term>300,000,000</term>
-                    <term>399,999,999</term>
-                </item>
-                <item>
-                    <term><see cref="F:Microsoft.Extensions.Logging.LogLevel.Error"/></term>
-                    <term>400,000,000</term>
-                    <term>499,999,999</term>
-                </item>
-                <item>
-                    <term><see cref="F:Microsoft.Extensions.Logging.LogLevel.Critical"/></term>
-                    <term>500,000,000</term>
-                    <term>599,999,999</term>
-                </item>
-            </list>
-            <para>
-            Each namespace of <see cref="N:UnityUtil"/>, then, is given 1,000 unique event IDs to work with in each <see cref="T:Microsoft.Extensions.Logging.LogLevel"/>-subspace (by default),
-            starting from some "base offset".
-            For example, the event ID offset of the <see cref="N:UnityUtil"/> root namespace is 0,
-            so it can use information event IDs 200,000,000 - 200,000,999 and warning event IDs 300,000,000 - 300,000,999.
-            Likewise, if the event ID offset of another namespace is 1000,
-            then it can use information event IDs 200,001,000 - 200,001,999 and warning event IDs 300,001,000 - 300,001,999.
-            In other words, a namespace's event ID offset sets the lowest offset relative to the start of each <see cref="T:Microsoft.Extensions.Logging.LogLevel"/>-range that a namespace can use.
-            </para>
-            <para>
-            The authoritative list of namespace event ID offsets is maintained in the <a href="https://github.com/DerploidEntertainment/UnityUtil">UnityUtil repo</a>.
-            You <i>must</i> avoid using event IDs that collide with these ranges when creating new log messages in libraries that reference <see cref="N:UnityUtil"/>,
-            so that you don't pass these conflicts on to consumers.
-            If you are only referencing <see cref="N:UnityUtil"/> in an application, then you <i>should</i> still avoid ID collisions;
-            ID collisions will not break your application's logging, but they will make it more difficult to search for specific logs.
-            </para>
-            <b>Note to Inheritors</b>
-            <para>
-            Inheriting from this class will make all of the above ID-management easier.
-            The <see cref="M:UnityUtil.Logging.BaseUnityUtilLogger`1.#ctor(Microsoft.Extensions.Logging.ILoggerFactory,`0,System.Int32)"/> constructor accepts an offset parameter,
-            and your custom log methods can use it by calling the <see langword="protected"/> <see cref="M:UnityUtil.Logging.BaseUnityUtilLogger`1.Log(System.Int32,System.String,Microsoft.Extensions.Logging.LogLevel,System.String,System.Object[])"/> meethod.
-            That way, your custom log methods can all use simple monotonically increasing event IDs (0, 1, 2, etc.),
-            and the actual integer value is computed (<see cref="T:Microsoft.Extensions.Logging.LogLevel"/>- and namespace-offsets added) in one place.
-            </para>
-            <para>
-            By convention, the custom logger for each <see cref="N:UnityUtil"/> namespace is a class called <c><![CDATA[<Namespace>Logger]]></c> within that namespace.
-            See the namespaces in this repo for examples.
-            </para>
-            <para>
-            When using dependency injection, consumers should not inject this class or any of its derived types directly.
-            Instead, consumers should inject <see cref="T:Microsoft.Extensions.Logging.ILoggerFactory"/> and new up these types <i>in-situ</i> explicitly.
-            Otherwise, the recommendation would be to create an interface for the custom logger <i>and</i> an implementing type,
-            and that would just create a lot of friction when adding a new log message.
-            </para>
-            </remarks>
-        </member>
-        <member name="M:UnityUtil.Logging.BaseUnityUtilLogger`1.#ctor(Microsoft.Extensions.Logging.ILoggerFactory,`0,System.Int32)">
-            <summary>
-            Creates a new instance of <see cref="T:UnityUtil.Logging.BaseUnityUtilLogger`1"/>
-            </summary>
-            <param name="loggerFactory">Used to create the internal <see cref="T:Microsoft.Extensions.Logging.ILogger`1"/> instance</param>
-            <param name="context">Object to which the log messages apply.</param>
-            <param name="eventIdOffset">This offset will be added to all logged event IDs, to ensure unique IDs across all systems.</param>
-            <exception cref="T:System.ArgumentOutOfRangeException">
-            <paramref name="eventIdOffset"/> is negative, not a multiple of <see cref="F:UnityUtil.Logging.BaseUnityUtilLogger`1.ComponentAllowedIdCount"/> greater than the highest allowed offset for a single <see cref="T:Microsoft.Extensions.Logging.LogLevel"/>
-            </exception>
-        </member>
-        <member name="F:UnityUtil.Logging.BaseUnityUtilLogger`1.LogLevelAllowedIdCount">
-            <summary>
-            The max number of log event IDs that each <see cref="T:Microsoft.Extensions.Logging.LogLevel"/> may use.
-            </summary>
-            <remarks>
-            Note to contributors: BEWARE!! Changing this value is a SERIOUS BREAKING CHANGE, altering most of the log <see cref="T:Microsoft.Extensions.Logging.EventId"/>s generated by this library.
-            </remarks>
-        </member>
-        <member name="F:UnityUtil.Logging.BaseUnityUtilLogger`1.ComponentAllowedIdCount">
-            <summary>
-            The max number of log event IDs that each <see cref="N:UnityUtil"/> component (namespace or referencing library) may use.
-            </summary>
-            <remarks>
-            Note to contributors: BEWARE!! Changing this value is a SERIOUS BREAKING CHANGE, altering most of the log <see cref="T:Microsoft.Extensions.Logging.EventId"/>s generated by this library.
-            </remarks>
-        </member>
-        <member name="F:UnityUtil.Logging.BaseUnityUtilLogger`1.BaseEventIdTrace">
-            <summary>
-            Base event ID for <see cref="F:Microsoft.Extensions.Logging.LogLevel.Trace"/> logs.
-            </summary>
-        </member>
-        <member name="F:UnityUtil.Logging.BaseUnityUtilLogger`1.BaseEventIdDebug">
-            <summary>
-            Base event ID for <see cref="F:Microsoft.Extensions.Logging.LogLevel.Debug"/> logs.
-            </summary>
-        </member>
-        <member name="F:UnityUtil.Logging.BaseUnityUtilLogger`1.BaseEventIdInformation">
-            <summary>
-            Base event ID for <see cref="F:Microsoft.Extensions.Logging.LogLevel.Information"/> logs.
-            </summary>
-        </member>
-        <member name="F:UnityUtil.Logging.BaseUnityUtilLogger`1.BaseEventIdWarning">
-            <summary>
-            Base event ID for <see cref="F:Microsoft.Extensions.Logging.LogLevel.Warning"/> logs.
-            </summary>
-        </member>
-        <member name="F:UnityUtil.Logging.BaseUnityUtilLogger`1.BaseEventIdError">
-            <summary>
-            Base event ID for <see cref="F:Microsoft.Extensions.Logging.LogLevel.Error"/> logs.
-            </summary>
-        </member>
-        <member name="F:UnityUtil.Logging.BaseUnityUtilLogger`1.BaseEventIdCritical">
-            <summary>
-            Base event ID for <see cref="F:Microsoft.Extensions.Logging.LogLevel.Critical"/> logs.
-            </summary>
-        </member>
-        <member name="M:UnityUtil.Logging.BaseUnityUtilLogger`1.LogTrace(System.Int32,System.String,System.String,System.Object[])">
-            <summary>
-            Formats and writes a log message at <see cref="F:Microsoft.Extensions.Logging.LogLevel.Trace"/> level,
-            with the specified <paramref name="id"/> and <paramref name="name"/>.
-            </summary>
-            <param name="id">
-            Unique ID <i>within the logging namespace</i>.
-            The <see cref="F:Microsoft.Extensions.Logging.LogLevel.Trace"/> and namespace event ID offsets will be automatically appended
-            </param>
-            <param name="name">
-            Distinctive (ideally unique) human-readable name for the log event.
-            The name of the custom log method is usually preferrable (using <see langword="nameof"/>).
-            </param>
-            <param name="message">Format string of the log message.</param>
-            <param name="args">An object array that contains zero or more objects to format.</param>
-        </member>
-        <member name="M:UnityUtil.Logging.BaseUnityUtilLogger`1.LogDebug(System.Int32,System.String,System.String,System.Object[])">
-            <summary>
-            Formats and writes a log message at <see cref="F:Microsoft.Extensions.Logging.LogLevel.Debug"/> level,
-            with the specified <paramref name="id"/> and <paramref name="name"/>.
-            </summary>
-            <param name="id">
-            Unique ID <i>within the logging namespace</i>.
-            The <see cref="F:Microsoft.Extensions.Logging.LogLevel.Debug"/> and namespace event ID offsets will be automatically appended
-            </param>
-            <param name="name">
-            Distinctive (ideally unique) human-readable name for the log event.
-            The name of the custom log method is usually preferrable (using <see langword="nameof"/>).
-            </param>
-            <param name="message">Format string of the log message.</param>
-            <param name="args">An object array that contains zero or more objects to format.</param>
-        </member>
-        <member name="M:UnityUtil.Logging.BaseUnityUtilLogger`1.LogInformation(System.Int32,System.String,System.String,System.Object[])">
-            <summary>
-            Formats and writes a log message at <see cref="F:Microsoft.Extensions.Logging.LogLevel.Information"/> level,
-            with the specified <paramref name="id"/> and <paramref name="name"/>.
-            </summary>
-            <param name="id">
-            Unique ID <i>within the logging namespace</i>.
-            The <see cref="F:Microsoft.Extensions.Logging.LogLevel.Information"/> and namespace event ID offsets will be automatically appended
-            </param>
-            <param name="name">
-            Distinctive (ideally unique) human-readable name for the log event.
-            The name of the custom log method is usually preferrable (using <see langword="nameof"/>).
-            </param>
-            <param name="message">Format string of the log message.</param>
-            <param name="args">An object array that contains zero or more objects to format.</param>
-        </member>
-        <member name="M:UnityUtil.Logging.BaseUnityUtilLogger`1.LogWarning(System.Int32,System.String,System.String,System.Object[])">
-            <summary>
-            Formats and writes a log message at <see cref="F:Microsoft.Extensions.Logging.LogLevel.Warning"/> level,
-            with the specified <paramref name="id"/> and <paramref name="name"/>.
-            </summary>
-            <param name="id">
-            Unique ID <i>within the logging namespace</i>.
-            The <see cref="F:Microsoft.Extensions.Logging.LogLevel.Warning"/> and namespace event ID offsets will be automatically appended
-            </param>
-            <param name="name">
-            Distinctive (ideally unique) human-readable name for the log event.
-            The name of the custom log method is usually preferrable (using <see langword="nameof"/>).
-            </param>
-            <param name="message">Format string of the log message.</param>
-            <param name="args">An object array that contains zero or more objects to format.</param>
-        </member>
-        <member name="M:UnityUtil.Logging.BaseUnityUtilLogger`1.LogError(System.Int32,System.String,System.String,System.Object[])">
-            <summary>
-            Formats and writes a log message at <see cref="F:Microsoft.Extensions.Logging.LogLevel.Error"/> level,
-            with the specified <paramref name="id"/> and <paramref name="name"/>.
-            </summary>
-            <param name="id">
-            Unique ID <i>within the logging namespace</i>.
-            The <see cref="F:Microsoft.Extensions.Logging.LogLevel.Error"/> and namespace event ID offsets will be automatically appended
-            </param>
-            <param name="name">
-            Distinctive (ideally unique) human-readable name for the log event.
-            The name of the custom log method is usually preferrable (using <see langword="nameof"/>).
-            </param>
-            <param name="message">Format string of the log message.</param>
-            <param name="args">An object array that contains zero or more objects to format.</param>
-        </member>
-        <member name="M:UnityUtil.Logging.BaseUnityUtilLogger`1.LogCritical(System.Int32,System.String,System.String,System.Object[])">
-            <summary>
-            Formats and writes a log message at <see cref="F:Microsoft.Extensions.Logging.LogLevel.Critical"/> level,
-            with the specified <paramref name="id"/> and <paramref name="name"/>.
-            </summary>
-            <param name="id">
-            Unique ID <i>within the logging namespace</i>.
-            The <see cref="F:Microsoft.Extensions.Logging.LogLevel.Critical"/> and namespace event ID offsets will be automatically appended
-            </param>
-            <param name="name">
-            Distinctive (ideally unique) human-readable name for the log event.
-            The name of the custom log method is usually preferrable (using <see langword="nameof"/>).
-            </param>
-            <param name="message">Format string of the log message.</param>
-            <param name="args">An object array that contains zero or more objects to format.</param>
-        </member>
-        <member name="M:UnityUtil.Logging.BaseUnityUtilLogger`1.Log(System.Int32,System.String,Microsoft.Extensions.Logging.LogLevel,System.String,System.Object[])">
-            <summary>
-            Formats and writes a log message at the specified <paramref name="logLevel"/>,
-            with the specified <paramref name="id"/> and <paramref name="name"/>.
-            </summary>
-            <param name="id">
-            Unique ID <i>within the logging namespace</i>.
-            The <see cref="T:Microsoft.Extensions.Logging.LogLevel"/> and namespace event ID offsets will be automatically appended
-            </param>
-            <param name="name">
-            Distinctive (ideally unique) human-readable name for the log event.
-            The name of the custom log method is usually preferrable (using <see langword="nameof"/>).
-            </param>
-            <param name="logLevel">Entry will be written on this level.</param>
-            <param name="message">Format string of the log message.</param>
-            <param name="args">An object array that contains zero or more objects to format.</param>
-        </member>
-        <member name="M:UnityUtil.Logging.BaseUnityUtilLogger`1.LogWarning(System.Int32,System.String,System.Exception,System.String,System.Object[])">
-            <summary>
-            Formats and writes a log message at <see cref="F:Microsoft.Extensions.Logging.LogLevel.Warning"/>,
-            with the specified <paramref name="id"/> and <paramref name="name"/>.
-            </summary>
-            <param name="id">
-            Unique ID <i>within the logging namespace</i>.
-            The <see cref="F:Microsoft.Extensions.Logging.LogLevel.Warning"/> and namespace event ID offsets will be automatically appended
-            </param>
-            <param name="name">
-            Distinctive (ideally unique) human-readable name for the log event.
-            The name of the custom log method is usually preferrable (using <see langword="nameof"/>).
-            </param>
-            <param name="exception">The exception to log.</param>
-            <param name="message">Format string of the log message.</param>
-            <param name="args">An object array that contains zero or more objects to format.</param>
-        </member>
-        <member name="M:UnityUtil.Logging.BaseUnityUtilLogger`1.LogError(System.Int32,System.String,System.Exception,System.String,System.Object[])">
-            <summary>
-            Formats and writes a log message at <see cref="F:Microsoft.Extensions.Logging.LogLevel.Error"/>,
-            with the specified <paramref name="id"/> and <paramref name="name"/>.
-            </summary>
-            <param name="id">
-            Unique ID <i>within the logging namespace</i>.
-            The <see cref="F:Microsoft.Extensions.Logging.LogLevel.Error"/> and namespace event ID offsets will be automatically appended
-            </param>
-            <param name="name">
-            Distinctive (ideally unique) human-readable name for the log event.
-            The name of the custom log method is usually preferrable (using <see langword="nameof"/>).
-            </param>
-            <param name="exception">The exception to log.</param>
-            <param name="message">Format string of the log message.</param>
-            <param name="args">An object array that contains zero or more objects to format.</param>
-        </member>
-        <member name="M:UnityUtil.Logging.BaseUnityUtilLogger`1.LogCritical(System.Int32,System.String,System.Exception,System.String,System.Object[])">
-            <summary>
-            Formats and writes a log message at <see cref="F:Microsoft.Extensions.Logging.LogLevel.Critical"/>,
-            with the specified <paramref name="id"/> and <paramref name="name"/>.
-            </summary>
-            <param name="id">
-            Unique ID <i>within the logging namespace</i>.
-            The <see cref="F:Microsoft.Extensions.Logging.LogLevel.Critical"/> and namespace event ID offsets will be automatically appended
-            </param>
-            <param name="name">
-            Distinctive (ideally unique) human-readable name for the log event.
-            The name of the custom log method is usually preferrable (using <see langword="nameof"/>).
-            </param>
-            <param name="exception">The exception to log.</param>
-            <param name="message">Format string of the log message.</param>
-            <param name="args">An object array that contains zero or more objects to format.</param>
-        </member>
-        <member name="M:UnityUtil.Logging.BaseUnityUtilLogger`1.Log(System.Int32,System.String,Microsoft.Extensions.Logging.LogLevel,System.Exception,System.String,System.Object[])">
-            <summary>
-            Formats and writes a log message at the specified <paramref name="logLevel"/>,
-            with the specified <paramref name="id"/> and <paramref name="name"/>.
-            </summary>
-            <param name="id">
-            Unique ID <i>within the logging namespace</i>.
-            The <see cref="T:Microsoft.Extensions.Logging.LogLevel"/> and namespace event ID offsets will be automatically appended
-            </param>
-            <param name="name">
-            Distinctive (ideally unique) human-readable name for the log event.
-            The name of the custom log method is usually preferrable (using <see langword="nameof"/>).
-            </param>
-            <param name="logLevel">Entry will be written on this level.</param>
-            <param name="exception">The exception to log.</param>
-            <param name="message">Format string of the log message.</param>
-            <param name="args">An object array that contains zero or more objects to format.</param>
-        </member>
-        <member name="T:UnityUtil.Logging.LogLevelCallbackLogger">
-            <summary>
-            "Default" implementation of <see cref="T:Microsoft.Extensions.Logging.ILogger"/> that calls provided callbacks for log messages based on their <see cref="T:Microsoft.Extensions.Logging.LogLevel"/>.
-            Mainly intended for testing code that needs to verify that loggers were invoked in specific ways.
-            Most runtime code should still prefer dependency injection and one of the custom <see cref="N:UnityUtil"/> loggers.
-            </summary>
-        </member>
-        <member name="M:UnityUtil.Logging.LogLevelCallbackLogger.#ctor(Microsoft.Extensions.Logging.LogLevel,System.Action{Microsoft.Extensions.Logging.LogLevel,Microsoft.Extensions.Logging.EventId,System.Exception,System.String},System.Action{Microsoft.Extensions.Logging.LogLevel,Microsoft.Extensions.Logging.EventId,System.Exception,System.String})">
-            <summary>
-            "Default" implementation of <see cref="T:Microsoft.Extensions.Logging.ILogger"/> that calls provided callbacks for log messages based on their <see cref="T:Microsoft.Extensions.Logging.LogLevel"/>.
-            Mainly intended for testing code that needs to verify that loggers were invoked in specific ways.
-            Most runtime code should still prefer dependency injection and one of the custom <see cref="N:UnityUtil"/> loggers.
-            </summary>
-        </member>
-        <member name="T:UnityUtil.Logging.LogLevelCallbackLoggerFactory">
-            <summary>
-            "Default" implementation of <see cref="T:Microsoft.Extensions.Logging.ILoggerFactory"/> that creates instances of <see cref="T:UnityUtil.Logging.LogLevelCallbackLogger"/>.
-            </summary>
-        </member>
-        <member name="M:UnityUtil.Logging.LogLevelCallbackLoggerFactory.#ctor(Microsoft.Extensions.Logging.LogLevel,System.Action{Microsoft.Extensions.Logging.LogLevel,Microsoft.Extensions.Logging.EventId,System.Exception,System.String},System.Action{Microsoft.Extensions.Logging.LogLevel,Microsoft.Extensions.Logging.EventId,System.Exception,System.String})">
-            <summary>
-            "Default" implementation of <see cref="T:Microsoft.Extensions.Logging.ILoggerFactory"/> that creates instances of <see cref="T:UnityUtil.Logging.LogLevelCallbackLogger"/>.
-            </summary>
-        </member>
-        <member name="T:UnityUtil.Logging.UnityDebugLogger">
-            <summary>
-            "Default" implementation of <see cref="T:Microsoft.Extensions.Logging.ILogger"/> to wrap Unity's own <see cref="T:UnityEngine.Debug"/> <c>Log*</c> methods.
-            Mainly intended for Unity code that can't set up a proper logging framework via dependency injection (e.g., in Editor scripts).
-            Most runtime code should still prefer dependency injection and one of the custom <see cref="N:UnityUtil"/> loggers.
-            </summary>
-        </member>
-        <member name="T:UnityUtil.Logging.UnityDebugLoggerFactory">
-            <summary>
-            "Default" implementation of <see cref="T:Microsoft.Extensions.Logging.ILoggerFactory"/> that creates instances of <see cref="T:UnityUtil.Logging.UnityDebugLogger"/>.
-            </summary>
-        </member>
         <member name="T:UnityUtil.QuantityEvent">
             <summary>
             Type arguments are (float oldValue, float newValue)
@@ -748,9 +390,6 @@
             <returns>
             An index between 0 (inclusive) and the number of options (exclusive).
             </returns>
-        </member>
-        <member name="T:UnityUtil.Math.MathLogger`1">
-            <inheritdoc/>
         </member>
         <member name="T:UnityUtil.Math.MaxRepeatsRandomishOptionChooser">
             <summary>
@@ -933,9 +572,6 @@
         <member name="M:UnityUtil.Math.UniformBatchedRandomishOptionChooser.GetOptionIndex">
             <inheritdoc/>
         </member>
-        <member name="T:UnityUtil.RootLogger`1">
-            <inheritdoc/>
-        </member>
         <member name="T:UnityUtil.RuntimeIdProvider">
             <inheritdoc/>
         </member>
@@ -1077,27 +713,6 @@
             Should be present-tense phrase, like "stop", or "perform that action". Padding spaces are not required.
             </param>
         </member>
-        <member name="T:UnityUtil.Updating.IUnityMainThreadDispatcher">
-            <summary>
-            Original author: Pim de Witte (pimdewitte.com) and contributors, https://github.com/PimDeWitte/UnityMainThreadDispatcher.
-            Encapsulates a thread-safe queue with actions to execute on the next update loop.
-            It can be used to make calls to Unity's main thread for things such as UI manipulation.
-            It was developed for use in combination with the Firebase Unity plugin, which uses separate threads for event handling.
-            </summary>
-        </member>
-        <member name="M:UnityUtil.Updating.IUnityMainThreadDispatcher.Enqueue(System.Action)">
-            <summary>
-            Locks the queue and adds <paramref name="action"/> to the queue
-            </summary>
-            <param name="action">Action that will be executed from Unity's main thread.</param>
-        </member>
-        <member name="M:UnityUtil.Updating.IUnityMainThreadDispatcher.EnqueueAsync(System.Action)">
-            <summary>
-            Locks the queue and adds <paramref name="action"/> to the queue, returning a <see cref="T:System.Threading.Tasks.Task"/> which is completed when the action completes
-            </summary>
-            <param name="action">Action that will be executed from Unity's main thread.</param>
-            <returns>A <see cref="T:System.Threading.Tasks.Task"/> that can be awaited until the action completes</returns>
-        </member>
         <member name="M:UnityUtil.Updating.IUpdater.AddUpdate(System.Int32,System.Action{System.Single})">
             <summary>
             Add an <see cref="T:System.Action"/> to be called every frame for the component with <paramref name="instanceId"/>.
@@ -1105,7 +720,7 @@
             </summary>
             <param name="instanceId">The instance ID of the component that will be updated every frame.</param>
             <param name="updateAction">The <see cref="T:System.Action"/> to be called every frame.</param>
-            <exception cref="T:System.ArgumentException">An <c>Update</c> has already been associated with <paramref name="instanceId"/>.</exception>
+            <exception cref="T:System.InvalidOperationException">An <c>Update</c> has already been associated with <paramref name="instanceId"/>.</exception>
         </member>
         <member name="M:UnityUtil.Updating.IUpdater.RemoveUpdate(System.Int32,System.Action{System.Single}@)">
             <summary>
@@ -1159,7 +774,7 @@
             </summary>
             <param name="instanceId">The instance ID of the component that will be updated every frame.</param>
             <param name="fixedUpdateAction">The <see cref="T:System.Action"/> to be called every physics frame.</param>
-            <exception cref="T:System.ArgumentException">A <c>FixedUpdate</c> has already been associated with <paramref name="instanceId"/>.</exception>
+            <exception cref="T:System.InvalidOperationException">A <c>FixedUpdate</c> has already been associated with <paramref name="instanceId"/>.</exception>
         </member>
         <member name="M:UnityUtil.Updating.IUpdater.RemoveFixedUpdate(System.Int32,System.Action{System.Single}@)">
             <summary>
@@ -1213,7 +828,7 @@
             </summary>
             <param name="instanceId">The instance ID of the component that will be updated every frame.</param>
             <param name="lateUpdateAction">The <see cref="T:System.Action"/> to be called at the end of every frame.</param>
-            <exception cref="T:System.ArgumentException">A <c>LateUpdate</c> has already been associated with <paramref name="instanceId"/>.</exception>
+            <exception cref="T:System.InvalidOperationException">A <c>LateUpdate</c> has already been associated with <paramref name="instanceId"/>.</exception>
         </member>
         <member name="M:UnityUtil.Updating.IUpdater.RemoveLateUpdate(System.Int32,System.Action{System.Single}@)">
             <summary>
@@ -1270,20 +885,6 @@
             Re-allocating memory is still costly though, so avoid calling this method super often, 
             ideally only during breaks in gameplay.
             </summary>
-        </member>
-        <member name="T:UnityUtil.Updating.UnityMainThreadDispatcher">
-            <summary>
-            Original author: Pim de Witte (pimdewitte.com) and contributors, https://github.com/PimDeWitte/UnityMainThreadDispatcher.
-            A thread-safe class which holds a queue with actions to execute on the next update loop.
-            It can be used to make calls to Unity's main thread for things such as UI manipulation.
-            It was developed for use in combination with the Firebase Unity plugin, which uses separate threads for event handling.
-            </summary>
-        </member>
-        <member name="M:UnityUtil.Updating.UnityMainThreadDispatcher.Enqueue(System.Action)">
-            <inheritdoc/>
-        </member>
-        <member name="M:UnityUtil.Updating.UnityMainThreadDispatcher.EnqueueAsync(System.Action)">
-            <inheritdoc/>
         </member>
         <member name="T:UnityUtil.Updating.Updatable">
             <summary>

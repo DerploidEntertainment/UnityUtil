@@ -1,12 +1,13 @@
-using Moq;
-using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using Moq;
+using NUnit.Framework;
 using UnityEngine;
+using UnityUtil.Editor.Tests;
 using UnityUtil.Math;
 
-namespace UnityUtil.Editor.Tests.Math;
+namespace UnityUtil.Tests.Editor.Math;
 
 public class MoreMathTest : BaseEditModeTestFixture
 {
@@ -15,43 +16,31 @@ public class MoreMathTest : BaseEditModeTestFixture
         Assert.Throws<ArgumentException>(() => MoreMath.RandomWeightedIndex(indexWeights: [], getRandomAdapter()));
 
     [Test]
+
+    // Weights don't sum to one
     [TestCase(new[] { 0f })]
     [TestCase(new[] { 1f, 1f })]
     [TestCase(new[] { 0.5f, 0f, 0.5f, 0.5f })]
     [TestCase(new[] { 0.25f, 0.85f })]
     [TestCase(new[] { 0.1f, 0.1f })]
     [TestCase(new[] { 0.2f, 0.5f })]
-    [SuppressMessage("Performance", "CA1861:Avoid constant arrays as arguments", Justification = "Fine for test cases that only run once")]
-    public void RandomWeightedIndex_Fails_WeightsDontSumToOne(float[] indexWeights)
-    {
-        Debug.Log($"Index weights: {string.Join(',', indexWeights)}");
-        Assert.Throws<InvalidOperationException>(() =>
-            MoreMath.RandomWeightedIndex(indexWeights, getRandomAdapter())
-        );
-    }
 
-    [Test]
+    // Negative weights
     [TestCase(new[] { -1f })]
     [TestCase(new[] { -0.5f, -0.5f })]
     [TestCase(new[] { -0.5f, 0.5f })]
     [TestCase(new[] { 0.5f, -0.25f, 0.75f })]
-    public void RandomWeightedIndex_Fails_NegativeWeights(float[] indexWeights)
-    {
-        Debug.Log($"Index weights: {string.Join(',', indexWeights)}");
-        Assert.Throws<InvalidOperationException>(() =>
-            MoreMath.RandomWeightedIndex(indexWeights, getRandomAdapter())
-        );
-    }
 
-    [Test]
+    // Weights over one
     [TestCase(new[] { 1.01f })]
     [TestCase(new[] { 200f })]
     [TestCase(new[] { -1f, 2f })]
+
     [SuppressMessage("Performance", "CA1861:Avoid constant arrays as arguments", Justification = "Fine for test cases that only run once")]
-    public void RandomWeightedIndex_Fails_WeightsOverOne(float[] indexWeights)
+    public void RandomWeightedIndex_ValidatesWeights(float[] indexWeights)
     {
         Debug.Log($"Index weights: {string.Join(',', indexWeights)}");
-        Assert.Throws<InvalidOperationException>(() =>
+        _ = Assert.Throws<InvalidOperationException>(() =>
             MoreMath.RandomWeightedIndex(indexWeights, getRandomAdapter())
         );
     }

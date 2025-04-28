@@ -4,6 +4,16 @@
         <name>UnityUtil.Inventory</name>
     </assembly>
     <members>
+        <member name="T:System.Runtime.CompilerServices.IsExternalInit">
+            <summary>
+                Reserved to be used by the compiler for tracking metadata.
+                This class should not be used by developers in source code.
+            </summary>
+            <remarks>
+                This definition is provided by the <i>IsExternalInit</i> NuGet package (https://www.nuget.org/packages/IsExternalInit).
+                Please see https://github.com/manuelroemer/IsExternalInit for more information.
+            </remarks>
+        </member>
         <member name="T:UnityUtil.Inventory.AmmoEvent">
             <summary>
             Type arguments are (int oldClipAmmo, int oldBackupAmmo, int newClipAmmo, int newBackupAmmo)
@@ -61,8 +71,11 @@
             Type arguments are (Collector collector, Collectible collectible)
             </summary>
         </member>
-        <member name="T:UnityUtil.Inventory.InventoriesLogger`1">
-            <inheritdoc/>
+        <member name="M:UnityUtil.Inventory.LookAtRaycast.GetUpwardUnitVector">
+            <summary>
+            Returns the unit vector that this <see cref="T:UnityUtil.Inventory.LookAtRaycast"/> will use to rotate towards what its associated <see cref="F:UnityUtil.Inventory.LookAtRaycast.RaycastingTransform"/> is looking at.
+            </summary>
+            <returns>The unit vector that this <see cref="T:UnityUtil.Inventory.LookAtRaycast"/> will use to rotate towards what its associated <see cref="F:UnityUtil.Inventory.LookAtRaycast.RaycastingTransform"/> is looking at.</returns>
         </member>
         <member name="T:UnityUtil.Inventory.OverheatChangedEvent">
             <summary>
@@ -73,12 +86,6 @@
             <summary>
             The current charge of this <see cref="T:UnityUtil.Inventory.Tool"/>.  0 is completely uncharged, 1 is completely charged.
             </summary>
-        </member>
-        <member name="M:UnityUtil.Movement.LookAtRaycast.GetUpwardUnitVector">
-            <summary>
-            Returns the unit vector that this <see cref="T:UnityUtil.Movement.LookAtRaycast"/> will use to rotate towards what its associated <see cref="F:UnityUtil.Movement.LookAtRaycast.RaycastingTransform"/> is looking at.
-            </summary>
-            <returns>The unit vector that this <see cref="T:UnityUtil.Movement.LookAtRaycast"/> will use to rotate towards what its associated <see cref="F:UnityUtil.Movement.LookAtRaycast.RaycastingTransform"/> is looking at.</returns>
         </member>
     </members>
 </doc>

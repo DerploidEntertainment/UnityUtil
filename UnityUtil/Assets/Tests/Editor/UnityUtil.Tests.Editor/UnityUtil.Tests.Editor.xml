@@ -4,7 +4,17 @@
         <name>UnityUtil.Tests.Editor</name>
     </assembly>
     <members>
-        <member name="M:UnityUtil.Editor.Tests.Math.UniformBatchedRandomishOptionChooserTest.getPrngWithOptionIndexRandomization(System.Int32,System.Int32,System.Func{System.Int32})">
+        <member name="T:System.Runtime.CompilerServices.IsExternalInit">
+            <summary>
+                Reserved to be used by the compiler for tracking metadata.
+                This class should not be used by developers in source code.
+            </summary>
+            <remarks>
+                This definition is provided by the <i>IsExternalInit</i> NuGet package (https://www.nuget.org/packages/IsExternalInit).
+                Please see https://github.com/manuelroemer/IsExternalInit for more information.
+            </remarks>
+        </member>
+        <member name="M:UnityUtil.Tests.Editor.Math.UniformBatchedRandomishOptionChooserTest.getPrngWithOptionIndexRandomization(System.Int32,System.Int32,System.Func{System.Int32})">
             <summary>
             Mock an <see name="IRandomAdapter"/> to return the following "randomish" numbers:
             <list type="number">

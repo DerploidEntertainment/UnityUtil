@@ -20,7 +20,7 @@ so documentation content/organization are still in development.
 ## Installing
 
 1. Make sure you have both [Git](https://git-scm.com/) and [Git LFS](https://git-lfs.github.com/) installed before adding this package to your Unity project.
-2. Add the [UnityNuGet](https://github.com/xoofx/UnityNuGet) scoped registry so that you can install NuGet packages through the Unity Package Manager.
+2. Add the [UnityNuGet](https://github.com/bdovaz/UnityNuGet) scoped registry so that you can install NuGet packages through the Unity Package Manager.
 3. Install dependencies in your Unity project. This is an opinionated list of 3rd party assets/packages that UnityUtil leverages for certain features.
     Unfortunately, some of these assets cost money. In the future, UnityUtil's features will be broken up into separate packages,
     so that users can ignore specific packages and not spend money on their Asset Store dependencies.
@@ -42,18 +42,21 @@ As the API stabilizes, I will move this package to [OpenUPM](https://openupm.com
 
 ## Packages
 
-- [Serilog.Enrichers.Unity](./src/Serilog.Enrichers.Unity/README.md): Implements a Serilog enricher to dynamically add Unity data to log events like frame counts, GameObject hierarchies, etc.
-- [UnityUtil](./src/UnityUtil/README.md): utility classes and components related to dependency injection, logging, mathematics, data storage, etc.
-- [UnityUtil.Configuration.RemoteConfig](./src/UnityUtil.Configuration.RemoteConfig/README.md): Implementats a `Microsoft.Extensions.Configuration` configuration provider for Unity Remote Config
-- [UnityUtil.Inputs](./src/UnityUtil.Inputs/README.md): abstracted player inputs
-- [UnityUtil.Interactors](./src/UnityUtil.Interactors/README.md): interaction with in-world objects
-- [UnityUtil.Inventory](./src/UnityUtil.Inventory/README.md): in-game item inventories
-- [UnityUtil.Legal](./src/UnityUtil.Legal/README.md): legal/privacy consent
-- [UnityUtil.Movement](./src/UnityUtil.Movement/README.md): in-game movement mechanics
-- [UnityUtil.Physics](./src/UnityUtil.Physics/README.md): 3D physics helpers
-- [UnityUtil.Physics2D](./src/UnityUtil.Physics2D/README.md): 2D physics helpers
-- [UnityUtil.Triggers](./src/UnityUtil.Triggers/README.md): event-based behavior in-game
-- [UnityUtil.UI](./src/UnityUtil.UI/README.md): in-game and in-Editor user interfaces
+- [Serilog.Enrichers.Unity](./src/Logging/Serilog.Enrichers.Unity/README.md): Implements a [Serilog](https://serilog.net/) enricher that dynamically adds Unity data to your log events
+- [Serilog.Sinks.Unity](./src/Logging/Serilog.Sinks.Unity/README.md): Implements a [Serilog](https://serilog.net/) sink that writes logs to the Unity Console window, optionally including `tag` strings and `context` objects
+- [Unity.Extensions.Logging](./src/Logging/Unity.Extensions.Logging/README.md): Unity-specific extension methods for logging with [Microsoft.Extensions.Logging](https://www.nuget.org/packages/microsoft.extensions.logging/)
+- [Unity.Extensions.Serilog](./src/Logging/Unity.Extensions.Serilog/README.md): Unity-specific logging extension methods for [Serilog](https://serilog.net/)
+- [UnityUtil](./src/UnityUtil/UnityUtil/README.md): utility classes and components related to dependency injection, logging, mathematics, data storage, etc.
+- [UnityUtil.Configuration.RemoteConfig](./src/UnityUtil/UnityUtil.Configuration.RemoteConfig/README.md): Implementats a `Microsoft.Extensions.Configuration` configuration provider for Unity Remote Config
+- [UnityUtil.Inputs](./src/UnityUtil/UnityUtil.Inputs/README.md): abstracted player inputs
+- [UnityUtil.Interactors](./src/UnityUtil/UnityUtil.Interactors/README.md): interaction with in-world objects
+- [UnityUtil.Inventory](./src/UnityUtil/UnityUtil.Inventory/README.md): in-game item inventories
+- [UnityUtil.Legal](./src/UnityUtil/UnityUtil.Legal/README.md): legal/privacy consent
+- [UnityUtil.Movement](./src/UnityUtil/UnityUtil.Movement/README.md): in-game movement mechanics
+- [UnityUtil.Physics](./src/UnityUtil/UnityUtil.Physics/README.md): 3D physics helpers
+- [UnityUtil.Physics2D](./src/UnityUtil/UnityUtil.Physics2D/README.md): 2D physics helpers
+- [UnityUtil.Triggers](./src/UnityUtil/UnityUtil.Triggers/README.md): event-based behavior in-game
+- [UnityUtil.UI](./src/UnityUtil/UnityUtil.UI/README.md): in-game and in-Editor user interfaces
 
 ## Note on IL2CPP
 

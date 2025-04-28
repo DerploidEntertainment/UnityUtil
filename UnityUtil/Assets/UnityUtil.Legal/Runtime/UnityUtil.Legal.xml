@@ -4,6 +4,16 @@
         <name>UnityUtil.Legal</name>
     </assembly>
     <members>
+        <member name="T:System.Runtime.CompilerServices.IsExternalInit">
+            <summary>
+                Reserved to be used by the compiler for tracking metadata.
+                This class should not be used by developers in source code.
+            </summary>
+            <remarks>
+                This definition is provided by the <i>IsExternalInit</i> NuGet package (https://www.nuget.org/packages/IsExternalInit).
+                Please see https://github.com/manuelroemer/IsExternalInit for more information.
+            </remarks>
+        </member>
         <member name="M:UnityUtil.Legal.IConsentManager.HasConsent(UnityUtil.Legal.IInitializableWithConsent)">
             <summary>
             
@@ -20,9 +30,6 @@
             <param name="initializableWithConsent"></param>
             <exception cref="T:System.InvalidOperationException">Consent has not yet been initialized</exception>
             <exception cref="T:System.ArgumentException"><paramref name="initializableWithConsent"/> is not managed by this consent manager</exception>
-        </member>
-        <member name="T:UnityUtil.Legal.LegalLogger`1">
-            <inheritdoc/>
         </member>
         <member name="T:UnityUtil.Legal.SingleDialogConsentManager">
             <summary>
@@ -42,13 +49,13 @@
             (connecting to databases, retrieving remote configuration, registering service dependencies, etc.).
             </param>
         </member>
-        <member name="M:UnityUtil.Legal.SingleDialogConsentManager.GiveConsent">
+        <member name="M:UnityUtil.Legal.SingleDialogConsentManager.giveConsent">
             <summary>
             Give consent to all registered <see cref="T:UnityUtil.Legal.IInitializableWithConsent"/>s that did not already have consent saved in local preferences,
             and accept the latest legal documents.
             </summary>
         </member>
-        <member name="M:UnityUtil.Legal.SingleDialogConsentManager.Initialize">
+        <member name="M:UnityUtil.Legal.SingleDialogConsentManager.initialize">
             <summary>
             Initializes all registered <see cref="T:UnityUtil.Legal.IInitializableWithConsent"/>s in parallel, passing them the corresponding flag for consent.
             </summary>
