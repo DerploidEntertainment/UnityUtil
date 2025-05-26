@@ -21,9 +21,9 @@ internal class LegalDocumentState(string currentTag)
     public string? AcceptedTag;
 }
 
-public class LegalAcceptManager : MonoBehaviour, ILegalAcceptManager
+[CreateAssetMenu(menuName = $"{nameof(UnityUtil)}/{nameof(Legal)}/{nameof(LegalAcceptManager)}", fileName = "legal-accept-manager")]
+public class LegalAcceptManager : ScriptableObject, ILegalAcceptManager
 {
-
     private ILogger<LegalAcceptManager>? _logger;
     private ILocalPreferences? _localPreferences;
 
