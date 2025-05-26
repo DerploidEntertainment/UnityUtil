@@ -12,6 +12,7 @@ using UnityEngine.UI;
 using UnityUtil.DependencyInjection;
 using UnityUtil.Storage;
 using static Microsoft.Extensions.Logging.LogLevel;
+using static UnityUtil.Legal.NonCmpConsentStatus;
 using MEL = Microsoft.Extensions.Logging;
 
 namespace UnityUtil.Legal;
@@ -34,7 +35,7 @@ public class SingleDialogConsentManager : MonoBehaviour, IConsentManager
 
     private Task? _preInitializeTask;
     private bool _legalAcceptanceRequired;
-    private DataConsentState[]? _consents;
+    private NonCmpConsentStatus[]? _consentStatuses;
 
     [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
     [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
@@ -61,7 +62,7 @@ public class SingleDialogConsentManager : MonoBehaviour, IConsentManager
         _tcfCmpAdapter = tcfCmpAdapter;
         _tcfDataProcessors = [.. tcfDataProcessors];
         _nonTcfDataProcessors = [.. nonTcfDataProcessors];
-        _consents = new DataConsentState[_nonTcfDataProcessors.Count];
+        _consentStatuses = new NonCmpConsentStatus[_nonTcfDataProcessors.Count];
     }
 
 
@@ -104,7 +105,7 @@ public class SingleDialogConsentManager : MonoBehaviour, IConsentManager
     {
         _preInitializeTask = preInitializeTask;
 
-        _consents = [
+        _consentStatuses = [
             .. _nonTcfDataProcessors!.Select((x, index) => {
                 string dataProcessorName = x is Component component ? UnityObjectExtensions.GetHierarchyNameWithType(component) : $"non-TCF data processor {index}";
                 return checkConsent(x, dataProcessorName);
@@ -113,7 +114,7 @@ public class SingleDialogConsentManager : MonoBehaviour, IConsentManager
 
         LegalAcceptance legalAcceptance = await _legalAcceptManager!.CheckAcceptanceAsync();
 
-        if (Array.FindIndex(_consents, x => x == DataConsentState.StillRequired) > -1 || legalAcceptance == LegalAcceptance.Unprovided) {
+        if (Array.FindIndex(_consentStatuses, x => x == StillRequired) > -1 || legalAcceptance == LegalAcceptance.Unprovided) {
             _legalAcceptanceRequired = legalAcceptance == LegalAcceptance.Unprovided;
             log_NeedsRequested();
             InitialConsentRequired.Invoke();
@@ -150,16 +151,16 @@ public class SingleDialogConsentManager : MonoBehaviour, IConsentManager
         initializeDataProcessors();
     }
 
-    private DataConsentState checkConsent(INonTcfDataProcessor nonTcfDataProcessor, string name)
+    private NonCmpConsentStatus checkConsent(INonTcfDataProcessor nonTcfDataProcessor, string name)
     {
         if (_localPreferences!.HasKey(nonTcfDataProcessor.ConsentPreferenceKey)) {
-            DataConsentState dataConsentState = _localPreferences.GetInt(nonTcfDataProcessor.ConsentPreferenceKey) == 1 ? DataConsentState.Granted : DataConsentState.Denied;
-            log_NonCmpConsentAlreadyRequested(name, dataConsentState);
-            return dataConsentState;
+            NonCmpConsentStatus nonCmpConsentStatus = _localPreferences.GetInt(nonTcfDataProcessor.ConsentPreferenceKey) == 1 ? Granted : Denied;
+            log_NonCmpConsentAlreadyRequested(name, nonCmpConsentStatus);
+            return nonCmpConsentStatus;
         }
 
         log_NonCmpConsentNeedsRequested(name);
-        return DataConsentState.StillRequired;
+        return StillRequired;
     }
 
     /// <summary>
@@ -173,13 +174,13 @@ public class SingleDialogConsentManager : MonoBehaviour, IConsentManager
         // Store that consents were saved, so we don't request consent again every startup
         int index = 0;
         foreach (INonTcfDataProcessor nonTcfDataProcessor in _nonTcfDataProcessors!) {
-            DataConsentState dataConsentState = _consents![index];
-            if (dataConsentState == DataConsentState.StillRequired) {
+            NonCmpConsentStatus nonCmpConsentStatus = _consentStatuses![index];
+            if (nonCmpConsentStatus == StillRequired) {
                 log_SavingNonCmpConsent(nonTcfDataProcessor);
                 _localPreferences!.SetInt(nonTcfDataProcessor.ConsentPreferenceKey, 1);
-                dataConsentState = DataConsentState.Granted;
+                nonCmpConsentStatus = Granted;
             }
-            _consents![index] = dataConsentState;
+            _consentStatuses![index] = nonCmpConsentStatus;
             ++index;
         }
     }
@@ -231,7 +232,7 @@ public class SingleDialogConsentManager : MonoBehaviour, IConsentManager
         int index = _nonTcfDataProcessors!.FindIndex(x => x == nonTcfDataProcessor);
         return index == -1
             ? throw new ArgumentException($"Provided {nameof(nonTcfDataProcessor)} was not in the set provided to this {nameof(SingleDialogConsentManager)}", nameof(nonTcfDataProcessor))
-            : _consents![index] == DataConsentState.Granted;
+            : _consentStatuses![index] == Granted;
     }
 
     /// <inheritdoc/>
@@ -285,12 +286,12 @@ public class SingleDialogConsentManager : MonoBehaviour, IConsentManager
     private void log_AlreadyRequested() => LOG_ALREADY_REQUESTED_ACTION(_logger!, null);
 
 
-    private static readonly Action<MEL.ILogger, string, DataConsentState, Exception?> LOG_NON_CMP_CONSENT_ALREADY_REQUESTED_ACTION = LoggerMessage.Define<string, DataConsentState>(Information,
+    private static readonly Action<MEL.ILogger, string, NonCmpConsentStatus, Exception?> LOG_NON_CMP_CONSENT_ALREADY_REQUESTED_ACTION = LoggerMessage.Define<string, NonCmpConsentStatus>(Information,
         new EventId(id: 0, nameof(log_NonCmpConsentAlreadyRequested)),
-        "Non-CMP consent for non-TCF data processor '{DataProcessor}' already in state {DataConsentState}"
+        "Non-CMP consent for non-TCF data processor '{DataProcessor}' already has status {ConsentStatus}"
     );
-    private void log_NonCmpConsentAlreadyRequested(string dataProcessorName, DataConsentState dataConsentState) =>
-        LOG_NON_CMP_CONSENT_ALREADY_REQUESTED_ACTION(_logger!, dataProcessorName, dataConsentState, null);
+    private void log_NonCmpConsentAlreadyRequested(string dataProcessorName, NonCmpConsentStatus nonCmpConsentStatus) =>
+        LOG_NON_CMP_CONSENT_ALREADY_REQUESTED_ACTION(_logger!, dataProcessorName, nonCmpConsentStatus, null);
 
 
     private static readonly Action<MEL.ILogger, string, Exception?> LOG_NON_CMP_CONSENT_NOT_REQUIRED_ACTION = LoggerMessage.Define<string>(Information,
