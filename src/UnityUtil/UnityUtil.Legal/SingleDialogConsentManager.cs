@@ -73,6 +73,13 @@ public class SingleDialogConsentManager : MonoBehaviour, IConsentManager
     [RequiredIn(PrefabKind.NonPrefabInstance)]
     public Button? BtnLegalUpdate;
 
+    [DisableInPlayMode]
+    [Tooltip(
+        "The legal documents that users must accept before using the application. " +
+        "If any of these documents are later updated then an event is raised to prompt users to accept the new version."
+    )]
+    public LegalDocument[] LegalDocuments = [];
+
     [Tooltip(
         "Raised when the initial non-CMP consent dialog is necessary; i.e., when consent for any non-TCF data processor has not been saved yet or the legal docs have not been accepted. " +
         "Note that the CMP consent form may also be shown if the application's TCF consent info has been updated."
@@ -105,22 +112,17 @@ public class SingleDialogConsentManager : MonoBehaviour, IConsentManager
     {
         _preInitializeTask = preInitializeTask;
 
-        _consentStatuses = [
-            .. _nonTcfDataProcessors!.Select((x, index) => {
-                string dataProcessorName = x is Component component ? UnityObjectExtensions.GetHierarchyNameWithType(component) : $"non-TCF data processor {index}";
-                return checkConsent(x, dataProcessorName);
-            })
-        ];
+        _consentStatuses = [.. _nonTcfDataProcessors!.Select(readNonCmpConsentStatus)];
 
-        LegalAcceptance legalAcceptance = await _legalAcceptManager!.CheckAcceptanceAsync();
+        LegalAcceptStatus legalAcceptance = await _legalAcceptManager!.CheckStatusAsync(LegalDocuments);
 
-        if (Array.FindIndex(_consentStatuses, x => x == StillRequired) > -1 || legalAcceptance == LegalAcceptance.Unprovided) {
-            _legalAcceptanceRequired = legalAcceptance == LegalAcceptance.Unprovided;
+        if (Array.FindIndex(_consentStatuses, x => x == StillRequired) > -1 || legalAcceptance == LegalAcceptStatus.Unprovided) {
+            _legalAcceptanceRequired = legalAcceptance == LegalAcceptStatus.Unprovided;
             log_NeedsRequested();
             InitialConsentRequired.Invoke();
         }
 
-        else if (legalAcceptance == LegalAcceptance.Stale) {
+        else if (legalAcceptance == LegalAcceptStatus.Stale) {
             _legalAcceptanceRequired = true;
             log_RequestedLegalDocUpdated();
             LegalUpdateRequired.Invoke();
@@ -151,8 +153,10 @@ public class SingleDialogConsentManager : MonoBehaviour, IConsentManager
         initializeDataProcessors();
     }
 
-    private NonCmpConsentStatus checkConsent(INonTcfDataProcessor nonTcfDataProcessor, string name)
+    private NonCmpConsentStatus readNonCmpConsentStatus(INonTcfDataProcessor nonTcfDataProcessor, int index)
     {
+        string name = nonTcfDataProcessor is Component component ? UnityObjectExtensions.GetHierarchyNameWithType(component) : $"non-TCF data processor {index}";
+
         if (_localPreferences!.HasKey(nonTcfDataProcessor.ConsentPreferenceKey)) {
             NonCmpConsentStatus nonCmpConsentStatus = _localPreferences.GetInt(nonTcfDataProcessor.ConsentPreferenceKey) == 1 ? Granted : Denied;
             log_NonCmpConsentAlreadyRequested(name, nonCmpConsentStatus);

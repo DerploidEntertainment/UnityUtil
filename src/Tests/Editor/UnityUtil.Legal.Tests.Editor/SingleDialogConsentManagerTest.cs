@@ -22,42 +22,42 @@ public class SingleDialogConsentManagerTest : BaseEditModeTestFixture
 
     private static TestCaseData[] getConsentStateTestCases() =>
         [
-            new(LegalAcceptance.Unprovided, new bool?[]{ null }),
-            new(LegalAcceptance.Unprovided, new bool?[]{ true }),
-            new(LegalAcceptance.Unprovided, new bool?[]{ false }),
-            new(LegalAcceptance.Unprovided, new bool?[]{ null, null }),
-            new(LegalAcceptance.Unprovided, new bool?[]{ null, false }),
-            new(LegalAcceptance.Unprovided, new bool?[]{ null, true }),
-            new(LegalAcceptance.Unprovided, new bool?[]{ false, null }),
-            new(LegalAcceptance.Unprovided, new bool?[]{ false, false }),
-            new(LegalAcceptance.Unprovided, new bool?[]{ false, true }),
-            new(LegalAcceptance.Unprovided, new bool?[]{ true, null }),
-            new(LegalAcceptance.Unprovided, new bool?[]{ true, false }),
-            new(LegalAcceptance.Unprovided, new bool?[]{ true, true }),
-            new(LegalAcceptance.Stale, new bool?[]{ null }),
-            new(LegalAcceptance.Stale, new bool?[]{ true }),
-            new(LegalAcceptance.Stale, new bool?[]{ false }),
-            new(LegalAcceptance.Stale, new bool?[]{ null, null }),
-            new(LegalAcceptance.Stale, new bool?[]{ null, false }),
-            new(LegalAcceptance.Stale, new bool?[]{ null, true }),
-            new(LegalAcceptance.Stale, new bool?[]{ false, null }),
-            new(LegalAcceptance.Stale, new bool?[]{ false, false }),
-            new(LegalAcceptance.Stale, new bool?[]{ false, true }),
-            new(LegalAcceptance.Stale, new bool?[]{ true, null }),
-            new(LegalAcceptance.Stale, new bool?[]{ true, false }),
-            new(LegalAcceptance.Stale, new bool?[]{ true, true }),
-            new(LegalAcceptance.Current, new bool?[]{ null }),
-            new(LegalAcceptance.Current, new bool?[]{ true }),
-            new(LegalAcceptance.Current, new bool?[]{ false }),
-            new(LegalAcceptance.Current, new bool?[]{ null, null }),
-            new(LegalAcceptance.Current, new bool?[]{ null, false }),
-            new(LegalAcceptance.Current, new bool?[]{ null, true }),
-            new(LegalAcceptance.Current, new bool?[]{ false, null }),
-            new(LegalAcceptance.Current, new bool?[]{ false, false }),
-            new(LegalAcceptance.Current, new bool?[]{ false, true }),
-            new(LegalAcceptance.Current, new bool?[]{ true, null }),
-            new(LegalAcceptance.Current, new bool?[]{ true, false }),
-            new(LegalAcceptance.Current, new bool?[]{ true, true }),
+            new(LegalAcceptStatus.Unprovided, new bool?[]{ null }),
+            new(LegalAcceptStatus.Unprovided, new bool?[]{ true }),
+            new(LegalAcceptStatus.Unprovided, new bool?[]{ false }),
+            new(LegalAcceptStatus.Unprovided, new bool?[]{ null, null }),
+            new(LegalAcceptStatus.Unprovided, new bool?[]{ null, false }),
+            new(LegalAcceptStatus.Unprovided, new bool?[]{ null, true }),
+            new(LegalAcceptStatus.Unprovided, new bool?[]{ false, null }),
+            new(LegalAcceptStatus.Unprovided, new bool?[]{ false, false }),
+            new(LegalAcceptStatus.Unprovided, new bool?[]{ false, true }),
+            new(LegalAcceptStatus.Unprovided, new bool?[]{ true, null }),
+            new(LegalAcceptStatus.Unprovided, new bool?[]{ true, false }),
+            new(LegalAcceptStatus.Unprovided, new bool?[]{ true, true }),
+            new(LegalAcceptStatus.Stale, new bool?[]{ null }),
+            new(LegalAcceptStatus.Stale, new bool?[]{ true }),
+            new(LegalAcceptStatus.Stale, new bool?[]{ false }),
+            new(LegalAcceptStatus.Stale, new bool?[]{ null, null }),
+            new(LegalAcceptStatus.Stale, new bool?[]{ null, false }),
+            new(LegalAcceptStatus.Stale, new bool?[]{ null, true }),
+            new(LegalAcceptStatus.Stale, new bool?[]{ false, null }),
+            new(LegalAcceptStatus.Stale, new bool?[]{ false, false }),
+            new(LegalAcceptStatus.Stale, new bool?[]{ false, true }),
+            new(LegalAcceptStatus.Stale, new bool?[]{ true, null }),
+            new(LegalAcceptStatus.Stale, new bool?[]{ true, false }),
+            new(LegalAcceptStatus.Stale, new bool?[]{ true, true }),
+            new(LegalAcceptStatus.Current, new bool?[]{ null }),
+            new(LegalAcceptStatus.Current, new bool?[]{ true }),
+            new(LegalAcceptStatus.Current, new bool?[]{ false }),
+            new(LegalAcceptStatus.Current, new bool?[]{ null, null }),
+            new(LegalAcceptStatus.Current, new bool?[]{ null, false }),
+            new(LegalAcceptStatus.Current, new bool?[]{ null, true }),
+            new(LegalAcceptStatus.Current, new bool?[]{ false, null }),
+            new(LegalAcceptStatus.Current, new bool?[]{ false, false }),
+            new(LegalAcceptStatus.Current, new bool?[]{ false, true }),
+            new(LegalAcceptStatus.Current, new bool?[]{ true, null }),
+            new(LegalAcceptStatus.Current, new bool?[]{ true, false }),
+            new(LegalAcceptStatus.Current, new bool?[]{ true, true }),
         ];
 
 #pragma warning disable IDE1006 // Naming Styles    // Test names don't need the -Async suffix
@@ -81,17 +81,27 @@ public class SingleDialogConsentManagerTest : BaseEditModeTestFixture
     [Test]
     public async Task ShowDialogIfNeededAsync_ChecksLegalAcceptance()
     {
+        // ARRANGE
+        IEnumerable<LegalDocument> actualLegalDocs = [];
         Mock<ILegalAcceptManager> legalAcceptManager = new();
+        _ = legalAcceptManager.Setup(x => x.CheckStatusAsync(It.IsAny<IEnumerable<LegalDocument>>()))
+            .Callback<IEnumerable<LegalDocument>>(x => actualLegalDocs = x);
+
         SingleDialogConsentManager singleDialogConsentManager = getSingleDialogConsentManager(legalAcceptManager: legalAcceptManager.Object);
+        var expectedLegalDocs = new LegalDocument[] { ScriptableObject.CreateInstance<LegalDocument>() };
+        singleDialogConsentManager.LegalDocuments = expectedLegalDocs;
 
+        // ACT
         await singleDialogConsentManager.ShowDialogIfNeededAsync();
 
-        legalAcceptManager.Verify(x => x.CheckAcceptanceAsync(), Times.Once);
+        // ASSERT
+        legalAcceptManager.Verify(x => x.CheckStatusAsync(It.IsAny<IEnumerable<LegalDocument>>()), Times.Once());
+        Assert.That(actualLegalDocs, Is.EqualTo(expectedLegalDocs));
     }
 
     [Test]
     [TestCaseSource(nameof(getConsentStateTestCases))]
-    public async Task ShowDialogIfNeededAsync_ShowsCorrectUi_BasedOnConsents(LegalAcceptance legalAcceptance, bool?[] priorConsents)
+    public async Task ShowDialogIfNeededAsync_ShowsCorrectUi_BasedOnConsents(LegalAcceptStatus legalAcceptance, bool?[] priorConsents)
     {
         int initialFtueInvokeCount = 0;
         int legalUpdateInvokeCount = 0;
@@ -104,29 +114,9 @@ public class SingleDialogConsentManagerTest : BaseEditModeTestFixture
 
         await singleDialogConsentManager.ShowDialogIfNeededAsync();
 
-        Assert.That(initialFtueInvokeCount, Is.EqualTo(someConsentRequired || legalAcceptance == LegalAcceptance.Unprovided ? 1 : 0));
-        Assert.That(legalUpdateInvokeCount, Is.EqualTo(!someConsentRequired && legalAcceptance == LegalAcceptance.Stale ? 1 : 0));
-        Assert.That(noUiInvokeCount, Is.EqualTo(!someConsentRequired && legalAcceptance == LegalAcceptance.Current ? 1 : 0));
-    }
-
-    [Test]
-    [TestCaseSource(nameof(getConsentStateTestCases))]
-    public async Task ShowDialogIfNeededAsync_ShowsCorrectUi_DontForceConsentBehavior(LegalAcceptance legalAcceptance, bool?[] priorConsents)
-    {
-        int initialFtueInvokeCount = 0;
-        int legalUpdateInvokeCount = 0;
-        int noUiInvokeCount = 0;
-        bool someConsentRequired = priorConsents.Any(x => x is null);
-        SingleDialogConsentManager singleDialogConsentManager = getSingleDialogConsentManagerWithConsents(legalAcceptance, priorConsents);
-        singleDialogConsentManager.InitialConsentRequired.AddListener(() => ++initialFtueInvokeCount);
-        singleDialogConsentManager.LegalUpdateRequired.AddListener(() => ++legalUpdateInvokeCount);
-        singleDialogConsentManager.NoUiRequired.AddListener(() => ++noUiInvokeCount);
-
-        await singleDialogConsentManager.ShowDialogIfNeededAsync();
-
-        Assert.That(initialFtueInvokeCount, Is.EqualTo(legalAcceptance == LegalAcceptance.Unprovided ? 1 : 0));
-        Assert.That(legalUpdateInvokeCount, Is.EqualTo(legalAcceptance == LegalAcceptance.Stale ? 1 : 0));
-        Assert.That(noUiInvokeCount, Is.EqualTo(legalAcceptance == LegalAcceptance.Current ? 1 : 0));
+        Assert.That(initialFtueInvokeCount, Is.EqualTo(someConsentRequired || legalAcceptance == LegalAcceptStatus.Unprovided ? 1 : 0));
+        Assert.That(legalUpdateInvokeCount, Is.EqualTo(!someConsentRequired && legalAcceptance == LegalAcceptStatus.Stale ? 1 : 0));
+        Assert.That(noUiInvokeCount, Is.EqualTo(!someConsentRequired && legalAcceptance == LegalAcceptStatus.Current ? 1 : 0));
     }
 
     #endregion
@@ -135,7 +125,7 @@ public class SingleDialogConsentManagerTest : BaseEditModeTestFixture
 
     [Test]
     [TestCaseSource(nameof(getConsentStateTestCases))]
-    public async Task ContinueWithNonCmpConsentAsync_ShowsCmpConsentFormIfNecessary(LegalAcceptance legalAcceptance, bool?[] priorConsents)
+    public async Task ContinueWithNonCmpConsentAsync_ShowsCmpConsentFormIfNecessary(LegalAcceptStatus legalAcceptance, bool?[] priorConsents)
     {
         // ARRANGE
         string consentStrings = string.Join(",", priorConsents.Select(x => x?.ToString() ?? "Null"));
@@ -152,7 +142,7 @@ public class SingleDialogConsentManagerTest : BaseEditModeTestFixture
 
         // ACT
         await singleDialogConsentManager.ShowDialogIfNeededAsync();
-        if (legalAcceptance != LegalAcceptance.Current || priorConsents.Any(x => x is null))
+        if (legalAcceptance != LegalAcceptStatus.Current || priorConsents.Any(x => x is null))
             await singleDialogConsentManager.ContinueWithNonCmpConsentAsync();
 
         // ASSERT
@@ -161,7 +151,7 @@ public class SingleDialogConsentManagerTest : BaseEditModeTestFixture
 
     [Test]
     [TestCaseSource(nameof(getConsentStateTestCases))]
-    public async Task ContinueWithNonCmpConsentAsync_OnlySavesUpdatedNonCmpConsents(LegalAcceptance legalAcceptance, bool?[] priorConsents)
+    public async Task ContinueWithNonCmpConsentAsync_OnlySavesUpdatedNonCmpConsents(LegalAcceptStatus legalAcceptance, bool?[] priorConsents)
     {
         // ARRANGE
         string consentStrings = string.Join(",", priorConsents.Select(x => x?.ToString() ?? "Null"));
@@ -176,7 +166,7 @@ public class SingleDialogConsentManagerTest : BaseEditModeTestFixture
 
         // ACT
         await singleDialogConsentManager.ShowDialogIfNeededAsync();
-        if (legalAcceptance != LegalAcceptance.Current || priorConsents.Any(x => x is null))
+        if (legalAcceptance != LegalAcceptStatus.Current || priorConsents.Any(x => x is null))
             await singleDialogConsentManager.ContinueWithNonCmpConsentAsync();
 
         // ASSERT
@@ -190,7 +180,7 @@ public class SingleDialogConsentManagerTest : BaseEditModeTestFixture
     }
 
     [Test]
-    public async Task ContinueWithNonCmpConsentAsync_SetsLegalAcceptance_IfNotCurrent([Values] LegalAcceptance legalAcceptance)
+    public async Task ContinueWithNonCmpConsentAsync_SetsLegalAcceptance_IfNotCurrent([Values] LegalAcceptStatus legalAcceptance)
     {
         // ARRANGE
         U.Debug.Log($"Giving consent when {nameof(legalAcceptance)} is '{legalAcceptance}'...");
@@ -199,16 +189,16 @@ public class SingleDialogConsentManagerTest : BaseEditModeTestFixture
 
         // ACT
         await singleDialogConsentManager.ShowDialogIfNeededAsync();
-        if (legalAcceptance != LegalAcceptance.Current)
+        if (legalAcceptance != LegalAcceptStatus.Current)
             await singleDialogConsentManager.ContinueWithNonCmpConsentAsync();
 
         // ASSERT
-        legalAcceptManager.Verify(x => x.Accept(), legalAcceptance == LegalAcceptance.Current ? Times.Never : Times.Once);
+        legalAcceptManager.Verify(x => x.Accept(), legalAcceptance == LegalAcceptStatus.Current ? Times.Never : Times.Once);
     }
 
     [Test]
     [TestCaseSource(nameof(getConsentStateTestCases))]
-    public async Task ContinueWithNonCmpConsentAsync_StartsNonTcfDataCollection_WithCorrectConsents(LegalAcceptance legalAcceptance, bool?[] priorNonCmpConsents)
+    public async Task ContinueWithNonCmpConsentAsync_StartsNonTcfDataCollection_WithCorrectConsents(LegalAcceptStatus legalAcceptance, bool?[] priorNonCmpConsents)
     {
         // ARRANGE
         string consentStrings = string.Join(",", priorNonCmpConsents.Select(x => x?.ToString() ?? "Null"));
@@ -223,7 +213,7 @@ public class SingleDialogConsentManagerTest : BaseEditModeTestFixture
 
         // ACT
         await singleDialogConsentManager.ShowDialogIfNeededAsync();
-        if (legalAcceptance != LegalAcceptance.Current || priorNonCmpConsents.Any(x => x is null))
+        if (legalAcceptance != LegalAcceptStatus.Current || priorNonCmpConsents.Any(x => x is null))
             await singleDialogConsentManager.ContinueWithNonCmpConsentAsync();
 
         // ASSERT
@@ -235,7 +225,7 @@ public class SingleDialogConsentManagerTest : BaseEditModeTestFixture
     }
 
     [Test]
-    public async Task ContinueWithNonCmpConsentAsync_InitializesTcfDataProcessors([Values] LegalAcceptance legalAcceptance)
+    public async Task ContinueWithNonCmpConsentAsync_InitializesTcfDataProcessors([Values] LegalAcceptStatus legalAcceptance)
     {
         // ARRANGE
         Mock<ITcfDataProcessor>[] tcfDataProcessors = [
@@ -249,7 +239,7 @@ public class SingleDialogConsentManagerTest : BaseEditModeTestFixture
 
         // ACT
         await singleDialogConsentManager.ShowDialogIfNeededAsync();
-        if (legalAcceptance != LegalAcceptance.Current)
+        if (legalAcceptance != LegalAcceptStatus.Current)
             await singleDialogConsentManager.ContinueWithNonCmpConsentAsync();
 
         // ASSERT
@@ -264,7 +254,7 @@ public class SingleDialogConsentManagerTest : BaseEditModeTestFixture
         Exception? loggedException = null;
         SingleDialogConsentManager singleDialogConsentManager = getSingleDialogConsentManager(
             loggerFactory: new LogLevelCallbackLoggerFactory(LogLevel.Error, (_, _, ex, _) => loggedException = ex, log),
-            legalAcceptManager: getLegalAcceptManager(LegalAcceptance.Current).Object,
+            legalAcceptManager: getLegalAcceptManager(LegalAcceptStatus.Current).Object,
             localPreferences: getLocalPreferences(priorConsents: [.. Enumerable.Repeat(true, consentCount)]).Object,
             nonTcfDataProcessors: getNonTcfDataProcessors(consentCount).Select((x, index) => {
                 _ = x.Setup(y => y.StartDataCollection()).Throws(new InvalidOperationException($"AH!! Consent {index} exploded!"));
@@ -312,7 +302,7 @@ public class SingleDialogConsentManagerTest : BaseEditModeTestFixture
         Exception? loggedException = null;
         SingleDialogConsentManager singleDialogConsentManager = getSingleDialogConsentManager(
             loggerFactory: new LogLevelCallbackLoggerFactory(LogLevel.Error, (_, _, ex, _) => loggedException = ex, log),
-            legalAcceptManager: getLegalAcceptManager(LegalAcceptance.Current).Object,
+            legalAcceptManager: getLegalAcceptManager(LegalAcceptStatus.Current).Object,
             tcfDataProcessors: tcfDataProcessors
         );
 
@@ -404,7 +394,7 @@ public class SingleDialogConsentManagerTest : BaseEditModeTestFixture
 
 #pragma warning restore IDE1006 // Naming Styles
 
-    private static SingleDialogConsentManager getSingleDialogConsentManagerWithConsents(LegalAcceptance legalAcceptance, bool?[] priorConsents) =>
+    private static SingleDialogConsentManager getSingleDialogConsentManagerWithConsents(LegalAcceptStatus legalAcceptance, bool?[] priorConsents) =>
         getSingleDialogConsentManager(
             legalAcceptManager: getLegalAcceptManager(legalAcceptance).Object,
             localPreferences: getLocalPreferences(priorConsents).Object,
@@ -423,7 +413,7 @@ public class SingleDialogConsentManagerTest : BaseEditModeTestFixture
         SingleDialogConsentManager singleDialogConsentManager = new GameObject().AddComponent<SingleDialogConsentManager>();
         singleDialogConsentManager.Inject(
             loggerFactory ?? new UnityDebugLoggerFactory(),
-            legalAcceptManager ?? getLegalAcceptManager(LegalAcceptance.Unprovided).Object,
+            legalAcceptManager ?? getLegalAcceptManager(LegalAcceptStatus.Unprovided).Object,
             localPreferences ?? getLocalPreferences().Object,
             tcfCmpAdapter ?? Mock.Of<ITcfCmpAdapter>(),
             tcfDataProcessors ?? [],
@@ -432,10 +422,10 @@ public class SingleDialogConsentManagerTest : BaseEditModeTestFixture
         return singleDialogConsentManager;
     }
 
-    private static Mock<ILegalAcceptManager> getLegalAcceptManager(LegalAcceptance legalAcceptance)
+    private static Mock<ILegalAcceptManager> getLegalAcceptManager(LegalAcceptStatus legalAcceptance)
     {
         Mock<ILegalAcceptManager> legalAcceptManager = new();
-        _ = legalAcceptManager.Setup(x => x.CheckAcceptanceAsync()).ReturnsAsync(legalAcceptance);
+        _ = legalAcceptManager.Setup(x => x.CheckStatusAsync(It.IsAny<IEnumerable<LegalDocument>>())).ReturnsAsync(legalAcceptance);
         return legalAcceptManager;
     }
 
