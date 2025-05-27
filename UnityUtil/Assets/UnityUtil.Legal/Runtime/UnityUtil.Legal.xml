@@ -14,15 +14,14 @@
                 Please see https://github.com/manuelroemer/IsExternalInit for more information.
             </remarks>
         </member>
-        <member name="M:UnityUtil.Legal.IConsentManager.HasConsent(UnityUtil.Legal.IInitializableWithConsent)">
+        <member name="T:UnityUtil.Legal.CopyrightText">
             <summary>
-            
+            Updates the copyright text of a specific <see cref="T:TMPro.TMP_Text"/> component with the current year and/or <see cref="P:UnityEngine.Application.companyName"/>.
             </summary>
         </member>
         <member name="T:UnityUtil.Legal.ILegalAcceptManager">
             <summary>
-            Manages the gathering and persisting of a user's consent to share their personal data with registered <see cref="T:UnityUtil.Legal.IInitializableWithConsent"/>s.
-            Consent is expected to be gathered after showing a single UI dialog during the First-Time User Experience (FTUE).
+            Manages the user flow for accepting legal documents at runtime.
             </summary>
         </member>
         <member name="M:UnityUtil.Legal.ILegalAcceptManager.CheckStatusAsync(System.Collections.Generic.IEnumerable{UnityUtil.Legal.LegalDocument})">
@@ -212,7 +211,7 @@
         </member>
         <member name="M:UnityUtil.Legal.PrivacyDataProcessorsInitializer.saveRequiredNonCmpConsents(System.Boolean)">
             <summary>
-            Give consent to all registered <see cref="T:UnityUtil.Legal.IInitializableWithConsent"/>s that did not already have consent saved in local preferences,
+            Save consent for all registered <see cref="T:UnityUtil.Legal.INonTcfDataProcessor"/>s that did not already have consent saved in local preferences,
             and accept the latest legal documents.
             </summary>
         </member>
@@ -222,7 +221,7 @@
             while <see cref="T:UnityUtil.Legal.ITcfDataProcessor"/>s are always initialized internally with the application's latest TC string (in parallel, if possible).
             </summary>
             <exception cref="T:System.AggregateException">
-            One or more of the <see cref="M:UnityUtil.Legal.IInitializableWithConsent.InitializeAsync(System.Boolean)"/> calls failed.
+            One or more data processor initializations calls failed.
             See this exception's <see cref="P:System.AggregateException.InnerExceptions"/> collection for more details.
             </exception>
         </member>
