@@ -3,6 +3,9 @@ using UnityEngine;
 
 namespace UnityUtil.Legal;
 
+/// <summary>
+/// Represents a versioned legal document that users must accept before using the application.
+/// </summary>
 [CreateAssetMenu(menuName = $"{nameof(UnityUtil)}/{nameof(UnityUtil.Legal)}/{nameof(LegalDocument)}", fileName = "policy.asset")]
 public class LegalDocument : ScriptableObject
 {

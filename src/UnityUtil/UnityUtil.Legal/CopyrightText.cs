@@ -8,6 +8,9 @@ using UD = UnityEngine.Device;
 
 namespace UnityUtil.Legal;
 
+/// <summary>
+/// Updates the copyright text of a specific <see cref="TMP_Text"/> component with the current year and/or <see cref="Application.companyName"/>.
+/// </summary>
 public class CopyrightText : MonoBehaviour
 {
     [Tooltip(
