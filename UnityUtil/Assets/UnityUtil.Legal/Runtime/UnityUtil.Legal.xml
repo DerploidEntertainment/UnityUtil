@@ -18,55 +18,240 @@
             <summary>
             
             </summary>
-            <param name="initializableWithConsent"></param>
-            <returns></returns>
-            <exception cref="T:System.InvalidOperationException">Consent has not yet been initialized</exception>
-            <exception cref="T:System.ArgumentException"><paramref name="initializableWithConsent"/> is not managed by this consent manager</exception>
         </member>
-        <member name="M:UnityUtil.Legal.IConsentManager.OptOut(UnityUtil.Legal.IInitializableWithConsent)">
-            <summary>
-            
-            </summary>
-            <param name="initializableWithConsent"></param>
-            <exception cref="T:System.InvalidOperationException">Consent has not yet been initialized</exception>
-            <exception cref="T:System.ArgumentException"><paramref name="initializableWithConsent"/> is not managed by this consent manager</exception>
-        </member>
-        <member name="T:UnityUtil.Legal.SingleDialogConsentManager">
+        <member name="T:UnityUtil.Legal.ILegalAcceptManager">
             <summary>
             Manages the gathering and persisting of a user's consent to share their personal data with registered <see cref="T:UnityUtil.Legal.IInitializableWithConsent"/>s.
             Consent is expected to be gathered after showing a single UI dialog during the First-Time User Experience (FTUE).
             </summary>
         </member>
-        <member name="M:UnityUtil.Legal.SingleDialogConsentManager.ShowDialogIfNeededAsync(System.Threading.Tasks.Task)">
+        <member name="M:UnityUtil.Legal.ILegalAcceptManager.CheckStatusAsync(System.Collections.Generic.IEnumerable{UnityUtil.Legal.LegalDocument})">
             <summary>
-            Raise the <see cref="F:UnityUtil.Legal.SingleDialogConsentManager.InitialConsentRequired"/>, <see cref="F:UnityUtil.Legal.SingleDialogConsentManager.LegalUpdateRequired"/>, or <see cref="F:UnityUtil.Legal.SingleDialogConsentManager.NoUiRequired"/> events as necessary,
-            depending on the consents and legal documents acceptance saved in local preferences.
+            Check the <see cref="T:UnityUtil.Legal.LegalAcceptStatus"/> across all provided <paramref name="legalDocuments"/>.
+            </summary>
+            <returns>
+            A task representing the asynchronous status check operation, containing the <see cref="T:UnityUtil.Legal.LegalAcceptStatus"/> across all <paramref name="legalDocuments"/>.
+            </returns>
+        </member>
+        <member name="M:UnityUtil.Legal.ILegalAcceptManager.Accept">
+            <summary>
+            Save that all <see cref="T:UnityUtil.Legal.LegalDocument"/>s (provided in a previous call to <see cref="M:UnityUtil.Legal.ILegalAcceptManager.CheckStatusAsync(System.Collections.Generic.IEnumerable{UnityUtil.Legal.LegalDocument})"/>)
+            have been accepted by the user.
+            </summary>
+            <exception cref="T:System.InvalidOperationException">
+            There are no known <see cref="T:UnityUtil.Legal.LegalDocument"/>s to accept (perhaps <see cref="M:UnityUtil.Legal.ILegalAcceptManager.CheckStatusAsync(System.Collections.Generic.IEnumerable{UnityUtil.Legal.LegalDocument})"/> has not been called yet).
+            </exception>
+        </member>
+        <member name="P:UnityUtil.Legal.ILegalAcceptManager.HasAccepted">
+            <summary>
+            Have all <see cref="T:UnityUtil.Legal.LegalDocument"/>s (provided in a previous call to <see cref="M:UnityUtil.Legal.ILegalAcceptManager.CheckStatusAsync(System.Collections.Generic.IEnumerable{UnityUtil.Legal.LegalDocument})"/>) been accepted by the user?
+            I.e., has <see cref="M:UnityUtil.Legal.ILegalAcceptManager.Accept"/> been called yet?
+            </summary>
+        </member>
+        <member name="T:UnityUtil.Legal.INonTcfDataProcessor">
+            <summary>
+            Represents a data processor that is <em>not</em> certified with the IAB Transparency and Consent Framework (TCF)
+            and thus will not be mentioned by the application's Consent Management Platform (CMP).
+            Actions like consent, data deletion requests, etc. will thus have to be manually set up by the application.
+            </summary>
+        </member>
+        <member name="P:UnityUtil.Legal.INonTcfDataProcessor.ConsentPreferenceKey">
+            <summary>
+            The user's consent (grant or deny) should be saved at this local preference key.
+            </summary>
+        </member>
+        <member name="M:UnityUtil.Legal.INonTcfDataProcessor.StartDataCollection">
+            <summary>
+            Start collecting data for this data processor.
+            Consumers should only call this method if they have a lawful basis (i.e., consent has been (re-)granted by the user).
+            </summary>
+        </member>
+        <member name="M:UnityUtil.Legal.INonTcfDataProcessor.StopDataCollection">
+            <summary>
+            Stop collecting data for this data processor.
+            Consumers should call this method anytime a user revokes their consent at runtime.
+            </summary>
+        </member>
+        <member name="M:UnityUtil.Legal.INonTcfDataProcessor.RequestDataDeletion">
+            <summary>
+            Perform a Right to ERasure (RER) request, i.e., a user request to have their private data erased.
+            </summary>
+        </member>
+        <member name="M:UnityUtil.Legal.INonTcfDataProcessor.RequestData">
+            <summary>
+            Perform a Data Subject Access Request (DSAR), i.e., a user request to view their private data that has been stored.
+            </summary>
+        </member>
+        <member name="T:UnityUtil.Legal.ITcfCmpAdapter">
+            <summary>
+            Represents a Consent Management Platform (CMP) compliant with the IAB Transparency and Consent Framework (TCF).
+            </summary>
+        </member>
+        <member name="M:UnityUtil.Legal.ITcfCmpAdapter.UpdateConsentInfo">
+            <summary>
+            Updates the application's TC string. Should be called only once during an app session, at launch.
+            </summary>
+        </member>
+        <member name="M:UnityUtil.Legal.ITcfCmpAdapter.LoadAndShowConsentFormIfRequiredAsync">
+            <summary>
+            Load and show the consent form if required.
+            This should be called either on app startup or from an in-app menu allowing users to manage their consent options;
+            This method may be called multiple times in an app session.
+            <para>
+            A consent form may not be required if the application's TC string has not changed since the last session,
+            or if the current user is not in a region protected by privacy law
+            (though, for fairness, users in <em>all</em> regions should really be given the same consent options),
+            or for any other application-specific reasons.
+            </para>
+            </summary>
+            <returns>A task representing the asynchronous operation of loading/showing the CMP's consent form.</returns>
+        </member>
+        <member name="T:UnityUtil.Legal.ITcfDataProcessor">
+            <summary>
+            Represents a data processor certified with the IAB Transparency and Consent Framework (TCF).
+            <para>
+            Note that most user actions related to consent are handled by TCF-compliant Consent Management Platform (CMP) forms.
+            </para>
+            </summary>
+        </member>
+        <member name="M:UnityUtil.Legal.ITcfDataProcessor.InitializeAsync">
+            <summary>
+            Initialize the data processor.
+            </summary>
+            <returns>A task representing the asynchronous initialize operation.</returns>
+        </member>
+        <member name="T:UnityUtil.Legal.LegalAcceptManager">
+            <summary><inheritdoc cref="T:UnityUtil.Legal.ILegalAcceptManager"/></summary>
+            <remarks>
+            Stores the versions of all <see cref="T:UnityUtil.Legal.LegalDocument"/>s that the user has accepted in local preferences.
+            </remarks>
+        </member>
+        <member name="M:UnityUtil.Legal.LegalAcceptManager.CheckStatusAsync(System.Collections.Generic.IEnumerable{UnityUtil.Legal.LegalDocument})">
+            <inheritdoc/>
+        </member>
+        <member name="P:UnityUtil.Legal.LegalAcceptManager.HasAccepted">
+            <inheritdoc/>
+        </member>
+        <member name="M:UnityUtil.Legal.LegalAcceptManager.Accept">
+            <inheritdoc/>
+        </member>
+        <member name="T:UnityUtil.Legal.LegalAcceptStatus">
+            <summary>
+            Status of a user's acceptance of <see cref="T:UnityUtil.Legal.LegalDocument"/>s.
+            </summary>
+        </member>
+        <member name="T:UnityUtil.Legal.LegalDocument">
+            <summary>
+            Represents a versioned legal document that users must accept before using the application.
+            </summary>
+        </member>
+        <member name="T:UnityUtil.Legal.NonCmpConsentStatus">
+            <summary>
+            Consent status for data processors that are not registered with the IAB Transparency and Consent Framework (TCF),
+            i.e., that do not have their consent managed by a Consent Management Platform (CMP).
+            </summary>
+        </member>
+        <member name="F:UnityUtil.Legal.NonCmpConsentStatus.StillRequired">
+            <summary>
+            Consent has not been saved yet, or was never requested from the user.
+            </summary>
+        </member>
+        <member name="F:UnityUtil.Legal.NonCmpConsentStatus.Granted">
+            <summary>
+            Consent is explicitly granted by the user.
+            </summary>
+        </member>
+        <member name="F:UnityUtil.Legal.NonCmpConsentStatus.Denied">
+            <summary>
+            Consent is explicitly denied by the user.
+            </summary>
+        </member>
+        <member name="T:UnityUtil.Legal.PrivacyDataProcessorsInitializer">
+            <summary>
+            Handles an opinionated user flow to gather user acceptance of legal documents and consent to private data sharing before initializing data processor SDKs.
+            </summary>
+            <remarks>
+            <para>
+            Legal docs that users must accept (such as the Privacy Policy and Terms of Use) are specified in the <see cref="F:UnityUtil.Legal.PrivacyDataProcessorsInitializer.LegalDocuments"/> list.
+            </para>
+            <para>
+            For gathering users' consent to share their private data,
+            data processors are either compliant with the IAB Transparency and Consent Framework (TCF)
+            (<see cref="T:UnityUtil.Legal.ITcfDataProcessor"/>s) or not (<see cref="T:UnityUtil.Legal.INonTcfDataProcessor"/>s).
+            <list type="bullet">
+            <item>Consent to non-TCF vendors is granted or denied via a Unity UI dialog that app developers must build according to certain specifications (see below).</item>
+            <item>TCF vendors, meanwhile, use the TC string updated by the application's Consent Management Platform (CMP) (represented by <see cref="T:UnityUtil.Legal.ITcfCmpAdapter"/>).</item>
+            </list>
+            </para>
+            <para>
+            This class expects the associated Unity UI dialog to have the following:
+            <list type="number">
+            <item>A <see cref="T:UnityEngine.UI.Toggle"/> for the user to accept all <see cref="F:UnityUtil.Legal.PrivacyDataProcessorsInitializer.LegalDocuments"/>.</item>
+            <item>A <see cref="T:UnityEngine.UI.Toggle"/> for the user to grant/deny consent to all registered non-TCF data providers.</item>
+            <item>A <see cref="T:UnityEngine.UI.Toggle"/> for the user to (dis)agree to view the CMP consent form (for personalizing privacy settings with TCF vendors).</item>
+            <item>A <see cref="T:UnityEngine.UI.Button"/> for the user to continue after setting the above toggles.</item>
+            </list>
+            This class handles interactability of those UI elements and determines whether or not to show the dialog at app launch
+            based on the consent/acceptance statuses saved in local preferences (<see cref="T:UnityUtil.Storage.ILocalPreferences"/>).
+            </para>
+            </remarks>
+        </member>
+        <member name="M:UnityUtil.Legal.PrivacyDataProcessorsInitializer.InitializeDataProcessorsWithConsentAsync(System.Threading.Tasks.Task,System.Threading.CancellationToken)">
+            <summary>
+            Run the user flow to gather user acceptance of legal documents and consent to private data sharing before initializing data processor SDKs.
+            The <see cref="F:UnityUtil.Legal.PrivacyDataProcessorsInitializer.InitialConsentRequired"/>, <see cref="F:UnityUtil.Legal.PrivacyDataProcessorsInitializer.LegalUpdateRequired"/>, or <see cref="F:UnityUtil.Legal.PrivacyDataProcessorsInitializer.NoUiRequired"/> events are raised as necessary,
+            depending on the non-CMP consents and legal document acceptance saved in local preferences.
             </summary>
             <param name="preInitializeTask">
-            An optional task that must complete before all <see cref="T:UnityUtil.Legal.IInitializableWithConsent"/>s are initialized.
-            This is useful for running actions in the background while the consent dialog is shown,
-            but that must still complete before continuing initialization
-            (connecting to databases, retrieving remote configuration, registering service dependencies, etc.).
+            An optional task that must complete before all data processors are initialized.
+            This is useful for running actions in the background while the consent dialog is shown:
+            actions that must still complete before continuing initialization.
+            These actions could be connecting to databases, retrieving remote configuration, registering service dependencies, etc.
             </param>
+            <param name="cancellationToken">Token to monitor for cancellation requests.</param>
         </member>
-        <member name="M:UnityUtil.Legal.SingleDialogConsentManager.giveConsent">
+        <member name="M:UnityUtil.Legal.PrivacyDataProcessorsInitializer.saveRequiredNonCmpConsents(System.Boolean)">
             <summary>
             Give consent to all registered <see cref="T:UnityUtil.Legal.IInitializableWithConsent"/>s that did not already have consent saved in local preferences,
             and accept the latest legal documents.
             </summary>
         </member>
-        <member name="M:UnityUtil.Legal.SingleDialogConsentManager.initialize">
+        <member name="M:UnityUtil.Legal.PrivacyDataProcessorsInitializer.initializeTcfDataProcessors">
             <summary>
-            Initializes all registered <see cref="T:UnityUtil.Legal.IInitializableWithConsent"/>s in parallel, passing them the corresponding flag for consent.
+            Initializes all TCF-registered data processors.
+            while <see cref="T:UnityUtil.Legal.ITcfDataProcessor"/>s are always initialized internally with the application's latest TC string (in parallel, if possible).
             </summary>
             <exception cref="T:System.AggregateException">
             One or more of the <see cref="M:UnityUtil.Legal.IInitializableWithConsent.InitializeAsync(System.Boolean)"/> calls failed.
             See this exception's <see cref="P:System.AggregateException.InnerExceptions"/> collection for more details.
             </exception>
         </member>
-        <member name="M:UnityUtil.Legal.SingleDialogConsentManager.ClearConsentPreferences">
+        <member name="M:UnityUtil.Legal.PrivacyDataProcessorsInitializer.initializeNonTcfDataProcessors">
             <summary>
-            Clear consent saved in in local preferences for all registered <see cref="T:UnityUtil.Legal.IInitializableWithConsent"/>s.
+            Initializes all non-TCF-registered data processors.
+            <see cref="T:UnityUtil.Legal.INonTcfDataProcessor"/>s are only initialized if non-CMP consent was granted.
+            </summary>
+        </member>
+        <member name="M:UnityUtil.Legal.PrivacyDataProcessorsInitializer.WasConsentGranted(UnityUtil.Legal.INonTcfDataProcessor)">
+            <summary>
+            Check if consent was already granted to <paramref name="nonTcfDataProcessor"/>.
+            </summary>
+            <param name="nonTcfDataProcessor"></param>
+            <returns></returns>
+            <exception cref="T:System.InvalidOperationException">Consent has not yet been saved for <paramref name="nonTcfDataProcessor"/>.</exception>
+            <exception cref="T:System.ArgumentException"><paramref name="nonTcfDataProcessor"/> is not managed by this class.</exception>
+        </member>
+        <member name="M:UnityUtil.Legal.PrivacyDataProcessorsInitializer.RevokeConsent(UnityUtil.Legal.INonTcfDataProcessor)">
+            <summary>
+            Revoke consent for <paramref name="nonTcfDataProcessor"/>.
+            </summary>
+            <param name="nonTcfDataProcessor"></param>
+            <exception cref="T:System.InvalidOperationException">Consent has not yet been saved for <paramref name="nonTcfDataProcessor"/>.</exception>
+            <exception cref="T:System.ArgumentException"><paramref name="nonTcfDataProcessor"/> is not managed by this class.</exception>
+        </member>
+        <member name="M:UnityUtil.Legal.PrivacyDataProcessorsInitializer.ClearNonCmpConsentPreferences">
+            <summary>
+            Clear non-CMP consents saved in in local preferences for all registered <see cref="T:UnityUtil.Legal.INonTcfDataProcessor"/>s.
             </summary>
         </member>
     </members>
