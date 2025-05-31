@@ -12,7 +12,7 @@ public class PushTool : MonoBehaviour
 {
     private readonly HashSet<Rigidbody> _pushedRigidbodies = [];
 
-    [RequiredIn(PrefabKind.NonPrefabInstance)]
+    [RequiredIn(PrefabKind.PrefabInstanceAndNonPrefabInstance)]
     public PushToolInfo? Info;
 
     [Tooltip("If true, then any colliders attached to the same Rigidbodies as one of these colldiers will NOT be affected.  You might use this field to prevent pushing of any of the colliders that make up a player's vehicle, for example.")]

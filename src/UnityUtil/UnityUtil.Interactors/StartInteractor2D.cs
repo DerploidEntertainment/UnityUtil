@@ -16,7 +16,7 @@ public class Interaction2DEventArgs : EventArgs
 
 public class StartInteractor2D : Updatable
 {
-    [RequiredIn(PrefabKind.NonPrefabInstance)]
+    [RequiredIn(PrefabKind.PrefabInstanceAndNonPrefabInstance)]
     public StartStopInput? Input;
     public float Range;
     public LayerMask InteractLayerMask;

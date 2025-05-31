@@ -13,10 +13,10 @@ public class Tool : Updatable
     private Coroutine? _refractoryRoutine;
     private uint _numUses;
 
-    [RequiredIn(PrefabKind.NonPrefabInstance)]
+    [RequiredIn(PrefabKind.PrefabInstanceAndNonPrefabInstance)]
     public ToolInfo? Info;
 
-    [RequiredIn(PrefabKind.NonPrefabInstance)]
+    [RequiredIn(PrefabKind.PrefabInstanceAndNonPrefabInstance)]
     public StartStopInput? UseInput;
 
     /// <summary>

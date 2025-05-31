@@ -6,7 +6,7 @@ namespace UnityUtil.Inventory;
 
 public class InventoryCollector : MonoBehaviour
 {
-    [RequiredIn(PrefabKind.NonPrefabInstance)]
+    [RequiredIn(PrefabKind.PrefabInstanceAndNonPrefabInstance)]
     public Inventory? Inventory;
     public float Radius = 1f;
 

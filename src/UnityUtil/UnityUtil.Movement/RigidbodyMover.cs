@@ -7,10 +7,10 @@ namespace UnityUtil.Movement;
 public class RigidbodyMover : MonoBehaviour
 {
 
-    [RequiredIn(PrefabKind.NonPrefabInstance)]
+    [RequiredIn(PrefabKind.PrefabInstanceAndNonPrefabInstance)]
     public Rigidbody? RigidbodyToMove;
 
-    [RequiredIn(PrefabKind.NonPrefabInstance)]
+    [RequiredIn(PrefabKind.PrefabInstanceAndNonPrefabInstance)]
     public RigidbodyMovement? MovementData;
 
     [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]

@@ -90,28 +90,28 @@ public class PrivacyDataProcessorsInitializer : MonoBehaviour
 
     [Header("UI")]
     [Tooltip($"This transform will be (de)activated to show/hide the single consent/acceptance dialog as necessary.")]
-    [RequiredIn(PrefabKind.NonPrefabInstance)]
+    [RequiredIn(PrefabKind.PrefabInstanceAndNonPrefabInstance)]
     public RectTransform? DialogRoot;
 
     [Tooltip($"Users MUST check this Toggle to accept the {nameof(LegalDocuments)} before the consent buttons are enabled.")]
-    [RequiredIn(PrefabKind.NonPrefabInstance)]
+    [RequiredIn(PrefabKind.PrefabInstanceAndNonPrefabInstance)]
     public Toggle? ToggleLegalAccept;
 
     [Tooltip(
         "Users MAY check this Toggle to grant consent to all registered non-TCF vendors (such as Unity Analytics)." +
         "They MAY also leave it unchecked to deny consent to non-TCF vendors."
     )]
-    [RequiredIn(PrefabKind.NonPrefabInstance)]
+    [RequiredIn(PrefabKind.PrefabInstanceAndNonPrefabInstance)]
     public Toggle? ToggleNonCmpConsent;
 
     [Tooltip(
         "Users MAY check this Toggle to show the CMP Consent Form." +
         "They MAY also leave it unchecked to avoid the CMP Consent Form, in which case TCF-compatible data providers MUST be initialized without consent."
     )]
-    [RequiredIn(PrefabKind.NonPrefabInstance)]
+    [RequiredIn(PrefabKind.PrefabInstanceAndNonPrefabInstance)]
     public Toggle? ToggleCmpConsent;
 
-    [RequiredIn(PrefabKind.NonPrefabInstance)]
+    [RequiredIn(PrefabKind.PrefabInstanceAndNonPrefabInstance)]
     public Button? BtnContinue;
 
     [DisableInPlayMode]

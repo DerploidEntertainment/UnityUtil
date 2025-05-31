@@ -7,7 +7,7 @@ namespace UnityUtil;
 
 public class ErrorAlert : MonoBehaviour
 {
-    [RequiredIn(PrefabKind.NonPrefabInstance)]
+    [RequiredIn(PrefabKind.PrefabInstanceAndNonPrefabInstance)]
     public TMP_Text? Text;
 
     public void ShowError(string message) => Text!.text = message;

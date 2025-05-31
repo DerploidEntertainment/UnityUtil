@@ -19,7 +19,7 @@ public class OverheatTool : Updatable
     private Tool? _tool;
     private Coroutine? _overheatRoutine;
 
-    [RequiredIn(PrefabKind.NonPrefabInstance)]
+    [RequiredIn(PrefabKind.PrefabInstanceAndNonPrefabInstance)]
     public OverheatToolInfo? Info;
 
     public float CurrentHeat { get; private set; }

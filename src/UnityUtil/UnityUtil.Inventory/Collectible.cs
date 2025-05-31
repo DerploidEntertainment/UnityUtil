@@ -5,7 +5,7 @@ namespace UnityUtil.Inventory;
 
 public class Collectible : MonoBehaviour
 {
-    [RequiredIn(PrefabKind.NonPrefabInstance)]
+    [RequiredIn(PrefabKind.PrefabInstanceAndNonPrefabInstance)]
     public GameObject? Root;
 
     [Min(0)] public float Amount = 25f;
