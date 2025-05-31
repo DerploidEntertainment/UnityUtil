@@ -41,7 +41,11 @@ public class LegalAcceptManager : ScriptableObject, ILegalAcceptManager
 
     [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
     [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
-    private void Awake() => DependencyInjector.Instance.ResolveDependenciesOf(this);
+    private void Awake()
+    {
+        if (DependencyInjector.Instance.Initialized)    // Should only be false in Edit Mode, where this class isn't really expected to work anyway
+            DependencyInjector.Instance.ResolveDependenciesOf(this);
+    }
 
     public void Inject(
         ILoggerFactory loggerFactory,
