@@ -21,7 +21,7 @@ public class CopyrightText : MonoBehaviour
         $"See here for details: https://docs.microsoft.com/en-us/dotnet/standard/base-types/composite-formatting"
     )]
     [MultiLineProperty]
-    public string FormatString = "© {0}, {1}";
+    public string FormatString = "© {0:yyyy}, {1}";
 
     [RequiredIn(PrefabKind.PrefabInstanceAndNonPrefabInstance)]
     public TMP_Text? Text;
