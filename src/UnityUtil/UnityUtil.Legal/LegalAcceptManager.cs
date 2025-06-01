@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -10,7 +9,6 @@ using Unity.Extensions.Logging;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
-using UnityUtil.DependencyInjection;
 using UnityUtil.Storage;
 using static Microsoft.Extensions.Logging.LogLevel;
 using MEL = Microsoft.Extensions.Logging;
@@ -38,14 +36,6 @@ public class LegalAcceptManager : ScriptableObject, ILegalAcceptManager
     private string[] _latestVersionTags = [];
 
     private LegalDocument[]? _legalDocuments;
-
-    [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
-    [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
-    private void Awake()
-    {
-        if (DependencyInjector.Instance.Initialized)    // Should only be false in Edit Mode, where this class isn't really expected to work anyway
-            DependencyInjector.Instance.ResolveDependenciesOf(this);
-    }
 
     public void Inject(
         ILoggerFactory loggerFactory,
