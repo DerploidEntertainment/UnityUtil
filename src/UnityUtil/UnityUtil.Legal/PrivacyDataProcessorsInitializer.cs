@@ -157,8 +157,6 @@ public class PrivacyDataProcessorsInitializer : MonoBehaviour
 
         _preInitializeTask = preInitializeTask;
 
-        _awaitingContinueTcs = new TaskCompletionSource<bool>();
-
         LegalAcceptStatus legalAcceptStatus = await _legalAcceptManager!.CheckStatusAsync(LegalDocuments);
 
         cancellationToken.ThrowIfCancellationRequested();
@@ -177,6 +175,7 @@ public class PrivacyDataProcessorsInitializer : MonoBehaviour
 
         // These UI event handler registrations were originally in Awake(), but then they don't run in Edit Mode tests.
         // So we're kinda changing functionality just to facilitate tests...but whatev, this is the first and only major method of this class that gets called anyway.
+        _awaitingContinueTcs = new TaskCompletionSource<bool>();
         ToggleLegalAccept!.onValueChanged.AddListener(isOn => BtnContinue!.interactable = isOn);
         BtnContinue!.onClick.AddListener(() => _ = _awaitingContinueTcs!.TrySetResult(true));
 
@@ -213,31 +212,33 @@ public class PrivacyDataProcessorsInitializer : MonoBehaviour
 
         cancellationToken.ThrowIfCancellationRequested();
 
-        if (_legalAcceptRequired)
-            _legalAcceptManager!.Accept();
-        // Don't cancel here; saving legal acceptance and non-CMP consents from the first UI dialog should be done together (not rigorously atomic, but close enough)
-        saveRequiredNonCmpConsents(hasNonCmpConsent);
-
-        cancellationToken.ThrowIfCancellationRequested();
-
         // Wait for other pre-initialization actions.
         // These hopefully completed while the consent dialog(s) were shown, but gotta be sure...
         if (_preInitializeTask is not null)
             await _preInitializeTask;
 
-        initializeNonTcfDataProcessors();
+        if (_legalAcceptRequired)
+            _legalAcceptManager!.Accept();
+        // Don't cancel here; saving legal acceptance and non-CMP consents from the first UI dialog should be done together (not rigorously atomic, but close enough)
+
+        if (_nonTcfDataProcessors!.Count == 0)
+            log_NoNonTcfDataProcessors();
+        else {
+            if (someNonCmpConsentStillRequired)
+                saveRequiredNonCmpConsents(hasNonCmpConsent);
+            startNonTcfDataProcessors();
+        }
 
         DialogRoot!.gameObject.SetActive(false);
 
         cancellationToken.ThrowIfCancellationRequested();
 
-        if (_tcfDataProcessors!.Count == 0) {
+        if (_tcfDataProcessors!.Count == 0)
             log_NoTcfDataProcessors();
-            return;
+        else {
+            await updateCmpConsentAsync(showCmpConsent);
+            await initializeTcfDataProcessors();    // TCF-compliant data processors are always initialized; they may just be using the "default" TC string
         }
-
-        await updateCmpConsentAsync(showCmpConsent);
-        await initializeTcfDataProcessors();    // TCF-compliant data processors are always initialized; they may just be using the "default" TC string
     }
 
     private async Task updateCmpConsentAsync(bool showCmpConsent)
@@ -332,7 +333,7 @@ public class PrivacyDataProcessorsInitializer : MonoBehaviour
     /// <see cref="INonTcfDataProcessor"/>s are only initialized if non-CMP consent was granted.
     /// </summary>
     [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Async suffix doesn't really look great on async void methods")]
-    private void initializeNonTcfDataProcessors()
+    private void startNonTcfDataProcessors()
     {
         log_StartingAllNonTcf();
 
@@ -451,12 +452,20 @@ public class PrivacyDataProcessorsInitializer : MonoBehaviour
     private void log_SaveAllNonCmpConsents(NonCmpConsentStatus consentStatus) => LOG_SAVE_ALL_NON_CMP_ACTION(_logger!, consentStatus, null);
 
 
-    private static readonly Action<MEL.ILogger, string, NonCmpConsentStatus, Exception?> LOG_SAVING_NON_CMP_CONSENT_ACTION = LoggerMessage.Define<string, NonCmpConsentStatus>(Information,
+    private static readonly Action<MEL.ILogger, NonCmpConsentStatus, string, Exception?> LOG_SAVING_NON_CMP_CONSENT_ACTION = LoggerMessage.Define<NonCmpConsentStatus, string>(Information,
         new EventId(id: 0, nameof(log_SavingNonCmpConsent)),
         "Saving non-CMP consent to {ConsentStatus} at local preference key '{PreferenceKey}' so we don't need to request it again..."
     );
     private void log_SavingNonCmpConsent(INonTcfDataProcessor nonTcfDataProcessor, NonCmpConsentStatus consentStatus) =>
-        LOG_SAVING_NON_CMP_CONSENT_ACTION(_logger!, nonTcfDataProcessor.ConsentPreferenceKey, consentStatus, null);
+        LOG_SAVING_NON_CMP_CONSENT_ACTION(_logger!, consentStatus, nonTcfDataProcessor.ConsentPreferenceKey, null);
+
+
+    private static readonly Action<MEL.ILogger, Exception?> LOG_NO_NON_TCF_VENDORS_ACTION = LoggerMessage.Define(Information,
+        new EventId(id: 0, nameof(log_NoNonTcfDataProcessors)),
+        "No registered non-TCF data processors to start"
+    );
+    private void log_NoNonTcfDataProcessors() =>
+        LOG_NO_NON_TCF_VENDORS_ACTION(_logger!, null);
 
 
     private static readonly Action<MEL.ILogger, Exception?> LOG_NO_TCF_VENDORS_ACTION = LoggerMessage.Define(Information,
@@ -493,7 +502,7 @@ public class PrivacyDataProcessorsInitializer : MonoBehaviour
 
     private static readonly Action<MEL.ILogger, Exception?> LOG_NOT_SHOWING_CMP_CONSENT_FORM_ACTION = LoggerMessage.Define(Information,
         new EventId(id: 0, nameof(log_NotShowingCmpConsentForm)),
-        "Not showing CMP consent form (keeping default TC string) as user did not agree to show it in the non-CMP dialog"
+        "Not showing CMP consent form (not changing TC string) as it is not required, or user did not agree to show it in the non-CMP dialog"
     );
     private void log_NotShowingCmpConsentForm() =>
         LOG_NOT_SHOWING_CMP_CONSENT_FORM_ACTION(_logger!, null);
@@ -509,7 +518,7 @@ public class PrivacyDataProcessorsInitializer : MonoBehaviour
 
     private static readonly Action<MEL.ILogger, Exception?> LOG_START_ALL_NON_TCF_ACTION = LoggerMessage.Define(Information,
         new EventId(id: 0, nameof(log_StartingAllNonTcf)),
-        "Starting data collection for non-TCF data processors, if they have consent..."
+        $"Starting data collection for non-TCF data processors, if their consent was saved to '{nameof(Granted)}'..."
     );
     private void log_StartingAllNonTcf() => LOG_START_ALL_NON_TCF_ACTION(_logger!, null);
 

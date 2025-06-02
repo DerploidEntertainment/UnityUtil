@@ -225,7 +225,7 @@
             See this exception's <see cref="P:System.AggregateException.InnerExceptions"/> collection for more details.
             </exception>
         </member>
-        <member name="M:UnityUtil.Legal.PrivacyDataProcessorsInitializer.initializeNonTcfDataProcessors">
+        <member name="M:UnityUtil.Legal.PrivacyDataProcessorsInitializer.startNonTcfDataProcessors">
             <summary>
             Initializes all non-TCF-registered data processors.
             <see cref="T:UnityUtil.Legal.INonTcfDataProcessor"/>s are only initialized if non-CMP consent was granted.
