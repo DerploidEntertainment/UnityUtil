@@ -59,16 +59,17 @@
             The user's consent (grant or deny) should be saved at this local preference key.
             </summary>
         </member>
-        <member name="M:UnityUtil.Legal.INonTcfDataProcessor.StartDataCollection">
+        <member name="P:UnityUtil.Legal.INonTcfDataProcessor.IsCollectingData">
             <summary>
-            Start collecting data for this data processor.
-            Consumers should only call this method if they have a lawful basis (i.e., consent has been (re-)granted by the user).
+            Is this data processor currently collecting data (i.e., does it have the user's consent to do so)?
             </summary>
         </member>
-        <member name="M:UnityUtil.Legal.INonTcfDataProcessor.StopDataCollection">
+        <member name="M:UnityUtil.Legal.INonTcfDataProcessor.ToggleDataCollection(System.Boolean)">
             <summary>
-            Stop collecting data for this data processor.
-            Consumers should call this method anytime a user revokes their consent at runtime.
+            Toggle data collection for this data processor.
+            Consumers must only <em>start</em> data collection if they have a lawful basis (i.e., consent has been (re-)granted by the user).
+            Consumers may stop data collection anytime a user revokes consent at runtime.
+            Note that not all data processors support toggling data collection at runtime, in which case this method may no-op or throw an exception.
             </summary>
         </member>
         <member name="M:UnityUtil.Legal.INonTcfDataProcessor.RequestDataDeletion">
