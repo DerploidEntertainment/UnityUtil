@@ -136,7 +136,6 @@ public class PrivacyDataProcessorsInitializerTests : BaseEditModeTestFixture
         Assert.That(privacyDataProcessorsInitializer.DialogRoot!.gameObject.activeSelf, Is.EqualTo(priorNonCmpConsents.Any(x => x is null) || legalAcceptStatus != LegalAcceptStatus.Current));
         Assert.That(privacyDataProcessorsInitializer.ToggleLegalAccept!.isOn, Is.EqualTo(alreadyAcceptedLegalDocs));
         Assert.That(privacyDataProcessorsInitializer.ToggleNonCmpConsent!.isOn, Is.False);
-        Assert.That(privacyDataProcessorsInitializer.ToggleCmpConsent!.isOn, Is.True);
         Assert.That(privacyDataProcessorsInitializer.BtnContinue!.interactable, Is.EqualTo(alreadyAcceptedLegalDocs));
 
         if (!alreadyAcceptedLegalDocs)
@@ -151,7 +150,7 @@ public class PrivacyDataProcessorsInitializerTests : BaseEditModeTestFixture
     }
 
     [Test]
-    public async Task InitializeDataProcessorsWithConsentAsync_ShowsCmpConsentForm_IfRequiredAndUserAccepts(
+    public async Task InitializeDataProcessorsWithConsentAsync_ShowsCmpConsentForm(
         [Values] LegalAcceptStatus legalAcceptStatus,
         [ValueSource(nameof(getPriorNonCmpConsents))] bool?[] priorNonCmpConsents
     )
@@ -174,44 +173,12 @@ public class PrivacyDataProcessorsInitializerTests : BaseEditModeTestFixture
 
         // ACT
         Task initializeTask = privacyDataProcessorsInitializer.InitializeDataProcessorsWithConsentAsync();
-        privacyDataProcessorsInitializer.ToggleCmpConsent!.isOn = showCmpConsentForm;
         privacyDataProcessorsInitializer.BtnContinue!.onClick.Invoke();
         await initializeTask;
 
         // ASSERT
         tcfCmpAdapter.Verify(x => x.UpdateConsentInfo(), Times.Once());
         tcfCmpAdapter.Verify(x => x.LoadAndShowConsentFormIfRequiredAsync(), showCmpConsentForm ? Times.Once() : Times.Never());
-    }
-
-    [Test]
-    public async Task InitializeDataProcessorsWithConsentAsync_DoesntShowCmpConsentForm_IfUserDontAccept(
-        [Values] LegalAcceptStatus legalAcceptStatus,
-        [ValueSource(nameof(getPriorNonCmpConsents))] bool?[] priorNonCmpConsents
-    )
-    {
-        // ARRANGE
-        string consentStrings = string.Join(",", priorNonCmpConsents.Select(x => x?.ToString() ?? "Null"));
-        Debug.Log($"Initializing data processors when {nameof(legalAcceptStatus)} is '{legalAcceptStatus}' and consent states are: {consentStrings}");
-        Mock<INonTcfDataProcessor>[] nonTcfDataProcessors = getNonTcfDataProcessors(priorNonCmpConsents.Length);
-        Mock<ILocalPreferences> localPreferences = getLocalPreferences(priorNonCmpConsents);
-        Mock<ITcfCmpAdapter> tcfCmpAdapter = new();
-        PrivacyDataProcessorsInitializer privacyDataProcessorsInitializer = getPrivacyDataProcessorsInitializer(
-            legalAcceptManager: getLegalAcceptManager(legalAcceptStatus).Object,
-            nonTcfDataProcessors: [.. nonTcfDataProcessors.Select(x => x.Object)],
-            tcfDataProcessors: [Mock.Of<ITcfDataProcessor>()],
-            localPreferences: localPreferences.Object,
-            tcfCmpAdapter: tcfCmpAdapter.Object
-        );
-
-        // ACT
-        Task initializeTask = privacyDataProcessorsInitializer.InitializeDataProcessorsWithConsentAsync();
-        privacyDataProcessorsInitializer.ToggleCmpConsent!.isOn = false;
-        privacyDataProcessorsInitializer.BtnContinue!.onClick.Invoke();
-        await initializeTask;
-
-        // ASSERT
-        tcfCmpAdapter.Verify(x => x.UpdateConsentInfo(), Times.Once());
-        tcfCmpAdapter.Verify(x => x.LoadAndShowConsentFormIfRequiredAsync(), Times.Never());
     }
 
     [Test]
@@ -300,8 +267,7 @@ public class PrivacyDataProcessorsInitializerTests : BaseEditModeTestFixture
 
     [Test]
     public async Task InitializeDataProcessorsWithConsentAsync_InitializesTcfDataProcessors_Always(
-        [Values] LegalAcceptStatus legalAcceptStatus,
-        [Values] bool acceptShowingCmpConsentForm
+        [Values] LegalAcceptStatus legalAcceptStatus
     )
     {
         // ARRANGE
@@ -316,7 +282,6 @@ public class PrivacyDataProcessorsInitializerTests : BaseEditModeTestFixture
 
         // ACT
         Task initializeTask = privacyDataProcessorsInitializer.InitializeDataProcessorsWithConsentAsync();
-        privacyDataProcessorsInitializer.ToggleCmpConsent!.isOn = acceptShowingCmpConsentForm;
         privacyDataProcessorsInitializer.BtnContinue!.onClick.Invoke();
         await initializeTask;
 
@@ -403,7 +368,6 @@ public class PrivacyDataProcessorsInitializerTests : BaseEditModeTestFixture
 
         // ACT
         Task initializeTask = privacyDataProcessorsInitializer.InitializeDataProcessorsWithConsentAsync();
-        privacyDataProcessorsInitializer.ToggleCmpConsent!.isOn = true;
         privacyDataProcessorsInitializer.BtnContinue!.onClick.Invoke();
         await initializeTask;
 
@@ -580,9 +544,12 @@ public class PrivacyDataProcessorsInitializerTests : BaseEditModeTestFixture
 
         RectTransform dialogRoot = privacyDataProcessorsInitializer.gameObject.AddComponent<RectTransform>();
         privacyDataProcessorsInitializer.DialogRoot = dialogRoot;
-        var legalAcceptToggle = new GameObject(); legalAcceptToggle.transform.parent = dialogRoot; privacyDataProcessorsInitializer.ToggleLegalAccept = legalAcceptToggle.AddComponent<Toggle>();
-        var nonCmpConsentToggle = new GameObject(); nonCmpConsentToggle.transform.parent = dialogRoot; privacyDataProcessorsInitializer.ToggleNonCmpConsent = nonCmpConsentToggle.AddComponent<Toggle>();
-        var cmpConsentToggle = new GameObject(); cmpConsentToggle.transform.parent = dialogRoot; privacyDataProcessorsInitializer.ToggleCmpConsent = cmpConsentToggle.AddComponent<Toggle>();
+        var legalAcceptToggle = new GameObject();
+        var nonCmpConsentToggle = new GameObject();
+        legalAcceptToggle.transform.parent = dialogRoot;
+        nonCmpConsentToggle.transform.parent = dialogRoot;
+        privacyDataProcessorsInitializer.ToggleLegalAccept = legalAcceptToggle.AddComponent<Toggle>();
+        privacyDataProcessorsInitializer.ToggleNonCmpConsent = nonCmpConsentToggle.AddComponent<Toggle>();
         privacyDataProcessorsInitializer.BtnContinue = privacyDataProcessorsInitializer.gameObject.AddComponent<Button>();
 
         return privacyDataProcessorsInitializer;

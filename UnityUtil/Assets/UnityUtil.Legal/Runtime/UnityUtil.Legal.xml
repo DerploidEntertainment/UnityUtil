@@ -187,8 +187,8 @@
             <list type="number">
             <item>A <see cref="T:UnityEngine.UI.Toggle"/> for the user to accept all <see cref="F:UnityUtil.Legal.PrivacyDataProcessorsInitializer.LegalDocuments"/>.</item>
             <item>A <see cref="T:UnityEngine.UI.Toggle"/> for the user to grant/deny consent to all registered non-TCF data providers.</item>
-            <item>A <see cref="T:UnityEngine.UI.Toggle"/> for the user to (dis)agree to view the CMP consent form (for personalizing privacy settings with TCF vendors).</item>
             <item>A <see cref="T:UnityEngine.UI.Button"/> for the user to continue after setting the above toggles.</item>
+            <item>You should also include messaging to explain that the CMP form will be shown after the non-CMP form.</item>
             </list>
             This class handles interactability of those UI elements and determines whether or not to show the dialog at app launch
             based on the consent/acceptance statuses saved in local preferences (<see cref="T:UnityUtil.Storage.ILocalPreferences"/>).

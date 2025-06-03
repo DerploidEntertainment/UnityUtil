@@ -39,8 +39,8 @@ namespace UnityUtil.Legal;
 /// <list type="number">
 /// <item>A <see cref="Toggle"/> for the user to accept all <see cref="LegalDocuments"/>.</item>
 /// <item>A <see cref="Toggle"/> for the user to grant/deny consent to all registered non-TCF data providers.</item>
-/// <item>A <see cref="Toggle"/> for the user to (dis)agree to view the CMP consent form (for personalizing privacy settings with TCF vendors).</item>
 /// <item>A <see cref="Button"/> for the user to continue after setting the above toggles.</item>
+/// <item>You should also include messaging to explain that the CMP form will be shown after the non-CMP form.</item>
 /// </list>
 /// This class handles interactability of those UI elements and determines whether or not to show the dialog at app launch
 /// based on the consent/acceptance statuses saved in local preferences (<see cref="ILocalPreferences"/>).
@@ -104,13 +104,6 @@ public class PrivacyDataProcessorsInitializer : MonoBehaviour
     [RequiredIn(PrefabKind.PrefabInstanceAndNonPrefabInstance)]
     public Toggle? ToggleNonCmpConsent;
 
-    [Tooltip(
-        "Users MAY check this Toggle to show the CMP Consent Form." +
-        "They MAY also leave it unchecked to avoid the CMP Consent Form, in which case TCF-compatible data providers MUST be initialized without consent."
-    )]
-    [RequiredIn(PrefabKind.PrefabInstanceAndNonPrefabInstance)]
-    public Toggle? ToggleCmpConsent;
-
     [RequiredIn(PrefabKind.PrefabInstanceAndNonPrefabInstance)]
     public Button? BtnContinue;
 
@@ -170,7 +163,6 @@ public class PrivacyDataProcessorsInitializer : MonoBehaviour
         DialogRoot!.gameObject.SetActive(someNonCmpConsentStillRequired || legalAcceptStatus != LegalAcceptStatus.Current);
         ToggleLegalAccept!.isOn = legalAcceptStatus == LegalAcceptStatus.Current;
         ToggleNonCmpConsent!.isOn = false;
-        ToggleCmpConsent!.isOn = true;  // Always set this Toggle by default, as all it does is show the CMP consent form, from which users ACTUALLY consent
         BtnContinue!.interactable = legalAcceptStatus == LegalAcceptStatus.Current;
 
         // These UI event handler registrations were originally in Awake(), but then they don't run in Edit Mode tests.
@@ -183,7 +175,7 @@ public class PrivacyDataProcessorsInitializer : MonoBehaviour
         Task uiContinueAsync() => _awaitingContinueTcs!.Task;
 
         bool hasNonCmpConsent;
-        bool showCmpConsent;
+        bool showCmpConsent = true;
 
         if (someNonCmpConsentStillRequired || legalAcceptStatus == LegalAcceptStatus.Unprovided) {
             _legalAcceptRequired = legalAcceptStatus == LegalAcceptStatus.Unprovided;
@@ -191,7 +183,6 @@ public class PrivacyDataProcessorsInitializer : MonoBehaviour
             InitialConsentRequired.Invoke();
             await uiContinueAsync();
             hasNonCmpConsent = ToggleNonCmpConsent!.isOn;
-            showCmpConsent = ToggleCmpConsent!.isOn;
         }
 
         else if (legalAcceptStatus == LegalAcceptStatus.Stale) {
@@ -200,14 +191,13 @@ public class PrivacyDataProcessorsInitializer : MonoBehaviour
             LegalUpdateRequired.Invoke();
             await uiContinueAsync();
             hasNonCmpConsent = ToggleNonCmpConsent!.isOn;
-            showCmpConsent = ToggleCmpConsent!.isOn;
         }
 
         else {
             log_AlreadyRequested();
             NoUiRequired.Invoke();
             hasNonCmpConsent = true;    // No effect; no consent statuses are still required so none will be updated
-            showCmpConsent = false;     // Use existing TC string, players can update consent options from an app settings menu
+            showCmpConsent = false;     // Use existing TC string, players can always update consent options from an app settings menu
         }
 
         cancellationToken.ThrowIfCancellationRequested();
