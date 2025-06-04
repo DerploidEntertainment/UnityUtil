@@ -522,7 +522,7 @@ public class PrivacyDataProcessorsInitializer : MonoBehaviour
 
     private static readonly Action<MEL.ILogger, string, Exception?> LOG_REVOKING_NON_CMP_CONSENT_ACTION = LoggerMessage.Define<string>(Information,
         new EventId(id: 0, nameof(log_RevokingNonCmpConsent)),
-        "Revoking non-CMP consent for non-TCF data processor with preference key '{PreferenceKey}'. This cannot be undone."
+        "Revoking non-CMP consent for non-TCF data processor with preference key '{PreferenceKey}'."
     );
     private void log_RevokingNonCmpConsent(INonTcfDataProcessor nonTcfDataProcessor) => LOG_REVOKING_NON_CMP_CONSENT_ACTION(_logger!, nonTcfDataProcessor.ConsentPreferenceKey, null);
 
