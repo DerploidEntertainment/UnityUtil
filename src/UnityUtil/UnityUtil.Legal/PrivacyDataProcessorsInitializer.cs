@@ -57,7 +57,6 @@ public class PrivacyDataProcessorsInitializer : MonoBehaviour
 
     private Task? _preInitializeTask;
     private TaskCompletionSource<bool>? _awaitingContinueTcs;
-    private bool _legalAcceptRequired;
     private NonCmpConsentStatus[]? _nonCmpConsentStatuses;
 
     [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
@@ -114,27 +113,38 @@ public class PrivacyDataProcessorsInitializer : MonoBehaviour
     )]
     public LegalDocument[] LegalDocuments = [];
 
-    [Tooltip(
-        "Raised when the initial non-CMP consent dialog is necessary; i.e., when consent for any non-TCF data processor has not been saved yet or the legal docs have not been accepted. " +
-        "Note that the CMP consent form may also be shown if the application's TCF consent info has been updated."
-    )]
-    public UnityEvent InitialConsentRequired = new();
+    private const string TOOLTIP_NON_CMP_CONSENT_EVENTS =
+        $"If the initial non-CMP consent dialog is necessary then {nameof(NonCmpConsentRequired)} is raised; otherwise, {nameof(NonCmpConsentNotRequired)} is raised." +
+        $"The dialog is necessary when consent for any non-TCF data processor has not been saved yet. " +
+        "You can use these events to update the non-CMP consent form's UI as necessary, or trigger any other quick, synchronous logic. " +
+        "Note that the CMP consent form may still be shown whether or not these events were raised, if the application's TCF consent info has been updated.";
 
-    [Tooltip(
-        $"Raised when updated legal docs need accepting. If consent for any non-TCF data processor has not been saved yet, then {nameof(InitialConsentRequired)} is raised instead. " +
-        "Note that the CMP consent form may also be shown if the application's TCF consent info has been updated."
-    )]
-    public UnityEvent LegalUpdateRequired = new();
+    [Tooltip(TOOLTIP_NON_CMP_CONSENT_EVENTS)]
+    public UnityEvent NonCmpConsentRequired = new();
 
-    [Tooltip(
-        "Raised when no acceptance UI is necessary; i.e., when the latest legal docs have been accepted, and non-CMP consents have already been saved. " +
-        "Note that the CMP consent form may still be shown if the application's TCF consent info has been updated."
-    )]
-    public UnityEvent NoUiRequired = new();
+    [Tooltip(TOOLTIP_NON_CMP_CONSENT_EVENTS)]
+    public UnityEvent NonCmpConsentNotRequired = new();
+
+    private const string TOOLTIP_LEGAL_ACCEPT_EVENTS =
+        $"The events related to {nameof(LegalDocuments)} are raised as follows:" +
+        $"\n- If they've never been accepted: {nameof(LegalAcceptUnprovided)} is raised" +
+        $"\n- If the {nameof(LegalDocuments)} have been updated and need re-accepting: {nameof(LegalAcceptStale)} is raised" +
+        $"\n- If the latest {nameof(LegalDocuments)} have already been accepted: {nameof(LegalAcceptCurrent)} is raised" +
+        "\nYou can use these events to update the non-CMP consent form's UI as necessary, or trigger any other quick, synchronous logic. " +
+        "Note that the CMP consent form may still be shown whether or not these events were raised, if the application's TCF consent info has been updated.";
+
+    [Tooltip(TOOLTIP_LEGAL_ACCEPT_EVENTS)]
+    public UnityEvent LegalAcceptUnprovided = new();
+
+    [Tooltip(TOOLTIP_LEGAL_ACCEPT_EVENTS)]
+    public UnityEvent LegalAcceptStale = new();
+
+    [Tooltip(TOOLTIP_LEGAL_ACCEPT_EVENTS)]
+    public UnityEvent LegalAcceptCurrent = new();
 
     /// <summary>
     /// Run the user flow to gather user acceptance of legal documents and consent to private data sharing before initializing data processor SDKs.
-    /// The <see cref="InitialConsentRequired"/>, <see cref="LegalUpdateRequired"/>, or <see cref="NoUiRequired"/> events are raised as necessary,
+    /// The various consent-related <see cref="UnityEvent"/>s are raised as necessary,
     /// depending on the non-CMP consents and legal document acceptance saved in local preferences.
     /// </summary>
     /// <param name="preInitializeTask">
@@ -160,10 +170,12 @@ public class PrivacyDataProcessorsInitializer : MonoBehaviour
         cancellationToken.ThrowIfCancellationRequested();
 
         // Initialize non-CMP consent form UI
-        DialogRoot!.gameObject.SetActive(someNonCmpConsentStillRequired || legalAcceptStatus != LegalAcceptStatus.Current);
-        ToggleLegalAccept!.isOn = legalAcceptStatus == LegalAcceptStatus.Current;
+        // Having Toggles pre-checked looks shady, even if their state was already persisted to true, so we always set them to false if the non-CMP dialog is being shown.
+        bool nonCmpConsentFormRequired = someNonCmpConsentStillRequired || legalAcceptStatus != LegalAcceptStatus.Current;
+        DialogRoot!.gameObject.SetActive(nonCmpConsentFormRequired);
+        ToggleLegalAccept!.isOn = false;
         ToggleNonCmpConsent!.isOn = false;
-        BtnContinue!.interactable = legalAcceptStatus == LegalAcceptStatus.Current;
+        BtnContinue!.interactable = false;
 
         // These UI event handler registrations were originally in Awake(), but then they don't run in Edit Mode tests.
         // So we're kinda changing functionality just to facilitate tests...but whatev, this is the first and only major method of this class that gets called anyway.
@@ -171,35 +183,20 @@ public class PrivacyDataProcessorsInitializer : MonoBehaviour
         ToggleLegalAccept!.onValueChanged.AddListener(isOn => BtnContinue!.interactable = isOn);
         BtnContinue!.onClick.AddListener(() => _ = _awaitingContinueTcs!.TrySetResult(true));
 
+        log_NonCmpConsentRequired(someNonCmpConsentStillRequired);
+        (someNonCmpConsentStillRequired ? NonCmpConsentRequired : NonCmpConsentNotRequired).Invoke();
+
+        log_LegalAcceptStatus(legalAcceptStatus);
+        (
+            legalAcceptStatus == LegalAcceptStatus.Unprovided ? LegalAcceptUnprovided
+            : legalAcceptStatus == LegalAcceptStatus.Stale ? LegalAcceptStale : LegalAcceptCurrent
+        ).Invoke();
+
         // Need this little local function as awaiting TaskCompletionSource.Task directly always seems to cause a deadlock in Unity
         Task uiContinueAsync() => _awaitingContinueTcs!.Task;
-
-        bool hasNonCmpConsent;
-        bool showCmpConsent = true;
-
-        if (someNonCmpConsentStillRequired || legalAcceptStatus == LegalAcceptStatus.Unprovided) {
-            _legalAcceptRequired = legalAcceptStatus == LegalAcceptStatus.Unprovided;
-            log_NeedsRequested();
-            InitialConsentRequired.Invoke();
+        log_ShowingNonCmpConsentForm(nonCmpConsentFormRequired);
+        if (nonCmpConsentFormRequired)
             await uiContinueAsync();
-            hasNonCmpConsent = ToggleNonCmpConsent!.isOn;
-        }
-
-        else if (legalAcceptStatus == LegalAcceptStatus.Stale) {
-            _legalAcceptRequired = true;
-            log_RequestedLegalDocUpdated();
-            LegalUpdateRequired.Invoke();
-            await uiContinueAsync();
-            hasNonCmpConsent = ToggleNonCmpConsent!.isOn;
-        }
-
-        else {
-            log_AlreadyRequested();
-            NoUiRequired.Invoke();
-            hasNonCmpConsent = true;    // No effect; no consent statuses are still required so none will be updated
-            showCmpConsent = false;     // Use existing TC string, players can always update consent options from an app settings menu
-        }
-
         cancellationToken.ThrowIfCancellationRequested();
 
         // Wait for other pre-initialization actions.
@@ -207,15 +204,17 @@ public class PrivacyDataProcessorsInitializer : MonoBehaviour
         if (_preInitializeTask is not null)
             await _preInitializeTask;
 
-        if (_legalAcceptRequired)
+        if (legalAcceptStatus != LegalAcceptStatus.Current)
             _legalAcceptManager!.Accept();
         // Don't cancel here; saving legal acceptance and non-CMP consents from the first UI dialog should be done together (not rigorously atomic, but close enough)
 
         if (_nonTcfDataProcessors!.Count == 0)
             log_NoNonTcfDataProcessors();
         else {
-            if (someNonCmpConsentStillRequired)
+            if (someNonCmpConsentStillRequired) {
+                bool hasNonCmpConsent = !nonCmpConsentFormRequired || ToggleNonCmpConsent!.isOn;    // No effect if non-CMP form not shown, as no consent statuses were still required so none will be updated
                 saveRequiredNonCmpConsents(hasNonCmpConsent);
+            }
             startNonTcfDataProcessors();
         }
 
@@ -226,7 +225,7 @@ public class PrivacyDataProcessorsInitializer : MonoBehaviour
         if (_tcfDataProcessors!.Count == 0)
             log_NoTcfDataProcessors();
         else {
-            await updateCmpConsentAsync(showCmpConsent);
+            await updateCmpConsentAsync(showCmpConsent: nonCmpConsentFormRequired);
             await initializeTcfDataProcessors();    // TCF-compliant data processors are always initialized; they may just be using the "default" TC string
         }
     }
@@ -399,25 +398,18 @@ public class PrivacyDataProcessorsInitializer : MonoBehaviour
 
     #region LoggerMessages
 
-    private static readonly Action<MEL.ILogger, Exception?> LOG_NEEDS_REQUESTED_ACTION = LoggerMessage.Define(Information,
-        new EventId(id: 0, nameof(log_NeedsRequested)),
-        "At least one non-CMP consent still needs requested or legal docs still need accepted. Activating non-CMP consent UI..."
+    private static readonly Action<MEL.ILogger, bool, Exception?> LOG_NON_CMP_CONSENT_REQUIRED_ACTION = LoggerMessage.Define<bool>(Information,
+        new EventId(id: 0, nameof(log_NonCmpConsentRequired)),
+        "Does at least one non-CMP consent still need requested? {IsRequired}. If so, non-CMP consent UI will be activated."
     );
-    private void log_NeedsRequested() => LOG_NEEDS_REQUESTED_ACTION(_logger!, null);
+    private void log_NonCmpConsentRequired(bool isRequired) => LOG_NON_CMP_CONSENT_REQUIRED_ACTION(_logger!, isRequired, null);
 
 
-    private static readonly Action<MEL.ILogger, Exception?> LOG_REQUESTED_LEGAL_DOC_UPDATED_ACTION = LoggerMessage.Define(Information,
-        new EventId(id: 0, nameof(log_RequestedLegalDocUpdated)),
-        "All non-CMP consents already requested, but at least one legal doc has been updated. Activating UI to get updated legal acceptance..."
+    private static readonly Action<MEL.ILogger, LegalAcceptStatus, Exception?> LOG_LEGAL_ACCEPT_STATUS_ACTION = LoggerMessage.Define<LegalAcceptStatus>(Information,
+        new EventId(id: 0, nameof(log_LegalAcceptStatus)),
+        $"{nameof(LegalAcceptStatus)}: {{LegalAcceptStatus}}. If not '{LegalAcceptStatus.Current}' then UI to get acceptance of latest legal docs will be activated."
     );
-    private void log_RequestedLegalDocUpdated() => LOG_REQUESTED_LEGAL_DOC_UPDATED_ACTION(_logger!, null);
-
-
-    private static readonly Action<MEL.ILogger, Exception?> LOG_ALREADY_REQUESTED_ACTION = LoggerMessage.Define(Information,
-        new EventId(id: 0, nameof(log_AlreadyRequested)),
-        "All non-CMP consents already saved or not required, and legal docs already accepted. Not activating the non-CMP consent UI..."
-    );
-    private void log_AlreadyRequested() => LOG_ALREADY_REQUESTED_ACTION(_logger!, null);
+    private void log_LegalAcceptStatus(LegalAcceptStatus legalAcceptStatus) => LOG_LEGAL_ACCEPT_STATUS_ACTION(_logger!, legalAcceptStatus, null);
 
 
     private static readonly Action<MEL.ILogger, string, NonCmpConsentStatus, Exception?> LOG_NON_CMP_CONSENT_ALREADY_REQUESTED_ACTION = LoggerMessage.Define<string, NonCmpConsentStatus>(Information,
@@ -426,6 +418,14 @@ public class PrivacyDataProcessorsInitializer : MonoBehaviour
     );
     private void log_NonCmpConsentAlreadyRequested(string dataProcessorName, NonCmpConsentStatus nonCmpConsentStatus) =>
         LOG_NON_CMP_CONSENT_ALREADY_REQUESTED_ACTION(_logger!, dataProcessorName, nonCmpConsentStatus, null);
+
+
+    private static readonly Action<MEL.ILogger, bool, Exception?> LOG_SHOWING_NON_CMP_CONSENT_FORM_ACTION = LoggerMessage.Define<bool>(Information,
+        new EventId(id: 0, nameof(log_ShowingNonCmpConsentForm)),
+        "Showing non-CMP consent form? {IsShowing}"
+    );
+    private void log_ShowingNonCmpConsentForm(bool isShowing) =>
+        LOG_SHOWING_NON_CMP_CONSENT_FORM_ACTION(_logger!, isShowing, null);
 
 
     private static readonly Action<MEL.ILogger, string, Exception?> LOG_NON_CMP_CONSENT_NEEDS_REQURESTED_ACTION = LoggerMessage.Define<string>(Information,
@@ -492,7 +492,7 @@ public class PrivacyDataProcessorsInitializer : MonoBehaviour
 
     private static readonly Action<MEL.ILogger, Exception?> LOG_NOT_SHOWING_CMP_CONSENT_FORM_ACTION = LoggerMessage.Define(Information,
         new EventId(id: 0, nameof(log_NotShowingCmpConsentForm)),
-        "Not showing CMP consent form (not changing TC string) as it is not required, or user did not agree to show it in the non-CMP dialog"
+        "Not showing CMP consent form (not changing TC string) since non-CMP consent form was not shown either"
     );
     private void log_NotShowingCmpConsentForm() =>
         LOG_NOT_SHOWING_CMP_CONSENT_FORM_ACTION(_logger!, null);

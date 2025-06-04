@@ -88,15 +88,19 @@ public class PrivacyDataProcessorsInitializerTests : BaseEditModeTestFixture
     )
     {
         // ARRANGE
-        int initialConsentRequiredInvokeCount = 0;
-        int legalUpdateInvokeCount = 0;
-        int noUiInvokeCount = 0;
+        int nonCmpConsentRequired_InvokeCount = 0;
+        int nonCmpConsentNotRequired_InvokeCount = 0;
+        int legalAcceptUnprovided_InvokeCount = 0;
+        int legalAcceptStale_InvokeCount = 0;
+        int legalAcceptCurrent_InvokeCount = 0;
         bool someNonCmpConsentRequired = priorNonCmpConsents.Any(x => x is null);
 
         PrivacyDataProcessorsInitializer privacyDataProcessorsInitializer = getPrivacyDataProcessorsInitializer_WithConsents(legalAcceptStatus, priorNonCmpConsents);
-        privacyDataProcessorsInitializer.InitialConsentRequired.AddListener(() => ++initialConsentRequiredInvokeCount);
-        privacyDataProcessorsInitializer.LegalUpdateRequired.AddListener(() => ++legalUpdateInvokeCount);
-        privacyDataProcessorsInitializer.NoUiRequired.AddListener(() => ++noUiInvokeCount);
+        privacyDataProcessorsInitializer.NonCmpConsentRequired.AddListener(() => ++nonCmpConsentRequired_InvokeCount);
+        privacyDataProcessorsInitializer.NonCmpConsentNotRequired.AddListener(() => ++nonCmpConsentNotRequired_InvokeCount);
+        privacyDataProcessorsInitializer.LegalAcceptUnprovided.AddListener(() => ++legalAcceptUnprovided_InvokeCount);
+        privacyDataProcessorsInitializer.LegalAcceptStale.AddListener(() => ++legalAcceptStale_InvokeCount);
+        privacyDataProcessorsInitializer.LegalAcceptCurrent.AddListener(() => ++legalAcceptCurrent_InvokeCount);
 
         // ACT
         Task initializeTask = privacyDataProcessorsInitializer.InitializeDataProcessorsWithConsentAsync();
@@ -104,9 +108,11 @@ public class PrivacyDataProcessorsInitializerTests : BaseEditModeTestFixture
         await initializeTask;
 
         // ASSERT
-        Assert.That(initialConsentRequiredInvokeCount, Is.EqualTo(someNonCmpConsentRequired || legalAcceptStatus == LegalAcceptStatus.Unprovided ? 1 : 0));
-        Assert.That(legalUpdateInvokeCount, Is.EqualTo(!someNonCmpConsentRequired && legalAcceptStatus == LegalAcceptStatus.Stale ? 1 : 0));
-        Assert.That(noUiInvokeCount, Is.EqualTo(!someNonCmpConsentRequired && legalAcceptStatus == LegalAcceptStatus.Current ? 1 : 0));
+        Assert.That(nonCmpConsentRequired_InvokeCount, Is.EqualTo(someNonCmpConsentRequired ? 1 : 0));
+        Assert.That(nonCmpConsentNotRequired_InvokeCount, Is.EqualTo(someNonCmpConsentRequired ? 0 : 1));
+        Assert.That(legalAcceptUnprovided_InvokeCount, Is.EqualTo(legalAcceptStatus == LegalAcceptStatus.Unprovided ? 1 : 0));
+        Assert.That(legalAcceptStale_InvokeCount, Is.EqualTo(legalAcceptStatus == LegalAcceptStatus.Stale ? 1 : 0));
+        Assert.That(legalAcceptCurrent_InvokeCount, Is.EqualTo(legalAcceptStatus == LegalAcceptStatus.Current ? 1 : 0));
     }
 
     [Test]
@@ -116,15 +122,14 @@ public class PrivacyDataProcessorsInitializerTests : BaseEditModeTestFixture
     )
     {
         // ARRANGE
-        bool alreadyAcceptedLegalDocs = legalAcceptStatus == LegalAcceptStatus.Current;
+        bool showCmpConsentForm = priorNonCmpConsents.Any(x => x is null) || legalAcceptStatus != LegalAcceptStatus.Current;
 
         PrivacyDataProcessorsInitializer privacyDataProcessorsInitializer = getPrivacyDataProcessorsInitializer_WithConsents(legalAcceptStatus, priorNonCmpConsents);
 
         var uiUpdatedTcs = new TaskCompletionSource<bool>();
         void uiUpdatedAction() => uiUpdatedTcs.TrySetResult(true);
-        privacyDataProcessorsInitializer.InitialConsentRequired.AddListener(uiUpdatedAction);
-        privacyDataProcessorsInitializer.LegalUpdateRequired.AddListener(uiUpdatedAction);
-        privacyDataProcessorsInitializer.NoUiRequired.AddListener(uiUpdatedAction);
+        privacyDataProcessorsInitializer.NonCmpConsentRequired.AddListener(uiUpdatedAction);
+        privacyDataProcessorsInitializer.NonCmpConsentNotRequired.AddListener(uiUpdatedAction);
 
         // Need this little local function as awaiting TaskCompletionSource.Task directly always seems to cause a deadlock in Unity
         Task waitForUiUpdated() => uiUpdatedTcs.Task;
@@ -133,15 +138,16 @@ public class PrivacyDataProcessorsInitializerTests : BaseEditModeTestFixture
         Task initializeTask = privacyDataProcessorsInitializer.InitializeDataProcessorsWithConsentAsync();
         await waitForUiUpdated();   // UI is now updated but test UI is still waiting for simulated "continue" input
 
+        // Having Toggles pre-checked looks shady, even if their state was already persisted to true, so we always set them to false if the non-CMP dialog is being shown.
         Assert.That(privacyDataProcessorsInitializer.DialogRoot!.gameObject.activeSelf, Is.EqualTo(priorNonCmpConsents.Any(x => x is null) || legalAcceptStatus != LegalAcceptStatus.Current));
-        Assert.That(privacyDataProcessorsInitializer.ToggleLegalAccept!.isOn, Is.EqualTo(alreadyAcceptedLegalDocs));
+        Assert.That(privacyDataProcessorsInitializer.ToggleLegalAccept!.isOn, Is.False);
         Assert.That(privacyDataProcessorsInitializer.ToggleNonCmpConsent!.isOn, Is.False);
-        Assert.That(privacyDataProcessorsInitializer.BtnContinue!.interactable, Is.EqualTo(alreadyAcceptedLegalDocs));
+        Assert.That(privacyDataProcessorsInitializer.BtnContinue!.interactable, Is.False);
 
-        if (!alreadyAcceptedLegalDocs)
+        if (showCmpConsentForm)
             privacyDataProcessorsInitializer.ToggleLegalAccept.onValueChanged.Invoke(true);
 
-        Assert.That(privacyDataProcessorsInitializer.BtnContinue!.interactable, Is.True);
+        Assert.That(privacyDataProcessorsInitializer.BtnContinue!.interactable, Is.EqualTo(showCmpConsentForm));
 
         privacyDataProcessorsInitializer.BtnContinue!.onClick.Invoke();
         await initializeTask;

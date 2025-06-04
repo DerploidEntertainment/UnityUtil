@@ -198,7 +198,7 @@
         <member name="M:UnityUtil.Legal.PrivacyDataProcessorsInitializer.InitializeDataProcessorsWithConsentAsync(System.Threading.Tasks.Task,System.Threading.CancellationToken)">
             <summary>
             Run the user flow to gather user acceptance of legal documents and consent to private data sharing before initializing data processor SDKs.
-            The <see cref="F:UnityUtil.Legal.PrivacyDataProcessorsInitializer.InitialConsentRequired"/>, <see cref="F:UnityUtil.Legal.PrivacyDataProcessorsInitializer.LegalUpdateRequired"/>, or <see cref="F:UnityUtil.Legal.PrivacyDataProcessorsInitializer.NoUiRequired"/> events are raised as necessary,
+            The various consent-related <see cref="T:UnityEngine.Events.UnityEvent"/>s are raised as necessary,
             depending on the non-CMP consents and legal document acceptance saved in local preferences.
             </summary>
             <param name="preInitializeTask">
