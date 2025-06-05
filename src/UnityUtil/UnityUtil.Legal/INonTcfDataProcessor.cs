@@ -1,4 +1,4 @@
-﻿namespace UnityUtil.Legal;
+namespace UnityUtil.Legal;
 
 /// <summary>
 /// Represents a data processor that is <em>not</em> certified with the IAB Transparency and Consent Framework (TCF)
@@ -13,16 +13,12 @@ public interface INonTcfDataProcessor
     string ConsentPreferenceKey { get; }
 
     /// <summary>
-    /// Start collecting data for this data processor.
-    /// Consumers should only call this method if they have a lawful basis (i.e., consent has been (re-)granted by the user).
+    /// Toggle data collection for this data processor.
+    /// Consumers must only <em>start</em> data collection if they have a lawful basis (i.e., consent has been (re-)granted by the user).
+    /// Consumers may stop data collection anytime a user revokes consent at runtime.
+    /// Note that not all data processors support toggling data collection at runtime, in which case this method may no-op or throw an exception.
     /// </summary>
-    void StartDataCollection();
-
-    /// <summary>
-    /// Stop collecting data for this data processor.
-    /// Consumers should call this method anytime a user revokes their consent at runtime.
-    /// </summary>
-    void StopDataCollection();
+    void ToggleDataCollection(bool isOn);
 
     /// <summary>
     /// Perform a Right to ERasure (RER) request, i.e., a user request to have their private data erased.

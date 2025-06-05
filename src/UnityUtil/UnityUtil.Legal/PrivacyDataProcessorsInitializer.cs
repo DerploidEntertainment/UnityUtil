@@ -333,7 +333,7 @@ public class PrivacyDataProcessorsInitializer : MonoBehaviour
         try {
             for (int i = 0; i < _nonTcfDataProcessors!.Count; i++) {
                 if (_nonCmpConsentStatuses![i] == Granted)
-                    _nonTcfDataProcessors![i].StartDataCollection();
+                    _nonTcfDataProcessors![i].ToggleDataCollection(true);
             }
         }
         catch (Exception ex) {
@@ -372,7 +372,7 @@ public class PrivacyDataProcessorsInitializer : MonoBehaviour
         _localPreferences!.SetInt(nonTcfDataProcessor.ConsentPreferenceKey, 0);
 
         try {
-            nonTcfDataProcessor.StopDataCollection();
+            nonTcfDataProcessor.ToggleDataCollection(false);
         }
         catch (Exception ex) {
             log_StopNonTcfFailed(ex);

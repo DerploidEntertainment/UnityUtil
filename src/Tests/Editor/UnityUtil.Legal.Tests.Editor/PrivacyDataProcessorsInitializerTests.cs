@@ -267,7 +267,7 @@ public class PrivacyDataProcessorsInitializerTests : BaseEditModeTestFixture
             Mock<INonTcfDataProcessor> nonTcfDataProcessor = nonTcfDataProcessors[index];
             bool? priorConsent = priorNonCmpConsents[index];
             bool shouldBeStarted = priorConsent == true || (priorConsent is null && hasNonCmpConsent);
-            nonTcfDataProcessor.Verify(x => x.StartDataCollection(), shouldBeStarted ? Times.Once() : Times.Never());
+            nonTcfDataProcessor.Verify(x => x.ToggleDataCollection(true), shouldBeStarted ? Times.Once() : Times.Never());
         }
     }
 
@@ -306,7 +306,7 @@ public class PrivacyDataProcessorsInitializerTests : BaseEditModeTestFixture
             legalAcceptManager: getLegalAcceptManager(LegalAcceptStatus.Current).Object,
             localPreferences: getLocalPreferences(priorConsents: [.. Enumerable.Repeat(true, consentCount)]).Object,
             nonTcfDataProcessors: getNonTcfDataProcessors(consentCount).Select((x, index) => {
-                _ = x.Setup(y => y.StartDataCollection()).Throws(new InvalidOperationException($"AH!! Consent {index} exploded!"));
+                _ = x.Setup(y => y.ToggleDataCollection(true)).Throws(new InvalidOperationException($"AH!! Consent {index} exploded!"));
                 return x.Object;
             })
         );
