@@ -184,7 +184,7 @@ public class PrivacyDataProcessorsInitializerTests : BaseEditModeTestFixture
 
         // ASSERT
         tcfCmpAdapter.Verify(x => x.UpdateConsentInfo(), Times.Once());
-        tcfCmpAdapter.Verify(x => x.LoadAndShowConsentFormIfRequiredAsync(), showCmpConsentForm ? Times.Once() : Times.Never());
+        tcfCmpAdapter.Verify(x => x.LoadAndShowConsentFormIfRequiredAsync(), Times.Once());
     }
 
     [Test]

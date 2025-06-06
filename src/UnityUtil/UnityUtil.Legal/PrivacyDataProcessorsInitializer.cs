@@ -225,25 +225,19 @@ public class PrivacyDataProcessorsInitializer : MonoBehaviour
         if (_tcfDataProcessors!.Count == 0)
             log_NoTcfDataProcessors();
         else {
-            await updateCmpConsentAsync(showCmpConsent: nonCmpConsentFormRequired);
+            await updateCmpConsentAsync();  // Always update consent info; showing a consent form to users again may not be required tho
             await initializeTcfDataProcessors();    // TCF-compliant data processors are always initialized; they may just be using the "default" TC string
         }
     }
 
-    private async Task updateCmpConsentAsync(bool showCmpConsent)
+    private async Task updateCmpConsentAsync()
     {
         try {
-            // TC string is always updated, regardless of whether we then show form for users to update consent options
             log_UpdatingCmpConsentInfo();
             _tcfCmpAdapter!.UpdateConsentInfo();
         }
         catch (Exception ex) {
             log_UpdatingCmpConsentInfoFailed(ex);
-        }
-
-        if (!showCmpConsent) {
-            log_NotShowingCmpConsentForm();
-            return;
         }
 
         try {
@@ -489,14 +483,6 @@ public class PrivacyDataProcessorsInitializer : MonoBehaviour
     );
     private void log_ShowingCmpConsentForm() =>
         LOG_SHOWING_CMP_CONSENT_FORM_ACTION(_logger!, null);
-
-
-    private static readonly Action<MEL.ILogger, Exception?> LOG_NOT_SHOWING_CMP_CONSENT_FORM_ACTION = LoggerMessage.Define(Information,
-        new EventId(id: 0, nameof(log_NotShowingCmpConsentForm)),
-        "Not showing CMP consent form (not changing TC string) since non-CMP consent form was not shown either"
-    );
-    private void log_NotShowingCmpConsentForm() =>
-        LOG_NOT_SHOWING_CMP_CONSENT_FORM_ACTION(_logger!, null);
 
 
     private static readonly Action<MEL.ILogger, Exception?> LOG_CMP_CONSENT_FORM_FAILURE_ACTION = LoggerMessage.Define(Error,
