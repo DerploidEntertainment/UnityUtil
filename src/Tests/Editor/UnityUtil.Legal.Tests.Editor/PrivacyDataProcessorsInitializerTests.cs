@@ -479,7 +479,7 @@ public class PrivacyDataProcessorsInitializerTests : BaseEditModeTestFixture
     #region RevokeConsent
 
     [Test]
-    public async Task RevokeConsent_Throws_NonTcfDataProcessorNotFound()
+    public async Task ToggleConsent_Throws_NonTcfDataProcessorNotFound([Values] bool hasConsent)
     {
         // ARRANGE
         INonTcfDataProcessor[] nonTcfDataProcessors = [.. getNonTcfDataProcessors(1).Select(x => x.Object)];
@@ -491,11 +491,57 @@ public class PrivacyDataProcessorsInitializerTests : BaseEditModeTestFixture
         privacyDataProcessorsInitializer.BtnContinue!.onClick.Invoke();
         await initializeTask;
 
-        _ = Assert.Throws<ArgumentException>(() => privacyDataProcessorsInitializer.RevokeConsent(nonTcfDataProcessor.Object));
+        _ = Assert.Throws<ArgumentException>(() => privacyDataProcessorsInitializer.ToggleConsent(nonTcfDataProcessor.Object, hasConsent));
     }
 
     [Test]
-    public async Task RevokeConsent_SetsLocalPreference()
+    public async Task ToggleConsent_TogglesNonTcfDataProcessorCollection([Values] bool hasConsent)
+    {
+        // ARRANGE
+        Mock<INonTcfDataProcessor> nonTcfDataProcessor = getNonTcfDataProcessor();
+        INonTcfDataProcessor[] nonTcfDataProcessors = [nonTcfDataProcessor.Object];
+        PrivacyDataProcessorsInitializer privacyDataProcessorsInitializer = getPrivacyDataProcessorsInitializer(nonTcfDataProcessors: nonTcfDataProcessors);
+
+        // ACT
+        Task initializeTask = privacyDataProcessorsInitializer.InitializeDataProcessorsWithConsentAsync();
+        privacyDataProcessorsInitializer.BtnContinue!.onClick.Invoke();
+        await initializeTask;
+
+        privacyDataProcessorsInitializer.ToggleConsent(nonTcfDataProcessor.Object, hasConsent);
+
+        // ASSERT
+        nonTcfDataProcessor.Verify(x => x.ToggleDataCollection(hasConsent), Times.Once());
+    }
+
+    [Test]
+    public async Task ToggleConsent_LogsNotThrows_NonTcfDataProcessorExceptions([Values] bool hasConsent)
+    {
+        // ARRANGE
+        Mock<INonTcfDataProcessor> nonTcfDataProcessor = getNonTcfDataProcessor();
+        _ = nonTcfDataProcessor.Setup(x => x.ToggleDataCollection(hasConsent)).Throws(new InvalidOperationException("AH!! Revoke consent exploded!"));
+        INonTcfDataProcessor[] nonTcfDataProcessors = [nonTcfDataProcessor.Object];
+
+        Exception? loggedException = null;
+        PrivacyDataProcessorsInitializer privacyDataProcessorsInitializer = getPrivacyDataProcessorsInitializer(
+            loggerFactory: new LogLevelCallbackLoggerFactory(LogLevel.Error, (_, _, ex, _) => loggedException = ex, logToUnity),
+            nonTcfDataProcessors: nonTcfDataProcessors
+        );
+
+        // ACT
+        Task initializeTask = privacyDataProcessorsInitializer.InitializeDataProcessorsWithConsentAsync();
+        privacyDataProcessorsInitializer.BtnContinue!.onClick.Invoke();
+        await initializeTask;
+
+        privacyDataProcessorsInitializer.ToggleConsent(nonTcfDataProcessor.Object, hasConsent);
+
+        // ASSERT
+        Assert.That(loggedException, Is.Not.Null);
+        Assert.That(loggedException, Is.InstanceOf<InvalidOperationException>());
+        LogAssert.Expect(LogType.Error, new Regex(".+"));
+    }
+
+    [Test]
+    public async Task ToggleConsent_SetsLocalPreference([Values] bool hasConsent)
     {
         // ARRANGE
         INonTcfDataProcessor[] nonTcfDataProcessors = [.. getNonTcfDataProcessors(1).Select(x => x.Object)];
@@ -511,10 +557,10 @@ public class PrivacyDataProcessorsInitializerTests : BaseEditModeTestFixture
         privacyDataProcessorsInitializer.BtnContinue!.onClick.Invoke();
         await initializeTask;
 
-        privacyDataProcessorsInitializer.RevokeConsent(nonTcfDataProcessors[0]);
+        privacyDataProcessorsInitializer.ToggleConsent(nonTcfDataProcessors[0], hasConsent);
 
         // ASSERT
-        localPreferences.Verify(x => x.SetInt(nonTcfDataProcessors[0].ConsentPreferenceKey, 0), Times.Once);
+        localPreferences.Verify(x => x.SetInt(nonTcfDataProcessors[0].ConsentPreferenceKey, hasConsent ? 1 : 0), Times.Once());
     }
 
     #endregion

@@ -357,25 +357,26 @@ public class PrivacyDataProcessorsInitializer : MonoBehaviour
     }
 
     /// <summary>
-    /// Revoke consent for <paramref name="nonTcfDataProcessor"/>.
+    /// Toggle consent for <paramref name="nonTcfDataProcessor"/>.
     /// </summary>
     /// <param name="nonTcfDataProcessor"></param>
+    /// <param name="hasConsent"></param>
     /// <exception cref="InvalidOperationException">Consent has not yet been saved for <paramref name="nonTcfDataProcessor"/>.</exception>
     /// <exception cref="ArgumentException"><paramref name="nonTcfDataProcessor"/> is not managed by this class.</exception>
-    public void RevokeConsent(INonTcfDataProcessor nonTcfDataProcessor)
+    public void ToggleConsent(INonTcfDataProcessor nonTcfDataProcessor, bool hasConsent)
     {
         int index = _nonTcfDataProcessors!.FindIndex(x => x == nonTcfDataProcessor);
         if (index == -1)
             throw new ArgumentException($"Provided {nameof(nonTcfDataProcessor)} was not in the set provided to this {nameof(PrivacyDataProcessorsInitializer)}", nameof(nonTcfDataProcessor));
 
-        log_RevokingNonCmpConsent(nonTcfDataProcessor);
-        _localPreferences!.SetInt(nonTcfDataProcessor.ConsentPreferenceKey, 0);
+        log_TogglingNonCmpConsent(nonTcfDataProcessor, hasConsent);
+        _localPreferences!.SetInt(nonTcfDataProcessor.ConsentPreferenceKey, hasConsent ? 1 : 0);
 
         try {
-            nonTcfDataProcessor.ToggleDataCollection(false);
+            nonTcfDataProcessor.ToggleDataCollection(hasConsent);
         }
         catch (Exception ex) {
-            log_StopNonTcfFailed(ex);
+            log_ToggleNonTcfFailed(hasConsent, ex);
         }
     }
 
@@ -520,18 +521,18 @@ public class PrivacyDataProcessorsInitializer : MonoBehaviour
     private void log_InitializingAllTcf() => LOG_INIT_ALL_TCF_ACTION(_logger!, null);
 
 
-    private static readonly Action<MEL.ILogger, string, Exception?> LOG_REVOKING_NON_CMP_CONSENT_ACTION = LoggerMessage.Define<string>(Information,
-        new EventId(id: 0, nameof(log_RevokingNonCmpConsent)),
-        "Revoking non-CMP consent for non-TCF data processor with preference key '{PreferenceKey}'."
+    private static readonly Action<MEL.ILogger, bool, string, Exception?> LOG_REVOKING_NON_CMP_CONSENT_ACTION = LoggerMessage.Define<bool, string>(Information,
+        new EventId(id: 0, nameof(log_TogglingNonCmpConsent)),
+        "Toggling non-CMP consent to {HasConsent} for non-TCF data processor with preference key '{PreferenceKey}'."
     );
-    private void log_RevokingNonCmpConsent(INonTcfDataProcessor nonTcfDataProcessor) => LOG_REVOKING_NON_CMP_CONSENT_ACTION(_logger!, nonTcfDataProcessor.ConsentPreferenceKey, null);
+    private void log_TogglingNonCmpConsent(INonTcfDataProcessor nonTcfDataProcessor, bool hasConsent) => LOG_REVOKING_NON_CMP_CONSENT_ACTION(_logger!, hasConsent, nonTcfDataProcessor.ConsentPreferenceKey, null);
 
 
-    private static readonly Action<MEL.ILogger, Exception?> LOG_STOP_NON_TCF_FAILED_ACTION = LoggerMessage.Define(Error,
-        new EventId(id: 0, nameof(log_StopNonTcfFailed)),
-        "Stopping data collection on a non-TCF data processor failed."
+    private static readonly Action<MEL.ILogger, bool, Exception?> LOG_STOP_NON_TCF_FAILED_ACTION = LoggerMessage.Define<bool>(Error,
+        new EventId(id: 0, nameof(log_ToggleNonTcfFailed)),
+        "Toggling data collection to {HasConsent} for a non-TCF data processor failed."
     );
-    private void log_StopNonTcfFailed(Exception exception) => LOG_STOP_NON_TCF_FAILED_ACTION(_logger!, exception);
+    private void log_ToggleNonTcfFailed(bool hasConsent, Exception exception) => LOG_STOP_NON_TCF_FAILED_ACTION(_logger!, hasConsent, exception);
 
 
     private static readonly Action<MEL.ILogger, Exception?> LOG_CLEARED_ACTION = LoggerMessage.Define(Information,

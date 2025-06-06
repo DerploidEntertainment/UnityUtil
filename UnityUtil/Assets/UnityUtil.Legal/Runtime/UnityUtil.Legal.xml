@@ -240,11 +240,12 @@
             <exception cref="T:System.InvalidOperationException">Consent has not yet been saved for <paramref name="nonTcfDataProcessor"/>.</exception>
             <exception cref="T:System.ArgumentException"><paramref name="nonTcfDataProcessor"/> is not managed by this class.</exception>
         </member>
-        <member name="M:UnityUtil.Legal.PrivacyDataProcessorsInitializer.RevokeConsent(UnityUtil.Legal.INonTcfDataProcessor)">
+        <member name="M:UnityUtil.Legal.PrivacyDataProcessorsInitializer.ToggleConsent(UnityUtil.Legal.INonTcfDataProcessor,System.Boolean)">
             <summary>
-            Revoke consent for <paramref name="nonTcfDataProcessor"/>.
+            Toggle consent for <paramref name="nonTcfDataProcessor"/>.
             </summary>
             <param name="nonTcfDataProcessor"></param>
+            <param name="hasConsent"></param>
             <exception cref="T:System.InvalidOperationException">Consent has not yet been saved for <paramref name="nonTcfDataProcessor"/>.</exception>
             <exception cref="T:System.ArgumentException"><paramref name="nonTcfDataProcessor"/> is not managed by this class.</exception>
         </member>
