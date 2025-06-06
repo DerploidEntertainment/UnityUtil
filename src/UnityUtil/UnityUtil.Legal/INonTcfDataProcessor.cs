@@ -1,4 +1,4 @@
-namespace UnityUtil.Legal;
+﻿namespace UnityUtil.Legal;
 
 /// <summary>
 /// Represents a data processor that is <em>not</em> certified with the IAB Transparency and Consent Framework (TCF)
@@ -11,6 +11,11 @@ public interface INonTcfDataProcessor
     /// The user's consent (grant or deny) should be saved at this local preference key.
     /// </summary>
     string ConsentPreferenceKey { get; }
+
+    /// <summary>
+    /// Is this data processor currently collecting data (i.e., does it have the user's consent to do so)?
+    /// </summary>
+    bool IsCollectingData { get; }
 
     /// <summary>
     /// Toggle data collection for this data processor.
