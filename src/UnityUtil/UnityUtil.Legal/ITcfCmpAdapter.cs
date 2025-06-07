@@ -25,4 +25,9 @@ public interface ITcfCmpAdapter
     /// </summary>
     /// <returns>A task representing the asynchronous operation of loading/showing the CMP's consent form.</returns>
     Task LoadAndShowConsentFormIfRequiredAsync();
+
+    /// <summary>
+    /// Reset TCF consent status.
+    /// </summary>
+    void RevokeConsent();
 }

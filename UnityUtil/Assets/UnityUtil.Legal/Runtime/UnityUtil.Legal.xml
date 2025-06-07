@@ -105,6 +105,11 @@
             </summary>
             <returns>A task representing the asynchronous operation of loading/showing the CMP's consent form.</returns>
         </member>
+        <member name="M:UnityUtil.Legal.ITcfCmpAdapter.RevokeConsent">
+            <summary>
+            Reset TCF consent status.
+            </summary>
+        </member>
         <member name="T:UnityUtil.Legal.ITcfDataProcessor">
             <summary>
             Represents a data processor certified with the IAB Transparency and Consent Framework (TCF).
