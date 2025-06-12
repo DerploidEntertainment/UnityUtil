@@ -6,7 +6,7 @@ namespace UnityUtil.Inventory;
 [CreateAssetMenu(fileName = "projectile-tool", menuName = $"{nameof(UnityUtil)}/{nameof(UnityUtil.Inventory)}/{nameof(ProjectileToolInfo)}")]
 public class ProjectileToolInfo : ScriptableObject
 {
-    [RequiredIn(PrefabKind.NonPrefabInstance)]
+    [RequiredIn(PrefabKind.PrefabInstanceAndNonPrefabInstance)]
     public GameObject? ProjectilePrefab;
 
     private const string TOOLTIP_LOCAL_SPACE = $"The {nameof(ProjectilePrefab)} will be instantiated at this position in the {nameof(Tool)}'s local space.";

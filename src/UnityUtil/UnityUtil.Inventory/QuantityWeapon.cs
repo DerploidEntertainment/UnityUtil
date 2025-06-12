@@ -8,7 +8,7 @@ namespace UnityUtil.Inventory;
 [RequireComponent(typeof(Weapon))]
 public class QuantityWeapon : MonoBehaviour
 {
-    [RequiredIn(PrefabKind.NonPrefabInstance)]
+    [RequiredIn(PrefabKind.PrefabInstanceAndNonPrefabInstance)]
     public QuantityWeaponInfo? Info;
 
     [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]

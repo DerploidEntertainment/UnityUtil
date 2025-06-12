@@ -18,7 +18,7 @@ public class MouseLook : Updatable
     [Tooltip($"The Rigidbody that will be rotated by physics while looking around.  Only required if {nameof(UsePhysicsToLook)} is true.")]
     public Rigidbody? RigidbodyToRotate;
 
-    [RequiredIn(PrefabKind.NonPrefabInstance)]
+    [RequiredIn(PrefabKind.PrefabInstanceAndNonPrefabInstance)]
     public ValueInput? LookInput;
 
     [Tooltip(

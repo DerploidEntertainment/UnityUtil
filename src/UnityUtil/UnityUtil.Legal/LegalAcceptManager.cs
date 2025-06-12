@@ -1,6 +1,6 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -9,7 +9,6 @@ using Unity.Extensions.Logging;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
-using UnityUtil.DependencyInjection;
 using UnityUtil.Storage;
 using static Microsoft.Extensions.Logging.LogLevel;
 using MEL = Microsoft.Extensions.Logging;
@@ -21,9 +20,13 @@ internal class LegalDocumentState(string currentTag)
     public string? AcceptedTag;
 }
 
-public class LegalAcceptManager : MonoBehaviour, ILegalAcceptManager
+/// <summary><inheritdoc cref="ILegalAcceptManager"/></summary>
+/// <remarks>
+/// Stores the versions of all <see cref="LegalDocument"/>s that the user has accepted in local preferences.
+/// </remarks>
+[CreateAssetMenu(menuName = $"{nameof(UnityUtil)}/{nameof(Legal)}/{nameof(LegalAcceptManager)}", fileName = "legal-accept-manager")]
+public class LegalAcceptManager : ScriptableObject, ILegalAcceptManager
 {
-
     private ILogger<LegalAcceptManager>? _logger;
     private ILocalPreferences? _localPreferences;
 
@@ -32,36 +35,39 @@ public class LegalAcceptManager : MonoBehaviour, ILegalAcceptManager
 
     private string[] _latestVersionTags = [];
 
-    [DisableInPlayMode]
-    public LegalDocument[] Documents = [];
+    private LegalDocument[]? _legalDocuments;
 
-    [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
-    [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
-    private void Awake() => DependencyInjector.Instance.ResolveDependenciesOf(this);
-
-    public void Inject(ILoggerFactory loggerFactory, ILocalPreferences localPreferences)
+    public void Inject(
+        ILoggerFactory loggerFactory,
+        ILocalPreferences localPreferences,
+        DownloadHandler? downloadHandler = null,
+        UploadHandler? uploadHandler = null
+    )
     {
         _logger = loggerFactory.CreateLogger(this);
         _localPreferences = localPreferences;
-    }
-
-    public void SetHandlers(DownloadHandler downloadHandler, UploadHandler uploadHandler)
-    {
         _downloadHandler = downloadHandler;
         _uploadHandler = uploadHandler;
     }
 
-    public async Task<LegalAcceptance> CheckAcceptanceAsync()
+    /// <inheritdoc/>
+    public async Task<LegalAcceptStatus> CheckStatusAsync(IEnumerable<LegalDocument> legalDocuments)
     {
+        _legalDocuments = [.. legalDocuments];
+        if (_legalDocuments.Length == 0) {
+            log_NoLegalDocuments();
+            return LegalAcceptStatus.Current;
+        }
+
         LegalDocumentState[] legalDocumentStates = await Task.WhenAll(
-            Enumerable.Range(0, Documents.Length).Select(CheckForUpdateAsync)
+            _legalDocuments.Select(checkForUpdateAsync)
         );
 
         // If the tags from the web do not match the accepted tags in preferences, then
         // return "unprovided" or "stale" state, depending on whether a tag existed in preferences at all
         bool acceptRequired = false;
         bool acceptOutdated = false;
-        _latestVersionTags = new string[Documents.Length];
+        _latestVersionTags = new string[_legalDocuments.Length];
         for (int x = 0; x < legalDocumentStates.Length; x++) {
             LegalDocumentState legalDocumentState = legalDocumentStates[x];
             acceptRequired |= legalDocumentState.CurrentTag != legalDocumentState.AcceptedTag;
@@ -74,33 +80,32 @@ public class LegalAcceptManager : MonoBehaviour, ILegalAcceptManager
                 log_AcceptRequired_OutOfDate();
             else
                 log_AcceptRequired_FirstTime();
-            return acceptOutdated ? LegalAcceptance.Stale : LegalAcceptance.Unprovided;
+            return acceptOutdated ? LegalAcceptStatus.Stale : LegalAcceptStatus.Unprovided;
         }
         else {
             log_AlreadyAcceptedAll();
-            return LegalAcceptance.Current;
+            return LegalAcceptStatus.Current;
         }
     }
 
-    internal Task<LegalDocumentState> CheckForUpdateAsync(int documentIndex)
+    private Task<LegalDocumentState> checkForUpdateAsync(LegalDocument legalDocument)
     {
         var tcs = new TaskCompletionSource<LegalDocumentState>();
 
         // Get the last accepted tag from preferences (will be empty if none stored yet)
-        LegalDocument doc = Documents[documentIndex];
-        string acceptedTag = _localPreferences!.GetString(doc.PreferencesKey);
+        string acceptedTag = _localPreferences!.GetString(legalDocument.PreferencesKey);
 
         UnityWebRequest? req = null;    // Must not be disposed until after we get response values in callback below
         try {
             // Get the latest tag from the web
             req = _downloadHandler is null && _uploadHandler is null
-                ? new UnityWebRequest(doc.LatestVersionUri!.Uri, UnityWebRequest.kHttpVerbHEAD)
-                : new UnityWebRequest(doc.LatestVersionUri!.Uri, UnityWebRequest.kHttpVerbHEAD, _downloadHandler, _uploadHandler);
+                ? new UnityWebRequest(legalDocument.LatestVersionUri!.Uri, UnityWebRequest.kHttpVerbHEAD)
+                : new UnityWebRequest(legalDocument.LatestVersionUri!.Uri, UnityWebRequest.kHttpVerbHEAD, _downloadHandler, _uploadHandler);
             UnityWebRequestAsyncOperation reqOp = req.SendWebRequest();
             reqOp.completed += _ => onRequestCompleted();
         }
         catch (Exception ex) {
-            log_FetchLatestFailed(doc, req);
+            log_FetchLatestFailed(legalDocument, req);
             req?.Dispose();
             tcs.SetException(ex);
         }
@@ -113,9 +118,9 @@ public class LegalAcceptManager : MonoBehaviour, ILegalAcceptManager
             // Parse the tag from the response
             string? currentTag = null;
             if (req.result != UnityWebRequest.Result.Success)
-                log_FetchLatestErrorCode(doc, req);
+                log_FetchLatestErrorCode(legalDocument, req);
             else
-                currentTag = req.GetResponseHeader(doc.TagHeader);
+                currentTag = req.GetResponseHeader(legalDocument.TagHeader);
 
             req!.Dispose();
 
@@ -124,11 +129,11 @@ public class LegalAcceptManager : MonoBehaviour, ILegalAcceptManager
             if (string.IsNullOrEmpty(currentTag)) {
                 if (string.IsNullOrEmpty(acceptedTag)) {
                     currentTag = Guid.NewGuid().ToString();
-                    log_HeaderParseFailedFirstTime(doc.TagHeader, currentTag);
+                    log_HeaderParseFailedFirstTime(legalDocument.TagHeader, currentTag);
                 }
                 else {
                     currentTag = acceptedTag;
-                    log_HeaderParseFailed(doc.TagHeader);
+                    log_HeaderParseFailed(legalDocument.TagHeader);
                 }
             }
 
@@ -139,31 +144,41 @@ public class LegalAcceptManager : MonoBehaviour, ILegalAcceptManager
             );
         }
     }
+
+    /// <inheritdoc/>
     public bool HasAccepted { get; private set; }
 
+    /// <inheritdoc/>
     public void Accept()
     {
+        if (_legalDocuments is null)
+            throw new InvalidOperationException($"Cannot accept legal documents; none have been provided yet. Has {nameof(CheckStatusAsync)} been called yet?");
+
         for (int v = 0; v < _latestVersionTags.Length; ++v) {
-            _localPreferences!.SetString(Documents[v].PreferencesKey, _latestVersionTags[v].ToString());
-            log_DocumentAccepted(Documents[v]);
+            _localPreferences!.SetString(_legalDocuments[v].PreferencesKey, _latestVersionTags[v].ToString());
+            log_DocumentAccepted(_legalDocuments[v]);
         }
 
         HasAccepted = true;
-
     }
 
     [Button, Conditional("DEBUG")]
     public void ClearAcceptance()
     {
+        if (_legalDocuments is null) {
+            log_NoLegalDocuments();
+            return;
+        }
+
         // Use PlayerPrefs in case this is being run from the Inspector outside Play mode
         if (_localPreferences == null) {
-            for (int d = 0; d < Documents.Length; ++d)
-                PlayerPrefs.DeleteKey(Documents[d].PreferencesKey);
+            foreach (LegalDocument legalDocument in _legalDocuments)
+                PlayerPrefs.DeleteKey(legalDocument.PreferencesKey);
         }
 
         else {
-            for (int d = 0; d < Documents.Length; ++d)
-                _localPreferences.DeleteKey(Documents[d].PreferencesKey);
+            foreach (LegalDocument legalDocument in _legalDocuments)
+                _localPreferences.DeleteKey(legalDocument.PreferencesKey);
         }
 
         _logger ??= new UnityDebugLoggerFactory().CreateLogger(this);    // Use debug logger in case this is being run from the Inspector outside Play mode
@@ -199,6 +214,13 @@ public class LegalAcceptManager : MonoBehaviour, ILegalAcceptManager
     );
     private void log_DocumentAccepted(LegalDocument legalDocument) =>
         LOG_DOC_ACCEPTED_ACTION(_logger!, legalDocument.TagHeader, legalDocument.PreferencesKey, null);
+
+
+    private static readonly Action<MEL.ILogger, Exception?> LOG_NO_LEGAL_DOCS_ACTION = LoggerMessage.Define(Warning,
+        new EventId(id: 0, nameof(log_NoLegalDocuments)),
+        "Every app should have at least a privacy policy and terms of use, but no legal documents were provided"
+    );
+    private void log_NoLegalDocuments() => LOG_NO_LEGAL_DOCS_ACTION(_logger!, null);
 
 
     private static readonly Action<MEL.ILogger, Exception?> LOG_ACCEPT_CLEARED_ACTION = LoggerMessage.Define(Information,

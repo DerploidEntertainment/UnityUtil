@@ -37,7 +37,7 @@ public class AudioMixerParameterSlider : MonoBehaviour
     private ILogger<AudioMixerParameterSlider>? _logger;
     private ILocalPreferences? _localPreferences;
 
-    [RequiredIn(PrefabKind.NonPrefabInstance)]
+    [RequiredIn(PrefabKind.PrefabInstanceAndNonPrefabInstance)]
     public AudioMixer? AudioMixer;
 
     [Tooltip($"This parameter must already be exposed on {nameof(AudioMixer)}, and its value will be updated as the user updates {nameof(Slider)}.")]
@@ -47,7 +47,7 @@ public class AudioMixerParameterSlider : MonoBehaviour
         $"The value of this {nameof(UnityEngine.UI.Slider)} will be used to update the exposed parameter of {nameof(AudioMixer)}. " +
         $"Its value will be transformed according to {nameof(SliderTransformation)}."
     )]
-    [RequiredIn(PrefabKind.NonPrefabInstance)]
+    [RequiredIn(PrefabKind.PrefabInstanceAndNonPrefabInstance)]
     public Slider? Slider;
 
     [Tooltip(

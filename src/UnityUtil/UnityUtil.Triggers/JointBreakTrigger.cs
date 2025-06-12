@@ -12,7 +12,7 @@ public class JointEvent : UnityEvent<Joint> { }
 [RequireComponent(typeof(Joint))]
 public class JointBreakTrigger : MonoBehaviour
 {
-    [RequiredIn(PrefabKind.NonPrefabInstance)]
+    [RequiredIn(PrefabKind.PrefabInstanceAndNonPrefabInstance)]
     public Joint? Joint { get; private set; }
 
     public void Break() => Destroy(Joint);

@@ -8,7 +8,7 @@ namespace UnityUtil.UI;
 
 public class ScrollRectVelocityClamper : Updatable
 {
-    [RequiredIn(PrefabKind.NonPrefabInstance)]
+    [RequiredIn(PrefabKind.PrefabInstanceAndNonPrefabInstance)]
     public ScrollRect? ScrollRect;
 
     [Tooltip(

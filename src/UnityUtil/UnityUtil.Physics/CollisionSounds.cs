@@ -10,7 +10,7 @@ public class CollisionSounds : MonoBehaviour
 {
     private int _clip = -1;
 
-    [RequiredIn(PrefabKind.NonPrefabInstance)]
+    [RequiredIn(PrefabKind.PrefabInstanceAndNonPrefabInstance)]
     public AudioSource? AudioSource;
     public bool RandomizeClips;
     public AudioClip[] AudioClips = [];

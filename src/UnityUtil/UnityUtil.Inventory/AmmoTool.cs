@@ -18,10 +18,10 @@ public class AmmoTool : Updatable
 {
     private Tool? _tool;
 
-    [RequiredIn(PrefabKind.NonPrefabInstance)]
+    [RequiredIn(PrefabKind.PrefabInstanceAndNonPrefabInstance)]
     public AmmoToolInfo? Info;
 
-    [RequiredIn(PrefabKind.NonPrefabInstance)]
+    [RequiredIn(PrefabKind.PrefabInstanceAndNonPrefabInstance)]
     public StartStopInput? ReloadInput;
 
     /// <summary>

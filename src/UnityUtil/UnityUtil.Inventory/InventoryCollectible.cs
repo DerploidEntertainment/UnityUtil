@@ -5,10 +5,10 @@ namespace UnityUtil.Inventory;
 
 public class InventoryCollectible : MonoBehaviour
 {
-    [RequiredIn(PrefabKind.NonPrefabInstance)]
+    [RequiredIn(PrefabKind.PrefabInstanceAndNonPrefabInstance)]
     public GameObject? Root;
 
-    [RequiredIn(PrefabKind.NonPrefabInstance)]
+    [RequiredIn(PrefabKind.PrefabInstanceAndNonPrefabInstance)]
     public GameObject? ItemRoot;
 
     [Tooltip(

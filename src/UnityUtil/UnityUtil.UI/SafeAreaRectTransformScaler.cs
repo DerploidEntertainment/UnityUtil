@@ -19,7 +19,7 @@ public class SafeAreaRectTransformScaler : MonoBehaviour
 {
     private ILogger<SafeAreaRectTransformScaler>? _logger;
 
-    [RequiredIn(PrefabKind.NonPrefabInstance)]
+    [RequiredIn(PrefabKind.PrefabInstanceAndNonPrefabInstance)]
     public RectTransform? RectTransform;
 
     public void Inject(ILoggerFactory loggerFactory) => _logger = loggerFactory.CreateLogger(this);

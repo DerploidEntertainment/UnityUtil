@@ -8,6 +8,9 @@ using UD = UnityEngine.Device;
 
 namespace UnityUtil.Legal;
 
+/// <summary>
+/// Updates the copyright text of a specific <see cref="TMP_Text"/> component with the current year and/or <see cref="Application.companyName"/>.
+/// </summary>
 public class CopyrightText : MonoBehaviour
 {
     [Tooltip(
@@ -18,9 +21,9 @@ public class CopyrightText : MonoBehaviour
         $"See here for details: https://docs.microsoft.com/en-us/dotnet/standard/base-types/composite-formatting"
     )]
     [MultiLineProperty]
-    public string FormatString = "© {0}, {1}";
+    public string FormatString = "© {0:yyyy}, {1}";
 
-    [RequiredIn(PrefabKind.NonPrefabInstance)]
+    [RequiredIn(PrefabKind.PrefabInstanceAndNonPrefabInstance)]
     public TMP_Text? Text;
 
     [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
