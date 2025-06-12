@@ -8,9 +8,12 @@ namespace UnityUtil.Legal;
 public interface ITcfCmpAdapter
 {
     /// <summary>
-    /// Updates the application's TC string. Should be called only once during an app session, at launch.
+    /// Checks for changes to an app's TCF consent status. Should be called only once during an app session, at launch.
     /// </summary>
-    void UpdateConsentInfo();
+    /// <returns>
+    /// A task representing the asynchronous consent status check operation.
+    /// </returns>
+    Task UpdateConsentInfoAsync();
 
     /// <summary>
     /// Load and show the consent form if required.

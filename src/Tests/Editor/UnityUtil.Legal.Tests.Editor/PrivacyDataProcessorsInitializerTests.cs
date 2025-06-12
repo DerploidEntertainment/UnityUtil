@@ -183,7 +183,7 @@ public class PrivacyDataProcessorsInitializerTests : BaseEditModeTestFixture
         await initializeTask;
 
         // ASSERT
-        tcfCmpAdapter.Verify(x => x.UpdateConsentInfo(), Times.Once());
+        tcfCmpAdapter.Verify(x => x.UpdateConsentInfoAsync(), Times.Once());
         tcfCmpAdapter.Verify(x => x.LoadAndShowConsentFormIfRequiredAsync(), Times.Once());
     }
 
@@ -331,7 +331,7 @@ public class PrivacyDataProcessorsInitializerTests : BaseEditModeTestFixture
     {
         // ARRANGE
         var tcfCmpAdapter = new Mock<ITcfCmpAdapter>();
-        _ = tcfCmpAdapter.Setup(x => x.UpdateConsentInfo()).Throws(new InvalidOperationException("AH!! Updating TCF consent info exploded!"));
+        _ = tcfCmpAdapter.Setup(x => x.UpdateConsentInfoAsync()).ThrowsAsync(new InvalidOperationException("AH!! Updating TCF consent info exploded!"));
 
         Exception? loggedException = null;
         PrivacyDataProcessorsInitializer privacyDataProcessorsInitializer = getPrivacyDataProcessorsInitializer(

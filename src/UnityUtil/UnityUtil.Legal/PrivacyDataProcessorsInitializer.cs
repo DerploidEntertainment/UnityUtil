@@ -234,7 +234,7 @@ public class PrivacyDataProcessorsInitializer : MonoBehaviour
     {
         try {
             log_UpdatingCmpConsentInfo();
-            _tcfCmpAdapter!.UpdateConsentInfo();
+            await _tcfCmpAdapter!.UpdateConsentInfoAsync();
         }
         catch (Exception ex) {
             log_UpdatingCmpConsentInfoFailed(ex);

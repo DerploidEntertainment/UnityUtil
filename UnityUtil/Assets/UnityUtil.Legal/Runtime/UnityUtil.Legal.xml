@@ -86,10 +86,13 @@
             Represents a Consent Management Platform (CMP) compliant with the IAB Transparency and Consent Framework (TCF).
             </summary>
         </member>
-        <member name="M:UnityUtil.Legal.ITcfCmpAdapter.UpdateConsentInfo">
+        <member name="M:UnityUtil.Legal.ITcfCmpAdapter.UpdateConsentInfoAsync">
             <summary>
-            Updates the application's TC string. Should be called only once during an app session, at launch.
+            Checks for changes to an app's TCF consent status. Should be called only once during an app session, at launch.
             </summary>
+            <returns>
+            A task representing the asynchronous consent status check operation.
+            </returns>
         </member>
         <member name="M:UnityUtil.Legal.ITcfCmpAdapter.LoadAndShowConsentFormIfRequiredAsync">
             <summary>
