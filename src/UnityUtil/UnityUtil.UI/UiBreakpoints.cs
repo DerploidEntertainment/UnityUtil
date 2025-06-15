@@ -67,7 +67,7 @@ public class UiBreakpoints : MonoBehaviour
     [Tooltip("Should the dimensions of the screen and safe area be logged in the Editor? Useful for debugging, but makes the Console quite noisy.")]
     public bool LogDimensionsInEditor = true;
 
-    [Tooltip("Should the dimensions of the screen and safe area be logged in a built player? Useful for troubleshooting in Development builds.")]
+    [Tooltip("Should the dimensions of the screen and safe area be logged in a built player? Useful for troubleshooting in development builds.")]
     public bool LogDimensionsInPlayer = false;
 
     [InfoBox($"No matching breakpoints. Raising {nameof(NoBreakpointMatched)} event instead", nameof(_noMatch))]

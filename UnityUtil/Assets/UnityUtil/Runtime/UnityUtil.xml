@@ -14,6 +14,41 @@
                 Please see https://github.com/manuelroemer/IsExternalInit for more information.
             </remarks>
         </member>
+        <member name="T:UnityUtil.AppEnvironmentEnvExtensions">
+            <summary>
+            Extension methods for <see cref="T:UnityUtil.IAppEnvironment"/>.
+            Heavily based on the <a href="https://github.com/dotnet/dotnet/blob/main/src/runtime/src/libraries/Microsoft.Extensions.Hosting.Abstractions/src/HostEnvironmentEnvExtensions.cs"><c>Microsoft.Extensions.Hosting.Abstractions.HostEnvironmentEnvExtensions</c></a> class.
+            </summary>
+        </member>
+        <member name="M:UnityUtil.AppEnvironmentEnvExtensions.IsDevelopment(UnityUtil.IAppEnvironment)">
+            <summary>
+            Checks if the current app environment name is <see cref="F:UnityUtil.Environments.Development"/>.
+            </summary>
+            <param name="appEnvironment">An instance of <see cref="T:UnityUtil.IAppEnvironment"/>.</param>
+            <returns><see langword="true"/> if the environment name is <see cref="F:UnityUtil.Environments.Development"/>; otherwise, <see langword="false"/>.</returns>
+        </member>
+        <member name="M:UnityUtil.AppEnvironmentEnvExtensions.IsStaging(UnityUtil.IAppEnvironment)">
+            <summary>
+            Checks if the current app environment name is <see cref="F:UnityUtil.Environments.Staging"/>.
+            </summary>
+            <param name="appEnvironment">An instance of <see cref="T:UnityUtil.IAppEnvironment"/>.</param>
+            <returns><see langword="true"/> if the environment name is <see cref="F:UnityUtil.Environments.Staging"/>; otherwise, <see langword="false"/>.</returns>
+        </member>
+        <member name="M:UnityUtil.AppEnvironmentEnvExtensions.IsProduction(UnityUtil.IAppEnvironment)">
+            <summary>
+            Checks if the current app environment name is <see cref="F:UnityUtil.Environments.Production"/>.
+            </summary>
+            <param name="appEnvironment">An instance of <see cref="T:UnityUtil.IAppEnvironment"/>.</param>
+            <returns><see langword="true"/> if the environment name is <see cref="F:UnityUtil.Environments.Production"/>; otherwise, <see langword="false"/>.</returns>
+        </member>
+        <member name="M:UnityUtil.AppEnvironmentEnvExtensions.IsEnvironment(UnityUtil.IAppEnvironment,System.String)">
+            <summary>
+            Compares the current app environment name against the specified value.
+            </summary>
+            <param name="appEnvironment">An instance of <see cref="T:UnityUtil.IAppEnvironment"/>.</param>
+            <param name="environmentName">Environment name to validate against.</param>
+            <returns><see langword="true"/> if the specified name is the same as the current environment; otherwise, <see langword="false"/>.</returns>
+        </member>
         <member name="T:UnityUtil.BuildAutomation.BuildManifest">
             <summary>
             Represents a Unity Build Automation (UBA) build manifest, for runtime parsing of the JSON manifest provided by UBA.
@@ -172,6 +207,30 @@
             Tag to disambiguate services of the same <see cref="F:UnityUtil.DependencyInjection.Service.ServiceType"/>.
             </summary>
         </member>
+        <member name="T:UnityUtil.Environments">
+            <summary>
+            Commonly used environment names.
+            Heavily based on the <a href="https://github.com/dotnet/dotnet/blob/main/src/runtime/src/libraries/Microsoft.Extensions.Hosting.Abstractions/src/Environments.cs"><c>Microsoft.Extensions.Hosting.Abstractions.Environments</c></a> class.
+            </summary>
+        </member>
+        <member name="F:UnityUtil.Environments.Development">
+            <summary>
+            Specifies the Development environment.
+            </summary>
+            <remarks>The development environment can enable features that shouldn't be exposed in production. Because of the performance cost, scope validation and dependency validation only happens in development.</remarks>
+        </member>
+        <member name="F:UnityUtil.Environments.Staging">
+            <summary>
+            Specifies the Staging environment.
+            </summary>
+            <remarks>The staging environment can be used to validate app changes before changing the environment to production.</remarks>
+        </member>
+        <member name="F:UnityUtil.Environments.Production">
+            <summary>
+            Specifies the Production environment.
+            </summary>
+            <remarks>The production environment should be configured to maximize security, performance, and application robustness.</remarks>
+        </member>
         <member name="T:UnityUtil.FastIndexableDictionary`2">
             <summary>
             Represents a strongly typed dictionary of objects with constant-time insertion, removal, duplicate checks, <em>and</em> index lookup,
@@ -292,6 +351,18 @@
             with the specified key; otherwise, <see langword="false"/>.
             </returns>
             <exception cref="T:System.ArgumentNullException"><paramref name="key"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="T:UnityUtil.IAppEnvironment">
+            <summary>
+            Provides information about the environment in which an application is running.
+            Based on the <a href="https://github.com/dotnet/dotnet/blob/main/src/runtime/src/libraries/Microsoft.Extensions.Hosting.Abstractions/src/IHostEnvironment.cs"><c>Microsoft.Extensions.Hosting.Abstractions.IHostEnvironment</c></a> interface.
+            </summary>
+        </member>
+        <member name="P:UnityUtil.IAppEnvironment.EnvironmentName">
+            <summary>
+            Gets or sets the name of the environment.
+            This property must be set to the value of the "environment" key in configuration at boot time.
+            </summary>
         </member>
         <member name="T:UnityUtil.IRuntimeIdProvider">
             <summary>

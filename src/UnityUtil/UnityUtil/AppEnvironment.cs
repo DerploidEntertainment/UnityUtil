@@ -1,12 +1,8 @@
-﻿using Sirenix.OdinInspector;
-using UnityEngine;
+﻿using System;
 
 namespace UnityUtil;
 
-[CreateAssetMenu(menuName = $"{nameof(UnityUtil)}/{nameof(AppEnvironment)}", fileName = "environment")]
-public class AppEnvironment : ScriptableObject, IAppEnvironment
+public class AppEnvironment(string environmentName) : IAppEnvironment
 {
-    [field: SerializeField, ShowInInspector, LabelText(nameof(Name))]
-    [field: Tooltip("This can be any string to describe the environment, but will usually be a single word like 'production' or 'BETA'.")]
-    public string Name { get; set; } = "production";
+    public string EnvironmentName { get; private set; } = environmentName ?? throw new ArgumentNullException(nameof(environmentName));
 }
