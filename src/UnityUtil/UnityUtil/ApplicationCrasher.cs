@@ -25,25 +25,31 @@ public class ApplicationCrasher : ScriptableObject
 
     public void ForceCrashAbort()
     {
-        log_ForceCrashAbort();
+        log_ForceCrash(ForcedCrashCategory.Abort);
         Utils.ForceCrash(ForcedCrashCategory.Abort);
+    }
+
+    public void ForceCrashMonoAbort()
+    {
+        log_ForceCrash(ForcedCrashCategory.MonoAbort);
+        Utils.ForceCrash(ForcedCrashCategory.MonoAbort);
     }
 
     public void ForceCrashAccessViolation()
     {
-        log_ForceCrashAccessViolation();
+        log_ForceCrash(ForcedCrashCategory.AccessViolation);
         Utils.ForceCrash(ForcedCrashCategory.AccessViolation);
     }
 
     public void ForceCrashFatalError()
     {
-        log_ForceCrashFatalError();
+        log_ForceCrash(ForcedCrashCategory.FatalError);
         Utils.ForceCrash(ForcedCrashCategory.FatalError);
     }
 
     public void ForceCrashPureVirtualFunction()
     {
-        log_ForceCrashPureVirtualFunction();
+        log_ForceCrash(ForcedCrashCategory.PureVirtualFunction);
         Utils.ForceCrash(ForcedCrashCategory.PureVirtualFunction);
     }
 
@@ -89,36 +95,12 @@ public class ApplicationCrasher : ScriptableObject
     private void log_UncaughtExceptionClr() => LOG_UNCAUGHT_EXCEPTION_CLR_ACTION(Logger, null);
 
 
-    private static readonly Action<MEL.ILogger, Exception?> LOG_FORCE_CRASH_ABORT_ACTION =
-        LoggerMessage.Define(Information,
-            new EventId(id: 0, nameof(log_ForceCrashAbort)),
-            $"Attempting crash via {nameof(ForcedCrashCategory)}.{nameof(ForcedCrashCategory.Abort)}()..."
+    private static readonly Action<MEL.ILogger, ForcedCrashCategory, Exception?> LOG_FORCE_CRASH_ACTION =
+        LoggerMessage.Define<ForcedCrashCategory>(Information,
+            new EventId(id: 0, nameof(log_ForceCrash)),
+            $"Attempting crash via {nameof(ForcedCrashCategory)} {{{nameof(ForcedCrashCategory)}}}..."
         );
-    private void log_ForceCrashAbort() => LOG_FORCE_CRASH_ABORT_ACTION(Logger, null);
-
-
-    private static readonly Action<MEL.ILogger, Exception?> LOG_FORCE_CRASH_ACCESS_VIOLATION_ACTION =
-        LoggerMessage.Define(Information,
-            new EventId(id: 0, nameof(log_ForceCrashAccessViolation)),
-            $"Attempting crash via {nameof(ForcedCrashCategory)}.{nameof(ForcedCrashCategory.AccessViolation)}()..."
-        );
-    private void log_ForceCrashAccessViolation() => LOG_FORCE_CRASH_ACCESS_VIOLATION_ACTION(Logger, null);
-
-
-    private static readonly Action<MEL.ILogger, Exception?> LOG_FORCE_CRASH_FATAL_ERROR_ACTION =
-        LoggerMessage.Define(Information,
-            new EventId(id: 0, nameof(log_ForceCrashFatalError)),
-            $"Attempting crash via {nameof(ForcedCrashCategory)}.{nameof(ForcedCrashCategory.FatalError)}()..."
-        );
-    private void log_ForceCrashFatalError() => LOG_FORCE_CRASH_FATAL_ERROR_ACTION(Logger, null);
-
-
-    private static readonly Action<MEL.ILogger, Exception?> LOG_FORCE_CRASH_PURE_VIRTUAL_FUNCTION_ACTION =
-        LoggerMessage.Define(Information,
-            new EventId(id: 0, nameof(log_ForceCrashPureVirtualFunction)),
-            $"Attempting crash via {nameof(ForcedCrashCategory)}.{nameof(ForcedCrashCategory.PureVirtualFunction)}()..."
-        );
-    private void log_ForceCrashPureVirtualFunction() => LOG_FORCE_CRASH_PURE_VIRTUAL_FUNCTION_ACTION(Logger, null);
+    private void log_ForceCrash(ForcedCrashCategory forcedCrashCategory) => LOG_FORCE_CRASH_ACTION(Logger, forcedCrashCategory, null);
 
 
     private static readonly Action<MEL.ILogger, Exception?> LOG_NATIVE_ASSERT_ACTION =
