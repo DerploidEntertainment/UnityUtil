@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
+using System.Reflection;
 using Microsoft.Extensions.Logging;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using static Microsoft.Extensions.Logging.LogLevel;
@@ -12,15 +14,26 @@ namespace UnityUtil.Editor;
 
 public class BuildGameObjectRemover(ILoggerFactory loggerFactory)
 {
+    private static readonly Lazy<MethodInfo> TRY_CONVERT_TO_RUNTIME_PLATFORM = new(() => {
+        // Reference the internal UnityEditor.BuildTargetConverter.TryConvertToRuntimePlatform() method
+        // See https://github.com/Unity-Technologies/UnityCsReference/blob/master/Editor/Mono/BuildTargetConverter.cs
+        const string TYPE_NAME = "UnityEditor.BuildTargetConverter";
+        const string METHOD_NAME = "TryConvertToRuntimePlatform";
+        Type typeBuildTarget = typeof(BuildTarget);
+        Type typeBuildTargetConverter = Assembly.GetAssembly(typeBuildTarget).GetType(TYPE_NAME, throwOnError: true, ignoreCase: false);
+        return typeBuildTargetConverter.GetMethod(METHOD_NAME, genericParameterCount: 0, types: [typeBuildTarget])
+            ?? throw new InvalidOperationException($"Could not find method '{METHOD_NAME}' on type '{typeBuildTargetConverter.FullName}'.");
+    });
+
     private readonly ILogger<BuildGameObjectRemover> _logger = loggerFactory.CreateLogger<BuildGameObjectRemover>();
 
-    public void RemoveGameObjectsFromScene(Scene scene)
+    public void RemoveGameObjectsFromScene(Scene scene, BuildTarget buildTarget)
     {
-        RuntimePlatform platform = Application.platform;
+        RuntimePlatform platform = convertBuildTargetToRuntimePlatform(buildTarget);
         BuildContext buildContext =
-            Application.isPlaying ? BuildContext.PlayMode
-            : UE.Debug.isDebugBuild ? BuildContext.DebugBuild
-            : BuildContext.ReleaseBuild;
+            (Application.isEditor && Application.isPlaying) ? BuildContext.PlayMode
+            : EditorUserBuildSettings.development ? BuildContext.DevelopmentBuild
+            : BuildContext.NonDevelopmentBuild;
 
         GameObject[] roots = scene.GetRootGameObjects();
         for (int r = 0; r < roots.Length; ++r) {
@@ -30,7 +43,7 @@ public class BuildGameObjectRemover(ILoggerFactory loggerFactory)
 
             // Determine which GameObjects should actually be removed
             RemoveFromBuild[] targetsToRemove = [.. removableTargets
-                .Where(x => !(x.PreservePlatforms.Contains(platform) && (x.PreserveBuildContexts & buildContext) != 0))
+                .Where(x => !(x.PreservePlatforms.Contains(platform!) && (x.PreserveBuildContexts & buildContext) != 0))
             ];
 
             // Remove them (and/or their children)!
@@ -46,19 +59,23 @@ public class BuildGameObjectRemover(ILoggerFactory loggerFactory)
             }
 
             if (removableTargets.Length > 0)
-                log_ObjectsRemoved(targetsToRemove, removableTargets, root, scene);
+                log_ObjectsRemoved(targetsToRemove, removableTargets, root, scene, buildTarget);
         }
     }
 
+    private static RuntimePlatform convertBuildTargetToRuntimePlatform(BuildTarget buildTarget) =>
+        (RuntimePlatform?)TRY_CONVERT_TO_RUNTIME_PLATFORM.Value.Invoke(obj: null, parameters: [buildTarget])    // Static method invoke
+        ?? throw new InvalidOperationException($"Could not convert {nameof(BuildTarget)} '{buildTarget}' to a {nameof(RuntimePlatform)}");
+
     #region LoggerMessages
 
-    private static readonly Action<MEL.ILogger, int, int, string, string, Exception?> LOG_OBJECTS_REMOVED_ACTION =
-        LoggerMessage.Define<int, int, string, string>(Information,
+    private static readonly Action<MEL.ILogger, int, int, string, string, BuildTarget, Exception?> LOG_OBJECTS_REMOVED_ACTION =
+        LoggerMessage.Define<int, int, string, string, BuildTarget>(Information,
             new EventId(id: 0, nameof(log_ObjectsRemoved)),
-            "Removed {CountTargetsRemoved} GameObjects out of {CountTargetsRemovable} marked for contextual removal under parent '{Parent}' in scene '{Scene}'"
+            $"{{CountTargetsRemoved}} out of {{CountTargetsRemovable}} GameObjects with attached {nameof(RemoveFromBuild)} components under root object '{{Root}}' in scene '{{Scene}}' actually fit the criteria for contextual removal and were removed. Build target: '{{BuildTarget}}'"
         );
-    private void log_ObjectsRemoved(RemoveFromBuild[] targetsRemoved, RemoveFromBuild[] targetsRemovable, GameObject parent, Scene scene) =>
-        LOG_OBJECTS_REMOVED_ACTION(_logger, targetsRemoved.Length, targetsRemovable.Length, parent.name, scene.name, null);
+    private void log_ObjectsRemoved(RemoveFromBuild[] targetsRemoved, RemoveFromBuild[] targetsRemovable, GameObject parent, Scene scene, BuildTarget buildTarget) =>
+        LOG_OBJECTS_REMOVED_ACTION(_logger, targetsRemoved.Length, targetsRemovable.Length, parent.name, scene.name, (BuildTarget)(RuntimePlatform)buildTarget, null);
 
     #endregion
 }

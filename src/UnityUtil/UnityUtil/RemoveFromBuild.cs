@@ -9,8 +9,8 @@ public enum BuildContext
 {
     None = 0b000,
     PlayMode = 0b001,
-    DebugBuild = 0b010,
-    ReleaseBuild = 0b100,
+    DevelopmentBuild = 0b010,
+    NonDevelopmentBuild = 0b100,
     AllBuilds = 0b111,
 }
 
