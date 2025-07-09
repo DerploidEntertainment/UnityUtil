@@ -20,18 +20,22 @@ so documentation content/organization are still in development.
 
 1. Make sure you have both [Git](https://git-scm.com/) and [Git LFS](https://git-lfs.github.com/) installed before adding this package to your Unity project.
 2. Add the [UnityNuGet](https://github.com/bdovaz/UnityNuGet) scoped registry so that you can install NuGet packages through the Unity Package Manager.
-3. Install dependencies in your Unity project. This is an opinionated list of 3rd party assets/packages that UnityUtil leverages for certain features.
+3. Install non-UPM dependencies in your Unity project. This is an opinionated list of 3rd party assets/packages that UnityUtil leverages for certain features.
     Unfortunately, some of these assets cost money. In the future, UnityUtil's features will be broken up into separate packages,
     so that users can ignore specific packages and not spend money on their Asset Store dependencies.
     - [Odin Inspector](https://odininspector.com/) (v3.0.12 or above). We strongly recommend _not_ installing Odin as an
         [embedded UPM package](https://odininspector.com/tutorials/getting-started/install-odin-inspector-as-a-unity-package),
         as it just makes later updates to the asset more difficult.
-4. In the Unity Editor, open the [Package Manager window](https://docs.unity3d.com/Manual/upm-ui.html), click the `+` button in the upper-left and choose `Add package from git URL...`.
-5. Paste a URL like the following:
-    - `https://github.com/DerploidEntertainment/UnityUtil.git?path=/UnityUtil/Assets/<package>#main` for the latest stable version of `<package>` (see the [list of packages](#packages) below)
-    - `https://github.com/DerploidEntertainment/UnityUtil.git?path=/UnityUtil/Assets/<package>#unity<unityVersion>` for the latest stable version of `<package>` built against Unity `<unityVersion>` (e.g., `unity6`)
-    - `https://github.com/DerploidEntertainment/UnityUtil.git?path=/UnityUtil/Assets/<package>#<version>-unity<unityVersion>` for `<version>` of `<package>` built against Unity `<unityVersion>` (e.g., `0.1.0-unity6`)
-    - `https://github.com/DerploidEntertainment/UnityUtil.git?path=/UnityUtil/Assets/<package>#unity<unityVersion>-dev` for the latest development version of `<package>` built against Unity `<unityVersion>`. **These versions are bleeding-edge and very likely to contain bugs!**
+4. Install UPM dependenies of your desired UnityUtil package(s). This is necessary because UnityUtil packages are installed from Git URLs, so their UPM dependencies are not auto-resolved.
+5. In the Unity Editor, open the [Package Manager window](https://docs.unity3d.com/Manual/upm-ui.html), click the `+` button in the upper-left and choose `Add package from git URL...`.
+6. Paste a URL in the format `https://github.com/DerploidEntertainment/UnityUtil.git?path=/UnityUtil/Assets/<package>#<branch>` where...
+    - `<package>` is one of the [packages](#packages) listed below
+    - `<branch>` is...
+      - `main` for the latest stable version of `<package>`
+      - `unity<unityVersion>` for the latest stable version of `<package>` built against Unity `<unityVersion>` (e.g., `unity6`)
+      - `<version>-unity<unityVersion>` for `<version>` of `<package>` built against Unity `<unityVersion>` (e.g., `0.1.0-unity6`)
+      - `unity<unityVersion>-dev` for the latest development version of `<package>` built against Unity `<unityVersion>`. **These versions are bleeding-edge and very likely to contain bugs!**
+    - For example, to install version `0.2.0` of the `UnityUtil.Triggers` package for Unity 6, you would enter the URL: `https://github.com/DerploidEntertainment/UnityUtil.git?path=/UnityUtil/Assets/UnityUtil.Triggers#0.2.0-unity6`
 
 ### Updating
 
