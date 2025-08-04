@@ -27,9 +27,26 @@ public class BuildGameObjectRemover(ILoggerFactory loggerFactory)
 
     private readonly ILogger<BuildGameObjectRemover> _logger = loggerFactory.CreateLogger<BuildGameObjectRemover>();
 
+    /// <summary>
+    /// Remove <see cref="GameObject"/>s from the provided <paramref name="scene"/> for the provided <paramref name="buildTarget"/>.
+    /// </summary>
+    /// <param name="scene"></param>
+    /// <param name="buildTarget"></param>
+    /// <exception cref="InvalidOperationException">Could not convert <paramref name="buildTarget"/> to a <see cref="RuntimePlatform"/>.</exception>
     public void RemoveGameObjectsFromScene(Scene scene, BuildTarget buildTarget)
     {
-        RuntimePlatform platform = convertBuildTargetToRuntimePlatform(buildTarget);
+        RuntimePlatform platform = (RuntimePlatform?)TRY_CONVERT_TO_RUNTIME_PLATFORM.Value.Invoke(obj: null, parameters: [buildTarget])    // Static method invoke
+            ?? throw new InvalidOperationException($"Could not convert {nameof(BuildTarget)} '{buildTarget}' to a {nameof(RuntimePlatform)}");
+        RemoveGameObjectsFromScene(scene, platform);
+    }
+
+    /// <summary>
+    /// Remove <see cref="GameObject"/>s from the provided <paramref name="scene"/> on the provided <paramref name="platform"/>.
+    /// </summary>
+    /// <param name="scene"></param>
+    /// <param name="platform"></param>
+    public void RemoveGameObjectsFromScene(Scene scene, RuntimePlatform platform)
+    {
         BuildContext buildContext =
             (Application.isEditor && Application.isPlaying) ? BuildContext.PlayMode
             : EditorUserBuildSettings.development ? BuildContext.DevelopmentBuild
@@ -59,23 +76,19 @@ public class BuildGameObjectRemover(ILoggerFactory loggerFactory)
             }
 
             if (removableTargets.Length > 0)
-                log_ObjectsRemoved(targetsToRemove, removableTargets, root, scene, buildTarget);
+                log_ObjectsRemoved(targetsToRemove, removableTargets, root, scene, platform);
         }
     }
 
-    private static RuntimePlatform convertBuildTargetToRuntimePlatform(BuildTarget buildTarget) =>
-        (RuntimePlatform?)TRY_CONVERT_TO_RUNTIME_PLATFORM.Value.Invoke(obj: null, parameters: [buildTarget])    // Static method invoke
-        ?? throw new InvalidOperationException($"Could not convert {nameof(BuildTarget)} '{buildTarget}' to a {nameof(RuntimePlatform)}");
-
     #region LoggerMessages
 
-    private static readonly Action<MEL.ILogger, int, int, string, string, BuildTarget, Exception?> LOG_OBJECTS_REMOVED_ACTION =
-        LoggerMessage.Define<int, int, string, string, BuildTarget>(Information,
+    private static readonly Action<MEL.ILogger, int, int, string, string, RuntimePlatform, Exception?> LOG_OBJECTS_REMOVED_ACTION =
+        LoggerMessage.Define<int, int, string, string, RuntimePlatform>(Information,
             new EventId(id: 0, nameof(log_ObjectsRemoved)),
-            $"{{CountTargetsRemoved}} out of {{CountTargetsRemovable}} GameObjects with attached {nameof(RemoveFromBuild)} components under root object '{{Root}}' in scene '{{Scene}}' actually fit the criteria for contextual removal and were removed. Build target: '{{BuildTarget}}'"
+            $"{{CountTargetsRemoved}} out of {{CountTargetsRemovable}} GameObjects with attached {nameof(RemoveFromBuild)} components under root object '{{Root}}' in scene '{{Scene}}' actually fit the criteria for contextual removal and were removed. Platform: '{{Platform}}'"
         );
-    private void log_ObjectsRemoved(RemoveFromBuild[] targetsRemoved, RemoveFromBuild[] targetsRemovable, GameObject parent, Scene scene, BuildTarget buildTarget) =>
-        LOG_OBJECTS_REMOVED_ACTION(_logger, targetsRemoved.Length, targetsRemovable.Length, parent.name, scene.name, (BuildTarget)(RuntimePlatform)buildTarget, null);
+    private void log_ObjectsRemoved(RemoveFromBuild[] targetsRemoved, RemoveFromBuild[] targetsRemovable, GameObject parent, Scene scene, RuntimePlatform platform) =>
+        LOG_OBJECTS_REMOVED_ACTION(_logger, targetsRemoved.Length, targetsRemovable.Length, parent.name, scene.name, platform, null);
 
     #endregion
 }
