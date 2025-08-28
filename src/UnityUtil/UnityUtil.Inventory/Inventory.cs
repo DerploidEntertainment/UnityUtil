@@ -40,7 +40,7 @@ public class Inventory : MonoBehaviour
     public bool Collect(InventoryCollectible collectible)
     {
         if (collectible == null)
-            throw new ArgumentNullException(nameof(collectible), $"{this.GetHierarchyNameWithType()} cannot collect null");
+            throw new ArgumentNullException(nameof(collectible), $"{nameof(Inventory)} '{this.GetHierarchyName()}' cannot collect null");
 
         // If there is no room for the item, then just return that it wasn't collected
         if (_collectibles.Count == MaxItems)
@@ -67,11 +67,11 @@ public class Inventory : MonoBehaviour
     public void Drop(InventoryCollectible collectible)
     {
         if (collectible == null)
-            throw new ArgumentNullException(nameof(collectible), $"{this.GetHierarchyNameWithType()} cannot drop null");
+            throw new ArgumentNullException(nameof(collectible), $"{nameof(Inventory)} '{this.GetHierarchyName()}' cannot drop null");
 
         // Make sure a valid collectible was provided
         if (!_collectibles.Contains(collectible))
-            throw new InvalidOperationException($"{this.GetHierarchyNameWithType()} was told to drop an {typeof(InventoryCollectible).Name} that it never collected!");
+            throw new InvalidOperationException($"{nameof(Inventory)} '{this.GetHierarchyName()}' was told to drop an {typeof(InventoryCollectible).Name} that it never collected!");
 
         _ = StartCoroutine(doDrop(collectible));
     }

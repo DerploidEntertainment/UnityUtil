@@ -79,7 +79,7 @@ public class Lifter : Updatable
 
         if ((LiftUsingPhysics && LiftingJoint == null) || (!LiftUsingPhysics && LiftingObject == null)) {
             throw new InvalidOperationException(
-                $"{this.GetHierarchyNameWithType()} must have a {nameof(LiftingJoint)} if {nameof(LiftUsingPhysics)} is set to true, " +
+                $"{nameof(Lifter)} '{this.GetHierarchyName()}' must have a {nameof(LiftingJoint)} if {nameof(LiftUsingPhysics)} is set to true, " +
                 $"or a {nameof(LiftingObject)} if {nameof(LiftUsingPhysics)} is set to false."
             );
         }

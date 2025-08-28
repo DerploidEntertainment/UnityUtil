@@ -251,7 +251,9 @@ public class PrivacyDataProcessorsInitializer : MonoBehaviour
 
     private NonCmpConsentStatus readNonCmpConsentStatus(INonTcfDataProcessor nonTcfDataProcessor, int index)
     {
-        string name = nonTcfDataProcessor is Component component ? UnityObjectExtensions.GetHierarchyNameWithType(component) : $"non-TCF data processor {index}";
+        string name = nonTcfDataProcessor is Component component
+            ? $"{component.GetType().Name} '{UnityObjectExtensions.GetHierarchyName(component)}'"
+            : $"non-TCF data processor {index}";
 
         if (_localPreferences!.HasKey(nonTcfDataProcessor.ConsentPreferenceKey)) {
             NonCmpConsentStatus nonCmpConsentStatus = _localPreferences.GetInt(nonTcfDataProcessor.ConsentPreferenceKey) == 1 ? Granted : Denied;

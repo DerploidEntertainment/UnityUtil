@@ -30,7 +30,7 @@ public class OverheatTool : Updatable
         base.Awake();
 
         if (Info!.StartingHeat > Info.MaxHeat)
-            throw new InvalidOperationException($"{this.GetHierarchyNameWithType()} was started with {nameof(Info.StartingHeat)} heat but it can only store a max of {Info.MaxHeat}");
+            throw new InvalidOperationException($"{nameof(OverheatTool)} '{this.GetHierarchyName()}' was started with {nameof(Info.StartingHeat)} heat but it can only store a max of {Info.MaxHeat}");
 
         AddUpdate(doUpdate);
 
