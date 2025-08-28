@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Microsoft.Extensions.Logging;
@@ -11,6 +12,19 @@ using MEL = Microsoft.Extensions.Logging;
 using UE = UnityEngine;
 
 namespace UnityUtil.Editor;
+
+/// <summary>
+/// Summarizes which objects with an attached <see cref="RemoveFromBuild"/> component were removed and which were preserved.
+/// </summary>
+public class RemovedObjectsReport
+{
+    /// <summary>
+    /// Each key is the hierarchy name of a <see cref="GameObject"/> with an attached <see cref="RemoveFromBuild"/> component
+    /// (see <see cref="UnityObjectExtensions.GetHierarchyName(GameObject, int, string)"/>).
+    /// Each value is a string describing whether the object and/or its children were removed or preserved.
+    /// </summary>
+    public IReadOnlyDictionary<string, string> TargetResults { get; init; } = new Dictionary<string, string>();
+}
 
 public class BuildGameObjectRemover(ILoggerFactory loggerFactory)
 {
@@ -32,63 +46,77 @@ public class BuildGameObjectRemover(ILoggerFactory loggerFactory)
     /// </summary>
     /// <param name="scene"></param>
     /// <param name="buildTarget"></param>
+    /// <returns>
+    /// A <see cref="RemovedObjectsReport"/> summarizing which objects were removed and which were preserved.
+    /// </returns>
     /// <exception cref="InvalidOperationException">Could not convert <paramref name="buildTarget"/> to a <see cref="RuntimePlatform"/>.</exception>
-    public void RemoveGameObjectsFromScene(Scene scene, BuildTarget buildTarget)
+    public RemovedObjectsReport RemoveGameObjectsFromScene(Scene scene, BuildTarget buildTarget)
     {
         RuntimePlatform platform = (RuntimePlatform?)TRY_CONVERT_TO_RUNTIME_PLATFORM.Value.Invoke(obj: null, parameters: [buildTarget])    // Static method invoke
             ?? throw new InvalidOperationException($"Could not convert {nameof(BuildTarget)} '{buildTarget}' to a {nameof(RuntimePlatform)}");
-        RemoveGameObjectsFromScene(scene, platform);
+        return RemoveGameObjectsFromScene(scene, platform);
     }
 
     /// <summary>
     /// Remove <see cref="GameObject"/>s from the provided <paramref name="scene"/> on the provided <paramref name="platform"/>.
     /// </summary>
-    /// <param name="scene"></param>
+    /// <param name="scene"><inheritdoc cref="RemoveGameObjectsFromScene(Scene, BuildTarget)"/></param>
     /// <param name="platform"></param>
-    public void RemoveGameObjectsFromScene(Scene scene, RuntimePlatform platform)
+    /// <returns><inheritdoc cref="RemoveGameObjectsFromScene(Scene, BuildTarget)"/></returns>
+    public RemovedObjectsReport RemoveGameObjectsFromScene(Scene scene, RuntimePlatform platform)
     {
         BuildContext buildContext =
             (Application.isEditor && Application.isPlaying) ? BuildContext.PlayMode
             : EditorUserBuildSettings.development ? BuildContext.DevelopmentBuild
             : BuildContext.NonDevelopmentBuild;
 
-        GameObject[] roots = scene.GetRootGameObjects();
-        for (int r = 0; r < roots.Length; ++r) {
-            GameObject root = roots[r];
+        Dictionary<string, string> targetResults = [];
+        RemoveFromBuild[] removeTargets = [..
+            scene.GetRootGameObjects()
+                .SelectMany(x => x.GetComponentsInChildren<RemoveFromBuild>(includeInactive: true))
+        ];  // For some reason the below loop never iterates if we don't enumerate this query first
 
-            RemoveFromBuild[] removableTargets = root.GetComponentsInChildren<RemoveFromBuild>(includeInactive: true);
+        // Remove GameObjects and/or their children as necessary
+        foreach (RemoveFromBuild removeTarget in removeTargets) {
+            Transform removeTrans = removeTarget.transform;
+            string targetHierarchyName = $"'{removeTrans.GetHierarchyName(parentCount: int.MaxValue)}'";
 
-            // Determine which GameObjects should actually be removed
-            RemoveFromBuild[] targetsToRemove = [.. removableTargets
-                .Where(x => !(x.PreservePlatforms.Contains(platform!) && (x.PreserveBuildContexts & buildContext) != 0))
-            ];
-
-            // Remove them (and/or their children)!
-            for (int t = 0; t < targetsToRemove.Length; ++t) {
-                RemoveFromBuild removeTarget = targetsToRemove[t];
-                Transform removeTrans = removeTarget.transform;
-                if (removeTarget.DestroyBehavior == DestroyBehavior.ChildrenOnly) {
-                    for (int ch = 0; ch < removeTrans.childCount; ++ch)
-                        UE.Object.DestroyImmediate(removeTrans.GetChild(ch));
-                }
-                else if (removeTarget.DestroyBehavior == DestroyBehavior.SelfAndChildren)
-                    UE.Object.DestroyImmediate(removeTrans.gameObject);
+            string result;
+            if (removeTarget.PreservePlatforms.Contains(platform!)
+                && (removeTarget.PreserveBuildContexts & buildContext) != 0
+            ) {
+                result = $"Preserved due to matching {nameof(BuildContext)} and {nameof(RuntimePlatform)}";
+            }
+            else if (removeTarget.DestroyBehavior == DestroyBehavior.ChildrenOnly) {
+                for (int ch = 0; ch < removeTrans.childCount; ++ch)
+                    UE.Object.DestroyImmediate(removeTrans.GetChild(ch).gameObject);
+                result = $"Removed {nameof(DestroyBehavior.ChildrenOnly)}";
+            }
+            else {
+                UE.Object.DestroyImmediate(removeTrans.gameObject);
+                result = $"Removed {nameof(DestroyBehavior.SelfAndChildren)}";
             }
 
-            if (removableTargets.Length > 0)
-                log_ObjectsRemoved(targetsToRemove, removableTargets, root, scene, platform);
+            targetResults.Add(targetHierarchyName, result);
         }
+
+        var report = new RemovedObjectsReport { TargetResults = targetResults };
+        log_ObjectsRemoved(scene, buildContext, platform, report);
+
+        return report;
     }
 
     #region LoggerMessages
 
-    private static readonly Action<MEL.ILogger, int, int, string, string, RuntimePlatform, Exception?> LOG_OBJECTS_REMOVED_ACTION =
-        LoggerMessage.Define<int, int, string, string, RuntimePlatform>(Information,
+    private static readonly Action<MEL.ILogger, string, BuildContext, RuntimePlatform, IReadOnlyDictionary<string, string>, Exception?> LOG_OBJECTS_REMOVED_ACTION =
+        LoggerMessage.Define<string, BuildContext, RuntimePlatform, IReadOnlyDictionary<string, string>>(Information,
             new EventId(id: 0, nameof(log_ObjectsRemoved)),
-            $"{{CountTargetsRemoved}} out of {{CountTargetsRemovable}} GameObjects with attached {nameof(RemoveFromBuild)} components under root object '{{Root}}' in scene '{{Scene}}' actually fit the criteria for contextual removal and were removed. Platform: '{{Platform}}'"
+            $"Results of removing GameObjects with attached {nameof(RemoveFromBuild)} components from scene '{{Scene}}' " +
+            $"({nameof(BuildContext)}: '{{BuildContext}}', {nameof(RuntimePlatform)}: '{{Platform}}'):" +
+            "\n{RemovedObjectsReport}"
         );
-    private void log_ObjectsRemoved(RemoveFromBuild[] targetsRemoved, RemoveFromBuild[] targetsRemovable, GameObject parent, Scene scene, RuntimePlatform platform) =>
-        LOG_OBJECTS_REMOVED_ACTION(_logger, targetsRemoved.Length, targetsRemovable.Length, parent.name, scene.name, platform, null);
+    private void log_ObjectsRemoved(Scene scene, BuildContext buildContext, RuntimePlatform platform, RemovedObjectsReport removedObjectsReport) =>
+        LOG_OBJECTS_REMOVED_ACTION(_logger, scene.name, buildContext, platform, removedObjectsReport.TargetResults, null);
 
     #endregion
 }
