@@ -224,7 +224,7 @@
             and accept the latest legal documents.
             </summary>
         </member>
-        <member name="M:UnityUtil.Legal.PrivacyDataProcessorsInitializer.initializeTcfDataProcessors">
+        <member name="M:UnityUtil.Legal.PrivacyDataProcessorsInitializer.initializeTcfDataProcessorsAsync">
             <summary>
             Initializes all TCF-registered data processors.
             while <see cref="T:UnityUtil.Legal.ITcfDataProcessor"/>s are always initialized internally with the application's latest TC string (in parallel, if possible).
