@@ -54,7 +54,6 @@ public class PrivacyDataProcessorsInitializer : MonoBehaviour
     private List<ITcfDataProcessor>? _tcfDataProcessors;
     private List<INonTcfDataProcessor>? _nonTcfDataProcessors;
 
-    private Task? _preInitializeTask;
     private TaskCompletionSource<bool>? _awaitingContinueTcs;
     private NonCmpConsentStatus[]? _nonCmpConsentStatuses;
 
@@ -154,9 +153,7 @@ public class PrivacyDataProcessorsInitializer : MonoBehaviour
     public async Task InitializeDataProcessorsWithConsentAsync(Task? preInitializeTask = null, CancellationToken cancellationToken = default)
     {
         cancellationToken.ThrowIfCancellationRequested();
-
-        _preInitializeTask = preInitializeTask;
-
+        
         LegalAcceptStatus legalAcceptStatus = await _legalAcceptManager!.CheckStatusAsync(LegalDocuments);
 
         cancellationToken.ThrowIfCancellationRequested();
@@ -198,8 +195,8 @@ public class PrivacyDataProcessorsInitializer : MonoBehaviour
 
         // Wait for other pre-initialization actions.
         // These hopefully completed while the consent dialog(s) were shown, but gotta be sure...
-        if (_preInitializeTask is not null)
-            await _preInitializeTask;
+        if (preInitializeTask is not null)
+            await preInitializeTask;
 
         if (legalAcceptStatus != LegalAcceptStatus.Current)
             _legalAcceptManager!.Accept();
