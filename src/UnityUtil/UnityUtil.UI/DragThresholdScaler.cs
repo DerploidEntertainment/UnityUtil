@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using Sirenix.OdinInspector;
+﻿using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -28,8 +27,6 @@ public class DragThresholdScaler : MonoBehaviour
     [Min(0f), Tooltip(TOOLTIP)]
     public int DragThresholdFactor = 5;
 
-    [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
-    [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
     private void Awake() =>
         EventSystem!.pixelDragThreshold = DragThresholdFactor * (int)CanvasScaler!.scaleFactor;
 

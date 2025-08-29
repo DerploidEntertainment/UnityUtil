@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
+﻿using System.Globalization;
 using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine;
@@ -29,7 +28,6 @@ public class VersionText : MonoBehaviour
 
     public void Inject(IAppVersion appVersion) => _appVersion = appVersion;
 
-    [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
     private void Awake()
     {
         DependencyInjector.Instance.ResolveDependenciesOf(this);

@@ -13,6 +13,11 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
 
+  <!-- Common analyzers -->
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Unity.Analyzers" />
+  </ItemGroup>
+
   <!-- Set paths to Unity project assemblies -->
   <PropertyGroup>
     <UnityProjectPath>$(SolutionDir)..\$(SolutionName)</UnityProjectPath>

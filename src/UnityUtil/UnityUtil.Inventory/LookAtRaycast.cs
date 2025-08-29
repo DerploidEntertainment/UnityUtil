@@ -1,4 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
 using UnityUtil.Physics;
 using UnityUtil.Updating;
@@ -65,13 +64,13 @@ public class LookAtRaycast : Updatable
 
         AddUpdate(doUpdate);
     }
-    [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
+
     private void OnDrawGizmos()
     {
         if (TransformToRotate == null)
             return;
 
-        float range = WeaponInfo?.Range ?? Range;
+        float range = WeaponInfo != null ? WeaponInfo.Range : Range;
         Gizmos.DrawLine(TransformToRotate.position, TransformToRotate.TransformPoint(range * Vector3.forward));
     }
     private void doUpdate(float deltaTime)
@@ -81,8 +80,8 @@ public class LookAtRaycast : Updatable
 
         // Determine the point that the raycasting transform is looking at.
         // May be a point on an actual collider up ahead, or just a point out at its max range.
-        float range = WeaponInfo?.Range ?? Range;
-        LayerMask layerMask = WeaponInfo?.AttackLayerMask ?? LayerMask;
+        float range = WeaponInfo != null ? WeaponInfo.Range : Range;
+        LayerMask layerMask = WeaponInfo != null ? WeaponInfo.AttackLayerMask : LayerMask;
         bool somethingHit = U.Physics.Raycast(RaycastingTransform.position, RaycastingTransform.forward, out RaycastHit hitInfo, range, layerMask);
         Vector3 targetPos = somethingHit ? hitInfo.point : RaycastingTransform.TransformPoint(range * Vector3.forward);
 

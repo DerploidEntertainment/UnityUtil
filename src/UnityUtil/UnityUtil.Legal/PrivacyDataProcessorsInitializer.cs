@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -59,8 +58,6 @@ public class PrivacyDataProcessorsInitializer : MonoBehaviour
     private TaskCompletionSource<bool>? _awaitingContinueTcs;
     private NonCmpConsentStatus[]? _nonCmpConsentStatuses;
 
-    [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
-    [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
     private void Awake()
     {
         DependencyInjector.Instance.ResolveDependenciesOf(this);
@@ -226,7 +223,7 @@ public class PrivacyDataProcessorsInitializer : MonoBehaviour
             log_NoTcfDataProcessors();
         else {
             await updateCmpConsentAsync();  // Always update consent info; showing a consent form to users again may not be required tho
-            await initializeTcfDataProcessors();    // TCF-compliant data processors are always initialized; they may just be using the "default" TC string
+            await initializeTcfDataProcessorsAsync();    // TCF-compliant data processors are always initialized; they may just be using the "default" TC string
         }
     }
 
@@ -296,8 +293,7 @@ public class PrivacyDataProcessorsInitializer : MonoBehaviour
     /// One or more data processor initializations calls failed.
     /// See this exception's <see cref="AggregateException.InnerExceptions"/> collection for more details.
     /// </exception>
-    [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Async suffix doesn't really look great on async void methods")]
-    private async Task initializeTcfDataProcessors()
+    private async Task initializeTcfDataProcessorsAsync()
     {
         log_InitializingAllTcf();
 
@@ -317,7 +313,6 @@ public class PrivacyDataProcessorsInitializer : MonoBehaviour
     /// Initializes all non-TCF-registered data processors.
     /// <see cref="INonTcfDataProcessor"/>s are only initialized if non-CMP consent was granted.
     /// </summary>
-    [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Async suffix doesn't really look great on async void methods")]
     private void startNonTcfDataProcessors()
     {
         log_StartingAllNonTcf();

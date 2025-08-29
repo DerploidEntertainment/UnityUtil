@@ -1,5 +1,4 @@
 using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Microsoft.Extensions.Logging;
 using Sirenix.OdinInspector;
@@ -84,8 +83,6 @@ public class UiBreakpoints : MonoBehaviour
     )]
     public UnityEvent NoBreakpointMatched = new();
 
-    [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
-    [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
     private void Awake()
     {
         if (DependencyInjector.Instance.Initialized && !DependencyInjector.Instance.Disposed)
@@ -94,8 +91,6 @@ public class UiBreakpoints : MonoBehaviour
 
     public void Inject(ILoggerFactory loggerFactory) => _logger = loggerFactory.CreateLogger(this);
 
-    [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
-    [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
     private void Start()
     {
         // Using Start rather than Awake cause we don't want to mess with breakpoints being raised by Awake during Edit Mode tests
@@ -109,8 +104,6 @@ public class UiBreakpoints : MonoBehaviour
     /// This Unity message is not documented in the MonoBehaviour docs, but apparently it IS a message that any MonoBehaviour can receive (not just UIBehaviour)
     /// See this <a href="https://www.programmersought.com/article/1195140410/">weird and obscure source</a> :P
     /// </summary>
-    [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
-    [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
     private void OnRectTransformDimensionsChange()
     {
         if (!RecheckMatchesOnResize)
@@ -161,14 +154,14 @@ public class UiBreakpoints : MonoBehaviour
             SafeAreaHeight => Screen.safeArea.height,
             SafeAreaAspectRatio => Screen.safeArea.width / Screen.safeArea.height,
 
-            CameraWidth => Camera?.pixelWidth ?? throw getNullCameraException(),
-            CameraHeight => Camera?.pixelHeight ?? throw getNullCameraException(),
-            CameraAspectRatio => Camera?.aspect ?? throw getNullCameraException(),
+            CameraWidth => Camera != null ? Camera.pixelWidth : throw buildNullCameraException(),
+            CameraHeight => Camera != null ? Camera.pixelHeight : throw buildNullCameraException(),
+            CameraAspectRatio => Camera != null ? Camera.aspect : throw buildNullCameraException(),
 
             _ => throw UnityObjectExtensions.SwitchDefaultException(Mode),
         };
 
-        static Exception getNullCameraException() =>
+        static Exception buildNullCameraException() =>
             new InvalidOperationException(
                 $"{nameof(Camera)} must be provided when {nameof(Mode)} is " +
                 $"{nameof(CameraWidth)}, {nameof(CameraHeight)}, or {nameof(CameraAspectRatio)}."

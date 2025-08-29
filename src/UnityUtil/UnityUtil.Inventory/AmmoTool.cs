@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
@@ -77,7 +77,7 @@ public class AmmoTool : Updatable
 
     private void checkForReload(float deltaTime)
     {
-        if (ReloadInput?.Started() ?? false)
+        if (ReloadInput != null && ReloadInput.Started())
             doReloadClip();
     }
 

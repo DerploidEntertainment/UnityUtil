@@ -23,14 +23,20 @@ public class TestClientBase
 {
     [SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "Parameters are just for testing")]
     [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "This type is just for testing so I don't wanna think about this...")]
-    public void Inject(TestComponent componentService) { }
+    public void Inject(TestComponent componentService)
+    {
+        // This type and this method are just for testing
+    }
 }
 
 public class TestClient : TestClientBase
 {
     [SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "Parameters are just for testing")]
     [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "This type is just for testing so I don't wanna think about this...")]
-    public void Inject(object objectService, Animator animatorService) { }
+    public void Inject(object objectService, Animator animatorService)
+    {
+        // This type and this method are just for testing
+    }
 }
 
 public interface INoDependenciesClient
@@ -53,19 +59,28 @@ public interface IMultipleInjectClient
 internal class SameTypeNoTagsClient
 {
     [SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "Parameters are just for testing")]
-    public void Inject(TestComponent componentService1, TestComponent componentService2) { }
+    public void Inject(TestComponent componentService1, TestComponent componentService2)
+    {
+        // This type and this method are just for testing
+    }
 }
 
 internal class SameTypeDifferentTagsClient
 {
     [SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "Parameters are just for testing")]
-    public void Inject([InjectTag("test")] TestComponent componentService1, [InjectTag("not-test")] TestComponent componentService2) { }
+    public void Inject([InjectTag("test")] TestComponent componentService1, [InjectTag("not-test")] TestComponent componentService2)
+    {
+        // This type and this method are just for testing
+    }
 }
 
 internal class SameTypeSameTagsClient
 {
     [SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "Parameters are just for testing")]
-    public void Inject([InjectTag("test")] TestComponent componentService1, [InjectTag("test")] TestComponent componentService2) { }
+    public void Inject([InjectTag("test")] TestComponent componentService1, [InjectTag("test")] TestComponent componentService2)
+    {
+        // This type and this method are just for testing
+    }
 }
 
 [SuppressMessage("Performance", "CA1812:Avoid uninstantiated internal classes", Justification = "Instantiated by DI during test")]

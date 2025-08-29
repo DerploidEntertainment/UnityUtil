@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Logging;
 using UnityEngine;
 using UnityUtil.DependencyInjection;
@@ -15,8 +14,6 @@ public class Updater : MonoBehaviour, IUpdater
     private readonly FastIndexableDictionary<int, Action<float>> _fixed = new();
     private readonly FastIndexableDictionary<int, Action<float>> _late = new();
 
-    [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
-    [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
     private void Awake() => DependencyInjector.Instance.ResolveDependenciesOf(this);
 
     public void Inject(ILoggerFactory loggerFactory) => _logger = loggerFactory.CreateLogger(this);
@@ -78,24 +75,18 @@ public class Updater : MonoBehaviour, IUpdater
     /// <inheritdoc/>
     public bool ContainsLateUpdate(int instanceId) => _late.ContainsKey(instanceId);
 
-    [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
-    [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
     private void Update()
     {
         for (int u = 0; u < _updates.Count; ++u)
             _updates[u](Time.deltaTime);
     }
 
-    [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
-    [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
     private void FixedUpdate()
     {
         for (int fu = 0; fu < _fixed.Count; ++fu)
             _fixed[fu](Time.fixedDeltaTime);
     }
 
-    [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
-    [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
     private void LateUpdate()
     {
         for (int lu = 0; lu < _late.Count; ++lu)

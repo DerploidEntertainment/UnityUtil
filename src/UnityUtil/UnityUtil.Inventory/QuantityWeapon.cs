@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Linq;
+﻿using System.Linq;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -11,8 +10,6 @@ public class QuantityWeapon : MonoBehaviour
     [RequiredIn(PrefabKind.PrefabInstanceAndNonPrefabInstance)]
     public QuantityWeaponInfo? Info;
 
-    [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
-    [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
     private void Awake()
     {
         Weapon? weapon = GetComponent<Weapon>();
@@ -25,13 +22,13 @@ public class QuantityWeapon : MonoBehaviour
         // Otherwise, damage the Quantities on all Colliders that are not ignored with one of the specified tags
         for (int h = 0; h < hits.Length; ++h) {
             RaycastHit hit = hits[h];
-            if (!Info!.IgnoreColliderTags.Contains(hit.collider.tag)) {
-                ManagedQuantity? quantity = hit.collider.attachedRigidbody?.GetComponent<ManagedQuantity>();
-                if (quantity != null) {
-                    quantity.Change(Info.Amount, Info.ChangeMode);
-                    if (Info.OnlyAffectClosest && hits.Length > 0)
-                        break;
-                }
+            if (!Info!.IgnoreColliderTags.Contains(hit.collider.tag)
+                && hit.collider.attachedRigidbody != null
+                && hit.collider.attachedRigidbody.TryGetComponent(out ManagedQuantity quantity)
+            ) {
+                quantity.Change(Info.Amount, Info.ChangeMode);
+                if (Info.OnlyAffectClosest && hits.Length > 0)
+                    break;
             }
         }
     }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Microsoft.Extensions.Logging;
 using UnityEngine;
@@ -50,14 +49,10 @@ public class ColliderDuplicator : MonoBehaviour
     public MonoBehaviour? PhysicsTarget;
 
 
-    [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
-    [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
     private void Awake() => DependencyInjector.Instance.ResolveDependenciesOf(this);
 
     public void Inject(ILoggerFactory loggerFactory) => _logger = loggerFactory.CreateLogger(this);
 
-    [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
-    [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
     private void Start()
     {
         // Create duplicate Colliders
@@ -68,8 +63,7 @@ public class ColliderDuplicator : MonoBehaviour
         // This must happen in a separate loop, or else we duplicate the duplicates also!
         foreach (Transform child in duplicates) {
             child.parent = NewParentOfDuplicates;
-            child.localPosition = Vector3.zero;
-            child.localRotation = Quaternion.identity;
+            child.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
             child.localScale = Vector3.one;
         }
     }
@@ -147,8 +141,7 @@ public class ColliderDuplicator : MonoBehaviour
         foreach (Transform origChild in origChildren) {
             Transform duplChild = new GameObject(origChild.name).transform;
             duplChild.parent = duplParent;
-            duplChild.localPosition = Vector3.zero;
-            duplChild.localRotation = Quaternion.identity;
+            duplChild.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
             duplChild.localScale = Vector3.one;
 
             _ = duplicateHierarchy(origChild, duplChild);

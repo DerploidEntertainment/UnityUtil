@@ -307,7 +307,11 @@ public class DependencyInjector : IDisposable
             if (injectMethod is null)
                 goto ContinueHierarchy;
 
-            string clientName = (client as MonoBehaviour)?.GetHierarchyNameWithType() ?? (client as U.Object)?.name ?? $"{injectMethod.DeclaringType.FullName} instance";
+            string clientName =
+                client is Component clientComponent ? clientComponent.GetHierarchyName()
+                : client is U.Object clientObject ? clientObject.name
+                : $"{injectMethod.DeclaringType.FullName} instance";
+
             object[] dependencies = getDependeciesOfMethod(clientName, injectMethod);
             if (dependencies.Length == 0)
                 goto ContinueHierarchy;

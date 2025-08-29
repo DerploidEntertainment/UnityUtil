@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Microsoft.Extensions.Logging;
 using Sirenix.OdinInspector;
@@ -33,8 +32,6 @@ public class Weapon : MonoBehaviour
 
     public void Inject(ILoggerFactory loggerFactory) => _logger = loggerFactory.CreateLogger(this);
 
-    [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
-    [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
     private void Awake()
     {
         DependencyInjector.Instance.ResolveDependenciesOf(this);
@@ -44,8 +41,7 @@ public class Weapon : MonoBehaviour
         _tool.Using.AddListener(() => _accuracyLerpT = 0f);
         _tool.Used.AddListener(attack);
     }
-    [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
-    [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
+
     private void OnDrawGizmos()
     {
         switch (Info!.PhysicsCastShape) {

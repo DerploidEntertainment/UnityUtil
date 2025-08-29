@@ -109,7 +109,7 @@ public class Lifter : Updatable
         if (throwing && CanThrow && CurrentLiftable != null)
             doThrow();
     }
-    private void onJointBreak(Joint joint) => release(LiftableReleaseType.Accidental);
+    private void handleJointBreak(Joint joint) => release(LiftableReleaseType.Accidental);
 
     public Liftable? CurrentLiftable { get; private set; }
     public LiftablePickupEvent LoadPickedUp = new();
@@ -125,7 +125,7 @@ public class Lifter : Updatable
             rb = hitInfo.collider.attachedRigidbody;
             if (rb != null && rb.mass <= MaxMass) {
                 CurrentLiftable = rb.GetComponent<Liftable>();
-                if (!CurrentLiftable?.CanLift ?? false)
+                if (CurrentLiftable != null && !CurrentLiftable.CanLift)
                     CurrentLiftable = null;
             }
         }
@@ -145,7 +145,7 @@ public class Lifter : Updatable
                 loadTrans.rotation = transform.rotation * Quaternion.Euler(CurrentLiftable.PreferredLiftRotation);
             LiftingJoint!.Joint!.connectedBody = rb;
             rb.isKinematic = false;
-            LiftingJoint.Broken.AddListener(onJointBreak);
+            LiftingJoint.Broken.AddListener(handleJointBreak);
         }
 
         // Otherwise, connect it via parenting
@@ -166,7 +166,7 @@ public class Lifter : Updatable
         // Disconnect the Liftable using Physics, if requested
         Rigidbody rb = CurrentLiftable!.GetComponent<Rigidbody>();
         if (LiftUsingPhysics)
-            LiftingJoint!.Broken.RemoveListener(onJointBreak);
+            LiftingJoint!.Broken.RemoveListener(handleJointBreak);
 
         // Otherwise, disconnect it by unparenting
         else

@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace UnityUtil;
 
@@ -8,8 +7,6 @@ public class AnimatorStateRestarter : MonoBehaviour
 {
     private Animator? _animator;
 
-    [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
-    [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
     private void Awake() => _animator = GetComponent<Animator>();
 
     public void RestartCurrentState() => _animator!.Play(getCurrentAnimStateHash(layerIndex: 0), layer: 0, normalizedTime: 0f);

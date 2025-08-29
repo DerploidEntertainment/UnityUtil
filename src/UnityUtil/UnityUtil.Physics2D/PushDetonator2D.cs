@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Linq;
+﻿using System.Linq;
 using UnityEngine;
 using U = UnityEngine;
 
@@ -19,8 +18,6 @@ public class PushDetonator2D : MonoBehaviour
     )]
     public Rigidbody2D? SafeRigidbody;
 
-    [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
-    [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
     private void Awake()
     {
         _detonator = GetComponent<Detonator2D>();

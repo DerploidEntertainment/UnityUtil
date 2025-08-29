@@ -1,7 +1,6 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Microsoft.Extensions.Logging;
 using UnityEngine;
@@ -31,8 +30,6 @@ public class Inventory : MonoBehaviour
 
     public void Inject(ILoggerFactory loggerFactory) => _logger = loggerFactory.CreateLogger(this);
 
-    [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
-    [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
     private void Awake() => DependencyInjector.Instance.ResolveDependenciesOf(this);
 
     public InventoryCollectible[] GetCollectibles() => [.. _collectibles];
@@ -51,8 +48,7 @@ public class Inventory : MonoBehaviour
         // Otherwise, do collect actions
         Transform itemTrans = collectible.ItemRoot!.transform;
         itemTrans.parent = transform;
-        itemTrans.localPosition = new Vector3(0f, 0f, 0f);
-        itemTrans.localRotation = Quaternion.identity;
+        itemTrans.SetLocalPositionAndRotation(new Vector3(0f, 0f, 0f), Quaternion.identity);
         collectible.Root!.SetActive(false);
 
         // Place the collectible in the Inventory
