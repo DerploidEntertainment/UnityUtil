@@ -88,7 +88,7 @@ public abstract class StartStoppable : Updatable
     [Button("Start"), HorizontalGroup(GRP_BUTTONS)]
     public void StartBehavior()
     {
-        this.AssertActiveAndEnabled("start");
+        this.ThrowIfInactiveOrDisabled("start");
         if (Running)
             return;
 
@@ -97,7 +97,7 @@ public abstract class StartStoppable : Updatable
     [Button("Restart"), HorizontalGroup(GRP_BUTTONS)]
     public void RestartBehavior()
     {
-        this.AssertActiveAndEnabled("restart");
+        this.ThrowIfInactiveOrDisabled("restart");
         if (Running)
             DoStop();
         DoRestart();
@@ -105,19 +105,19 @@ public abstract class StartStoppable : Updatable
     [Button("Pause"), HorizontalGroup(GRP_BUTTONS)]
     public void PauseBehavior()
     {
-        this.AssertActiveAndEnabled("pause");
+        this.ThrowIfInactiveOrDisabled("pause");
         DoPause();
     }
     [Button("Resume"), HorizontalGroup(GRP_BUTTONS)]
     public void ResumeBehavior()
     {
-        this.AssertActiveAndEnabled("resume");
+        this.ThrowIfInactiveOrDisabled("resume");
         DoResume();
     }
     [Button("Stop"), HorizontalGroup(GRP_BUTTONS)]
     public void StopBehavior()
     {
-        this.AssertActiveAndEnabled("stop");
+        this.ThrowIfInactiveOrDisabled("stop");
         if (!Running)
             return;
 

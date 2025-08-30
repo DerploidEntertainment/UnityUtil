@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using UnityEngine;
+﻿using UnityEngine;
 using U = UnityEngine;
 
 namespace UnityUtil.Physics;
@@ -46,14 +45,12 @@ public class TorqueStabilizer : MonoBehaviour
             _ => throw UnityObjectExtensions.SwitchDefaultException(UpwardDirectionType),
         };
 
-    [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
     private void OnDrawGizmos()
     {
         if (RigidbodyToStabilize != null)
             Gizmos.DrawLine(RigidbodyToStabilize.position, RigidbodyToStabilize.position + CustomUpwardDirection);
     }
 
-    [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
     private void FixedUpdate()
     {
         if (RigidbodyToStabilize == null)

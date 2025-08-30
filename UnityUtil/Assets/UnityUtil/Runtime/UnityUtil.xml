@@ -774,7 +774,42 @@
             <param name="key"></param>
             <param name="value"></param>
         </member>
-        <member name="M:UnityUtil.UnityObjectExtensions.AssertActiveAndEnabled(UnityEngine.Behaviour,System.String)">
+        <member name="M:UnityUtil.UnityObjectExtensions.GetHierarchyName(UnityEngine.GameObject,System.Int32,System.String)">
+            <summary><inheritdoc cref="M:UnityUtil.UnityObjectExtensions.GetHierarchyName(UnityEngine.Component,System.Int32,System.String)"/></summary>
+            <remarks><inheritdoc cref="M:UnityUtil.UnityObjectExtensions.GetHierarchyName(UnityEngine.Component,System.Int32,System.String)"/></remarks>
+            <param name="obj"><inheritdoc cref="M:UnityUtil.UnityObjectExtensions.GetHierarchyName(UnityEngine.Component,System.Int32,System.String)" path="/param[@name='obj']"/></param>
+            <param name="parentCount"><inheritdoc cref="M:UnityUtil.UnityObjectExtensions.GetHierarchyName(UnityEngine.Component,System.Int32,System.String)" path="/param[@name='parentCount']"/></param>
+            <param name="separator"><inheritdoc cref="M:UnityUtil.UnityObjectExtensions.GetHierarchyName(UnityEngine.Component,System.Int32,System.String)" path="/param[@name='separator']"/></param>
+            <returns><inheritdoc cref="M:UnityUtil.UnityObjectExtensions.GetHierarchyName(UnityEngine.Component,System.Int32,System.String)"/></returns>
+            <exception cref="T:System.ArgumentOutOfRangeException"><inheritdoc cref="M:UnityUtil.UnityObjectExtensions.GetHierarchyName(UnityEngine.Component,System.Int32,System.String)"/></exception>
+        </member>
+        <member name="M:UnityUtil.UnityObjectExtensions.GetHierarchyName(UnityEngine.Component,System.Int32,System.String)">
+            <summary>
+            Gets <paramref name="obj"/>'s "hierarchy name".
+            That is, its <see cref="P:UnityEngine.Object.name"/> concatenated with the names of up to <paramref name="parentCount"/> parents above it,
+            separated by <paramref name="separator"/>.
+            For example, <c>parent/object</c> or <c>root > group > object</c>.
+            </summary>
+            <remarks>
+            <para>
+            If <paramref name="parentCount"/> is 0, then only <paramref name="obj"/>'s name is returned.
+            If <paramref name="obj"/> has fewer parents than <paramref name="parentCount"/>,
+            then the hierarchy name will only contain the names of as many parents as <paramref name="obj"/> actually has.
+            To include all parent names, set <paramref name="parentCount"/> to something high, e.g., <see cref="F:System.Int32.MaxValue"/>.
+            </para>
+            <para>
+            <strong>Warning</strong>: This method walks the Transform hierarchy to find <paramref name="obj"/>'s parents.
+            For deeply nested GameObjects, you may want to use a smaller <paramref name="parentCount"/> inside performance-critical code.
+            You could also cache the hierarchy name, but the name may become stale if <paramref name="obj"/>'s hierarchy changes.
+            </para>
+            </remarks>
+            <param name="obj"></param>
+            <param name="parentCount"></param>
+            <param name="separator"></param>
+            <returns></returns>
+            <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="separator"/> is negative.</exception>
+        </member>
+        <member name="M:UnityUtil.UnityObjectExtensions.ThrowIfInactiveOrDisabled(UnityEngine.Behaviour,System.String)">
             <summary>
             Assert that this component is both active and enabled.
             </summary>

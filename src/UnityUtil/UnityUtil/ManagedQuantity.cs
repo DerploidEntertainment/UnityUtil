@@ -48,11 +48,11 @@ public class ManagedQuantity : MonoBehaviour
 
     public float Increase(float amount, ChangeMode changeMode = ChangeMode.Absolute) =>
         amount < 0f
-            ? throw new ArgumentOutOfRangeException(nameof(amount), amount, $"Cannot increase {this.GetHierarchyNameWithType()} by a negative amount!")
+            ? throw new ArgumentOutOfRangeException(nameof(amount), amount, $"Cannot increase {nameof(ManagedQuantity)} '{this.GetHierarchyName()}' by a negative amount!")
             : doChange(amount, changeMode);
     public float Decrease(float amount, ChangeMode changeMode = ChangeMode.Absolute) =>
         amount < 0f
-            ? throw new ArgumentOutOfRangeException(nameof(amount), amount, $"Cannot decrease {this.GetHierarchyNameWithType()} by a negative amount!")
+            ? throw new ArgumentOutOfRangeException(nameof(amount), amount, $"Cannot decrease {nameof(ManagedQuantity)} '{this.GetHierarchyName()}' by a negative amount!")
             : doChange(-amount, changeMode);
     public float Change(float amount, ChangeMode changeMode = ChangeMode.Absolute) => doChange(amount, changeMode);
     public void FillCompletely() => doChange(MaxValue - Value, ChangeMode.Absolute);

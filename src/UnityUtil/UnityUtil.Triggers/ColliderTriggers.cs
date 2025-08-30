@@ -1,28 +1,19 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Events;
 
 namespace UnityUtil.Triggers;
 
 public class ColliderEnterTrigger : ColliderTriggerBase
 {
-    [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
-    [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
     private void OnCollisionEnter(Collision other) => TryTrigger(other.rigidbody);
 
-    [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
-    [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
     private void OnTriggerEnter(Collider other) => TryTrigger(other.attachedRigidbody);
 }
 
 public class ColliderExitTrigger : ColliderTriggerBase
 {
-    [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
-    [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
     private void OnCollisionExit(Collision other) => TryTrigger(other.rigidbody);
 
-    [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
-    [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
     private void OnTriggerExit(Collider other) => TryTrigger(other.attachedRigidbody);
 }
 
@@ -47,8 +38,6 @@ public abstract class ColliderTriggerBase : MonoBehaviour
     )]
     public bool FilterIsBlacklist = false;
 
-    [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
-    [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
     private void Awake() => AttachedCollider = GetComponent<Collider>();
 
     protected void TryTrigger(Rigidbody? rb)

@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using Sirenix.OdinInspector;
+﻿using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace UnityUtil.Inventory;
@@ -14,8 +13,6 @@ public class ProjectileTool : MonoBehaviour
     [RequiredIn(PrefabKind.PrefabInstanceAndNonPrefabInstance)]
     public Transform? ProjectileParent;
 
-    [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
-    [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
     private void Awake()
     {
         Tool? tool = GetComponent<Tool>();
@@ -30,8 +27,8 @@ public class ProjectileTool : MonoBehaviour
         GameObject projectile = Instantiate(Info.ProjectilePrefab, pos, rot, ProjectileParent)!;
 
         // Propel the Projectile forward, if requested/possible
-        Rigidbody rb = projectile.GetComponent<Rigidbody>();
-        rb?.AddForce(transform.TransformDirection(Info.InitialVelocity), ForceMode.VelocityChange);
+        if (projectile.TryGetComponent(out Rigidbody rb))
+            rb.AddForce(transform.TransformDirection(Info.InitialVelocity), ForceMode.VelocityChange);
     }
 
 }

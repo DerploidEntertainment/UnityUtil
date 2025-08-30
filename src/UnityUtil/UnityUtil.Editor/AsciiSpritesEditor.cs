@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.Logging;
 using Unity.Extensions.Logging;
@@ -19,8 +18,6 @@ public class AsciiSpritesEditor : E.Editor
     private SerializedProperty? _pathProp;
     private readonly Dictionary<char, SerializedProperty> _charProps = [];
 
-    [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
-    [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
     private void OnEnable()
     {
         _pathProp = serializedObject.FindProperty(nameof(AsciiSprites.AutoLoadSpritePath));

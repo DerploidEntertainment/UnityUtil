@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using Sirenix.OdinInspector;
 using TMPro;
@@ -26,7 +25,6 @@ public class CopyrightText : MonoBehaviour
     [RequiredIn(PrefabKind.PrefabInstanceAndNonPrefabInstance)]
     public TMP_Text? Text;
 
-    [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
     private void Awake() =>
         Text!.text = string.Format(CultureInfo.CurrentCulture, FormatString, DateTime.Now, UD.Application.companyName);
 }

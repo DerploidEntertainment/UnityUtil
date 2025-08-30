@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Linq;
+﻿using System.Linq;
 using UnityEngine;
 
 namespace UnityUtil.Physics;
@@ -18,7 +17,6 @@ public class HurtDetonator : MonoBehaviour
     [Tooltip($"Determines how the value of {nameof(MaxAmount)} is used to change nearby {nameof(ManagedQuantity)}s.")]
     public ManagedQuantity.ChangeMode ChangeMode = ManagedQuantity.ChangeMode.Absolute;
 
-    [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
     private void Awake()
     {
         _detonator = GetComponent<Detonator>();
@@ -30,7 +28,7 @@ public class HurtDetonator : MonoBehaviour
         // Change all unique Quantities among these Colliders
         // Change amount decreases linearly with distance from the explosion
         ManagedQuantity[] quantities = [.. colliders
-            .Select(x => x.attachedRigidbody?.GetComponent<ManagedQuantity>())
+            .Select(x => x.attachedRigidbody != null && x.attachedRigidbody.TryGetComponent(out ManagedQuantity q) ? q : null)
             .Where(x => x != null)
             .Select(x => x!)
             .Distinct()

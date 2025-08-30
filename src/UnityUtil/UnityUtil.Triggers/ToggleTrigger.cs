@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using Sirenix.OdinInspector;
+﻿using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace UnityUtil.Triggers;
@@ -13,8 +12,6 @@ public class ToggleTrigger : ConditionalTrigger
     [PropertyOrder(-4f)]
     public bool AwakeState = false;
 
-    [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
-    [SuppressMessage("Code Quality", "IDE0051:Remove unused private members", Justification = "Unity message")]
     private void Awake() => _currentState = AwakeState;
 
     [Button, PropertyOrder(-3f), HorizontalGroup(ButtonGroup)]

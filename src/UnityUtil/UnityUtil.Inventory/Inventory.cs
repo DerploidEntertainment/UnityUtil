@@ -1,7 +1,6 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Microsoft.Extensions.Logging;
 using UnityEngine;
@@ -31,8 +30,6 @@ public class Inventory : MonoBehaviour
 
     public void Inject(ILoggerFactory loggerFactory) => _logger = loggerFactory.CreateLogger(this);
 
-    [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
-    [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
     private void Awake() => DependencyInjector.Instance.ResolveDependenciesOf(this);
 
     public InventoryCollectible[] GetCollectibles() => [.. _collectibles];
@@ -40,7 +37,7 @@ public class Inventory : MonoBehaviour
     public bool Collect(InventoryCollectible collectible)
     {
         if (collectible == null)
-            throw new ArgumentNullException(nameof(collectible), $"{this.GetHierarchyNameWithType()} cannot collect null");
+            throw new ArgumentNullException(nameof(collectible), $"{nameof(Inventory)} '{this.GetHierarchyName()}' cannot collect null");
 
         // If there is no room for the item, then just return that it wasn't collected
         if (_collectibles.Count == MaxItems)
@@ -51,8 +48,7 @@ public class Inventory : MonoBehaviour
         // Otherwise, do collect actions
         Transform itemTrans = collectible.ItemRoot!.transform;
         itemTrans.parent = transform;
-        itemTrans.localPosition = new Vector3(0f, 0f, 0f);
-        itemTrans.localRotation = Quaternion.identity;
+        itemTrans.SetLocalPositionAndRotation(new Vector3(0f, 0f, 0f), Quaternion.identity);
         collectible.Root!.SetActive(false);
 
         // Place the collectible in the Inventory
@@ -67,11 +63,11 @@ public class Inventory : MonoBehaviour
     public void Drop(InventoryCollectible collectible)
     {
         if (collectible == null)
-            throw new ArgumentNullException(nameof(collectible), $"{this.GetHierarchyNameWithType()} cannot drop null");
+            throw new ArgumentNullException(nameof(collectible), $"{nameof(Inventory)} '{this.GetHierarchyName()}' cannot drop null");
 
         // Make sure a valid collectible was provided
         if (!_collectibles.Contains(collectible))
-            throw new InvalidOperationException($"{this.GetHierarchyNameWithType()} was told to drop an {typeof(InventoryCollectible).Name} that it never collected!");
+            throw new InvalidOperationException($"{nameof(Inventory)} '{this.GetHierarchyName()}' was told to drop an {typeof(InventoryCollectible).Name} that it never collected!");
 
         _ = StartCoroutine(doDrop(collectible));
     }

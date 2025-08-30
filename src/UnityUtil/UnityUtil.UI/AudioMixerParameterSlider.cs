@@ -1,5 +1,4 @@
 using System;
-using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Logging;
 using Sirenix.OdinInspector;
 using Unity.Extensions.Logging;
@@ -97,8 +96,6 @@ public class AudioMixerParameterSlider : MonoBehaviour
         _localPreferences = localPreferences;
     }
 
-    [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
-    [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
     private void Awake()
     {
         DependencyInjector.Instance.ResolveDependenciesOf(this);
@@ -115,7 +112,7 @@ public class AudioMixerParameterSlider : MonoBehaviour
 
         // If a test audio was set, then listen for PointerUp events on the slider
         // Using the Slider's onValueChanged event leads to crazy rapid restarting of the test audio as user scrolls the Slider :P
-        EventTrigger eventTrigger = Slider.GetComponent<EventTrigger>() ?? Slider.gameObject.AddComponent<EventTrigger>();
+        EventTrigger eventTrigger = Slider.TryGetComponent(out eventTrigger) ? eventTrigger : Slider.gameObject.AddComponent<EventTrigger>();
         var pointerUpEvent = new EventTrigger.Entry { eventID = EventTriggerType.PointerUp };
         pointerUpEvent.callback.AddListener(e => {
             if (StoreParameterInPreferences) {
@@ -131,8 +128,6 @@ public class AudioMixerParameterSlider : MonoBehaviour
         eventTrigger.triggers.Add(pointerUpEvent);
     }
 
-    [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
-    [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
     private void Start()
     {
         // Initialize audio parameters from preferences, if requested

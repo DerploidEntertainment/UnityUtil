@@ -1,5 +1,4 @@
 using System;
-using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Logging;
 using UnityEngine;
 using UnityEngine.UI;
@@ -15,10 +14,8 @@ public class ModifiableGraphic : MonoBehaviour
     private ILogger<ModifiableGraphic>? _logger;
 
     private Graphic? _graphic;
-    private Graphic Graphic => _graphic ??= GetComponent<Graphic>();
+    private Graphic Graphic => _graphic = _graphic != null ? _graphic : GetComponent<Graphic>();
 
-    [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
-    [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
     private void Awake() => DependencyInjector.Instance.ResolveDependenciesOf(this);
 
     public void Inject(ILoggerFactory loggerFactory) => _logger = loggerFactory.CreateLogger(this);

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
@@ -41,7 +41,7 @@ public class AmmoTool : Updatable
     /// <returns>The amount of left-over ammo that could not be stored in the <see cref="AmmoTool"/>'s clips.  Will always be >= 0.</returns>
     public int Load(int ammo) =>
         ammo < 0
-            ? throw new ArgumentOutOfRangeException(nameof(ammo), $"Cannot load {this.GetHierarchyNameWithType()} with a negative amount of ammo!")
+            ? throw new ArgumentOutOfRangeException(nameof(ammo), $"Cannot load {nameof(AmmoTool)} '{this.GetHierarchyName()}' with a negative amount of ammo!")
             : doLoad(ammo);
 
     /// <summary>
@@ -57,7 +57,7 @@ public class AmmoTool : Updatable
         base.Awake();
 
         if (Info!.StartingAmmo > Info.MaxClipAmmo * (Info.MaxBackupClips + 1))
-            throw new InvalidOperationException($"{this.GetHierarchyNameWithType()} was started with {nameof(Info.StartingAmmo)} ammo but it can only store a max of {Info.MaxClipAmmo} * ({Info.MaxClipAmmo * (Info.MaxBackupClips + 1)}!");
+            throw new InvalidOperationException($"{nameof(AmmoTool)} '{this.GetHierarchyName()}' was started with {nameof(Info.StartingAmmo)} ammo but it can only store a max of {Info.MaxClipAmmo} * ({Info.MaxClipAmmo * (Info.MaxBackupClips + 1)}!");
 
         // Initialize ammo
         doLoad(Info.StartingAmmo);
@@ -77,7 +77,7 @@ public class AmmoTool : Updatable
 
     private void checkForReload(float deltaTime)
     {
-        if (ReloadInput?.Started() ?? false)
+        if (ReloadInput != null && ReloadInput.Started())
             doReloadClip();
     }
 

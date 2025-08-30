@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Logging;
 using UnityEngine;
 using UnityUtil.DependencyInjection;
@@ -10,14 +9,11 @@ using MEL = Microsoft.Extensions.Logging;
 
 namespace UnityUtil.UI;
 
-[SuppressMessage("Naming", "CA1711:Identifiers should not have incorrect suffix", Justification = "This is pretty familiar terminology")]
 public class UiStack : MonoBehaviour
 {
     private ILogger<UiStack>? _logger;
     private readonly Stack<SimpleTrigger> _popTriggers = new();
 
-    [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
-    [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
     private void Awake() => DependencyInjector.Instance.ResolveDependenciesOf(this);
 
     public void Inject(ILoggerFactory loggerFactory) => _logger = loggerFactory.CreateLogger(this);

@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using Sirenix.OdinInspector;
+﻿using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityUtil.Updating;
@@ -18,8 +17,6 @@ public class ScrollRectVelocityClamper : Updatable
     )]
     public Vector2Int MinVelocityMagnitude = new(40, 40);
 
-    [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
-    [SuppressMessage("Code Quality", "IDE0051:Remove unused private members", Justification = "Unity message")]
     private void OnValidate()
     {
         int x = Mathf.Max(0, MinVelocityMagnitude.x);

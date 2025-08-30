@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Logging;
 using UnityEngine;
 using UnityUtil.DependencyInjection;
@@ -14,10 +13,8 @@ public class ModifiableRectTransform : MonoBehaviour
     private ILogger<ModifiableRectTransform>? _logger;
 
     private RectTransform? _rectTransform;
-    private RectTransform RectTransform => _rectTransform ??= GetComponent<RectTransform>();
+    private RectTransform RectTransform => _rectTransform = _rectTransform != null ? _rectTransform : GetComponent<RectTransform>();
 
-    [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
-    [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
     private void Awake() => DependencyInjector.Instance.ResolveDependenciesOf(this);
 
     public void Inject(ILoggerFactory loggerFactory) => _logger = loggerFactory.CreateLogger(this);

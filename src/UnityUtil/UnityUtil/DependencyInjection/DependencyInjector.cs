@@ -106,13 +106,17 @@ public class DependencyInjector : IDisposable
 
     public void RegisterService(string serviceTypeName, Func<object> instanceFactory, Scene? scene = null, string injectTag = DefaultInjectTag)
     {
+        Type serviceType;
+        Type instanceType = instanceFactory.GetType();
         if (string.IsNullOrEmpty(serviceTypeName))
-            serviceTypeName = instanceFactory.GetType().AssemblyQualifiedName;
+            serviceType = instanceType;
+        else {
+            serviceType = Type.GetType(serviceTypeName)
+                ?? throw new InvalidOperationException($"Could not load Type '{serviceTypeName}'. Make sure that you provided its assembly-qualified name and that its assembly is loaded.");
 
-        Type serviceType = Type.GetType(serviceTypeName)
-            ?? throw new InvalidOperationException($"Could not load Type '{serviceTypeName}'. Make sure that you provided its assembly-qualified name and that its assembly is loaded.");
-        if (!serviceType.IsAssignableFrom(instanceFactory.GetType()))
-            throw new InvalidOperationException($"The service instance registered for Type '{serviceTypeName}' is not actually derived from that Type!");
+            if (!serviceType.IsAssignableFrom(instanceType))
+                throw new InvalidOperationException($"The service instance registered for Type '{serviceTypeName}' is not actually derived from that Type!");
+        }
 
         RegisterService(serviceType, instanceFactory, scene, injectTag);
     }
@@ -307,7 +311,11 @@ public class DependencyInjector : IDisposable
             if (injectMethod is null)
                 goto ContinueHierarchy;
 
-            string clientName = (client as MonoBehaviour)?.GetHierarchyNameWithType() ?? (client as U.Object)?.name ?? $"{injectMethod.DeclaringType.FullName} instance";
+            string clientName =
+                client is Component clientComponent ? clientComponent.GetHierarchyName()
+                : client is U.Object clientObject ? clientObject.name
+                : $"{injectMethod.DeclaringType.FullName} instance";
+
             object[] dependencies = getDependeciesOfMethod(clientName, injectMethod);
             if (dependencies.Length == 0)
                 goto ContinueHierarchy;

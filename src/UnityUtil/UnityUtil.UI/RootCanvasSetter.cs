@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityUtil.DependencyInjection;
 
 namespace UnityUtil.UI;
@@ -11,8 +10,6 @@ namespace UnityUtil.UI;
 /// </summary>
 public class RootCanvasSetter : MonoBehaviour
 {
-    [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message.")]
-    [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
     private void Awake() => DependencyInjector.Instance.ResolveDependenciesOf(this);
 
     public void Inject(Canvas rootCanvas) => transform.SetParent(rootCanvas.transform);

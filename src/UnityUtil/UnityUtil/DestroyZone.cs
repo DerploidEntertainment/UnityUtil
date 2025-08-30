@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Events;
 
 namespace UnityUtil;
@@ -29,8 +28,6 @@ public class DestroyZone : MonoBehaviour
     public bool FilterIsBlacklist = false;
     public UnityEvent SomethingDestroyed = new();
 
-    [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
-    [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
     private void OnTriggerEnter(Collider other)
     {
         // Destroy the triggering Collider's GameObject, if requested

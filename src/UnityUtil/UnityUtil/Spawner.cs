@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Logging;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -90,7 +89,6 @@ public class Spawner : MonoBehaviour
 
     public void Inject(ILoggerFactory loggerFactory) => _logger = loggerFactory.CreateLogger(this);
 
-    [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
     private void Awake() => DependencyInjector.Instance.ResolveDependenciesOf(this);
 
     public void Spawn()
@@ -112,11 +110,11 @@ public class Spawner : MonoBehaviour
 
         // If the Prefab has a Rigidbody, apply the requested velocity
 #if DEBUG_2D
-            Rigidbody2D rb = obj.GetComponent<Rigidbody2D>();
+        bool hasRigidbody = obj.TryGetComponent(out Rigidbody2D rb);
 #else
-        Rigidbody rb = obj.GetComponent<Rigidbody>();
+        bool hasRigidbody = obj.TryGetComponent(out Rigidbody rb);
 #endif
-        if (rb != null) {
+        if (hasRigidbody) {
 #if DEBUG_2D
                 Vector2 dir = getSpawnDirection();
 #else

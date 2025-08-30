@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using UnityEngine;
+﻿using UnityEngine;
 using U = UnityEngine;
 
 namespace UnityUtil.Physics;
@@ -78,7 +77,6 @@ public class HoverForce : MonoBehaviour
         };
     public float AppliedFractionOfMaxForce { get; private set; }
 
-    [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
     private void FixedUpdate()
     {
         if (HoveringRigidbody == null)

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Logging;
 using UnityEngine;
 using UnityEngine.Events;
@@ -19,30 +18,22 @@ public class ApplicationLifecycleTriggers : MonoBehaviour
     public UnityEvent Unpaused = new();
     public UnityEvent Quitting = new();
 
-    [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
-    [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
     private void Awake() => DependencyInjector.Instance.ResolveDependenciesOf(this);
 
     public void Inject(ILoggerFactory loggerFactory) => _logger = loggerFactory.CreateLogger(this);
 
-    [SuppressMessage("Code Quality", "IDE0051:Remove unused private members", Justification = "Unity message")]
-    [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
     private void OnApplicationFocus(bool hasFocus)
     {
         log_FocusChanged(hasFocus);
         (hasFocus ? Focused : Unfocused).Invoke();
     }
 
-    [SuppressMessage("Code Quality", "IDE0051:Remove unused private members", Justification = "Unity message")]
-    [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
     private void OnApplicationPause(bool pauseStatus)
     {
         log_PauseChanged(pauseStatus);
         (pauseStatus ? Paused : Unpaused).Invoke();
     }
 
-    [SuppressMessage("Code Quality", "IDE0051:Remove unused private members", Justification = "Unity message")]
-    [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
     private void OnApplicationQuit()
     {
         log_Quitting();

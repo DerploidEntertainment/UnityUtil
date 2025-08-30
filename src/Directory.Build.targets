@@ -16,6 +16,10 @@
   -->
   <ItemGroup>
     <PackageReference Update="SerilogAnalyzer" Version="0.15.0" />
+    <PackageReference Update="Microsoft.Unity.Analyzers" Version="1.25.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
     <PackageReference Update="NUnit.Analyzers" Version="4.6.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

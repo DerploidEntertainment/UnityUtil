@@ -1,5 +1,4 @@
 using System;
-using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -27,8 +26,6 @@ public class IntTrigger : MonoBehaviour
     private int _number;
     private int _lastTriggerVal;
 
-    [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
-    [SuppressMessage("Code Quality", "IDE0051:Remove unused private members", Justification = "Unity message")]
     private void Awake()
     {
         _number = StartingValue;

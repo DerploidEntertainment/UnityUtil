@@ -34,12 +34,8 @@ public class ApplicationEventListener : MonoBehaviour
     [SuppressMessage("Style", "IDE0044:Add readonly modifier", Justification = "Unity doesn't serialize readonly fields")]
     private UnityEvent _eventInvoked = new();
 
-    [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
-    [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
     private void OnEnable() => Event!.Invoked += doInvoke;
 
-    [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
-    [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
     private void OnDisable() => Event!.Invoked -= doInvoke;
 
     private void doInvoke(object sender, EventArgs e) => _eventInvoked.Invoke();

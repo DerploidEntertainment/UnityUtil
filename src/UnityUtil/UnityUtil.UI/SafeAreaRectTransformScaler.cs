@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Logging;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -24,8 +23,6 @@ public class SafeAreaRectTransformScaler : MonoBehaviour
 
     public void Inject(ILoggerFactory loggerFactory) => _logger = loggerFactory.CreateLogger(this);
 
-    [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
-    [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
     private void Awake() => DependencyInjector.Instance.ResolveDependenciesOf(this);
 
     public void ScaleRectTransform()
@@ -51,10 +48,10 @@ public class SafeAreaRectTransformScaler : MonoBehaviour
         );
     private void log_CurrentSafeArea(RectTransform rectTransform) =>
         // We can only pass up to 6 params to Actions created by LoggerMessage.Define().
-        // Methods with the [LoggerMessage] attr could take more, but that isn't available until MEL 6.0.0: https://learn.microsoft.com/en-us/dotnet/core/whats-new/dotnet-6#microsoftextensions-apis
+        // Methods with the [LoggerMessage] attr could have more params, but that isn't available until MEL 6.0.0: https://learn.microsoft.com/en-us/dotnet/core/whats-new/dotnet-6#microsoftextensions-apis
         // And we want to depend on the lowest MEL version possible.
         LOG_CURR_SAFE_AREA_ACTION(_logger!,
-            rectTransform.GetHierarchyNameWithType(),
+            $"{nameof(RectTransform)} '{rectTransform.GetHierarchyName()}'",
             $"({rectTransform.anchorMin}, {rectTransform.anchorMax})",
             $"({Screen.width} x {Screen.height})",
             $"({Screen.safeArea.width} x {Screen.safeArea.height})",
@@ -66,7 +63,7 @@ public class SafeAreaRectTransformScaler : MonoBehaviour
         LoggerMessage.Define<string, string>(Information, new EventId(id: 0, nameof(log_NewSafeArea)), "New anchors of {RectTransform}: {Anchors}");
     private void log_NewSafeArea(RectTransform rectTransform) =>
         LOG_NEW_SAFE_AREA_ACTION(_logger!,
-            rectTransform.GetHierarchyNameWithType(),
+            $"{nameof(RectTransform)} '{rectTransform.GetHierarchyName()}'",
             $"({rectTransform.anchorMin}, {rectTransform.anchorMax})",
             null
         );

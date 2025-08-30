@@ -1,9 +1,7 @@
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
 using UnityUtil.Triggers;
 using UnityUtil.Updating;
-using U = UnityEngine;
 
 namespace UnityUtil.Interactors;
 
@@ -58,8 +56,6 @@ public class LookAtInteractor : Updatable
         }
     }
 
-    [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Unity message")]
-    [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity message")]
     private void OnDrawGizmos()
     {
         if (DrawRay) {
@@ -74,11 +70,11 @@ public class LookAtInteractor : Updatable
         // Raycast for Colliders to look at
         RaycastHit[] hits = [];
         if (InteractWithAllInRange || MaxInteractions > 1) {
-            RaycastHit[] allHits = U.Physics.RaycastAll(transform.position, transform.forward, Range, InteractLayerMask);
+            RaycastHit[] allHits = Physics.RaycastAll(transform.position, transform.forward, Range, InteractLayerMask);
             hits = allHits;
         }
         else if (MaxInteractions == 1) {
-            bool somethingHit = U.Physics.Raycast(transform.position, transform.forward, out RaycastHit hit, Range, InteractLayerMask);
+            bool somethingHit = Physics.Raycast(transform.position, transform.forward, out RaycastHit hit, Range, InteractLayerMask);
             if (somethingHit)
                 hits = [hit];
         }
@@ -86,8 +82,7 @@ public class LookAtInteractor : Updatable
         // Store the ToggleTriggers associated with those Colliders
         _triggerBuffer.Clear();
         for (int h = 0; h < hits.Length; ++h) {
-            ToggleTrigger trigger = hits[h].collider.GetComponent<ToggleTrigger>();
-            if (trigger != null)
+            if (hits[h].collider.TryGetComponent(out ToggleTrigger trigger))
                 _triggerBuffer.Add(trigger);
         }
 

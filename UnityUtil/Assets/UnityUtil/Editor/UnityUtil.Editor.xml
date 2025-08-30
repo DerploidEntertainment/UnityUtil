@@ -14,6 +14,37 @@
                 Please see https://github.com/manuelroemer/IsExternalInit for more information.
             </remarks>
         </member>
+        <member name="T:UnityUtil.Editor.RemovedObjectsReport">
+            <summary>
+            Summarizes which objects with an attached <see cref="T:UnityUtil.RemoveFromBuild"/> component were removed and which were preserved.
+            </summary>
+        </member>
+        <member name="P:UnityUtil.Editor.RemovedObjectsReport.TargetResults">
+            <summary>
+            Each key is the hierarchy name of a <see cref="T:UnityEngine.GameObject"/> with an attached <see cref="T:UnityUtil.RemoveFromBuild"/> component
+            (see <see cref="M:UnityUtil.UnityObjectExtensions.GetHierarchyName(UnityEngine.GameObject,System.Int32,System.String)"/>).
+            Each value is a string describing whether the object and/or its children were removed or preserved.
+            </summary>
+        </member>
+        <member name="M:UnityUtil.Editor.BuildGameObjectRemover.RemoveGameObjectsFromScene(UnityEngine.SceneManagement.Scene,UnityEditor.BuildTarget)">
+            <summary>
+            Remove <see cref="T:UnityEngine.GameObject"/>s from the provided <paramref name="scene"/> for the provided <paramref name="buildTarget"/>.
+            </summary>
+            <param name="scene"></param>
+            <param name="buildTarget"></param>
+            <returns>
+            A <see cref="T:UnityUtil.Editor.RemovedObjectsReport"/> summarizing which objects were removed and which were preserved.
+            </returns>
+            <exception cref="T:System.InvalidOperationException">Could not convert <paramref name="buildTarget"/> to a <see cref="T:UnityEngine.RuntimePlatform"/>.</exception>
+        </member>
+        <member name="M:UnityUtil.Editor.BuildGameObjectRemover.RemoveGameObjectsFromScene(UnityEngine.SceneManagement.Scene,UnityEngine.RuntimePlatform)">
+            <summary>
+            Remove <see cref="T:UnityEngine.GameObject"/>s from the provided <paramref name="scene"/> on the provided <paramref name="platform"/>.
+            </summary>
+            <param name="scene"><inheritdoc cref="M:UnityUtil.Editor.BuildGameObjectRemover.RemoveGameObjectsFromScene(UnityEngine.SceneManagement.Scene,UnityEditor.BuildTarget)"/></param>
+            <param name="platform"></param>
+            <returns><inheritdoc cref="M:UnityUtil.Editor.BuildGameObjectRemover.RemoveGameObjectsFromScene(UnityEngine.SceneManagement.Scene,UnityEditor.BuildTarget)"/></returns>
+        </member>
         <member name="F:UnityUtil.Editor.DependencyInjectorMenu.LOGGER">
             <summary>
             Must be static to be used in menu commands in Unity Editor.
