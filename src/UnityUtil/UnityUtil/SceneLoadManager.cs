@@ -8,6 +8,9 @@ namespace UnityUtil;
 public class SceneLoadManager : ScriptableObject, ISceneLoadManager
 {
     [Button]
+    public void SetActiveScene(string sceneName) => SceneManager.SetActiveScene(SceneManager.GetSceneByName(sceneName));
+
+    [Button]
     public void LoadSingleScene(string sceneName) => SceneManager.LoadScene(sceneName, LoadSceneMode.Single);
 
     [Button]
