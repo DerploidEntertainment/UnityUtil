@@ -278,15 +278,21 @@ You _could_ include them in the values of log properties, but that would most li
 ### Thread safety
 
 This sink uses Unity's `Debug.unityLogger` by default, which is thread-safe.
-You can thus emit log events (i.e., make calls to `logger.Information()` and related methods) from any thread without synchronization.
+You can thus emit log events (i.e., call `logger.Information()` and related methods) from any thread without synchronization.
 
-However, if you use a [custom `ILogger` instance](#custom-unity-logger), then _you_ are responsible for its thread safety.
-That _may_ mean that:
+However, _you_ are responsible for thread safety in the following cases:
+
+- You use a [custom `UnityEngine.ILogger` instance](#custom-unity-logger)
+- Your sink relies on other Serilog objects (enrichers, formatters, etc.) that are not thread-safe.
+    For example, you might have an enricher that adds values from the Unity runtime, like the current frame or scene time,
+    which can only be accessed from the Unity main thread.
+
+These cases _may_ mean that:
 
 - You can only emit log events from the Unity main thread,
 - You must synchronize with the main thread before logging,
     (e.g., with a call to [`Awaitable.MainThreadAsync()`](https://docs.unity3d.com/ScriptReference/Awaitable.MainThreadAsync.html) on Unity 6+),
-- Or, your `ILogger` implementation must internally synchronize with the main thread
+- Or, your `UnityEngine.ILogger` implementation must internally synchronize with the main thread
     (e.g., with a library like [UnityMainThreadDispatcher](https://github.com/PimDeWitte/UnityMainThreadDispatcher) or [UniTask](https://github.com/Cysharp/UniTask)).
 
 ## Legal
