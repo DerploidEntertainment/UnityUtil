@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using Microsoft.Extensions.Logging;
 using UnityEditor;
+using UnityEditor.Build.Reporting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using static Microsoft.Extensions.Logging.LogLevel;
@@ -42,34 +43,35 @@ public class BuildGameObjectRemover(ILoggerFactory loggerFactory)
     private readonly ILogger<BuildGameObjectRemover> _logger = loggerFactory.CreateLogger<BuildGameObjectRemover>();
 
     /// <summary>
-    /// Remove <see cref="GameObject"/>s from the provided <paramref name="scene"/> for the provided <paramref name="buildTarget"/>.
+    /// Remove <see cref="GameObject"/>s from the provided <paramref name="scene"/> for the provided <paramref name="buildReport"/>.
     /// </summary>
     /// <param name="scene"></param>
-    /// <param name="buildTarget"></param>
+    /// <param name="buildReport"></param>
     /// <returns>
     /// A <see cref="RemovedObjectsReport"/> summarizing which objects were removed and which were preserved.
     /// </returns>
-    /// <exception cref="InvalidOperationException">Could not convert <paramref name="buildTarget"/> to a <see cref="RuntimePlatform"/>.</exception>
-    public RemovedObjectsReport RemoveGameObjectsFromScene(Scene scene, BuildTarget buildTarget)
+    /// <exception cref="InvalidOperationException">Could not convert <paramref name="buildReport"/>'s <see cref="BuildTarget"/> to a <see cref="RuntimePlatform"/>.</exception>
+    public RemovedObjectsReport RemoveGameObjectsFromScene(Scene scene, BuildReport buildReport)
     {
-        RuntimePlatform platform = (RuntimePlatform?)TRY_CONVERT_TO_RUNTIME_PLATFORM.Value.Invoke(obj: null, parameters: [buildTarget])    // Static method invoke
-            ?? throw new InvalidOperationException($"Could not convert {nameof(BuildTarget)} '{buildTarget}' to a {nameof(RuntimePlatform)}");
-        return RemoveGameObjectsFromScene(scene, platform);
+        BuildContext buildContext = buildReport.summary.options.HasFlag(BuildOptions.Development)
+            ? BuildContext.DevelopmentBuild
+            : BuildContext.NonDevelopmentBuild;
+
+        RuntimePlatform platform = (RuntimePlatform?)TRY_CONVERT_TO_RUNTIME_PLATFORM.Value.Invoke(obj: null, parameters: [buildReport.summary.platform])    // Static method invoke
+            ?? throw new InvalidOperationException($"Could not convert {nameof(BuildTarget)} '{buildReport.summary.platform}' to a {nameof(RuntimePlatform)}");
+
+        return RemoveGameObjectsFromScene(scene, platform, buildContext);
     }
 
     /// <summary>
     /// Remove <see cref="GameObject"/>s from the provided <paramref name="scene"/> on the provided <paramref name="platform"/>.
     /// </summary>
-    /// <param name="scene"><inheritdoc cref="RemoveGameObjectsFromScene(Scene, BuildTarget)"/></param>
-    /// <param name="platform"></param>
-    /// <returns><inheritdoc cref="RemoveGameObjectsFromScene(Scene, BuildTarget)"/></returns>
-    public RemovedObjectsReport RemoveGameObjectsFromScene(Scene scene, RuntimePlatform platform)
+    /// <param name="scene"><inheritdoc cref="RemoveGameObjectsFromScene(Scene, BuildReport)" path="/param[@name='scene']"/></param>
+    /// <param name="platform">Platform for which a player is being built, or that is currently running in Play Mode.</param>
+    /// <param name="buildContext"></param>
+    /// <returns><inheritdoc cref="RemoveGameObjectsFromScene(Scene, BuildReport)"/></returns>
+    public RemovedObjectsReport RemoveGameObjectsFromScene(Scene scene, RuntimePlatform platform, BuildContext buildContext)
     {
-        BuildContext buildContext =
-            (Application.isEditor && Application.isPlaying) ? BuildContext.PlayMode
-            : EditorUserBuildSettings.development ? BuildContext.DevelopmentBuild
-            : BuildContext.NonDevelopmentBuild;
-
         Dictionary<string, string> targetResults = [];
         RemoveFromBuild[] removeTargets = [..
             scene.GetRootGameObjects()

@@ -26,24 +26,25 @@
             Each value is a string describing whether the object and/or its children were removed or preserved.
             </summary>
         </member>
-        <member name="M:UnityUtil.Editor.BuildGameObjectRemover.RemoveGameObjectsFromScene(UnityEngine.SceneManagement.Scene,UnityEditor.BuildTarget)">
+        <member name="M:UnityUtil.Editor.BuildGameObjectRemover.RemoveGameObjectsFromScene(UnityEngine.SceneManagement.Scene,UnityEditor.Build.Reporting.BuildReport)">
             <summary>
-            Remove <see cref="T:UnityEngine.GameObject"/>s from the provided <paramref name="scene"/> for the provided <paramref name="buildTarget"/>.
+            Remove <see cref="T:UnityEngine.GameObject"/>s from the provided <paramref name="scene"/> for the provided <paramref name="buildReport"/>.
             </summary>
             <param name="scene"></param>
-            <param name="buildTarget"></param>
+            <param name="buildReport"></param>
             <returns>
             A <see cref="T:UnityUtil.Editor.RemovedObjectsReport"/> summarizing which objects were removed and which were preserved.
             </returns>
-            <exception cref="T:System.InvalidOperationException">Could not convert <paramref name="buildTarget"/> to a <see cref="T:UnityEngine.RuntimePlatform"/>.</exception>
+            <exception cref="T:System.InvalidOperationException">Could not convert <paramref name="buildReport"/>'s <see cref="T:UnityEditor.BuildTarget"/> to a <see cref="T:UnityEngine.RuntimePlatform"/>.</exception>
         </member>
-        <member name="M:UnityUtil.Editor.BuildGameObjectRemover.RemoveGameObjectsFromScene(UnityEngine.SceneManagement.Scene,UnityEngine.RuntimePlatform)">
+        <member name="M:UnityUtil.Editor.BuildGameObjectRemover.RemoveGameObjectsFromScene(UnityEngine.SceneManagement.Scene,UnityEngine.RuntimePlatform,UnityUtil.BuildContext)">
             <summary>
             Remove <see cref="T:UnityEngine.GameObject"/>s from the provided <paramref name="scene"/> on the provided <paramref name="platform"/>.
             </summary>
-            <param name="scene"><inheritdoc cref="M:UnityUtil.Editor.BuildGameObjectRemover.RemoveGameObjectsFromScene(UnityEngine.SceneManagement.Scene,UnityEditor.BuildTarget)"/></param>
-            <param name="platform"></param>
-            <returns><inheritdoc cref="M:UnityUtil.Editor.BuildGameObjectRemover.RemoveGameObjectsFromScene(UnityEngine.SceneManagement.Scene,UnityEditor.BuildTarget)"/></returns>
+            <param name="scene"><inheritdoc cref="M:UnityUtil.Editor.BuildGameObjectRemover.RemoveGameObjectsFromScene(UnityEngine.SceneManagement.Scene,UnityEditor.Build.Reporting.BuildReport)" path="/param[@name='scene']"/></param>
+            <param name="platform">Platform for which a player is being built, or that is currently running in Play Mode.</param>
+            <param name="buildContext"></param>
+            <returns><inheritdoc cref="M:UnityUtil.Editor.BuildGameObjectRemover.RemoveGameObjectsFromScene(UnityEngine.SceneManagement.Scene,UnityEditor.Build.Reporting.BuildReport)"/></returns>
         </member>
         <member name="F:UnityUtil.Editor.DependencyInjectorMenu.LOGGER">
             <summary>
