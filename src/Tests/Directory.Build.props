@@ -5,7 +5,6 @@
   <Import Project="..\Logging.props"/>
 
   <PropertyGroup>
-    <NunitAssembly>com.unity.ext.nunit\net40\unity-custom\nunit.framework.dll</NunitAssembly>
     <TestingProjectName>$(MSBuildProjectName.Substring(0, $(MSBuildProjectName.IndexOf(`.Tests`))))</TestingProjectName>
     <TestingUtilProjectName>UnityUtil.Tests.Util</TestingUtilProjectName>
     <TestingProjectPath Condition="'$(MSBuildProjectName.SubString(0, 10))'=='UnityUtil.'">..\..\..\$(SolutionName)\$(TestingProjectName)\$(TestingProjectName).csproj</TestingProjectPath>
