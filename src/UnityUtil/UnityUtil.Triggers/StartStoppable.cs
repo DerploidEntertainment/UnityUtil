@@ -7,7 +7,7 @@ namespace UnityUtil.Triggers;
 public enum EnableDisableBehavior
 {
     PauseResume,
-    StopRestart,
+    StopRestartIfRunning,
     StopRestartAlways,
 }
 
@@ -17,15 +17,18 @@ public abstract class StartStoppable : Updatable
     private bool _wasRunningB4Disable;
 
     [Tooltip(
-        "What should happen when this component is enabled/disabled? " +
-        $"{nameof(EnableDisableBehavior.PauseResume)} will pause/resume it, if it was running. " +
-        $"{nameof(EnableDisableBehavior.StopRestart)} will stop/restart it, if it was running. " +
-        $"{nameof(EnableDisableBehavior.StopRestartAlways)} will stop/restart it, restarting it even if it was not previously running. " +
-        $"In all cases, the first OnEnable is still controlled by {nameof(StartAutomatically)}."
+        "What should happen when this component is enabled/disabled?" +
+        $"\n" +
+        $"\n- {nameof(EnableDisableBehavior.PauseResume)} will pause/resume it, if it was running. " +
+        $"\n- {nameof(EnableDisableBehavior.StopRestartIfRunning)} will stop/restart it, if it was running. " +
+        $"\n- {nameof(EnableDisableBehavior.StopRestartAlways)} will stop/restart it, restarting it even if it was not previously running. " +
+        $"\n" +
+        $"\nIn all cases, the behavior of the first OnEnable() call is still controlled by {nameof(StartOnFirstOnEnable)}."
     )]
     public EnableDisableBehavior EnableDisableBehavior = EnableDisableBehavior.PauseResume;
-    [Tooltip("Should the repeater start automatically when this GameObject is enabled/started for the first time?")]
-    public bool StartAutomatically = false;
+    [Tooltip("Should this component start automatically during its first OnEnable() call?")]
+    [LabelText("Start on First OnEnable")]
+    public bool StartOnFirstOnEnable = false;
 
     protected override void OnEnable()
     {
@@ -34,7 +37,7 @@ public abstract class StartStoppable : Updatable
         // If the GameObject is starting (i.e., this is the first-ever call to OnEnable)...
         if (_starting) {
             _starting = false;
-            if (StartAutomatically)
+            if (StartOnFirstOnEnable)
                 DoRestart();
         }
 
@@ -46,7 +49,7 @@ public abstract class StartStoppable : Updatable
                         DoResume();
                     break;
 
-                case EnableDisableBehavior.StopRestart:
+                case EnableDisableBehavior.StopRestartIfRunning:
                     if (_wasRunningB4Disable)
                         DoRestart();
                     break;
@@ -60,6 +63,7 @@ public abstract class StartStoppable : Updatable
             }
         }
     }
+
     protected override void OnDisable()
     {
         base.OnDisable();
@@ -71,7 +75,7 @@ public abstract class StartStoppable : Updatable
                 DoPause();
                 break;
 
-            case EnableDisableBehavior.StopRestart:
+            case EnableDisableBehavior.StopRestartIfRunning:
             case EnableDisableBehavior.StopRestartAlways:
                 DoStop();
                 break;
