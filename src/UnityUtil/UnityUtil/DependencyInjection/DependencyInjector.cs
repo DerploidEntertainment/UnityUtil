@@ -430,6 +430,8 @@ public class DependencyInjector : IDisposable
             // TODO: dispose services that implement IDisposable here
         }
 
+        log_Disposing();
+
         // Clear collections (since we can't set these readonly fields to null)
         _services.Clear();
         _injectedTypes.Clear();
@@ -505,13 +507,13 @@ public class DependencyInjector : IDisposable
         LOG_RESOLVED_METHOD_SERVICE_PARAM_ACTION(_logger!, clientName, parameter.ParameterType, tag, parameter.Name, null);
 
 
-    private static readonly Action<MEL.ILogger, string, Exception?> LOG_UNREGISTER_ALREADY_DISPOSED =
+    private static readonly Action<MEL.ILogger, string, Exception?> LOG_UNREGISTER_ALREADY_DISPOSED_ACTION =
         LoggerMessage.Define<string>(Information,
             new EventId(id: 0, nameof(log_UnregisterAlreadyDisposed)),
             "Request to unregister services from scene '{Scene}', but all services were already unregistered during Dispose(). Early exiting..."
         );
     private void log_UnregisterAlreadyDisposed(Scene scene) =>
-        LOG_UNREGISTER_ALREADY_DISPOSED(_logger!, scene.name, null);
+        LOG_UNREGISTER_ALREADY_DISPOSED_ACTION(_logger!, scene.name, null);
 
 
     private static readonly Action<MEL.ILogger, string, Exception?> LOG_UNREGISTER_MISSING_SCENE_SERVICE_ACTION =
@@ -530,6 +532,14 @@ public class DependencyInjector : IDisposable
         );
     private void log_MethodHasMultipleDependenciesOfType(string clientName, Type serviceType, string tag) =>
         LOG_METHOD_HAS_MULTIPLE_DEPS_OF_TYPE_ACTION(_logger!, clientName, serviceType, tag, null);
+
+
+    private static readonly Action<MEL.ILogger, Exception?> LOG_METHOD_DISPOSING =
+        LoggerMessage.Define(Information,
+            new EventId(id: 0, nameof(log_Disposing)),
+            "Clearing all cached resolution data and unregistering all services during Dispose()..."
+        );
+    private void log_Disposing() => LOG_METHOD_DISPOSING(_logger!, null);
 
     #endregion
 }
