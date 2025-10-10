@@ -72,11 +72,11 @@ public class DependencyInjector : IDisposable
 
         Initialized = true;
     }
-    private void throwIfInvalidState(string methodName)
+    private void throwIfInvalidState(string methodName, bool throwIfDisposed = true, bool throwIfUninitialized = true)
     {
-        if (Disposed)
+        if (throwIfDisposed && Disposed)
             throw new InvalidOperationException($"Cannot call {methodName}() on a disposed {nameof(DependencyInjector)}");
-        if (!Initialized)
+        if (throwIfUninitialized && !Initialized)
             throw new InvalidOperationException($"Must call {nameof(Initialize)}() on a {nameof(DependencyInjector)} before calling {methodName}()");
     }
 
@@ -351,7 +351,11 @@ public class DependencyInjector : IDisposable
 
     public void UnregisterSceneServices(Scene scene)
     {
-        throwIfInvalidState(nameof(UnregisterSceneServices));
+        throwIfInvalidState(nameof(UnregisterSceneServices), throwIfDisposed: false);
+        if (Disposed) {
+            log_UnregisterAlreadyDisposed(scene);
+            return;
+        }
 
         if (!_services.TryGetValue(scene.handle, out Dictionary<Type, Dictionary<string, Service>>? sceneServices)) {
             log_UnregisterMissingSceneService(scene);
@@ -499,6 +503,15 @@ public class DependencyInjector : IDisposable
         );
     private void log_ResolvedMethodServiceParameter(string clientName, string tag, ParameterInfo parameter) =>
         LOG_RESOLVED_METHOD_SERVICE_PARAM_ACTION(_logger!, clientName, parameter.ParameterType, tag, parameter.Name, null);
+
+
+    private static readonly Action<MEL.ILogger, string, Exception?> LOG_UNREGISTER_ALREADY_DISPOSED =
+        LoggerMessage.Define<string>(Information,
+            new EventId(id: 0, nameof(log_UnregisterAlreadyDisposed)),
+            "Request to unregister services from scene '{Scene}', but all services were already unregistered during Dispose(). Early exiting..."
+        );
+    private void log_UnregisterAlreadyDisposed(Scene scene) =>
+        LOG_UNREGISTER_ALREADY_DISPOSED(_logger!, scene.name, null);
 
 
     private static readonly Action<MEL.ILogger, string, Exception?> LOG_UNREGISTER_MISSING_SCENE_SERVICE_ACTION =
