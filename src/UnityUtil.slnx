@@ -1,0 +1,54 @@
+<Solution>
+  <Folder Name="/Logging/">
+    <File Path="Logging/Directory.Build.props" />
+    <Project Path="Logging/Serilog.Enrichers.Unity/Serilog.Enrichers.Unity.csproj" />
+    <Project Path="Logging/Serilog.Sinks.Unity/Serilog.Sinks.Unity.csproj" />
+    <Project Path="Logging/Unity.Extensions.Logging/Unity.Extensions.Logging.csproj" />
+    <Project Path="Logging/Unity.Extensions.Serilog/Unity.Extensions.Serilog.csproj" />
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path="../.gitattributes" />
+    <File Path="../.gitignore" />
+    <File Path="../LICENSE.md" />
+    <File Path="../README.md" />
+    <File Path="../UnityUtil/Packages/manifest.json" />
+    <File Path="../UnityUtil/Packages/packages-lock.json" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Build.targets" />
+    <File Path="Logging.props" />
+  </Folder>
+  <Folder Name="/Tests/">
+    <File Path="Tests/Directory.Build.props" />
+    <Project Path="Tests/UnityUtil.Tests.Util/UnityUtil.Tests.Util.csproj" />
+  </Folder>
+  <Folder Name="/Tests/Editor/">
+    <File Path="Tests/Editor/Directory.Build.props" />
+    <Project Path="Tests/Editor/Serilog.Enrichers.Unity.Tests.Editor/Serilog.Enrichers.Unity.Tests.Editor.csproj" />
+    <Project Path="Tests/Editor/Serilog.Sinks.Unity.Tests.Editor/Serilog.Sinks.Unity.Tests.Editor.csproj" />
+    <Project Path="Tests/Editor/Unity.Extensions.Logging.Tests.Editor/Unity.Extensions.Logging.Tests.Editor.csproj" />
+    <Project Path="Tests/Editor/UnityUtil.Editor.Tests.Editor/UnityUtil.Editor.Tests.Editor.csproj" />
+    <Project Path="Tests/Editor/UnityUtil.Legal.Tests.Editor/UnityUtil.Legal.Tests.Editor.csproj" />
+    <Project Path="Tests/Editor/UnityUtil.Tests.Editor/UnityUtil.Tests.Editor.csproj" />
+    <Project Path="Tests/Editor/UnityUtil.Triggers.Tests.Editor/UnityUtil.Triggers.Tests.Editor.csproj" />
+    <Project Path="Tests/Editor/UnityUtil.UI.Tests.Editor/UnityUtil.UI.Tests.Editor.csproj" />
+  </Folder>
+  <Folder Name="/Tests/Runtime/">
+    <File Path="Tests/Runtime/Directory.Build.props" />
+    <Project Path="Tests/Runtime/UnityUtil.Triggers.Tests.Runtime/UnityUtil.Triggers.Tests.Runtime.csproj" />
+  </Folder>
+  <Folder Name="/UnityUtil/">
+    <File Path="UnityUtil/Directory.Build.props" />
+    <Project Path="UnityUtil/UnityUtil.Configuration.RemoteConfig/UnityUtil.Configuration.RemoteConfig.csproj" />
+    <Project Path="UnityUtil/UnityUtil.Editor/UnityUtil.Editor.csproj" />
+    <Project Path="UnityUtil/UnityUtil.Inputs/UnityUtil.Inputs.csproj" />
+    <Project Path="UnityUtil/UnityUtil.Interactors/UnityUtil.Interactors.csproj" />
+    <Project Path="UnityUtil/UnityUtil.Inventory/UnityUtil.Inventory.csproj" />
+    <Project Path="UnityUtil/UnityUtil.Legal/UnityUtil.Legal.csproj" />
+    <Project Path="UnityUtil/UnityUtil.Movement/UnityUtil.Movement.csproj" />
+    <Project Path="UnityUtil/UnityUtil.Physics/UnityUtil.Physics.csproj" />
+    <Project Path="UnityUtil/UnityUtil.Physics2D/UnityUtil.Physics2D.csproj" />
+    <Project Path="UnityUtil/UnityUtil.Triggers/UnityUtil.Triggers.csproj" />
+    <Project Path="UnityUtil/UnityUtil.UI/UnityUtil.UI.csproj" />
+    <Project Path="UnityUtil/UnityUtil/UnityUtil.csproj" />
+  </Folder>
+</Solution>

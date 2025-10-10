@@ -2,11 +2,11 @@
 
   <ItemGroup>
     <Reference Include="$(UnityModulesPath)\UnityEngine.CoreModule.dll" Private="false" />
-    <Reference Include="$(UnityPackageCachePath)\org.nuget.serilog\lib\netstandard2.0\Serilog.dll" Private="false" />
+    <Reference Include="$(UnityPackageCachePath)\org.nuget.serilog*\lib\netstandard2.0\Serilog.dll" Private="false" />
     <PackageReference Include="SerilogAnalyzer" />
 
-    <Reference Include="$(UnityPackageCachePath)\org.nuget.serilog.extensions.logging\lib\netstandard2.0\Serilog.Extensions.Logging.dll" Private="false" />
-    <Reference Include="$(UnityPackageCachePath)\org.nuget.microsoft.extensions.logging\Microsoft.Extensions.Logging.dll" Private="false" />
+    <Reference Include="$(UnityPackageCachePath)\org.nuget.serilog.extensions.logging*\lib\netstandard2.0\Serilog.Extensions.Logging.dll" Private="false" />
+    <Reference Include="$(UnityPackageCachePath)\org.nuget.microsoft.extensions.logging*\Microsoft.Extensions.Logging.dll" Private="false" />
 
     <Reference Include="$(SirenixAssembliesPath)\Sirenix.OdinInspector.Attributes.dll" Private="false"/>
 

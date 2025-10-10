@@ -5,7 +5,6 @@
   <Import Project="..\Logging.props"/>
 
   <PropertyGroup>
-    <NunitAssembly>com.unity.ext.nunit\net40\unity-custom\nunit.framework.dll</NunitAssembly>
     <TestingProjectName>$(MSBuildProjectName.Substring(0, $(MSBuildProjectName.IndexOf(`.Tests`))))</TestingProjectName>
     <TestingUtilProjectName>UnityUtil.Tests.Util</TestingUtilProjectName>
     <TestingProjectPath Condition="'$(MSBuildProjectName.SubString(0, 10))'=='UnityUtil.'">..\..\..\$(SolutionName)\$(TestingProjectName)\$(TestingProjectName).csproj</TestingProjectPath>
@@ -17,7 +16,7 @@
     <Reference Include="$(NunitPath)" Private="false" />
     <PackageReference Include="NUnit.Analyzers" />
     <Reference Include="$(UnityScriptAssembliesPath)\UnityEngine.TestRunner.dll" Private="false" />
-    <Reference Include="$(UnityPackageCachePath)\org.nuget.moq\$(TargetFramework)\Moq.dll" Private="false" />
+    <Reference Include="$(UnityPackageCachePath)\org.nuget.moq*\$(TargetFramework)\Moq.dll" Private="false" />
 
     <ProjectReference Condition="'$(MSBuildProjectName)'!='$(TestingUtilProjectName)'" Include="$(TestingProjectPath)" />
     <ProjectReference Condition="'$(MSBuildProjectName)'!='$(TestingUtilProjectName)'" Include="..\..\$(TestingUtilProjectName)\$(TestingUtilProjectName).csproj" />
