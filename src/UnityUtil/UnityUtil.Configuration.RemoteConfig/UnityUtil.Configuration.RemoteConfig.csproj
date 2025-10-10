@@ -1,8 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <Reference Include="$(UnityPackageCachePath)\org.nuget.microsoft.extensions.configuration\lib\netstandard2.0\Microsoft.Extensions.Configuration.dll" Private="false" />
-    <Reference Include="$(UnityPackageCachePath)\org.nuget.microsoft.extensions.configuration.abstractions\lib\netstandard2.0\Microsoft.Extensions.Configuration.Abstractions.dll" Private="false" />
+    <Reference Include="$(UnityPackageCachePath)\org.nuget.microsoft.extensions.configuration*\lib\netstandard2.0\Microsoft.Extensions.Configuration.dll" Private="false" />
+    <Reference Include="$(UnityPackageCachePath)\org.nuget.microsoft.extensions.configuration.abstractions*\lib\netstandard2.0\Microsoft.Extensions.Configuration.Abstractions.dll" Private="false" />
     <Reference Include="$(UnityScriptAssembliesPath)\Unity.Services.Core.dll" Private="false" />
     <Reference Include="$(UnityScriptAssembliesPath)\Unity.Services.Core.Environments.dll" Private="false" />
     <Reference Include="$(UnityScriptAssembliesPath)\Unity.Services.Authentication.dll" Private="false" />

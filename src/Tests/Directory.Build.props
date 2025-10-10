@@ -17,7 +17,7 @@
     <Reference Include="$(NunitPath)" Private="false" />
     <PackageReference Include="NUnit.Analyzers" />
     <Reference Include="$(UnityScriptAssembliesPath)\UnityEngine.TestRunner.dll" Private="false" />
-    <Reference Include="$(UnityPackageCachePath)\org.nuget.moq\$(TargetFramework)\Moq.dll" Private="false" />
+    <Reference Include="$(UnityPackageCachePath)\org.nuget.moq*\$(TargetFramework)\Moq.dll" Private="false" />
 
     <ProjectReference Condition="'$(MSBuildProjectName)'!='$(TestingUtilProjectName)'" Include="$(TestingProjectPath)" />
     <ProjectReference Condition="'$(MSBuildProjectName)'!='$(TestingUtilProjectName)'" Include="..\..\$(TestingUtilProjectName)\$(TestingUtilProjectName).csproj" />

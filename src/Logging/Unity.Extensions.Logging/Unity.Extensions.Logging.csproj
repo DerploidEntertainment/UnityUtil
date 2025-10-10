@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <Reference Include="$(UnityPackageCachePath)\org.nuget.microsoft.extensions.logging\Microsoft.Extensions.Logging.dll" Private="false" />
-    <Reference Include="$(UnityPackageCachePath)\org.nuget.microsoft.extensions.logging.abstractions\Microsoft.Extensions.Logging.Abstractions.dll" Private="false" />
+    <Reference Include="$(UnityPackageCachePath)\org.nuget.microsoft.extensions.logging*\Microsoft.Extensions.Logging.dll" Private="false" />
+    <Reference Include="$(UnityPackageCachePath)\org.nuget.microsoft.extensions.logging.abstractions*\Microsoft.Extensions.Logging.Abstractions.dll" Private="false" />
 
     <Reference Include="$(UnityModulesPath)\UnityEngine.CoreModule.dll" Private="false" />
   </ItemGroup>
