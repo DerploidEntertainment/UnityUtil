@@ -426,11 +426,12 @@ public class DependencyInjector : IDisposable
         if (Disposed)
             return;
 
-        if (disposing) {
-            // TODO: dispose services that implement IDisposable here
-        }
+        //if (disposing) {
+        //    // TODO: dispose services that implement IDisposable here
+        //}
 
-        log_Disposing();
+        if (_logger is not null)    // Null if Dispose() called before initializing
+            log_Disposing();
 
         // Clear collections (since we can't set these readonly fields to null)
         _services.Clear();
