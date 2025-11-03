@@ -15,7 +15,6 @@
     "org.nuget.microsoft.extensions.logging.abstractions": "2.0.0",
     "org.nuget.microsoft.extensions.options": "2.0.0",
     "org.nuget.moq": "4.20.72",
-    "org.nuget.serilog": "2.8.0",
     "org.nuget.serilog.extensions.logging": "2.0.0",
     "com.unity.modules.accessibility": "1.0.0",
     "com.unity.modules.ai": "1.0.0",

@@ -250,7 +250,7 @@
     },
     "org.nuget.serilog": {
       "version": "2.8.0",
-      "depth": 0,
+      "depth": 1,
       "source": "registry",
       "dependencies": {},
       "url": "https://unitynuget-registry.openupm.com"
