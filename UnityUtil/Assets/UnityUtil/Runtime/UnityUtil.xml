@@ -207,6 +207,11 @@
             Tag to disambiguate services of the same <see cref="F:UnityUtil.DependencyInjection.Service.ServiceType"/>.
             </summary>
         </member>
+        <member name="T:UnityUtil.DontDestroyOnLoad">
+            <summary>
+            Do not destroy the attached GameObject when loading a new scene.
+            </summary>
+        </member>
         <member name="T:UnityUtil.Environments">
             <summary>
             Commonly used environment names.
@@ -363,6 +368,17 @@
             Gets or sets the name of the environment.
             This property must be set to the value of the "environment" key in configuration at boot time.
             </summary>
+        </member>
+        <member name="T:UnityUtil.IApplicationQuitter">
+            <summary>
+            Provides methods for quitting the entire application.
+            </summary>
+        </member>
+        <member name="M:UnityUtil.IApplicationQuitter.Quit(System.Int32)">
+            <summary>
+            Quits the application with the specified exit code.
+            </summary>
+            <param name="exitCode"></param>
         </member>
         <member name="T:UnityUtil.IRuntimeIdProvider">
             <summary>
