@@ -19,7 +19,6 @@
 
   <!-- Set paths to Unity project assemblies -->
   <PropertyGroup>
-    <UnityProjectPath>$(SolutionDir)..\$(SolutionName)</UnityProjectPath>
     <SirenixAssembliesDir>Assets\Plugins\Sirenix\Assemblies</SirenixAssembliesDir>
     <SirenixAssembliesPath>$(UnityProjectPath)\$(SirenixAssembliesDir)</SirenixAssembliesPath>
   </PropertyGroup>
