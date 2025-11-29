@@ -47,7 +47,7 @@ public class MaxRepeatsRandomishOptionChooser : IRandomishOptionChooser
         float sum = 0f;
         for (int x = 0; x < _config.OptionProbabilities.Count; ++x) {
             float weight = _config.OptionProbabilities[x];
-            if (weight < 0f || weight > 1f)
+            if (weight is < 0f or > 1f)
                 throw new InvalidOperationException($"All {nameof(_config.OptionProbabilities)} must be between 0 and 1, inclusive. Index {x} was {weight}.");
             sum += weight;
         }
@@ -110,7 +110,7 @@ public class MaxRepeatsRandomishOptionChooser : IRandomishOptionChooser
         int index = -1;
         float sum = 0f;
         for (int x = 0; x < _config.OptionProbabilities.Count; ++x) {
-            sum += (OptionRepeats[x] < _config.MaxRepeats ? _config.OptionProbabilities[x] : 0f);
+            sum += OptionRepeats[x] < _config.MaxRepeats ? _config.OptionProbabilities[x] : 0f;
             if (index == -1 && sum > val)
                 index = x;
         }

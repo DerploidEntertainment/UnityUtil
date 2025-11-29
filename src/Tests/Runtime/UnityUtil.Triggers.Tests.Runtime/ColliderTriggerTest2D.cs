@@ -1,4 +1,5 @@
-﻿using System.Collections;
+using System.Collections;
+using System.Diagnostics.CodeAnalysis;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.Events;
@@ -7,6 +8,7 @@ using UnityUtil.Triggers;
 
 namespace UnityUtil.Tests;
 
+[SuppressMessage("Performance", "UNT0038:WaitForSeconds caching ", Justification = "Pointless to cache all the different instances for these tests")]
 public class ColliderTriggerTest2D : BasePlayModeTestFixture
 {
     [UnityTest]
@@ -247,7 +249,7 @@ public class ColliderTriggerTest2D : BasePlayModeTestFixture
 
         Collider2D collider = obj.AddComponent<CircleCollider2D>();
         if (hasRigidbody)
-            obj.AddComponent<Rigidbody2D>();
+            _ = obj.AddComponent<Rigidbody2D>();
 
         return collider;
     }

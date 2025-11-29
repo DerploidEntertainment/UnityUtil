@@ -60,7 +60,7 @@ public class AmmoTool : Updatable
             throw new InvalidOperationException($"{nameof(AmmoTool)} '{this.GetHierarchyName()}' was started with {nameof(Info.StartingAmmo)} ammo but it can only store a max of {Info.MaxClipAmmo} * ({Info.MaxClipAmmo * (Info.MaxBackupClips + 1)}!");
 
         // Initialize ammo
-        doLoad(Info.StartingAmmo);
+        _ = doLoad(Info.StartingAmmo);
 
         // Register Tool events
         _tool = GetComponent<Tool>();

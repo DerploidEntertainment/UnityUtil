@@ -13,7 +13,7 @@ public static class TransformExtensions
             ++genCount;
             pTrans = transform.parent;
         } while (pTrans != parent && pTrans != null && genCount < generationLimit);
-        return pTrans = parent;
+        return parent;
     }
 
 }

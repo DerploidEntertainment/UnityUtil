@@ -7,7 +7,6 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using static Microsoft.Extensions.Logging.LogLevel;
 using MEL = Microsoft.Extensions.Logging;
-using U = UnityEngine;
 
 namespace UnityUtil.DependencyInjection;
 
@@ -29,7 +28,7 @@ public class DependencyInjector : IDisposable
     private const int DEFAULT_SCENE_HANDLE = -1;
 
     public static readonly DependencyInjector Instance = new(cachedResolutionTypes: []) {
-        RecordingResolutions = U.Device.Application.isEditor
+        RecordingResolutions = UnityEngine.Device.Application.isEditor
     };
 
     public ILoggerFactory? LoggerFactory { get; private set; }
@@ -313,7 +312,7 @@ public class DependencyInjector : IDisposable
 
             string clientName =
                 client is Component clientComponent ? clientComponent.GetHierarchyName()
-                : client is U.Object clientObject ? clientObject.name
+                : client is UnityEngine.Object clientObject ? clientObject.name
                 : $"{injectMethod.DeclaringType.FullName} instance";
 
             object[] dependencies = getDependeciesOfMethod(clientName, injectMethod);

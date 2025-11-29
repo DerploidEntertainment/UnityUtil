@@ -4,7 +4,7 @@ namespace UnityUtil.Editor;
 
 public static class BuildTimeData
 {
-    private readonly static Dictionary<string, object> DATA = [];
+    private static readonly Dictionary<string, object> DATA = [];
 
     public static bool IsAutoBuild { get; set; }
     public static IReadOnlyDictionary<string, object> All => DATA;

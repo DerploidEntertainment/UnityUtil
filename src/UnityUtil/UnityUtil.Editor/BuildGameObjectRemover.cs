@@ -8,7 +8,6 @@ using UnityEditor.Build.Reporting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using static Microsoft.Extensions.Logging.LogLevel;
-using Application = UnityEngine.Device.Application;
 using MEL = Microsoft.Extensions.Logging;
 using UE = UnityEngine;
 
