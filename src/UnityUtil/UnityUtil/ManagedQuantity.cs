@@ -80,7 +80,7 @@ public class ManagedQuantity : MonoBehaviour
         }
 
         // Return the amount that was leftover after performing the change
-        float leftOver = Mathf.Abs((old + change) - Value);
+        float leftOver = Mathf.Abs(old + change - Value);
         return leftOver;
     }
 

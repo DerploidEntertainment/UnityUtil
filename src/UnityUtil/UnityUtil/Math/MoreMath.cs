@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using U = UnityEngine;
 
 namespace UnityUtil.Math;
 
@@ -43,7 +42,7 @@ public static class MoreMath
         float sum = 0f;
         for (int x = 0; x < indexWeights.Count; ++x) {
             float weight = indexWeights[x];
-            if (weight < 0f || weight > 1f)
+            if (weight is < 0f or > 1f)
                 throw new InvalidOperationException($"All {nameof(indexWeights)} must be >= 0 and <= 1. Index {x} was {weight}.");
 
             sum += weight;
@@ -97,7 +96,7 @@ public static class MoreMath
     /// <returns>A random unit vector within a cone of the provided half-angle around the provided <see cref="Transform"/>'s forward vector (uniformly distributed).</returns>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="halfAngle"/> is less then 0° or greater than or equal to 360°.</exception>
     public static Vector3 RandomConeVector(Transform transform, float halfAngle, bool onlyBoundary) =>
-        halfAngle < 0f || 360f <= halfAngle
+        halfAngle is < 0f or >= 360f
             ? throw new ArgumentOutOfRangeException(nameof(halfAngle), halfAngle, $"Cannot generate a random unit vector within a cone of half-angle {halfAngle}°.")
             : randomConeVector(transform.forward, halfAngle, onlyBoundary);
 
@@ -112,7 +111,7 @@ public static class MoreMath
     public static Vector3 RandomConeVector(Vector3 axis, float halfAngle, bool onlyBoundary) =>
         axis == Vector3.zero
             ? throw new ArgumentOutOfRangeException(nameof(axis), axis, $"Cannot generate a random unit vector within a cone whose center axis is the zero vector.")
-        : halfAngle < 0f || 360f <= halfAngle
+        : halfAngle is < 0f or >= 360f
             ? throw new ArgumentOutOfRangeException(nameof(halfAngle), halfAngle, $"Cannot generate a random unit vector within a cone of half-angle {halfAngle}°.")
         : randomConeVector(axis, halfAngle, onlyBoundary);
 
@@ -122,8 +121,8 @@ public static class MoreMath
 
         // Get random direction in cone centered around Vector3.forward
         float minZ = Mathf.Cos(Mathf.Deg2Rad * halfAngle);
-        float z = U.Random.Range(minZ, onlyBoundary ? minZ : 1f);
-        float phi = U.Random.Range(0f, TwoPi);
+        float z = UnityEngine.Random.Range(minZ, onlyBoundary ? minZ : 1f);
+        float phi = UnityEngine.Random.Range(0f, TwoPi);
         float sqrtPart = Mathf.Sqrt(1f - z * z);
         var result = new Vector3(sqrtPart * Mathf.Cos(phi), sqrtPart * Mathf.Sin(phi), z);
 

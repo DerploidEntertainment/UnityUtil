@@ -15,7 +15,7 @@ public static class EditModeTestHelpers
 
     public static void ResetScene()
     {
-        EditorSceneManager.NewScene(NewSceneSetup.EmptyScene);
+        _ = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene);
         ClearEditorConsole();
         Debug.unityLogger.logEnabled = true;
         Debug.unityLogger.filterLogType = LogType.Log;
@@ -42,7 +42,7 @@ public static class EditModeTestHelpers
             Type logEntries = assembly.GetType("UnityEditor.LogEntries");
             s_clearConsoleMethod = logEntries.GetMethod("Clear");
         }
-        s_clearConsoleMethod.Invoke(new object(), null);
+        _ = s_clearConsoleMethod.Invoke(new object(), null);
     }
 
 }

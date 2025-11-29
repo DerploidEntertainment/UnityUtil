@@ -21,7 +21,7 @@ public class InventoryCollector : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (other.attachedRigidbody.TryGetComponent(out InventoryCollectible c))
-            Inventory!.Collect(c);
+            _ = Inventory!.Collect(c);
     }
 
 }

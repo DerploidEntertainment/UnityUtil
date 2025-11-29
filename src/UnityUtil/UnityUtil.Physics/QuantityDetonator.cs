@@ -37,7 +37,7 @@ public class HurtDetonator : MonoBehaviour
             ManagedQuantity health = quantities[h];
             float dist = Vector3.Distance(health.transform.position, transform.position);
             float factor = 1f - Mathf.Min(1f, dist / _detonator!.ExplosionRadius);
-            health.Change(factor * MaxAmount, ChangeMode);
+            _ = health.Change(factor * MaxAmount, ChangeMode);
         }
     }
 }

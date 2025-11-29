@@ -26,7 +26,7 @@ public class QuantityWeapon : MonoBehaviour
                 && hit.collider.attachedRigidbody != null
                 && hit.collider.attachedRigidbody.TryGetComponent(out ManagedQuantity quantity)
             ) {
-                quantity.Change(Info.Amount, Info.ChangeMode);
+                _ = quantity.Change(Info.Amount, Info.ChangeMode);
                 if (Info.OnlyAffectClosest && hits.Length > 0)
                     break;
             }

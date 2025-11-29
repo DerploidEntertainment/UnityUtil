@@ -629,7 +629,7 @@ public class DependencyInjectorTest : BaseEditModeTestFixture
         dependencyInjector.RegisterService(getComponentService<TestComponent>(), injectTag: "not-" + TEST_TAG);
         dependencyInjector.ResolveDependenciesOf(new SameTypeDifferentTagsClient());
 
-        Assert.That(warnCount, Is.EqualTo(0));
+        Assert.That(warnCount, Is.Zero);
     }
 
     [Test]
@@ -754,7 +754,7 @@ public class DependencyInjectorTest : BaseEditModeTestFixture
         dependencyInjector.RegisterService(getComponentService<TestComponent>(), injectTag: "not-" + TEST_TAG);
         _ = dependencyInjector.Construct<ConstructorSameTypeDifferentTagsClient>();
 
-        Assert.That(warnCount, Is.EqualTo(0));
+        Assert.That(warnCount, Is.Zero);
     }
 
     [Test]
@@ -794,25 +794,25 @@ public class DependencyInjectorTest : BaseEditModeTestFixture
         var uncacheClient = new TestClient();
         dependencyInjector.ResolveDependenciesOf(uncacheClient);
         counts = dependencyInjector.GetServiceResolutionCounts();
-        Assert.That(counts.Uncached.Count, Is.EqualTo(1));
+        Assert.That(counts.Uncached, Has.Count.EqualTo(1));
         Assert.That(counts.Uncached[clientType], Is.EqualTo(1));
-        Assert.That(counts.Cached.Count, Is.EqualTo(1));
+        Assert.That(counts.Cached, Has.Count.EqualTo(1));
         Assert.That(counts.Cached[baseType], Is.EqualTo(1));
 
         // Second, base type resolution cached
         var cacheClient = new TestClient();
         dependencyInjector.ResolveDependenciesOf(cacheClient);
         counts = dependencyInjector.GetServiceResolutionCounts();
-        Assert.That(counts.Uncached.Count, Is.EqualTo(1));
+        Assert.That(counts.Uncached, Has.Count.EqualTo(1));
         Assert.That(counts.Uncached[clientType], Is.EqualTo(2));
-        Assert.That(counts.Cached.Count, Is.EqualTo(1));
+        Assert.That(counts.Cached, Has.Count.EqualTo(1));
         Assert.That(counts.Cached[baseType], Is.EqualTo(2));
 
         // Clears cached resolutions
         dependencyInjector.RecordingResolutions = false;
         counts = dependencyInjector.GetServiceResolutionCounts();
-        Assert.That(counts.Uncached.Count, Is.Zero);
-        Assert.That(counts.Cached.Count, Is.Zero);
+        Assert.That(counts.Uncached, Is.Empty);
+        Assert.That(counts.Cached, Is.Empty);
     }
 
     [Test]
@@ -833,22 +833,22 @@ public class DependencyInjectorTest : BaseEditModeTestFixture
         // Initial, uncached resolution
         _ = dependencyInjector.Construct<MultiConstructorClient>();
         counts = dependencyInjector.GetServiceResolutionCounts();
-        Assert.That(counts.Uncached.Count, Is.EqualTo(0));
-        Assert.That(counts.Cached.Count, Is.EqualTo(1));
+        Assert.That(counts.Uncached, Is.Empty);
+        Assert.That(counts.Cached, Has.Count.EqualTo(1));
         Assert.That(counts.Cached[clientType], Is.EqualTo(1));
 
         // Second, type resolution cached
         _ = dependencyInjector.Construct<MultiConstructorClient>();
         counts = dependencyInjector.GetServiceResolutionCounts();
-        Assert.That(counts.Uncached.Count, Is.EqualTo(0));
-        Assert.That(counts.Cached.Count, Is.EqualTo(1));
+        Assert.That(counts.Uncached, Is.Empty);
+        Assert.That(counts.Cached, Has.Count.EqualTo(1));
         Assert.That(counts.Cached[clientType], Is.EqualTo(2));
 
         // Clears cached resolutions
         dependencyInjector.RecordingResolutions = false;
         counts = dependencyInjector.GetServiceResolutionCounts();
-        Assert.That(counts.Uncached.Count, Is.Zero);
-        Assert.That(counts.Cached.Count, Is.Zero);
+        Assert.That(counts.Uncached, Is.Empty);
+        Assert.That(counts.Cached, Is.Empty);
     }
 
     [Test]
@@ -866,8 +866,8 @@ public class DependencyInjectorTest : BaseEditModeTestFixture
 
         // ASSERT
         DependencyResolutionCounts counts = dependencyInjector.GetServiceResolutionCounts();
-        Assert.That(counts.Uncached.Count, Is.Zero);
-        Assert.That(counts.Cached.Count, Is.Zero);
+        Assert.That(counts.Uncached, Is.Empty);
+        Assert.That(counts.Cached, Is.Empty);
     }
 
     [Test]

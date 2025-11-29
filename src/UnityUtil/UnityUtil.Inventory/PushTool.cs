@@ -41,7 +41,7 @@ public class PushTool : MonoBehaviour
                 !unpushableRbs.Contains(rb) &&
                 !_pushedRigidbodies.Contains(rb);
             if (push) {
-                _pushedRigidbodies.Add(rb!);
+                _ = _pushedRigidbodies.Add(rb!);
                 rb!.AddForceAtPosition(Info!.PushForce * ray.direction, hit.point, ForceMode.Impulse);
                 if (Info.OnlyPushClosest && hits.Length > 0)
                     break;

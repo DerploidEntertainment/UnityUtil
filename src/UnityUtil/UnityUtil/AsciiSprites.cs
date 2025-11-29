@@ -118,11 +118,10 @@ public class AsciiSprites : ScriptableObject
         set => spriteRef(charCode) = value;
     }
     public Sprite? this[int number] {
-        get => number < 0 || 9 < number
-            ? throw new ArgumentOutOfRangeException(nameof(number))
+        get => number is < 0 or > 9 ? throw new ArgumentOutOfRangeException(nameof(number))
             : spriteRef((char)('0' + number));
         set {
-            if (number < 0 || 9 < number)
+            if (number is < 0 or > 9)
                 throw new ArgumentOutOfRangeException(nameof(number));
             spriteRef((char)('0' + number)) = value;
         }

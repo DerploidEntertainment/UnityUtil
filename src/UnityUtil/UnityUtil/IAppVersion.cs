@@ -2,7 +2,7 @@
 
 public interface IAppVersion
 {
-    public string Version { get; }
-    public string Description { get; }
-    public int BuildNumber { get; }
+    string Version { get; }
+    string Description { get; }
+    int BuildNumber { get; }
 }

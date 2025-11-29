@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityUtil.Inputs;
@@ -34,10 +34,9 @@ public class StartInteractor2D : Updatable
     {
         if (Input!.Started()) {
             RaycastHit2D hit = U.Physics2D.Raycast(transform.position, transform.forward, Range, InteractLayerMask);
-            if (hit.collider != null) {
-                SimpleTrigger st = hit.collider.GetComponent<SimpleTrigger>();
-                st?.Trigger();
-                Interacted?.Invoke(this, new Interaction2DEventArgs() { HitInfo = hit, InteractedTrigger = st });
+            if (hit.collider != null && hit.collider.TryGetComponent(out SimpleTrigger trigger)) {
+                trigger.Trigger();
+                Interacted?.Invoke(this, new Interaction2DEventArgs() { HitInfo = hit, InteractedTrigger = trigger });
             }
         }
     }
