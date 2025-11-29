@@ -10,6 +10,9 @@
 
     <!-- Always emit debug symbols, even in Release. Consumers can then decide in Unity whether they're then included in a game build. -->
     <DebugSymbols>true</DebugSymbols>
+
+    <!-- Ensure $(SolutionName) is set when executing MSBuild outside Visual Studio (e.g., during Dependabot version updates) -->
+    <SolutionName Condition="'$(SolutionName)' == ''">$([System.IO.Path]::GetFileNameWithoutExtension($([System.IO.Directory]::GetFiles("$(MSBuildThisFileDirectory)", "*.slnx")[0])))</SolutionName>
   </PropertyGroup>
 
   <!-- Common analyzers -->
