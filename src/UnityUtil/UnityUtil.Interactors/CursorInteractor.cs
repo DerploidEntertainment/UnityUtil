@@ -1,4 +1,4 @@
-﻿using Sirenix.OdinInspector;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityUtil.Inputs;
 using UnityUtil.Triggers;
@@ -25,8 +25,11 @@ public class CursorInteractor : Updatable
     {
         if (Input!.Started()) {
             Ray ray = Camera.main.ScreenPointToRay(U.Input.mousePosition);
-            if (U.Physics.Raycast(ray, out RaycastHit hitInfo, Mathf.Infinity, InteractLayerMask))
-                hitInfo.collider.GetComponent<SimpleTrigger>()?.Trigger();
+            if (Physics.Raycast(ray, out RaycastHit hitInfo, Mathf.Infinity, InteractLayerMask)
+                && hitInfo.collider != null
+                && hitInfo.collider.TryGetComponent(out SimpleTrigger trigger)
+            )
+                trigger.Trigger();
         }
     }
 

@@ -1,4 +1,4 @@
-﻿using Sirenix.OdinInspector;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityUtil.Inputs;
 using UnityUtil.Math;
@@ -77,7 +77,7 @@ public class CharacterFpsWalker : Updatable
         crouch(CanCrouch && crouching);
 
         // Move the rigidbody to the target velocity
-        ControllerToMove!.Move(targetV * deltaTime);
+        _ = ControllerToMove!.Move(targetV * deltaTime);
     }
 
     private Vector3 jumpComponent(float deltaTime, bool jumping)

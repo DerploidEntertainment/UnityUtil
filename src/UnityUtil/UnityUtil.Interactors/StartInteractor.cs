@@ -1,10 +1,9 @@
-﻿using System;
+using System;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityUtil.Inputs;
 using UnityUtil.Triggers;
 using UnityUtil.Updating;
-using U = UnityEngine;
 
 namespace UnityUtil.Interactors;
 
@@ -34,11 +33,13 @@ public class StartInteractor : Updatable
     private void raycast(float deltaTime)
     {
         if (Input!.Started()) {
-            bool somethingHit = U.Physics.Raycast(transform.position, transform.forward, out RaycastHit hitInfo, Range, InteractLayerMask, QueryTriggerInteraction);
-            if (somethingHit) {
-                SimpleTrigger? st = hitInfo.collider.GetComponent<SimpleTrigger>();
-                st?.Trigger();
-                Interacted?.Invoke(this, new InteractionEventArgs() { HitInfo = hitInfo, InteractedTrigger = st });
+            if (
+                Physics.Raycast(transform.position, transform.forward, out RaycastHit hitInfo, Range, InteractLayerMask, QueryTriggerInteraction)
+                && hitInfo.collider != null
+                && hitInfo.collider.TryGetComponent(out SimpleTrigger trigger)
+            ) {
+                trigger.Trigger();
+                Interacted?.Invoke(this, new InteractionEventArgs() { HitInfo = hitInfo, InteractedTrigger = trigger });
             }
         }
     }

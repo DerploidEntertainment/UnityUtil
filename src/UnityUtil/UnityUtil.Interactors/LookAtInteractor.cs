@@ -83,7 +83,7 @@ public class LookAtInteractor : Updatable
         _triggerBuffer.Clear();
         for (int h = 0; h < hits.Length; ++h) {
             if (hits[h].collider.TryGetComponent(out ToggleTrigger trigger))
-                _triggerBuffer.Add(trigger);
+                _ = _triggerBuffer.Add(trigger);
         }
 
         // Turn on all triggers that haven't already been turned on

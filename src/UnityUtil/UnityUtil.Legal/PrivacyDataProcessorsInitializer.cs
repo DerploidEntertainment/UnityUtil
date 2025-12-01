@@ -153,7 +153,7 @@ public class PrivacyDataProcessorsInitializer : MonoBehaviour
     public async Task InitializeDataProcessorsWithConsentAsync(Task? preInitializeTask = null, CancellationToken cancellationToken = default)
     {
         cancellationToken.ThrowIfCancellationRequested();
-        
+
         LegalAcceptStatus legalAcceptStatus = await _legalAcceptManager!.CheckStatusAsync(LegalDocuments);
 
         cancellationToken.ThrowIfCancellationRequested();
