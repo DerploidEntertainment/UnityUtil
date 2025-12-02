@@ -6,6 +6,7 @@
     <LangVersion>latest</LangVersion>
     <RootNamespace>$(ProjectName)</RootNamespace>
     <DefineConstants>UNITY_EDITOR</DefineConstants> <!-- Always set, so that Odin drawers still work for Release-built DLLs -->
+    <Configurations>Debug;Release</Configurations>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
 
     <!-- Always emit debug symbols, even in Release. Consumers can then decide in Unity whether they're then included in a game build. -->
