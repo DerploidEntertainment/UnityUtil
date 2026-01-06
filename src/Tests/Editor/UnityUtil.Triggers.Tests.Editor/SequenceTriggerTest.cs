@@ -9,13 +9,23 @@ namespace UnityUtil.Triggers.Tests.Editor;
 
 public class SequenceTriggerTest : BaseEditModeTestFixture
 {
+    private readonly UnityDebugLoggerFactory _loggerFactory = new();
+    private GameObject? _gameObject;
+
+    [SetUp]
+    public void Setup() =>
+        _gameObject = _gameObject != null ? _gameObject : new GameObject(nameof(SequenceTriggerTest));
+
+    [OneTimeTearDown]
+    public void OneTimeTearDown() => _loggerFactory.Dispose();
+
     [Test]
     public void CanStep()
     {
-        SequenceTrigger trigger = getSequenceTrigger(2);
+        SequenceTrigger trigger = buildSequenceTrigger(2);
         int origStep = trigger.CurrentStep;
 
-        trigger.Step();
+        trigger.StepByOne();
 
         Assert.That(trigger.CurrentStep, Is.EqualTo(origStep + 1));
     }
@@ -23,29 +33,29 @@ public class SequenceTriggerTest : BaseEditModeTestFixture
     [Test]
     public void CanStepForwardMultiple()
     {
-        SequenceTrigger trigger = getSequenceTrigger(10);
+        SequenceTrigger trigger = buildSequenceTrigger(10);
         int origStep = trigger.CurrentStep;
 
-        trigger.Step(1);
+        trigger.StepByCount(1);
         Assert.That(trigger.CurrentStep, Is.EqualTo(origStep + 1));
 
         trigger.CurrentStep = origStep;
-        trigger.Step(2);
+        trigger.StepByCount(2);
         Assert.That(trigger.CurrentStep, Is.EqualTo(origStep + 2));
     }
 
     [Test]
     public void CanStepBackwardMultiple()
     {
-        SequenceTrigger trigger = getSequenceTrigger(10);
+        SequenceTrigger trigger = buildSequenceTrigger(10);
         int origStep = 5;
         trigger.CurrentStep = origStep;
 
-        trigger.Step(-1);
+        trigger.StepByCount(-1);
         Assert.That(trigger.CurrentStep, Is.EqualTo(origStep - 1));
 
         trigger.CurrentStep = origStep;
-        trigger.Step(-2);
+        trigger.StepByCount(-2);
         Assert.That(trigger.CurrentStep, Is.EqualTo(origStep - 2));
     }
 
@@ -53,15 +63,15 @@ public class SequenceTriggerTest : BaseEditModeTestFixture
     public void StepForwardCanClamp()
     {
         int numSteps = 2;
-        SequenceTrigger trigger = getSequenceTrigger(numSteps);
+        SequenceTrigger trigger = buildSequenceTrigger(numSteps);
         int origStep = 0;
         trigger.CurrentStep = origStep;
 
-        trigger.Step(numSteps);
+        trigger.StepByCount(numSteps);
         Assert.That(trigger.CurrentStep, Is.EqualTo(numSteps - 1));
 
         trigger.CurrentStep = trigger.StepTriggers.Length - 1;
-        trigger.Step(numSteps + 100);
+        trigger.StepByCount(numSteps + 100);
         Assert.That(trigger.CurrentStep, Is.EqualTo(numSteps - 1));
     }
 
@@ -69,15 +79,15 @@ public class SequenceTriggerTest : BaseEditModeTestFixture
     public void StepBackwardCanClamp()
     {
         int numSteps = 2;
-        SequenceTrigger trigger = getSequenceTrigger(numSteps);
+        SequenceTrigger trigger = buildSequenceTrigger(numSteps);
         int origStep = numSteps - 1;
         trigger.CurrentStep = origStep;
 
-        trigger.Step(-numSteps);
+        trigger.StepByCount(-numSteps);
         Assert.That(trigger.CurrentStep, Is.EqualTo(0));
 
         trigger.CurrentStep = 0;
-        trigger.Step(-numSteps - 100);
+        trigger.StepByCount(-numSteps - 100);
         Assert.That(trigger.CurrentStep, Is.EqualTo(0));
     }
 
@@ -85,16 +95,16 @@ public class SequenceTriggerTest : BaseEditModeTestFixture
     public void StepForwardCanCycle()
     {
         int numSteps = 2;
-        SequenceTrigger trigger = getSequenceTrigger(numSteps, cycle: true);
+        SequenceTrigger trigger = buildSequenceTrigger(numSteps, cycle: true);
         trigger.CurrentStep = trigger.StepTriggers.Length - 1;
 
-        trigger.Step(1);
+        trigger.StepByCount(1);
         Assert.That(trigger.CurrentStep, Is.EqualTo(0));
 
-        trigger.Step(numSteps);
+        trigger.StepByCount(numSteps);
         Assert.That(trigger.CurrentStep, Is.EqualTo(0));
 
-        trigger.Step(10 * numSteps + 1);
+        trigger.StepByCount(10 * numSteps + 1);
         Assert.That(trigger.CurrentStep, Is.EqualTo(1));
     }
 
@@ -102,16 +112,16 @@ public class SequenceTriggerTest : BaseEditModeTestFixture
     public void StepBackwardCanCycle()
     {
         int numSteps = 2;
-        SequenceTrigger trigger = getSequenceTrigger(numSteps, cycle: true);
+        SequenceTrigger trigger = buildSequenceTrigger(numSteps, cycle: true);
         trigger.CurrentStep = 1;
 
-        trigger.Step(-1);
+        trigger.StepByCount(-1);
         Assert.That(trigger.CurrentStep, Is.EqualTo(0));
 
-        trigger.Step(-numSteps);
+        trigger.StepByCount(-numSteps);
         Assert.That(trigger.CurrentStep, Is.EqualTo(0));
 
-        trigger.Step(-10 * numSteps - 1);
+        trigger.StepByCount(-10 * numSteps - 1);
         Assert.That(trigger.CurrentStep, Is.EqualTo(1));
     }
 
@@ -119,7 +129,7 @@ public class SequenceTriggerTest : BaseEditModeTestFixture
     public void CanTrigger()
     {
         string affectedTxt = "";
-        SequenceTrigger trigger = getSequenceTrigger(2);
+        SequenceTrigger trigger = buildSequenceTrigger(2);
         trigger.CurrentStep = 0;
         var unityEvent = new UnityEvent();
         unityEvent.AddListener(() => affectedTxt = $"Triggered");
@@ -134,7 +144,7 @@ public class SequenceTriggerTest : BaseEditModeTestFixture
     public void CanTriggerMultipleTimes()
     {
         int affectedNum = 0;
-        SequenceTrigger trigger = getSequenceTrigger(1);
+        SequenceTrigger trigger = buildSequenceTrigger(1);
         trigger.CurrentStep = 0;
         var unityEvent = new UnityEvent();
         unityEvent.AddListener(() => ++affectedNum);
@@ -151,7 +161,7 @@ public class SequenceTriggerTest : BaseEditModeTestFixture
     public void CanStepAndTrigger()
     {
         string affectedTxt = "";
-        SequenceTrigger trigger = getSequenceTrigger(2);
+        SequenceTrigger trigger = buildSequenceTrigger(2);
         trigger.CurrentStep = 0;
         trigger.StepTriggers = [
             .. Enumerable.Range(0, 2).Select(e => {
@@ -161,32 +171,67 @@ public class SequenceTriggerTest : BaseEditModeTestFixture
             })
         ];
 
-        trigger.Step();
+        trigger.StepByOne();
         trigger.Trigger();
         Assert.That(affectedTxt, Is.EqualTo("Trigger 1"));
 
         trigger.CurrentStep = 0;
-        trigger.StepAndTrigger();
+        trigger.StepByOneAndTrigger();
         Assert.That(affectedTxt, Is.EqualTo("Trigger 1"));
+    }
+
+    [Test]
+    public void CanSetStep()
+    {
+        SequenceTrigger trigger = buildSequenceTrigger(2);
+
+        trigger.SetStep(1);
+        Assert.That(trigger.CurrentStep, Is.EqualTo(1));
+
+        trigger.SetStep(0);
+        Assert.That(trigger.CurrentStep, Is.EqualTo(0));
+    }
+
+    [Test]
+    public void CanSetStepAndTrigger()
+    {
+        // ARRANGE
+        int step0TriggerCount = 0;
+        int step1TriggerCount = 0;
+        SequenceTrigger trigger = buildSequenceTrigger(2);
+        trigger.StepTriggers[0] = new UnityEvent();
+        trigger.StepTriggers[1] = new UnityEvent();
+        trigger.StepTriggers[0].AddListener(() => ++step0TriggerCount);
+        trigger.StepTriggers[1].AddListener(() => ++step1TriggerCount);
+
+        // ACT / ASSERT
+        Assert.That(step0TriggerCount, Is.Zero);
+        Assert.That(step1TriggerCount, Is.Zero);
+
+        trigger.SetStepAndTrigger(1);
+        Assert.That(step0TriggerCount, Is.Zero);
+        Assert.That(step1TriggerCount, Is.EqualTo(1));
+
+        trigger.SetStepAndTrigger(0);
+        Assert.That(step0TriggerCount, Is.EqualTo(1));
+        Assert.That(step1TriggerCount, Is.EqualTo(1));
     }
 
     [Test]
     public void TriggerHandlesNullEvents()
     {
-        SequenceTrigger trigger = getSequenceTrigger(1);
+        SequenceTrigger trigger = buildSequenceTrigger(1);
 
         Assert.DoesNotThrow(trigger.Trigger);
     }
 
-    private static SequenceTrigger getSequenceTrigger(int numSteps, bool cycle = false)
+    private SequenceTrigger buildSequenceTrigger(int numSteps, bool cycle = false)
     {
-        var obj = new GameObject("TestTrigger");
-        SequenceTrigger trigger = obj.AddComponent<SequenceTrigger>();
-        trigger.Inject(new UnityDebugLoggerFactory());
+        SequenceTrigger trigger = _gameObject!.AddComponent<SequenceTrigger>();
+        trigger.Inject(_loggerFactory);
         trigger.StepTriggers = new UnityEvent[numSteps];
         trigger.Cycle = cycle;
 
         return trigger;
     }
-
 }

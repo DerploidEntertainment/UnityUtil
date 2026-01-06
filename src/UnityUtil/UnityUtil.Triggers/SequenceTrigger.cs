@@ -18,11 +18,11 @@ public class SequenceTrigger : MonoBehaviour
     public int CurrentStep = 0;
     [Tooltip(
         $"If true, then {nameof(CurrentStep)} will wrap around whenever it goes past the first or last index of {nameof(StepTriggers)}. " +
-        $"If false, then calls to {nameof(Step)} will be clamped between the first and last index."
+        $"If false, then calls to {nameof(StepByOne)} will be clamped between the first and last index."
     )]
     public bool Cycle;
     [Tooltip(
-        $"The sequence of triggers to iterate through. Every time {nameof(Step)} is called, the {nameof(CurrentStep)} index will be incremented. " +
+        $"The sequence of triggers to iterate through. Every time {nameof(StepByOne)} is called, the {nameof(CurrentStep)} index will be incremented. " +
         $"Call {nameof(Trigger)} to invoke the trigger at {nameof(CurrentStep)} (multiple times, if desired)."
     )]
     public UnityEvent[] StepTriggers = [];
@@ -31,20 +31,9 @@ public class SequenceTrigger : MonoBehaviour
 
     private void Awake() => DependencyInjector.Instance.ResolveDependenciesOf(this);
 
-    [Button]
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void StepAndTrigger() => doStep(1, thenTrigger: true);
-    [Button]
-    public void StepAndTrigger(int step) => doStep(step, thenTrigger: true);
+    [PropertySpace]
 
     [Button]
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void Step() => doStep(1, thenTrigger: false);
-    [Button]
-    public void Step(int step) => doStep(step, thenTrigger: false);
-
-    [Button]
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Trigger()
     {
         if (StepTriggers[CurrentStep] is null) {
@@ -55,11 +44,41 @@ public class SequenceTrigger : MonoBehaviour
         StepTriggers[CurrentStep]?.Invoke();
     }
 
-    private void doStep(int step, bool thenTrigger)
+    [PropertySpace]
+
+    [Button]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void StepByOne() => doStep(stepDelta: 1, thenTrigger: false);
+
+    [Button]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void StepByOneAndTrigger() => doStep(stepDelta: 1, thenTrigger: true);
+
+    [PropertySpace]
+
+    [Button]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void SetStep(int step) => doStep(step - CurrentStep, thenTrigger: false);
+
+    [Button]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void SetStepAndTrigger(int step) => doStep(step - CurrentStep, thenTrigger: true);
+
+    [PropertySpace]
+
+    [Button]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void StepByCount(int stepCount) => doStep(stepCount, thenTrigger: false);
+
+    [Button]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void StepByCountAndTrigger(int stepCount) => doStep(stepCount, thenTrigger: true);
+
+    private void doStep(int stepDelta, bool thenTrigger)
     {
         int newStep = Cycle
-            ? (CurrentStep + StepTriggers.Length + step % StepTriggers.Length) % StepTriggers.Length
-            : Mathf.Clamp(CurrentStep + step, 0, StepTriggers.Length - 1);
+            ? (CurrentStep + StepTriggers.Length + stepDelta % StepTriggers.Length) % StepTriggers.Length
+            : Mathf.Clamp(CurrentStep + stepDelta, 0, StepTriggers.Length - 1);
 
         CurrentStep = newStep;
 
