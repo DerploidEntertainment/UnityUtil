@@ -6,7 +6,7 @@ namespace UnityUtil.Editor.Tests;
 public class BaseEditModeTestFixture
 {
     [OneTimeSetUp]
-    public void OneTimeSetUp()
+    public virtual void OneTimeSetUp()
     {
         EditModeTestHelpers.ResetScene();
         Debug.Log($"Scene reset by {nameof(BaseEditModeTestFixture)}.{nameof(OneTimeSetUp)}");
