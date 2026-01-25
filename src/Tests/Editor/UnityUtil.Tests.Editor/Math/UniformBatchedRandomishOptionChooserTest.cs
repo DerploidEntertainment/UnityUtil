@@ -17,7 +17,7 @@ public class UniformBatchedRandomishOptionChooserTest : BaseEditModeTestFixture
     public void Constructs_DefaultConfig() =>
         Assert.DoesNotThrow(() =>
             new UniformBatchedRandomishOptionChooser(
-                getRandomAdapter(),
+                buildRandomAdapter(),
                 new UniformBatchedRandomishOptionChooserConfig()
             )
         );
@@ -29,7 +29,7 @@ public class UniformBatchedRandomishOptionChooserTest : BaseEditModeTestFixture
     {
         UniformBatchedRandomishOptionChooserConfig config = new() { OptionCount = optionCount };
         ArgumentException e = Assert.Throws<ArgumentException>(() =>
-            new UniformBatchedRandomishOptionChooser(getRandomAdapter(), config)
+            new UniformBatchedRandomishOptionChooser(buildRandomAdapter(), config)
         );
         Assert.That(e.Message, Contains.Substring(nameof(config.OptionCount)));
     }
@@ -39,7 +39,7 @@ public class UniformBatchedRandomishOptionChooserTest : BaseEditModeTestFixture
     {
         UniformBatchedRandomishOptionChooserConfig config = new() { MinRunsPerBatch = -1 };
         ArgumentException e = Assert.Throws<ArgumentException>(() =>
-            new UniformBatchedRandomishOptionChooser(getRandomAdapter(), config)
+            new UniformBatchedRandomishOptionChooser(buildRandomAdapter(), config)
         );
         Assert.That(e.Message, Contains.Substring(nameof(config.MinRunsPerBatch)));
     }
@@ -48,7 +48,7 @@ public class UniformBatchedRandomishOptionChooserTest : BaseEditModeTestFixture
     public void Constructs_ZeroMinRunsPerBatch() =>
         Assert.DoesNotThrow(() =>
             new UniformBatchedRandomishOptionChooser(
-                getRandomAdapter(),
+                buildRandomAdapter(),
                 new UniformBatchedRandomishOptionChooserConfig { MinRunsPerBatch = 0 }
             )
         );
@@ -58,7 +58,7 @@ public class UniformBatchedRandomishOptionChooserTest : BaseEditModeTestFixture
     {
         UniformBatchedRandomishOptionChooserConfig config = new() { MaxRunsPerBatch = -1 };
         ArgumentException e = Assert.Throws<ArgumentException>(() =>
-            new UniformBatchedRandomishOptionChooser(getRandomAdapter(), config)
+            new UniformBatchedRandomishOptionChooser(buildRandomAdapter(), config)
         );
         Assert.That(e.Message, Contains.Substring(nameof(config.MaxRunsPerBatch)));
     }
@@ -71,7 +71,7 @@ public class UniformBatchedRandomishOptionChooserTest : BaseEditModeTestFixture
             MaxRunsPerBatch = 1,
         };
         ArgumentException e = Assert.Throws<ArgumentException>(() =>
-            new UniformBatchedRandomishOptionChooser(getRandomAdapter(), config)
+            new UniformBatchedRandomishOptionChooser(buildRandomAdapter(), config)
         );
         Assert.That(e.Message, Contains.Substring(nameof(config.MaxRunsPerBatch)));
     }
@@ -84,7 +84,7 @@ public class UniformBatchedRandomishOptionChooserTest : BaseEditModeTestFixture
             MaxRunsPerBatch = 3,
         };
         ArgumentException e = Assert.Throws<ArgumentException>(() =>
-            new UniformBatchedRandomishOptionChooser(getRandomAdapter(), config)
+            new UniformBatchedRandomishOptionChooser(buildRandomAdapter(), config)
         );
         Assert.That(e.Message, Contains.Substring(nameof(config.MaxRunsPerBatch)));
     }
@@ -93,7 +93,7 @@ public class UniformBatchedRandomishOptionChooserTest : BaseEditModeTestFixture
     public void Constructs_MaxRunsPerBatchEqualsMinRuns() =>
         Assert.DoesNotThrow(() =>
             new UniformBatchedRandomishOptionChooser(
-                getRandomAdapter(),
+                buildRandomAdapter(),
                 new UniformBatchedRandomishOptionChooserConfig {
                     OptionCount = 3,
                     MinRunsPerBatch = 2,
@@ -106,7 +106,7 @@ public class UniformBatchedRandomishOptionChooserTest : BaseEditModeTestFixture
     public void Constructs_MaxRunsPerBatchEqualsOptionCount() =>
         Assert.DoesNotThrow(() =>
             new UniformBatchedRandomishOptionChooser(
-                getRandomAdapter(),
+                buildRandomAdapter(),
                 new UniformBatchedRandomishOptionChooserConfig {
                     OptionCount = 2,
                     MaxRunsPerBatch = 2,
@@ -118,7 +118,7 @@ public class UniformBatchedRandomishOptionChooserTest : BaseEditModeTestFixture
     public void Constructs_MaxRunsPerBatchEqualsMinRunsEqualsOptionCount() =>
         Assert.DoesNotThrow(() =>
             new UniformBatchedRandomishOptionChooser(
-                getRandomAdapter(),
+                buildRandomAdapter(),
                 new UniformBatchedRandomishOptionChooserConfig {
                     OptionCount = 2,
                     MinRunsPerBatch = 2,
@@ -135,7 +135,7 @@ public class UniformBatchedRandomishOptionChooserTest : BaseEditModeTestFixture
     {
         var config = new UniformBatchedRandomishOptionChooserConfig { MaxRepeatsPerRun = maxRepeatsPerRun };
         ArgumentException e = Assert.Throws<ArgumentException>(() =>
-            new UniformBatchedRandomishOptionChooser(getRandomAdapter(), config)
+            new UniformBatchedRandomishOptionChooser(buildRandomAdapter(), config)
         );
         Assert.That(e.Message, Contains.Substring(nameof(config.MaxRepeatsPerRun)));
     }
@@ -162,7 +162,7 @@ public class UniformBatchedRandomishOptionChooserTest : BaseEditModeTestFixture
             MaxRunsPerBatch = runCount,
             MaxRepeatsPerRun = maxRepeatsPerRun,
         };
-        UniformBatchedRandomishOptionChooser uniformBatchedRandomishOptionChooser = getRandomishOptionChooser(config: config);
+        UniformBatchedRandomishOptionChooser uniformBatchedRandomishOptionChooser = buildRandomishOptionChooser(config: config);
 
         IReadOnlyList<int> batch = uniformBatchedRandomishOptionChooser.GetBatch();
 
@@ -187,7 +187,7 @@ public class UniformBatchedRandomishOptionChooserTest : BaseEditModeTestFixture
     [TestCaseSource(nameof(yieldBatchConfigTestCases))]
     public void GetBatch_IncludesAllOptions(int optionCount, int minRunsPerBatch, int maxRunsPerBatch, int maxRepeatsPerRun)
     {
-        UniformBatchedRandomishOptionChooser uniformBatchedRandomishOptionChooser = getRandomishOptionChooser(
+        UniformBatchedRandomishOptionChooser uniformBatchedRandomishOptionChooser = buildRandomishOptionChooser(
             config: new() {
                 OptionCount = optionCount,
                 MinRunsPerBatch = minRunsPerBatch,
@@ -207,7 +207,7 @@ public class UniformBatchedRandomishOptionChooserTest : BaseEditModeTestFixture
     public void GetBatch_RandomlyPermutesIndices(int optionCount, int minRunsPerBatch, int maxRunsPerBatch, int maxRepeatsPerRun)
     {
         // ARRANGE
-        UniformBatchedRandomishOptionChooser uniformBatchedRandomishOptionChooser = getRandomishOptionChooser(
+        UniformBatchedRandomishOptionChooser uniformBatchedRandomishOptionChooser = buildRandomishOptionChooser(
             config: new() {
                 OptionCount = optionCount,
                 MinRunsPerBatch = minRunsPerBatch,
@@ -229,7 +229,7 @@ public class UniformBatchedRandomishOptionChooserTest : BaseEditModeTestFixture
         // The first indices of option 0 are unequal (2 and 1, resp.), so the test would pass,
         // but it shouldn't because the batch permutations are still the same, they just randomly assigned runs to different options.
         // So, remove repeats first, then we CAN simply compare the permutation indices.
-        static int[] getBatchWithoutRepeats(int optionCount, int[] batch)
+        static int[] buildBatchWithoutRepeats(int optionCount, int[] batch)
         {
             int permutationIndex = 0;
             int prevOption = -1;
@@ -243,8 +243,8 @@ public class UniformBatchedRandomishOptionChooserTest : BaseEditModeTestFixture
             }
             return permutation;
         }
-        int[] batch1WithoutRepeats = getBatchWithoutRepeats(optionCount, batch1);
-        int[] batch2WithoutRepeats = getBatchWithoutRepeats(optionCount, batch2);
+        int[] batch1WithoutRepeats = buildBatchWithoutRepeats(optionCount, batch1);
+        int[] batch2WithoutRepeats = buildBatchWithoutRepeats(optionCount, batch2);
         if (optionCount == 1) {
             Assert.That(batch1WithoutRepeats[0], Is.Zero);
             Assert.That(batch2WithoutRepeats[0], Is.Zero);
@@ -257,7 +257,7 @@ public class UniformBatchedRandomishOptionChooserTest : BaseEditModeTestFixture
     [TestCaseSource(nameof(yieldBatchConfigTestCases))]
     public void GetBatch_GeneratesSequentialRunRepeats(int optionCount, int minRunsPerBatch, int maxRunsPerBatch, int maxRepeatsPerRun)
     {
-        UniformBatchedRandomishOptionChooser uniformBatchedRandomishOptionChooser = getRandomishOptionChooser(
+        UniformBatchedRandomishOptionChooser uniformBatchedRandomishOptionChooser = buildRandomishOptionChooser(
             config: new() {
                 OptionCount = optionCount,
                 MinRunsPerBatch = minRunsPerBatch,
@@ -292,7 +292,7 @@ public class UniformBatchedRandomishOptionChooserTest : BaseEditModeTestFixture
     [TestCase(9, 0, 3)]
     public void GetBatch_GeneratesCorrectRunCount(int optionCount, int minRunsPerBatch, int maxRunsPerBatch)
     {
-        UniformBatchedRandomishOptionChooser uniformBatchedRandomishOptionChooser = getRandomishOptionChooser(
+        UniformBatchedRandomishOptionChooser uniformBatchedRandomishOptionChooser = buildRandomishOptionChooser(
             config: new() {
                 OptionCount = optionCount,
                 MinRunsPerBatch = minRunsPerBatch,
@@ -325,7 +325,7 @@ public class UniformBatchedRandomishOptionChooserTest : BaseEditModeTestFixture
     [TestCase(9, 2, 4)]
     public void GetBatch_RunsHaveCorrectLength(int optionCount, int runCount, int maxRepeatsPerRun)
     {
-        UniformBatchedRandomishOptionChooser uniformBatchedRandomishOptionChooser = getRandomishOptionChooser(
+        UniformBatchedRandomishOptionChooser uniformBatchedRandomishOptionChooser = buildRandomishOptionChooser(
             config: new() {
                 OptionCount = optionCount,
                 MinRunsPerBatch = runCount,
@@ -344,7 +344,7 @@ public class UniformBatchedRandomishOptionChooserTest : BaseEditModeTestFixture
     public void GetBatch_CanGenerateZeroRuns_IfSoConfigured()
     {
         int optionCount = 5;
-        UniformBatchedRandomishOptionChooser uniformBatchedRandomishOptionChooser = getRandomishOptionChooser(
+        UniformBatchedRandomishOptionChooser uniformBatchedRandomishOptionChooser = buildRandomishOptionChooser(
             config: new() {
                 OptionCount = optionCount,
                 MinRunsPerBatch = 0,
@@ -368,7 +368,7 @@ public class UniformBatchedRandomishOptionChooserTest : BaseEditModeTestFixture
             MaxRunsPerBatch = optionCount,
             MaxRepeatsPerRun = 2,
         };
-        UniformBatchedRandomishOptionChooser uniformBatchedRandomishOptionChooser = getRandomishOptionChooser(config: config);
+        UniformBatchedRandomishOptionChooser uniformBatchedRandomishOptionChooser = buildRandomishOptionChooser(config: config);
 
         IReadOnlyList<int> batch = uniformBatchedRandomishOptionChooser.GetBatch();
 
@@ -394,10 +394,10 @@ public class UniformBatchedRandomishOptionChooserTest : BaseEditModeTestFixture
         const int NUM_ATTEMPTS = 20;
         int numAttempts = 0;
 #pragma warning disable CA2201 // Do not raise reserved exception types
-        Mock<IRandomAdapter> randomAdapter = getPrngWithOptionIndexRandomization(optionCount, runCount, () =>
+        Mock<IRandomAdapter> randomAdapter = buildRandomAdapter_WithOptionIndexRandomization(optionCount, runCount, () =>
             ++numAttempts == NUM_ATTEMPTS ? throw new Exception() : LAST_OPTION);
 #pragma warning restore CA2201 // Do not raise reserved exception types
-        UniformBatchedRandomishOptionChooser uniformBatchedRandomishOptionChooser = getRandomishOptionChooser(
+        UniformBatchedRandomishOptionChooser uniformBatchedRandomishOptionChooser = buildRandomishOptionChooser(
             randomAdapter.Object,
             new() {
                 OptionCount = optionCount,
@@ -429,7 +429,7 @@ public class UniformBatchedRandomishOptionChooserTest : BaseEditModeTestFixture
     [TestCase(9, 2, 4)]
     public void GetBatch_SubsequentBatchIncludesAllOptions(int optionCount, int runCount, int maxRepeatsPerRun)
     {
-        UniformBatchedRandomishOptionChooser uniformBatchedRandomishOptionChooser = getRandomishOptionChooser(
+        UniformBatchedRandomishOptionChooser uniformBatchedRandomishOptionChooser = buildRandomishOptionChooser(
             config: new() {
                 OptionCount = optionCount,
                 MinRunsPerBatch = runCount,
@@ -453,8 +453,8 @@ public class UniformBatchedRandomishOptionChooserTest : BaseEditModeTestFixture
     [TestCase(1, 1, 3)]
     public void GetBatch_CanContinueRunBetweenBatches_OnlyOneOption(int optionCount, int runCount, int maxRepeatsPerRun)
     {
-        Mock<IRandomAdapter> randomAdapter = getPrngWithOptionIndexRandomization(optionCount, runCount, () => 0);
-        UniformBatchedRandomishOptionChooser uniformBatchedRandomishOptionChooser = getRandomishOptionChooser(
+        Mock<IRandomAdapter> randomAdapter = buildRandomAdapter_WithOptionIndexRandomization(optionCount, runCount, () => 0);
+        UniformBatchedRandomishOptionChooser uniformBatchedRandomishOptionChooser = buildRandomishOptionChooser(
             randomAdapter.Object,
             new() {
                 OptionCount = optionCount,
@@ -478,7 +478,7 @@ public class UniformBatchedRandomishOptionChooserTest : BaseEditModeTestFixture
     public void GetOptionIndex_BatchesIndices_OnlyWhenBatchRunsOut()
     {
         int[] testBatch = [1, 0, 2, 2];
-        UniformBatchedRandomishOptionChooser uniformBatchedRandomishOptionChooser = getRandomishOptionChooser(
+        UniformBatchedRandomishOptionChooser uniformBatchedRandomishOptionChooser = buildRandomishOptionChooser(
             config: new() { OptionCount = 3 }
         );
         int numBatchesProvided = 0;
@@ -499,7 +499,7 @@ public class UniformBatchedRandomishOptionChooserTest : BaseEditModeTestFixture
     public void GetOptionIndex_IteratesBatch()
     {
         int[] testBatch = [1, 0, 2, 2];
-        UniformBatchedRandomishOptionChooser uniformBatchedRandomishOptionChooser = getRandomishOptionChooser(
+        UniformBatchedRandomishOptionChooser uniformBatchedRandomishOptionChooser = buildRandomishOptionChooser(
             config: new() { OptionCount = 3 }
         );
         int optionIndex;
@@ -513,14 +513,14 @@ public class UniformBatchedRandomishOptionChooserTest : BaseEditModeTestFixture
 
     #endregion
 
-    private static TestRandomAdapter getRandomAdapter() => new(123456789);    // Hard-coded seed so tests are stable
+    private static TestRandomAdapter buildRandomAdapter() => new(123456789);    // Hard-coded seed so tests are stable
 
-    private static UniformBatchedRandomishOptionChooser getRandomishOptionChooser(
+    private static UniformBatchedRandomishOptionChooser buildRandomishOptionChooser(
         IRandomAdapter? randomAdapter = null,
         UniformBatchedRandomishOptionChooserConfig? config = null
     ) =>
         new(
-            randomAdapter ?? getRandomAdapter(),
+            randomAdapter ?? buildRandomAdapter(),
             config ?? new UniformBatchedRandomishOptionChooserConfig()
         );
 
@@ -531,13 +531,13 @@ public class UniformBatchedRandomishOptionChooserTest : BaseEditModeTestFixture
     /// <item>Thereafter, values provided by <paramref name="optionIndexProvider"/></item>
     /// </list>
     /// </summary>
-    private static Mock<IRandomAdapter> getPrngWithOptionIndexRandomization(int optionCount, int runCount, Func<int> optionIndexProvider)
+    private static Mock<IRandomAdapter> buildRandomAdapter_WithOptionIndexRandomization(int optionCount, int runCount, Func<int> optionIndexProvider)
     {
         Mock<IRandomAdapter> mockedRandomAdapter = new();
 
         // All "other" range calls will just return PRNG-generated values
 #pragma warning disable CA1859 // Use concrete types when possible for improved performance; justification: var must be interface type to use default interface methods
-        IRandomAdapter randomAdapter = getRandomAdapter();
+        IRandomAdapter randomAdapter = buildRandomAdapter();
 #pragma warning restore CA1859 // Use concrete types when possible for improved performance
         _ = mockedRandomAdapter.Setup(x => x.Range(It.IsAny<int>(), It.IsAny<int>()))
             .Returns<int, int>(randomAdapter.Range);

@@ -9,7 +9,7 @@ public class ToggleTriggerTest : BaseEditModeTestFixture
     [Test]
     public void CanToggle()
     {
-        ToggleTrigger trigger = getToggleTrigger();
+        ToggleTrigger trigger = buildToggleTrigger();
 
         trigger.TurnOn();
         Assert.That(trigger.IsConditionMet(), Is.True);
@@ -24,7 +24,7 @@ public class ToggleTriggerTest : BaseEditModeTestFixture
     [Test]
     public void TogglingRaisesCorrectEvent()
     {
-        ToggleTrigger trigger = getToggleTrigger();
+        ToggleTrigger trigger = buildToggleTrigger();
         int numFalseTriggers = 0, numTrueTriggers = 0;
         trigger.BecameFalse.AddListener(() => ++numFalseTriggers);
         trigger.BecameTrue.AddListener(() => ++numTrueTriggers);
@@ -45,7 +45,7 @@ public class ToggleTriggerTest : BaseEditModeTestFixture
     [Test]
     public void RepeatedToggleDoesNotRaiseEvent()
     {
-        ToggleTrigger trigger = getToggleTrigger();
+        ToggleTrigger trigger = buildToggleTrigger();
         int numFalseTriggers = 0, numTrueTriggers = 0;
         trigger.BecameFalse.AddListener(() => ++numFalseTriggers);
         trigger.BecameTrue.AddListener(() => ++numTrueTriggers);
@@ -72,7 +72,7 @@ public class ToggleTriggerTest : BaseEditModeTestFixture
     [Test]
     public void RepeatedToggleRaisesStillEvent()
     {
-        ToggleTrigger trigger = getToggleTrigger();
+        ToggleTrigger trigger = buildToggleTrigger();
         int numFalseTriggers = 0, numTrueTriggers = 0;
         trigger.StillFalse.AddListener(() => ++numFalseTriggers);
         trigger.StillTrue.AddListener(() => ++numTrueTriggers);
@@ -96,5 +96,5 @@ public class ToggleTriggerTest : BaseEditModeTestFixture
         Assert.That(numTrueTriggers, Is.EqualTo(1));
     }
 
-    private static ToggleTrigger getToggleTrigger() => new GameObject().AddComponent<ToggleTrigger>();
+    private static ToggleTrigger buildToggleTrigger() => new GameObject(nameof(ToggleTriggerTest)).AddComponent<ToggleTrigger>();
 }

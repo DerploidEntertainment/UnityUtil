@@ -84,7 +84,7 @@ public class LoggerConfigurationExtensionsTests
             .WriteTo.Unity(new JsonFormatter(), unityLogger.Object)
             .CreateLogger();
 
-        string expectedJsonRegex = getExpectedJsonRegex(
+        string expectedJsonRegex = buildExpectedJsonRegex(
             @"What up, \{Name\}\?",
             logPropertyRegexes: new Dictionary<string, object> {
                 { "Name", "dawg" },
@@ -119,7 +119,7 @@ public class LoggerConfigurationExtensionsTests
             })
             .CreateLogger();
 
-        string expectedJsonRegex = getExpectedJsonRegex(@"What up\?");
+        string expectedJsonRegex = buildExpectedJsonRegex(@"What up\?");
 
         // ACT
         logger.Information(MSG);
@@ -274,7 +274,7 @@ public class LoggerConfigurationExtensionsTests
         );
     }
 
-    private static string getExpectedJsonRegex(
+    private static string buildExpectedJsonRegex(
         string msgTemplateRegex,
         LogEventLevel logEventLevel = LogEventLevel.Information,
         Dictionary<string, object>? logPropertyRegexes = null

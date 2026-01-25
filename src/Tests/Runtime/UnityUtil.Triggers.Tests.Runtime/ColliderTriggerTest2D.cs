@@ -15,8 +15,8 @@ public class ColliderTriggerTest2D : BasePlayModeTestFixture
     public IEnumerator TriggerEnterCanTrigger()
     {
         int numTriggers = 0;
-        ColliderEnterTrigger2D trigger = getTriggerObject<ColliderEnterTrigger2D>(isTrigger: true, () => ++numTriggers);
-        Collider2D testCollider = getCollidingObject();
+        ColliderEnterTrigger2D trigger = buildTriggerObject<ColliderEnterTrigger2D>(isTrigger: true, () => ++numTriggers);
+        Collider2D testCollider = buildCollidingObject();
         Rigidbody2D collidingRb = testCollider.GetComponent<Rigidbody2D>();
 
         // Position test object near trigger
@@ -34,8 +34,8 @@ public class ColliderTriggerTest2D : BasePlayModeTestFixture
     public IEnumerator CollisionCanTrigger()
     {
         int numTriggers = 0;
-        _ = getTriggerObject<ColliderEnterTrigger2D>(isTrigger: false, () => ++numTriggers);
-        Collider2D testCollider = getCollidingObject();
+        _ = buildTriggerObject<ColliderEnterTrigger2D>(isTrigger: false, () => ++numTriggers);
+        Collider2D testCollider = buildCollidingObject();
         Rigidbody2D collidingRb = testCollider.GetComponent<Rigidbody2D>();
 
         // Position test object near trigger-Collider2D
@@ -56,8 +56,8 @@ public class ColliderTriggerTest2D : BasePlayModeTestFixture
     public IEnumerator TriggerExitCanTrigger()
     {
         int numTriggers = 0;
-        ColliderExitTrigger2D trigger = getTriggerObject<ColliderExitTrigger2D>(isTrigger: true, () => ++numTriggers);
-        Collider2D testCollider = getCollidingObject();
+        ColliderExitTrigger2D trigger = buildTriggerObject<ColliderExitTrigger2D>(isTrigger: true, () => ++numTriggers);
+        Collider2D testCollider = buildCollidingObject();
         Rigidbody2D collidingRb = testCollider.GetComponent<Rigidbody2D>();
 
         // Position test object inside trigger
@@ -75,8 +75,8 @@ public class ColliderTriggerTest2D : BasePlayModeTestFixture
     public IEnumerator CollisionStopCanTrigger()
     {
         int numTriggers = 0;
-        _ = getTriggerObject<ColliderExitTrigger2D>(isTrigger: false, () => ++numTriggers);
-        Collider2D testCollider = getCollidingObject();
+        _ = buildTriggerObject<ColliderExitTrigger2D>(isTrigger: false, () => ++numTriggers);
+        Collider2D testCollider = buildCollidingObject();
         Rigidbody2D collidingRb = testCollider.GetComponent<Rigidbody2D>();
 
         // Position test object near trigger-Collider2D (not directly above)
@@ -97,8 +97,8 @@ public class ColliderTriggerTest2D : BasePlayModeTestFixture
     public IEnumerator CanFilterWithWhiteList()
     {
         int numTriggers = 0;
-        ColliderEnterTrigger2D trigger = getTriggerObject<ColliderEnterTrigger2D>(isTrigger: true, () => ++numTriggers, "test");
-        Collider2D testCollider = getCollidingObject();
+        ColliderEnterTrigger2D trigger = buildTriggerObject<ColliderEnterTrigger2D>(isTrigger: true, () => ++numTriggers, "test");
+        Collider2D testCollider = buildCollidingObject();
         Rigidbody2D collidingRb = testCollider.GetComponent<Rigidbody2D>();
         collidingRb.tag = "not-test";
 
@@ -126,8 +126,8 @@ public class ColliderTriggerTest2D : BasePlayModeTestFixture
     public IEnumerator CanFilterWithBlackList()
     {
         int numTriggers = 0;
-        ColliderEnterTrigger2D trigger = getTriggerObject<ColliderEnterTrigger2D>(isTrigger: true, () => ++numTriggers, "test", filterIsBlacklist: true);
-        Collider2D testCollider = getCollidingObject();
+        ColliderEnterTrigger2D trigger = buildTriggerObject<ColliderEnterTrigger2D>(isTrigger: true, () => ++numTriggers, "test", filterIsBlacklist: true);
+        Collider2D testCollider = buildCollidingObject();
         Rigidbody2D collidingRb = testCollider.GetComponent<Rigidbody2D>();
         collidingRb.tag = "not-test";
 
@@ -155,8 +155,8 @@ public class ColliderTriggerTest2D : BasePlayModeTestFixture
     public IEnumerator NoRigidbodyTriggerEnterCanTrigger()
     {
         int numTriggers = 0;
-        ColliderEnterTrigger2D trigger = getTriggerObject<ColliderEnterTrigger2D>(isTrigger: true, () => ++numTriggers);
-        Collider2D testCollider = getCollidingObject(hasRigidbody: false);
+        ColliderEnterTrigger2D trigger = buildTriggerObject<ColliderEnterTrigger2D>(isTrigger: true, () => ++numTriggers);
+        Collider2D testCollider = buildCollidingObject(hasRigidbody: false);
 
         // Position test object near trigger
         testCollider.transform.position = new(testCollider.transform.position.x, 3f);
@@ -173,8 +173,8 @@ public class ColliderTriggerTest2D : BasePlayModeTestFixture
     public IEnumerator NoRigidbodyCollisionCanTrigger()
     {
         int numTriggers = 0;
-        _ = getTriggerObject<ColliderEnterTrigger2D>(isTrigger: false, () => ++numTriggers, useGravity: true);
-        Collider2D testCollider = getCollidingObject(hasRigidbody: false);
+        _ = buildTriggerObject<ColliderEnterTrigger2D>(isTrigger: false, () => ++numTriggers, useGravity: true);
+        Collider2D testCollider = buildCollidingObject(hasRigidbody: false);
 
         // Position test object below trigger-Collider2D
         testCollider.transform.position = new(testCollider.transform.position.x, -3f);
@@ -194,8 +194,8 @@ public class ColliderTriggerTest2D : BasePlayModeTestFixture
     public IEnumerator NoRigidbodyTriggersWhenBlackListed()
     {
         int numTriggers = 0;
-        ColliderEnterTrigger2D trigger = getTriggerObject<ColliderEnterTrigger2D>(isTrigger: true, () => ++numTriggers, "test", filterIsBlacklist: true);
-        Collider2D testCollider = getCollidingObject(hasRigidbody: false);
+        ColliderEnterTrigger2D trigger = buildTriggerObject<ColliderEnterTrigger2D>(isTrigger: true, () => ++numTriggers, "test", filterIsBlacklist: true);
+        Collider2D testCollider = buildCollidingObject(hasRigidbody: false);
         testCollider.tag = "test";
 
         // Position test object near trigger
@@ -212,7 +212,7 @@ public class ColliderTriggerTest2D : BasePlayModeTestFixture
     private static float s_currentPosX = 0f;
     private const float TEST_DELTA_X = 5f;
 
-    private static T getTriggerObject<T>(
+    private static T buildTriggerObject<T>(
         bool isTrigger,
         UnityAction? listener = null,
         string? tagFilter = null,
@@ -220,7 +220,7 @@ public class ColliderTriggerTest2D : BasePlayModeTestFixture
         bool useGravity = false
     ) where T : ColliderTriggerBase2D
     {
-        var obj = new GameObject("test-trigger");
+        var obj = new GameObject(nameof(ColliderTriggerTest2D));
 
         // Scene is only reset once per test run, so make sure trigger objects don't bump into each other
         // by shifting the objects for each test by a little bit.
@@ -242,7 +242,7 @@ public class ColliderTriggerTest2D : BasePlayModeTestFixture
         return trigger;
     }
 
-    private static Collider2D getCollidingObject(bool hasRigidbody = true)
+    private static Collider2D buildCollidingObject(bool hasRigidbody = true)
     {
         var obj = new GameObject($"test-collider");
         obj.transform.position = new(s_currentPosX, 0f);

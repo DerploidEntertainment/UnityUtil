@@ -9,8 +9,8 @@ public class AndTriggerTest : BaseEditModeTestFixture
     [Test]
     public void SetsConditionCorrectly_1Condition()
     {
-        MockConditionalTrigger condition = getTrigger();
-        AndTrigger andTrigger = getAndTrigger(condition);
+        MockConditionalTrigger condition = buildTrigger();
+        AndTrigger andTrigger = buildAndTrigger(condition);
 
         condition.State = false;
         Assert.That(andTrigger.IsConditionMet(), Is.False);
@@ -22,9 +22,9 @@ public class AndTriggerTest : BaseEditModeTestFixture
     [Test]
     public void SetsConditionCorrectly_2Conditions()
     {
-        MockConditionalTrigger condition0 = getTrigger();
-        MockConditionalTrigger condition1 = getTrigger();
-        AndTrigger andTrigger = getAndTrigger(condition0, condition1);
+        MockConditionalTrigger condition0 = buildTrigger();
+        MockConditionalTrigger condition1 = buildTrigger();
+        AndTrigger andTrigger = buildAndTrigger(condition0, condition1);
 
         condition0.State = false;
         condition1.State = false;
@@ -47,9 +47,9 @@ public class AndTriggerTest : BaseEditModeTestFixture
     public void CorrectlyRaises_NoEvents()
     {
         // Arrange
-        MockConditionalTrigger condition0 = getTrigger(); condition0.State = false;
-        MockConditionalTrigger condition1 = getTrigger(); condition1.State = false;
-        AndTrigger andTrigger = getAndTrigger(condition0, condition1);
+        MockConditionalTrigger condition0 = buildTrigger(); condition0.State = false;
+        MockConditionalTrigger condition1 = buildTrigger(); condition1.State = false;
+        AndTrigger andTrigger = buildAndTrigger(condition0, condition1);
         andTrigger.RaiseBecameEvents = false;
         andTrigger.RaiseStillEvents = false;
         var andTriggerWrapper = new TestConditionalTriggerWrapper<AndTrigger>(andTrigger);
@@ -107,9 +107,9 @@ public class AndTriggerTest : BaseEditModeTestFixture
     public void CorrectlyRaises_BecameEvents()
     {
         // Arrange
-        MockConditionalTrigger condition0 = getTrigger(); condition0.State = false;
-        MockConditionalTrigger condition1 = getTrigger(); condition1.State = false;
-        AndTrigger andTrigger = getAndTrigger(condition0, condition1);
+        MockConditionalTrigger condition0 = buildTrigger(); condition0.State = false;
+        MockConditionalTrigger condition1 = buildTrigger(); condition1.State = false;
+        AndTrigger andTrigger = buildAndTrigger(condition0, condition1);
         andTrigger.RaiseBecameEvents = true;
         andTrigger.RaiseStillEvents = false;
         var andTriggerWrapper = new TestConditionalTriggerWrapper<AndTrigger>(andTrigger);
@@ -173,9 +173,9 @@ public class AndTriggerTest : BaseEditModeTestFixture
     public void CorrectlyRaises_StillEvents()
     {
         // Arrange
-        MockConditionalTrigger condition0 = getTrigger(); condition0.State = false;
-        MockConditionalTrigger condition1 = getTrigger(); condition1.State = false;
-        AndTrigger andTrigger = getAndTrigger(condition0, condition1);
+        MockConditionalTrigger condition0 = buildTrigger(); condition0.State = false;
+        MockConditionalTrigger condition1 = buildTrigger(); condition1.State = false;
+        AndTrigger andTrigger = buildAndTrigger(condition0, condition1);
         andTrigger.RaiseBecameEvents = false;
         andTrigger.RaiseStillEvents = true;
         var andTriggerWrapper = new TestConditionalTriggerWrapper<AndTrigger>(andTrigger);
@@ -239,9 +239,9 @@ public class AndTriggerTest : BaseEditModeTestFixture
     public void CorrectlyRaises_AllEvents()
     {
         // Arrange
-        MockConditionalTrigger condition0 = getTrigger(); condition0.State = false;
-        MockConditionalTrigger condition1 = getTrigger(); condition1.State = false;
-        AndTrigger andTrigger = getAndTrigger(condition0, condition1);
+        MockConditionalTrigger condition0 = buildTrigger(); condition0.State = false;
+        MockConditionalTrigger condition1 = buildTrigger(); condition1.State = false;
+        AndTrigger andTrigger = buildAndTrigger(condition0, condition1);
         andTrigger.RaiseBecameEvents = true;
         andTrigger.RaiseStillEvents = true;
         var andTriggerWrapper = new TestConditionalTriggerWrapper<AndTrigger>(andTrigger);
@@ -301,16 +301,17 @@ public class AndTriggerTest : BaseEditModeTestFixture
         andTriggerWrapper.AssertTriggerCounts(2, 2, 1, 4);
     }
 
-    private static MockConditionalTrigger getTrigger(bool state = false)
+    private static MockConditionalTrigger buildTrigger(bool state = false)
     {
-        MockConditionalTrigger trigger = new GameObject().AddComponent<MockConditionalTrigger>();
+        MockConditionalTrigger trigger = new GameObject(nameof(AndTriggerTest)).AddComponent<MockConditionalTrigger>();
         trigger.State = state;
 
         return trigger;
     }
-    private static AndTrigger getAndTrigger(params ConditionalTrigger[] conditions)
+
+    private static AndTrigger buildAndTrigger(params ConditionalTrigger[] conditions)
     {
-        AndTrigger trigger = new GameObject().AddComponent<AndTrigger>();
+        AndTrigger trigger = new GameObject(nameof(AndTriggerTest)).AddComponent<AndTrigger>();
         trigger.RaiseBecameEvents = true;
         trigger.RaiseStillEvents = true;
 

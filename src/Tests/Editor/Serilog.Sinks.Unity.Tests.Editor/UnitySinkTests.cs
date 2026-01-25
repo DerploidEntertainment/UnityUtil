@@ -34,7 +34,7 @@ public class UnitySinkTests : BaseEditModeTestFixture
             ]
         );
 
-        Regex expectedRegex = getExpectedJsonRegex(
+        Regex expectedRegex = buildExpectedJsonRegex(
             @"What up, \{Name\}\?",
             logPropertyRegexes: new Dictionary<string, string> {
                 { "Name", "dawg" },
@@ -60,7 +60,7 @@ public class UnitySinkTests : BaseEditModeTestFixture
         // ARRANGE
         var unitySink = new UnitySink(new JsonFormatter());
         var logEvent = new LogEvent(DateTimeOffset.UtcNow, logEventLevel, exception: null, new MessageTemplate("What up, {Name}?", tokens: []), []);
-        Regex expectedRegex = getExpectedJsonRegex(@"What up, \{Name\}\?", logEventLevel);
+        Regex expectedRegex = buildExpectedJsonRegex(@"What up, \{Name\}\?", logEventLevel);
 
         // ACT / ASSERT
         EditModeTestHelpers.ExpectLog(expectedLogType, expectedRegex);
@@ -83,7 +83,7 @@ public class UnitySinkTests : BaseEditModeTestFixture
             ]
         );
 
-        Regex expectedRegex = getExpectedJsonRegex(
+        Regex expectedRegex = buildExpectedJsonRegex(
             @"What up, \{Name\}\?",
             logPropertyRegexes: new Dictionary<string, string> {
                 { "Name", "dawg" },
@@ -123,7 +123,7 @@ public class UnitySinkTests : BaseEditModeTestFixture
             logPropertyRegexes.Add("Name", "dawg");
 
         string msgTemplateRegex = addLogEventProperty ? @"What up, \{Name\}\?" : "What up";
-        Regex expectedRegex = getExpectedJsonRegex(msgTemplateRegex, tagRegex: TAG, logPropertyRegexes: logPropertyRegexes);
+        Regex expectedRegex = buildExpectedJsonRegex(msgTemplateRegex, tagRegex: TAG, logPropertyRegexes: logPropertyRegexes);
 
         // ACT / ASSERT
         EditModeTestHelpers.ExpectLog(LogType.Log, expectedRegex);
@@ -160,7 +160,7 @@ public class UnitySinkTests : BaseEditModeTestFixture
             logPropertyRegexes.Add("Name", "dawg");
 
         string msgTemplateRegex = addLogEventProperty ? @"What up, \{Name\}\?" : "What up";
-        Regex expectedRegex = getExpectedJsonRegex(msgTemplateRegex, logPropertyRegexes: logPropertyRegexes);
+        Regex expectedRegex = buildExpectedJsonRegex(msgTemplateRegex, logPropertyRegexes: logPropertyRegexes);
 
         // ACT / ASSERT
         EditModeTestHelpers.ExpectLog(LogType.Log, expectedRegex);
@@ -206,7 +206,7 @@ public class UnitySinkTests : BaseEditModeTestFixture
             logPropertyRegexes.Add("Name", "dawg");
 
         string msgTemplateRegex = addLogEventProperty ? @"What up, \{Name\}\?" : "What up";
-        Regex expectedRegex = getExpectedJsonRegex(msgTemplateRegex, logPropertyRegexes: logPropertyRegexes);
+        Regex expectedRegex = buildExpectedJsonRegex(msgTemplateRegex, logPropertyRegexes: logPropertyRegexes);
 
         // ACT / ASSERT
         EditModeTestHelpers.ExpectLog(LogType.Log, expectedRegex);
@@ -230,7 +230,7 @@ public class UnitySinkTests : BaseEditModeTestFixture
             ]
         );
 
-        Regex expectedRegex = getExpectedJsonRegex(
+        Regex expectedRegex = buildExpectedJsonRegex(
             @"What up, \{Name\}\?",
             logPropertyRegexes: new Dictionary<string, string> {
                 { "Name", "dawg" },
@@ -244,7 +244,7 @@ public class UnitySinkTests : BaseEditModeTestFixture
         await Task.Run(() => unitySink.Emit(logEvent));
     }
 
-    private static Regex getExpectedJsonRegex(
+    private static Regex buildExpectedJsonRegex(
         string msgTemplateRegex,
         LogEventLevel logEventLevel = LogEventLevel.Information,
         string? tagRegex = null,

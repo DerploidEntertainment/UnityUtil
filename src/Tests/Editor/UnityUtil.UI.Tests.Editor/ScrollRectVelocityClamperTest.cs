@@ -13,7 +13,7 @@ public class ScrollRectVelocityClamperTest : BaseEditModeTestFixture
     public void ClampsPositiveVelocities()
     {
         Vector2 vClamped;
-        ScrollRectVelocityClamper clamper = getScrollRectVelocityClamper();
+        ScrollRectVelocityClamper clamper = buildScrollRectVelocityClamper();
         clamper.MinVelocityMagnitude = new Vector2Int(5, 5);
 
         vClamped = clamper.GetClampedVelocity(new Vector2(4.9f, 5f));
@@ -37,7 +37,7 @@ public class ScrollRectVelocityClamperTest : BaseEditModeTestFixture
     public void ClampsNegativeVelocities()
     {
         Vector2 vClamped;
-        ScrollRectVelocityClamper clamper = getScrollRectVelocityClamper();
+        ScrollRectVelocityClamper clamper = buildScrollRectVelocityClamper();
         clamper.MinVelocityMagnitude = new Vector2Int(5, 5);
 
         vClamped = clamper.GetClampedVelocity(new Vector2(-4.9f, 5f));
@@ -61,7 +61,7 @@ public class ScrollRectVelocityClamperTest : BaseEditModeTestFixture
     public void DoesNotClampPositiveVelocities()
     {
         Vector2 vClamped;
-        ScrollRectVelocityClamper clamper = getScrollRectVelocityClamper();
+        ScrollRectVelocityClamper clamper = buildScrollRectVelocityClamper();
         clamper.MinVelocityMagnitude = new Vector2Int(5, 5);
 
         vClamped = clamper.GetClampedVelocity(new Vector2(5f, 5f));
@@ -81,7 +81,7 @@ public class ScrollRectVelocityClamperTest : BaseEditModeTestFixture
     public void DoesNotClampNegativeVelocities()
     {
         Vector2 vClamped;
-        ScrollRectVelocityClamper clamper = getScrollRectVelocityClamper();
+        ScrollRectVelocityClamper clamper = buildScrollRectVelocityClamper();
         clamper.MinVelocityMagnitude = new Vector2Int(5, 5);
 
         vClamped = clamper.GetClampedVelocity(new Vector2(-5f, -5f));
@@ -101,7 +101,7 @@ public class ScrollRectVelocityClamperTest : BaseEditModeTestFixture
     public void SupportsDifferentClampValues()
     {
         Vector2 vClamped;
-        ScrollRectVelocityClamper clamper = getScrollRectVelocityClamper();
+        ScrollRectVelocityClamper clamper = buildScrollRectVelocityClamper();
 
         clamper.MinVelocityMagnitude = new Vector2Int(5, 5);
         vClamped = clamper.GetClampedVelocity(new Vector2(4f, 4f));
@@ -124,7 +124,7 @@ public class ScrollRectVelocityClamperTest : BaseEditModeTestFixture
     public void SupportsDifferentXAndYClampValues()
     {
         Vector2 vClamped;
-        ScrollRectVelocityClamper clamper = getScrollRectVelocityClamper();
+        ScrollRectVelocityClamper clamper = buildScrollRectVelocityClamper();
         clamper.MinVelocityMagnitude = new Vector2Int(5, 10);
 
         vClamped = clamper.GetClampedVelocity(new Vector2(6f, 6f));
@@ -136,9 +136,9 @@ public class ScrollRectVelocityClamperTest : BaseEditModeTestFixture
         Assert.That(vClamped.y, Is.Zero);
     }
 
-    private static ScrollRectVelocityClamper getScrollRectVelocityClamper()
+    private static ScrollRectVelocityClamper buildScrollRectVelocityClamper()
     {
-        var clamperObj = new GameObject("test");
+        var clamperObj = new GameObject(nameof(ScrollRectVelocityClamperTest));
         ScrollRectVelocityClamper clamper = clamperObj.AddComponent<ScrollRectVelocityClamper>();
         clamper.Inject(Mock.Of<ILoggerFactory>(), Mock.Of<IRuntimeIdProvider>(), Mock.Of<IUpdater>());
 

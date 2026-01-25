@@ -14,7 +14,7 @@ public class UiBreakpointsTest : BaseEditModeTestFixture
     [Test]
     public void ReturnsCorrect_IsScreenMode()
     {
-        UiBreakpoints uiBreakpoints = getUiBreakpoints();
+        UiBreakpoints uiBreakpoints = buildUiBreakpoints();
 
         assert(BreakpointMode.ScreenWidth, true);
         assert(BreakpointMode.ScreenHeight, true);
@@ -39,7 +39,7 @@ public class UiBreakpointsTest : BaseEditModeTestFixture
     [Test]
     public void ReturnsCorrect_IsSafeAreaMode()
     {
-        UiBreakpoints uiBreakpoints = getUiBreakpoints();
+        UiBreakpoints uiBreakpoints = buildUiBreakpoints();
 
         assert(BreakpointMode.ScreenWidth, false);
         assert(BreakpointMode.ScreenHeight, false);
@@ -64,7 +64,7 @@ public class UiBreakpointsTest : BaseEditModeTestFixture
     [Test]
     public void ReturnsCorrect_IsCameraMode()
     {
-        UiBreakpoints uiBreakpoints = getUiBreakpoints();
+        UiBreakpoints uiBreakpoints = buildUiBreakpoints();
 
         assert(BreakpointMode.ScreenWidth, false);
         assert(BreakpointMode.ScreenHeight, false);
@@ -89,7 +89,7 @@ public class UiBreakpointsTest : BaseEditModeTestFixture
     [Test]
     public void ReturnsCorrect_IsWidthMode()
     {
-        UiBreakpoints uiBreakpoints = getUiBreakpoints();
+        UiBreakpoints uiBreakpoints = buildUiBreakpoints();
 
         assert(BreakpointMode.ScreenWidth, true);
         assert(BreakpointMode.SafeAreaWidth, true);
@@ -113,7 +113,7 @@ public class UiBreakpointsTest : BaseEditModeTestFixture
     [Test]
     public void ReturnsCorrect_IsHeightMode()
     {
-        UiBreakpoints uiBreakpoints = getUiBreakpoints();
+        UiBreakpoints uiBreakpoints = buildUiBreakpoints();
 
         assert(BreakpointMode.ScreenHeight, true);
         assert(BreakpointMode.SafeAreaHeight, true);
@@ -137,7 +137,7 @@ public class UiBreakpointsTest : BaseEditModeTestFixture
     [Test]
     public void ReturnsCorrect_IsAspectRatioMode()
     {
-        UiBreakpoints uiBreakpoints = getUiBreakpoints();
+        UiBreakpoints uiBreakpoints = buildUiBreakpoints();
 
         assert(BreakpointMode.ScreenAspectRatio, true);
         assert(BreakpointMode.SafeAreaAspectRatio, true);
@@ -172,22 +172,22 @@ public class UiBreakpointsTest : BaseEditModeTestFixture
     {
         UiBreakpoint[] breakpoints;
 
-        breakpoints = getBreakpoints(0f);
+        breakpoints = buildBreakpoints(0f);
         Assert.That(UiBreakpoints.AreBreakpointsValid(breakpoints), Is.True);
 
-        breakpoints = getBreakpoints(1f);
+        breakpoints = buildBreakpoints(1f);
         Assert.That(UiBreakpoints.AreBreakpointsValid(breakpoints), Is.True);
 
-        breakpoints = getBreakpoints(5f, 10f);
+        breakpoints = buildBreakpoints(5f, 10f);
         Assert.That(UiBreakpoints.AreBreakpointsValid(breakpoints), Is.True);
 
-        breakpoints = getBreakpoints(0f, 10f, 20f);
+        breakpoints = buildBreakpoints(0f, 10f, 20f);
         Assert.That(UiBreakpoints.AreBreakpointsValid(breakpoints), Is.True);
 
-        breakpoints = getBreakpoints(0f, 1f, 2f);
+        breakpoints = buildBreakpoints(0f, 1f, 2f);
         Assert.That(UiBreakpoints.AreBreakpointsValid(breakpoints), Is.True);
 
-        static UiBreakpoint[] getBreakpoints(params float[] values) => [.. values.Select(val => new UiBreakpoint(val))];
+        static UiBreakpoint[] buildBreakpoints(params float[] values) => [.. values.Select(val => new UiBreakpoint(val))];
     }
 
     [Test]
@@ -196,28 +196,28 @@ public class UiBreakpointsTest : BaseEditModeTestFixture
         UiBreakpoint[] breakpoints;
 
         // Breakpoints not sorted ascending
-        breakpoints = getBreakpoints(1f, 1f);
+        breakpoints = buildBreakpoints(1f, 1f);
         Assert.That(UiBreakpoints.AreBreakpointsValid(breakpoints), Is.False);
 
-        breakpoints = getBreakpoints(1f, 5f, 5f);
+        breakpoints = buildBreakpoints(1f, 5f, 5f);
         Assert.That(UiBreakpoints.AreBreakpointsValid(breakpoints), Is.False);
 
-        breakpoints = getBreakpoints(10f, 5f);
+        breakpoints = buildBreakpoints(10f, 5f);
         Assert.That(UiBreakpoints.AreBreakpointsValid(breakpoints), Is.False);
 
-        breakpoints = getBreakpoints(0f, 20f, 10f);
+        breakpoints = buildBreakpoints(0f, 20f, 10f);
         Assert.That(UiBreakpoints.AreBreakpointsValid(breakpoints), Is.False);
 
-        breakpoints = getBreakpoints(20f, 10f, 0f);
+        breakpoints = buildBreakpoints(20f, 10f, 0f);
         Assert.That(UiBreakpoints.AreBreakpointsValid(breakpoints), Is.False);
 
-        breakpoints = getBreakpoints(0f, 2f, 1f);
+        breakpoints = buildBreakpoints(0f, 2f, 1f);
         Assert.That(UiBreakpoints.AreBreakpointsValid(breakpoints), Is.False);
 
-        breakpoints = getBreakpoints(2f, 1f, 0f);
+        breakpoints = buildBreakpoints(2f, 1f, 0f);
         Assert.That(UiBreakpoints.AreBreakpointsValid(breakpoints), Is.False);
 
-        static UiBreakpoint[] getBreakpoints(params float[] values) => [.. values.Select(val => new UiBreakpoint(val))];
+        static UiBreakpoint[] buildBreakpoints(params float[] values) => [.. values.Select(val => new UiBreakpoint(val))];
     }
 
     [Test]
@@ -251,7 +251,7 @@ public class UiBreakpointsTest : BaseEditModeTestFixture
     [Test]
     public void CannotMatchNegativeValue()
     {
-        UiBreakpoints uiBreakpoints = getUiBreakpoints();
+        UiBreakpoints uiBreakpoints = buildUiBreakpoints();
 
         Assert.DoesNotThrow(() => uiBreakpoints.InvokeMatchingBreakpoints(-1f));
         Assert.DoesNotThrow(() => uiBreakpoints.InvokeMatchingBreakpoints(-2f));
@@ -261,7 +261,7 @@ public class UiBreakpointsTest : BaseEditModeTestFixture
     public void NothingHappens_NoBreakpoints()
     {
         bool noMatchRaised = false;
-        UiBreakpoints uiBreakpoints = getUiBreakpoints();
+        UiBreakpoints uiBreakpoints = buildUiBreakpoints();
         uiBreakpoints.NoBreakpointMatched.AddListener(() => noMatchRaised = true);
 
         Assert.DoesNotThrow(() => uiBreakpoints.InvokeMatchingBreakpoints(0f));
@@ -284,7 +284,7 @@ public class UiBreakpointsTest : BaseEditModeTestFixture
         UiBreakpoint[] breakpoints = [breakpoint0, breakpoint1];
 
         // ACT
-        UiBreakpoints uiBreakpoints = getUiBreakpoints(matchMode: BreakpointMatchMode.AnyEqualOrGreater, noMatchAction: noMatchAction, breakpoints: breakpoints);
+        UiBreakpoints uiBreakpoints = buildUiBreakpoints(matchMode: BreakpointMatchMode.AnyEqualOrGreater, noMatchAction: noMatchAction, breakpoints: breakpoints);
         uiBreakpoints.InvokeMatchingBreakpoints(1f);
 
         // ASSERT
@@ -306,7 +306,7 @@ public class UiBreakpointsTest : BaseEditModeTestFixture
         UiBreakpoint[] breakpoints = [breakpoint];
 
         // ACT
-        UiBreakpoints uiBreakpoints = getUiBreakpoints(matchMode: BreakpointMatchMode.AnyEqualOrGreater, noMatchAction: noMatchAction, breakpoints: breakpoints);
+        UiBreakpoints uiBreakpoints = buildUiBreakpoints(matchMode: BreakpointMatchMode.AnyEqualOrGreater, noMatchAction: noMatchAction, breakpoints: breakpoints);
         uiBreakpoints.InvokeMatchingBreakpoints(0f);
 
         // ASSERT
@@ -329,13 +329,13 @@ public class UiBreakpointsTest : BaseEditModeTestFixture
         UiBreakpoint[] breakpoints = [breakpoint];
 
         // ACT/ASSERT - AnyEqualOrGreater
-        uiBreakpoints = getUiBreakpoints(matchMode: BreakpointMatchMode.AnyEqualOrGreater, noMatchAction: noMatchAction, breakpoints: breakpoints);
+        uiBreakpoints = buildUiBreakpoints(matchMode: BreakpointMatchMode.AnyEqualOrGreater, noMatchAction: noMatchAction, breakpoints: breakpoints);
         uiBreakpoints.InvokeMatchingBreakpoints(1f);
         Assert.That(matchRaised, Is.False);
         Assert.That(noMatchCount, Is.EqualTo(1));
 
         // ACT/ASSERT - MinEqualOrGreater
-        uiBreakpoints = getUiBreakpoints(matchMode: BreakpointMatchMode.AnyEqualOrGreater, noMatchAction: noMatchAction, breakpoints: breakpoints);
+        uiBreakpoints = buildUiBreakpoints(matchMode: BreakpointMatchMode.AnyEqualOrGreater, noMatchAction: noMatchAction, breakpoints: breakpoints);
         uiBreakpoints.InvokeMatchingBreakpoints(1f);
         Assert.That(matchRaised, Is.False);
         Assert.That(noMatchCount, Is.EqualTo(2));
@@ -356,13 +356,13 @@ public class UiBreakpointsTest : BaseEditModeTestFixture
         UiBreakpoint[] breakpoints = [breakpoint];
 
         // ACT/ASSERT - AnyEqualOrLess
-        uiBreakpoints = getUiBreakpoints(matchMode: BreakpointMatchMode.AnyEqualOrLess, noMatchAction: noMatchAction, breakpoints: breakpoints);
+        uiBreakpoints = buildUiBreakpoints(matchMode: BreakpointMatchMode.AnyEqualOrLess, noMatchAction: noMatchAction, breakpoints: breakpoints);
         uiBreakpoints.InvokeMatchingBreakpoints(0f);
         Assert.That(matchRaised, Is.False);
         Assert.That(noMatchCount, Is.EqualTo(1));
 
         // ACT/ASSERT - MaxEqualOrLess
-        uiBreakpoints = getUiBreakpoints(matchMode: BreakpointMatchMode.MaxEqualOrLess, noMatchAction: noMatchAction, breakpoints: breakpoints);
+        uiBreakpoints = buildUiBreakpoints(matchMode: BreakpointMatchMode.MaxEqualOrLess, noMatchAction: noMatchAction, breakpoints: breakpoints);
         uiBreakpoints.InvokeMatchingBreakpoints(0f);
         Assert.That(matchRaised, Is.False);
         Assert.That(noMatchCount, Is.EqualTo(2));
@@ -379,7 +379,7 @@ public class UiBreakpointsTest : BaseEditModeTestFixture
         UiBreakpoint[] breakpoints = [new UiBreakpoint(0f)];
 
         // ACT
-        UiBreakpoints uiBreakpoints = getUiBreakpoints(noMatchAction: () => noMatchRaised = true, breakpoints: breakpoints);
+        UiBreakpoints uiBreakpoints = buildUiBreakpoints(noMatchAction: () => noMatchRaised = true, breakpoints: breakpoints);
         uiBreakpoints.InvokeMatchingBreakpoints(0f);
 
         // ASSERT
@@ -397,22 +397,22 @@ public class UiBreakpointsTest : BaseEditModeTestFixture
         UiBreakpoint[] breakpoints = [breakpoint];
 
         // ACT/ASSERT - AnyEqualOrGreater - Greater
-        uiBreakpoints = getUiBreakpoints(matchMode: BreakpointMatchMode.AnyEqualOrGreater, breakpoints: breakpoints);
+        uiBreakpoints = buildUiBreakpoints(matchMode: BreakpointMatchMode.AnyEqualOrGreater, breakpoints: breakpoints);
         uiBreakpoints.InvokeMatchingBreakpoints(0f);
         Assert.That(matchCount, Is.EqualTo(1));
 
         // ACT/ASSERT - AnyEqualOrGreater - Equal
-        uiBreakpoints = getUiBreakpoints(matchMode: BreakpointMatchMode.AnyEqualOrGreater, breakpoints: breakpoints);
+        uiBreakpoints = buildUiBreakpoints(matchMode: BreakpointMatchMode.AnyEqualOrGreater, breakpoints: breakpoints);
         uiBreakpoints.InvokeMatchingBreakpoints(0.5f);
         Assert.That(matchCount, Is.EqualTo(2));
 
         // ACT/ASSERT - MinEqualOrGreater - Greater
-        uiBreakpoints = getUiBreakpoints(matchMode: BreakpointMatchMode.MinEqualOrGreater, breakpoints: breakpoints);
+        uiBreakpoints = buildUiBreakpoints(matchMode: BreakpointMatchMode.MinEqualOrGreater, breakpoints: breakpoints);
         uiBreakpoints.InvokeMatchingBreakpoints(0f);
         Assert.That(matchCount, Is.EqualTo(3));
 
         // ACT/ASSERT - MinEqualOrGreater - Equal
-        uiBreakpoints = getUiBreakpoints(matchMode: BreakpointMatchMode.MinEqualOrGreater, breakpoints: breakpoints);
+        uiBreakpoints = buildUiBreakpoints(matchMode: BreakpointMatchMode.MinEqualOrGreater, breakpoints: breakpoints);
         uiBreakpoints.InvokeMatchingBreakpoints(0.5f);
         Assert.That(matchCount, Is.EqualTo(4));
     }
@@ -428,22 +428,22 @@ public class UiBreakpointsTest : BaseEditModeTestFixture
         UiBreakpoint[] breakpoints = [breakpoint];
 
         // ACT/ASSERT - AnyEqualOrLess - Less
-        uiBreakpoints = getUiBreakpoints(matchMode: BreakpointMatchMode.AnyEqualOrLess, breakpoints: breakpoints);
+        uiBreakpoints = buildUiBreakpoints(matchMode: BreakpointMatchMode.AnyEqualOrLess, breakpoints: breakpoints);
         uiBreakpoints.InvokeMatchingBreakpoints(1f);
         Assert.That(matchCount, Is.EqualTo(1));
 
         // ACT/ASSERT - AnyEqualOrLess - Equal
-        uiBreakpoints = getUiBreakpoints(matchMode: BreakpointMatchMode.AnyEqualOrLess, breakpoints: breakpoints);
+        uiBreakpoints = buildUiBreakpoints(matchMode: BreakpointMatchMode.AnyEqualOrLess, breakpoints: breakpoints);
         uiBreakpoints.InvokeMatchingBreakpoints(0.5f);
         Assert.That(matchCount, Is.EqualTo(2));
 
         // ACT/ASSERT - MaxEqualOrLess - Less
-        uiBreakpoints = getUiBreakpoints(matchMode: BreakpointMatchMode.MaxEqualOrLess, breakpoints: breakpoints);
+        uiBreakpoints = buildUiBreakpoints(matchMode: BreakpointMatchMode.MaxEqualOrLess, breakpoints: breakpoints);
         uiBreakpoints.InvokeMatchingBreakpoints(1f);
         Assert.That(matchCount, Is.EqualTo(3));
 
         // ACT/ASSERT - MaxEqualOrLess - Equal
-        uiBreakpoints = getUiBreakpoints(matchMode: BreakpointMatchMode.MaxEqualOrLess, breakpoints: breakpoints);
+        uiBreakpoints = buildUiBreakpoints(matchMode: BreakpointMatchMode.MaxEqualOrLess, breakpoints: breakpoints);
         uiBreakpoints.InvokeMatchingBreakpoints(0.5f);
         Assert.That(matchCount, Is.EqualTo(4));
     }
@@ -458,7 +458,7 @@ public class UiBreakpointsTest : BaseEditModeTestFixture
             int index = b;
             breakpoints[b].Matched.AddListener(() => ++counts[index]);
         }
-        UiBreakpoints uiBreakpoints = getUiBreakpoints(matchMode: BreakpointMatchMode.AnyEqualOrGreater, breakpoints: breakpoints);
+        UiBreakpoints uiBreakpoints = buildUiBreakpoints(matchMode: BreakpointMatchMode.AnyEqualOrGreater, breakpoints: breakpoints);
 
         // ACT/ASSERT
         uiBreakpoints.InvokeMatchingBreakpoints(0.4f);
@@ -487,7 +487,7 @@ public class UiBreakpointsTest : BaseEditModeTestFixture
             int index = b;
             breakpoints[b].Matched.AddListener(() => ++counts[index]);
         }
-        UiBreakpoints uiBreakpoints = getUiBreakpoints(matchMode: BreakpointMatchMode.MinEqualOrGreater, breakpoints: breakpoints);
+        UiBreakpoints uiBreakpoints = buildUiBreakpoints(matchMode: BreakpointMatchMode.MinEqualOrGreater, breakpoints: breakpoints);
 
         // ACT/ASSERT - MinEqualOrGreater
         uiBreakpoints.InvokeMatchingBreakpoints(0.4f);
@@ -516,7 +516,7 @@ public class UiBreakpointsTest : BaseEditModeTestFixture
             int index = b;
             breakpoints[b].Matched.AddListener(() => ++counts[index]);
         }
-        UiBreakpoints uiBreakpoints = getUiBreakpoints(matchMode: BreakpointMatchMode.AnyEqualOrLess, breakpoints: breakpoints);
+        UiBreakpoints uiBreakpoints = buildUiBreakpoints(matchMode: BreakpointMatchMode.AnyEqualOrLess, breakpoints: breakpoints);
 
         // ACT/ASSERT
         uiBreakpoints.InvokeMatchingBreakpoints(0.6f);
@@ -545,7 +545,7 @@ public class UiBreakpointsTest : BaseEditModeTestFixture
             int index = b;
             breakpoints[b].Matched.AddListener(() => ++counts[index]);
         }
-        UiBreakpoints uiBreakpoints = getUiBreakpoints(matchMode: BreakpointMatchMode.MaxEqualOrLess, breakpoints: breakpoints);
+        UiBreakpoints uiBreakpoints = buildUiBreakpoints(matchMode: BreakpointMatchMode.MaxEqualOrLess, breakpoints: breakpoints);
 
         // ACT/ASSERT - MinEqualOrGreater
         uiBreakpoints.InvokeMatchingBreakpoints(0.6f);
@@ -579,7 +579,7 @@ public class UiBreakpointsTest : BaseEditModeTestFixture
             int index = b;
             breakpoints[b].Matched.AddListener(() => ++counts[index]);
         }
-        UiBreakpoints uiBreakpoints = getUiBreakpoints(matchMode: BreakpointMatchMode.AnyEqualOrGreater, breakpoints: breakpoints);
+        UiBreakpoints uiBreakpoints = buildUiBreakpoints(matchMode: BreakpointMatchMode.AnyEqualOrGreater, breakpoints: breakpoints);
 
         // ACT/ASSERT
         uiBreakpoints.InvokeMatchingBreakpoints(0.3f);
@@ -608,7 +608,7 @@ public class UiBreakpointsTest : BaseEditModeTestFixture
         Assert.That(counts[3], Is.EqualTo(4));
     }
 
-    private static UiBreakpoints getUiBreakpoints(
+    private static UiBreakpoints buildUiBreakpoints(
         BreakpointMode mode = BreakpointMode.SafeAreaAspectRatio,
         BreakpointMatchMode matchMode = BreakpointMatchMode.MaxEqualOrLess,
         UnityAction? noMatchAction = null,
@@ -616,7 +616,7 @@ public class UiBreakpointsTest : BaseEditModeTestFixture
     )
     {
         // Create the instance
-        UiBreakpoints uiBreakpoints = new GameObject().AddComponent<UiBreakpoints>();
+        UiBreakpoints uiBreakpoints = new GameObject(nameof(UiBreakpointsTest)).AddComponent<UiBreakpoints>();
         uiBreakpoints.Inject(new UnityDebugLoggerFactory());
         uiBreakpoints.Mode = mode;
         uiBreakpoints.MatchMode = matchMode;

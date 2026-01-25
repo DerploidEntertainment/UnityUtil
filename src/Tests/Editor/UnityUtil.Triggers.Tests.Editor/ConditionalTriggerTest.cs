@@ -17,7 +17,7 @@ public class ConditionalTriggerTest : BaseEditModeTestFixture
     [Test]
     public void TriggersStateCorrectly()
     {
-        MockConditionalTrigger trigger = getConditionalTrigger();
+        MockConditionalTrigger trigger = buildConditionalTrigger();
         int falseTriggerCount = 0, trueTriggerCount = 0;
         trigger.StillFalse.AddListener(() => ++falseTriggerCount);
         trigger.StillTrue.AddListener(() => ++trueTriggerCount);
@@ -36,7 +36,7 @@ public class ConditionalTriggerTest : BaseEditModeTestFixture
     [Test]
     public void TriggersStateDoesNothingIfTurnedOff()
     {
-        MockConditionalTrigger trigger = getConditionalTrigger();
+        MockConditionalTrigger trigger = buildConditionalTrigger();
         int falseTriggerCount = 0, trueTriggerCount = 0;
         trigger.StillFalse.AddListener(() => ++falseTriggerCount);
         trigger.StillTrue.AddListener(() => ++trueTriggerCount);
@@ -61,6 +61,7 @@ public class ConditionalTriggerTest : BaseEditModeTestFixture
         Assert.That(trueTriggerCount, Is.EqualTo(0));
     }
 
-    private static MockConditionalTrigger getConditionalTrigger() => new GameObject().AddComponent<MockConditionalTrigger>();
+    private static MockConditionalTrigger buildConditionalTrigger() =>
+        new GameObject(nameof(ConditionalTriggerTest)).AddComponent<MockConditionalTrigger>();
 
 }

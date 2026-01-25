@@ -14,7 +14,7 @@
                 Please see https://github.com/manuelroemer/IsExternalInit for more information.
             </remarks>
         </member>
-        <member name="M:UnityUtil.Tests.Editor.Math.UniformBatchedRandomishOptionChooserTest.getPrngWithOptionIndexRandomization(System.Int32,System.Int32,System.Func{System.Int32})">
+        <member name="M:UnityUtil.Tests.Editor.Math.UniformBatchedRandomishOptionChooserTest.buildRandomAdapter_WithOptionIndexRandomization(System.Int32,System.Int32,System.Func{System.Int32})">
             <summary>
             Mock an <see name="IRandomAdapter"/> to return the following "randomish" numbers:
             <list type="number">

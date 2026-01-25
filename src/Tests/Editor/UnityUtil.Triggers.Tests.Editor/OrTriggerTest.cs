@@ -10,8 +10,8 @@ public class OrTriggerTest : BaseEditModeTestFixture
     [Test]
     public void SetsConditionCorrectly_1Condition()
     {
-        MockConditionalTrigger condition = getTrigger();
-        OrTrigger orTrigger = getOrTrigger(condition);
+        MockConditionalTrigger condition = buildTrigger();
+        OrTrigger orTrigger = buildOrTrigger(condition);
 
         condition.State = false;
         Assert.That(orTrigger.IsConditionMet(), Is.False);
@@ -23,9 +23,9 @@ public class OrTriggerTest : BaseEditModeTestFixture
     [Test]
     public void SetsConditionCorrectly_2Conditions()
     {
-        MockConditionalTrigger condition0 = getTrigger();
-        MockConditionalTrigger condition1 = getTrigger();
-        OrTrigger orTrigger = getOrTrigger(condition0, condition1);
+        MockConditionalTrigger condition0 = buildTrigger();
+        MockConditionalTrigger condition1 = buildTrigger();
+        OrTrigger orTrigger = buildOrTrigger(condition0, condition1);
 
         condition0.State = false;
         condition1.State = false;
@@ -48,9 +48,9 @@ public class OrTriggerTest : BaseEditModeTestFixture
     public void CorrectlyRaises_NoEvents()
     {
         // Arrange
-        MockConditionalTrigger condition0 = getTrigger(); condition0.State = false;
-        MockConditionalTrigger condition1 = getTrigger(); condition1.State = false;
-        OrTrigger orTrigger = getOrTrigger(condition0, condition1);
+        MockConditionalTrigger condition0 = buildTrigger(); condition0.State = false;
+        MockConditionalTrigger condition1 = buildTrigger(); condition1.State = false;
+        OrTrigger orTrigger = buildOrTrigger(condition0, condition1);
         orTrigger.RaiseBecameEvents = false;
         orTrigger.RaiseStillEvents = false;
         var orTriggerWrapper = new TestConditionalTriggerWrapper<OrTrigger>(orTrigger);
@@ -108,9 +108,9 @@ public class OrTriggerTest : BaseEditModeTestFixture
     public void CorrectlyRaises_BecameEvents()
     {
         // Arrange
-        MockConditionalTrigger condition0 = getTrigger(); condition0.State = false;
-        MockConditionalTrigger condition1 = getTrigger(); condition1.State = false;
-        OrTrigger orTrigger = getOrTrigger(condition0, condition1);
+        MockConditionalTrigger condition0 = buildTrigger(); condition0.State = false;
+        MockConditionalTrigger condition1 = buildTrigger(); condition1.State = false;
+        OrTrigger orTrigger = buildOrTrigger(condition0, condition1);
         orTrigger.RaiseBecameEvents = true;
         orTrigger.RaiseStillEvents = false;
         var orTriggerWrapper = new TestConditionalTriggerWrapper<OrTrigger>(orTrigger);
@@ -174,9 +174,9 @@ public class OrTriggerTest : BaseEditModeTestFixture
     public void CorrectlyRaises_StillEvents()
     {
         // Arrange
-        MockConditionalTrigger condition0 = getTrigger(); condition0.State = false;
-        MockConditionalTrigger condition1 = getTrigger(); condition1.State = false;
-        OrTrigger orTrigger = getOrTrigger(condition0, condition1);
+        MockConditionalTrigger condition0 = buildTrigger(); condition0.State = false;
+        MockConditionalTrigger condition1 = buildTrigger(); condition1.State = false;
+        OrTrigger orTrigger = buildOrTrigger(condition0, condition1);
         orTrigger.RaiseBecameEvents = false;
         orTrigger.RaiseStillEvents = true;
         var orTriggerWrapper = new TestConditionalTriggerWrapper<OrTrigger>(orTrigger);
@@ -240,9 +240,9 @@ public class OrTriggerTest : BaseEditModeTestFixture
     public void CorrectlyRaises_AllEvents()
     {
         // Arrange
-        MockConditionalTrigger condition0 = getTrigger(); condition0.State = false;
-        MockConditionalTrigger condition1 = getTrigger(); condition1.State = false;
-        OrTrigger orTrigger = getOrTrigger(condition0, condition1);
+        MockConditionalTrigger condition0 = buildTrigger(); condition0.State = false;
+        MockConditionalTrigger condition1 = buildTrigger(); condition1.State = false;
+        OrTrigger orTrigger = buildOrTrigger(condition0, condition1);
         orTrigger.RaiseBecameEvents = true;
         orTrigger.RaiseStillEvents = true;
         var orTriggerWrapper = new TestConditionalTriggerWrapper<OrTrigger>(orTrigger);
@@ -302,16 +302,17 @@ public class OrTriggerTest : BaseEditModeTestFixture
         orTriggerWrapper.AssertTriggerCounts(2, 2, 3, 2);
     }
 
-    private static MockConditionalTrigger getTrigger(bool state = false)
+    private static MockConditionalTrigger buildTrigger(bool state = false)
     {
-        MockConditionalTrigger trigger = new GameObject().AddComponent<MockConditionalTrigger>();
+        MockConditionalTrigger trigger = new GameObject(nameof(OrTriggerTest)).AddComponent<MockConditionalTrigger>();
         trigger.State = state;
 
         return trigger;
     }
-    private static OrTrigger getOrTrigger(params ConditionalTrigger[] conditions)
+
+    private static OrTrigger buildOrTrigger(params ConditionalTrigger[] conditions)
     {
-        OrTrigger trigger = new GameObject().AddComponent<OrTrigger>();
+        OrTrigger trigger = new GameObject(nameof(OrTriggerTest)).AddComponent<OrTrigger>();
         trigger.RaiseBecameEvents = true;
         trigger.RaiseStillEvents = true;
 

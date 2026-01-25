@@ -13,7 +13,7 @@ public class MoreMathTest : BaseEditModeTestFixture
 {
     [Test]
     public void RandomWeightedIndex_Fails_NoWeights() =>
-        Assert.Throws<ArgumentException>(() => MoreMath.RandomWeightedIndex(indexWeights: [], getRandomAdapter()));
+        Assert.Throws<ArgumentException>(() => MoreMath.RandomWeightedIndex(indexWeights: [], buildRandomAdapter()));
 
     [Test]
 
@@ -41,7 +41,7 @@ public class MoreMathTest : BaseEditModeTestFixture
     {
         Debug.Log($"Index weights: {string.Join(',', indexWeights)}");
         _ = Assert.Throws<InvalidOperationException>(() =>
-            MoreMath.RandomWeightedIndex(indexWeights, getRandomAdapter())
+            MoreMath.RandomWeightedIndex(indexWeights, buildRandomAdapter())
         );
     }
 
@@ -80,5 +80,5 @@ public class MoreMathTest : BaseEditModeTestFixture
         Assert.That(index, Is.EqualTo(expectedIndex));
     }
 
-    private static TestRandomAdapter getRandomAdapter() => new(123456789);    // Hard-coded seed so tests are stable
+    private static TestRandomAdapter buildRandomAdapter() => new(123456789);    // Hard-coded seed so tests are stable
 }

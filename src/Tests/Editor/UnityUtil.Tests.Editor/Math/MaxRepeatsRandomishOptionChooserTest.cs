@@ -76,7 +76,7 @@ public class MaxRepeatsRandomishOptionChooserTest : BaseEditModeTestFixture
     public void UseOption_IndexMustBeInRange(int occurenceIndex, float[] optionProbabilities)
     {
         Debug.Log($"Option probabilities: {string.Join(',', optionProbabilities)}");
-        MaxRepeatsRandomishOptionChooser maxRepeatsRandomishOptionChooser = getRandomishOptionChooser(
+        MaxRepeatsRandomishOptionChooser maxRepeatsRandomishOptionChooser = buildRandomishOptionChooser(
             config: new MaxRepeatsRandomishOptionChooserConfig { MaxRepeats = 1, OptionProbabilities = [1f] }
         );
 
@@ -88,7 +88,7 @@ public class MaxRepeatsRandomishOptionChooserTest : BaseEditModeTestFixture
     [Test]
     public void UseOption_IncrementsAndDecrementsCounts()
     {
-        MaxRepeatsRandomishOptionChooser maxRepeatsRandomishOptionChooser = getRandomishOptionChooser(
+        MaxRepeatsRandomishOptionChooser maxRepeatsRandomishOptionChooser = buildRandomishOptionChooser(
             config: new MaxRepeatsRandomishOptionChooserConfig { MaxRepeats = 2, OptionProbabilities = [0.5f, 0.5f] }
         );
 
@@ -117,7 +117,7 @@ public class MaxRepeatsRandomishOptionChooserTest : BaseEditModeTestFixture
     [TestCase(3)]
     public void UseOption_DoesNotIncrementCounts_AboveMaxRepeats(int maxRepeats)
     {
-        MaxRepeatsRandomishOptionChooser maxRepeatsRandomishOptionChooser = getRandomishOptionChooser(
+        MaxRepeatsRandomishOptionChooser maxRepeatsRandomishOptionChooser = buildRandomishOptionChooser(
             config: new MaxRepeatsRandomishOptionChooserConfig { MaxRepeats = maxRepeats, OptionProbabilities = [0.5f, 0.5f] }
         );
 
@@ -140,7 +140,7 @@ public class MaxRepeatsRandomishOptionChooserTest : BaseEditModeTestFixture
     [TestCase(3)]
     public void UseOption_CannotHaveMoreThanMaxRepeatsInRow(int maxRepeats)
     {
-        MaxRepeatsRandomishOptionChooser maxRepeatsRandomishOptionChooser = getRandomishOptionChooser(
+        MaxRepeatsRandomishOptionChooser maxRepeatsRandomishOptionChooser = buildRandomishOptionChooser(
             config: new MaxRepeatsRandomishOptionChooserConfig { MaxRepeats = maxRepeats, OptionProbabilities = [0.5f, 0.5f] }
         );
 
@@ -160,7 +160,7 @@ public class MaxRepeatsRandomishOptionChooserTest : BaseEditModeTestFixture
     public void UseOption_RemovesAndAddsProbability(int maxRepeats)
     {
         MaxRepeatsRandomishOptionChooserConfig config = new() { MaxRepeats = maxRepeats, OptionProbabilities = [0.5f, 0.5f] };
-        MaxRepeatsRandomishOptionChooser maxRepeatsRandomishOptionChooser = getRandomishOptionChooser(
+        MaxRepeatsRandomishOptionChooser maxRepeatsRandomishOptionChooser = buildRandomishOptionChooser(
             config: new MaxRepeatsRandomishOptionChooserConfig { MaxRepeats = maxRepeats, OptionProbabilities = [0.5f, 0.5f] }
         );
 
@@ -183,7 +183,7 @@ public class MaxRepeatsRandomishOptionChooserTest : BaseEditModeTestFixture
     [TestCase(5)]
     public void UseOption_CanReturnSingleOptionForever(int maxRepeats)
     {
-        MaxRepeatsRandomishOptionChooser maxRepeatsRandomishOptionChooser = getRandomishOptionChooser(
+        MaxRepeatsRandomishOptionChooser maxRepeatsRandomishOptionChooser = buildRandomishOptionChooser(
             config: new MaxRepeatsRandomishOptionChooserConfig { MaxRepeats = maxRepeats, OptionProbabilities = [1f] }
         );
 
@@ -197,7 +197,7 @@ public class MaxRepeatsRandomishOptionChooserTest : BaseEditModeTestFixture
     [Test]
     public void UseOption_RemovesOptionsAfterMaxRepeats()
     {
-        MaxRepeatsRandomishOptionChooser maxRepeatsRandomishOptionChooser = getRandomishOptionChooser(
+        MaxRepeatsRandomishOptionChooser maxRepeatsRandomishOptionChooser = buildRandomishOptionChooser(
             config: new MaxRepeatsRandomishOptionChooserConfig { MaxRepeats = 2, OptionProbabilities = [0.5f, 0.5f] }
         );
 
@@ -223,7 +223,7 @@ public class MaxRepeatsRandomishOptionChooserTest : BaseEditModeTestFixture
     [TestCase(5)]
     public void GetOptionIndex_CanReturnSingleOptionForever(int maxRepeats)
     {
-        MaxRepeatsRandomishOptionChooser maxRepeatsRandomishOptionChooser = getRandomishOptionChooser(
+        MaxRepeatsRandomishOptionChooser maxRepeatsRandomishOptionChooser = buildRandomishOptionChooser(
             config: new MaxRepeatsRandomishOptionChooserConfig { MaxRepeats = maxRepeats, OptionProbabilities = [1f] }
         );
 
@@ -244,7 +244,7 @@ public class MaxRepeatsRandomishOptionChooserTest : BaseEditModeTestFixture
         // Uniform distribution, 1 max repeat
         randomAdapter.Invocations.Clear();
         config = new() { MaxRepeats = 1, OptionProbabilities = [0.5f, 0.5f] };
-        randomishOptionChooser = getRandomishOptionChooser(randomAdapter.Object, config);
+        randomishOptionChooser = buildRandomishOptionChooser(randomAdapter.Object, config);
 
         _ = randomishOptionChooser.GetOptionIndex();
         randomAdapter.Verify(x => x.Range(0f, 1.0f), Times.Exactly(1));
@@ -257,7 +257,7 @@ public class MaxRepeatsRandomishOptionChooserTest : BaseEditModeTestFixture
         // Uniform distribution, >1 max repeat
         randomAdapter.Invocations.Clear();
         config = new() { MaxRepeats = 2, OptionProbabilities = [0.5f, 0.5f] };
-        randomishOptionChooser = getRandomishOptionChooser(randomAdapter.Object, config);
+        randomishOptionChooser = buildRandomishOptionChooser(randomAdapter.Object, config);
 
         _ = randomishOptionChooser.GetOptionIndex();
         randomAdapter.Verify(x => x.Range(0f, 1.0f), Times.Exactly(1));
@@ -274,7 +274,7 @@ public class MaxRepeatsRandomishOptionChooserTest : BaseEditModeTestFixture
         // Non-uniform distribution, 1 max repeat
         randomAdapter.Invocations.Clear();
         config = new() { MaxRepeats = 1, OptionProbabilities = [0.75f, 0.25f] };
-        randomishOptionChooser = getRandomishOptionChooser(randomAdapter.Object, config);
+        randomishOptionChooser = buildRandomishOptionChooser(randomAdapter.Object, config);
 
         _ = randomishOptionChooser.GetOptionIndex();
         randomAdapter.Verify(x => x.Range(0f, 1.0f), Times.Exactly(1));
@@ -287,7 +287,7 @@ public class MaxRepeatsRandomishOptionChooserTest : BaseEditModeTestFixture
         // Non-uniform distribution, >1 max repeat
         randomAdapter.Invocations.Clear();
         config = new() { MaxRepeats = 2, OptionProbabilities = [0.75f, 0.25f] };
-        randomishOptionChooser = getRandomishOptionChooser(randomAdapter.Object, config);
+        randomishOptionChooser = buildRandomishOptionChooser(randomAdapter.Object, config);
 
         _ = randomishOptionChooser.GetOptionIndex();
         randomAdapter.Verify(x => x.Range(0f, 1.0f), Times.Exactly(1));
@@ -336,7 +336,7 @@ public class MaxRepeatsRandomishOptionChooserTest : BaseEditModeTestFixture
         Debug.Log($"Index weights: {string.Join(',', optionProbabilities)}");
         IRandomAdapter randomAdapter = Mock.Of<IRandomAdapter>(x => x.Range(0f, It.IsAny<float>()) == randomValue);
         MaxRepeatsRandomishOptionChooserConfig config = new() { MaxRepeats = 1, OptionProbabilities = optionProbabilities };
-        MaxRepeatsRandomishOptionChooser randomishOptionChooser = getRandomishOptionChooser(randomAdapter, config);
+        MaxRepeatsRandomishOptionChooser randomishOptionChooser = buildRandomishOptionChooser(randomAdapter, config);
 
         int index = randomishOptionChooser.GetOptionIndex();
 
@@ -351,7 +351,7 @@ public class MaxRepeatsRandomishOptionChooserTest : BaseEditModeTestFixture
     {
         MaxRepeatsRandomishOptionChooserConfig config = new() { MaxRepeats = maxRepeats, OptionProbabilities = [0.25f, 0.25f, 0.25f, 0.25f] };
         IRandomAdapter randomAdapter = Mock.Of<IRandomAdapter>(x => x.Range(It.IsAny<float>(), It.IsAny<float>()) == 0f);
-        MaxRepeatsRandomishOptionChooser randomishOptionChooser = getRandomishOptionChooser(randomAdapter, config);
+        MaxRepeatsRandomishOptionChooser randomishOptionChooser = buildRandomishOptionChooser(randomAdapter, config);
 
         List<int> chosenIndices = [];
 
@@ -371,7 +371,7 @@ public class MaxRepeatsRandomishOptionChooserTest : BaseEditModeTestFixture
     {
         MaxRepeatsRandomishOptionChooserConfig config = new() { MaxRepeats = maxRepeats, OptionProbabilities = [0.75f, 0.25f] };
         IRandomAdapter randomAdapter = Mock.Of<IRandomAdapter>(x => x.Range(It.IsAny<float>(), It.IsAny<float>()) == 0f);
-        MaxRepeatsRandomishOptionChooser randomishOptionChooser = getRandomishOptionChooser(randomAdapter, config);
+        MaxRepeatsRandomishOptionChooser randomishOptionChooser = buildRandomishOptionChooser(randomAdapter, config);
 
         List<int> chosenIndices = [];
 
@@ -394,7 +394,7 @@ public class MaxRepeatsRandomishOptionChooserTest : BaseEditModeTestFixture
     {
         // ARRANGE
         MaxRepeatsRandomishOptionChooserConfig config = new() { MaxRepeats = maxRepeats, OptionProbabilities = optionProbabilities };
-        MaxRepeatsRandomishOptionChooser randomishOptionChooser = getRandomishOptionChooser(config: config);
+        MaxRepeatsRandomishOptionChooser randomishOptionChooser = buildRandomishOptionChooser(config: config);
         List<int> chosenIndices = [];
 
         // ACT
@@ -424,7 +424,7 @@ public class MaxRepeatsRandomishOptionChooserTest : BaseEditModeTestFixture
     public void GetOptionIndex_RepeatsSingleOptionForever(int maxRepeats)
     {
         MaxRepeatsRandomishOptionChooserConfig config = new() { MaxRepeats = maxRepeats, OptionProbabilities = [1f] };
-        MaxRepeatsRandomishOptionChooser randomishOptionChooser = getRandomishOptionChooser(config: config);
+        MaxRepeatsRandomishOptionChooser randomishOptionChooser = buildRandomishOptionChooser(config: config);
         List<int> chosenIndices = [];
 
         const int NUM_ITERATIONS = 100;
@@ -448,7 +448,7 @@ public class MaxRepeatsRandomishOptionChooserTest : BaseEditModeTestFixture
     {
         // ARRANGE
         MaxRepeatsRandomishOptionChooserConfig config = new() { MaxRepeats = maxRepeats, OptionProbabilities = optionProbabilities };
-        MaxRepeatsRandomishOptionChooser randomishOptionChooser = getRandomishOptionChooser(config: config);
+        MaxRepeatsRandomishOptionChooser randomishOptionChooser = buildRandomishOptionChooser(config: config);
         List<int> chosenIndices = [];
 
         // ACT
@@ -465,14 +465,14 @@ public class MaxRepeatsRandomishOptionChooserTest : BaseEditModeTestFixture
 
 #pragma warning restore CA1861 // Avoid constant arrays as arguments
 
-    private static TestRandomAdapter getRandomAdapter() => new(123456789);    // Hard-coded seed so tests are stable
-    private static MaxRepeatsRandomishOptionChooser getRandomishOptionChooser(
+    private static TestRandomAdapter buildRandomAdapter() => new(123456789);    // Hard-coded seed so tests are stable
+
+    private static MaxRepeatsRandomishOptionChooser buildRandomishOptionChooser(
         IRandomAdapter? randomAdapter = null,
         MaxRepeatsRandomishOptionChooserConfig? config = null
     ) =>
         new(
-            randomAdapter ?? getRandomAdapter(),
+            randomAdapter ?? buildRandomAdapter(),
             config ?? new MaxRepeatsRandomishOptionChooserConfig()
         );
-
 }
