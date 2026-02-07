@@ -35,14 +35,12 @@ public class DependencyInjector : IDisposable
     private ITypeMetadataProvider? _typeMetadataProvider;
     private ILogger<DependencyInjector>? _logger;
 
-    private readonly Dictionary<int, Dictionary<Type, Dictionary<string, Service>>> _services = [];
+    private readonly Dictionary<string, Dictionary<Type, Dictionary<string, Service>>> _services = [];
 
     /// <summary>
     /// This collection is only a field (rather than a local var) so as to reduce allocations in <see cref="getDependeciesOfMethod(string, MethodBase, ParameterInfo[])"/>
     /// </summary>
     private readonly HashSet<(Type type, string? tag)> _injectedTypes = [];
-
-    private bool _recording;
     private readonly HashSet<Type> _cachedResolutionTypes;
     private readonly Dictionary<Type, List<Action<object>>> _compiledInject = [];
     private readonly Dictionary<Type, Func<object>> _compiledConstructors = [];
@@ -144,11 +142,11 @@ public class DependencyInjector : IDisposable
         // Register this service with the provided scene (if one was provided), so that it can be unloaded later if the scene is unloaded
         // Show an error if provided service's type/tag match those of an already registered service
 #pragma warning disable IDE0008 // Use explicit type
-        int sceneHandle = scene.HasValue ? scene.Value.handle : DEFAULT_SCENE_HANDLE;
-        bool sceneAdded = _services.TryGetValue(sceneHandle, out var sceneServices);
+        var scenePath = scene.HasValue ? scene.Value.path : "";
+        bool sceneAdded = _services.TryGetValue(scenePath, out var sceneServices);
         if (!sceneAdded) {
             sceneServices = [];
-            _services.Add(sceneHandle, sceneServices);
+            _services.Add(scenePath, sceneServices);
         }
 
         bool typeAdded = sceneServices.TryGetValue(service.ServiceType, out var typedServices);
@@ -190,19 +188,19 @@ public class DependencyInjector : IDisposable
     /// Toggles recording how many times service <see cref="Type"/>s are resolved at runtime, for optimization purposes.
     /// </summary>
     public bool RecordingResolutions {
-        get => _recording;
+        get;
         set {
-            if (_recording == value)
+            if (field == value)
                 return;
 
-            _recording = value;
-            if (!_recording) {
+            field = value;
+            if (!field) {
                 _cachedResolutionCounts.Clear();
                 _uncachedResolutionCounts.Clear();
             }
 
             if (_logger is not null)
-                log_ToggledRecordingDependencyResolution(_recording);
+                log_ToggledRecordingDependencyResolution(field);
         }
     }
 
@@ -239,7 +237,7 @@ public class DependencyInjector : IDisposable
         // Use compiled constructor, if it exists
         if (_compiledConstructors.TryGetValue(clientType, out Func<object> compiledConstructor)) {
             object client = compiledConstructor();
-            if (_recording)
+            if (RecordingResolutions)
                 _cachedResolutionCounts[clientType] = _cachedResolutionCounts.TryGetValue(clientType, out int count) ? count + 1 : 1;
             return client;
         }
@@ -265,12 +263,12 @@ public class DependencyInjector : IDisposable
                 compiledConstructor = _typeMetadataProvider.CompileConstructorCall(constructor, dependencies);
                 _compiledConstructors.Add(clientType, compiledConstructor);
                 instance = compiledConstructor();
-                if (_recording)
+                if (RecordingResolutions)
                     _cachedResolutionCounts[clientType] = 1;
             }
             else {
                 instance = constructor.Invoke(dependencies);
-                if (_recording)
+                if (RecordingResolutions)
                     _uncachedResolutionCounts[clientType] = _uncachedResolutionCounts.TryGetValue(clientType, out int count) ? count + 1 : 1;
             }
             return instance;
@@ -300,7 +298,7 @@ public class DependencyInjector : IDisposable
             if (_compiledInject.TryGetValue(clientType, out List<Action<object>> compiledInjectMethods)) {
                 for (int m = 0; m < compiledInjectMethods.Count; ++m)
                     compiledInjectMethods[m](client);
-                if (_recording)
+                if (RecordingResolutions)
                     _cachedResolutionCounts[clientType] = _cachedResolutionCounts.TryGetValue(clientType, out int count) ? count + 1 : 1;
                 return;
             }
@@ -327,7 +325,7 @@ public class DependencyInjector : IDisposable
                 else {
                     compile = false;
                     _ = injectMethod.Invoke(client, dependencies);
-                    if (_recording)
+                    if (RecordingResolutions)
                         _uncachedResolutionCounts[clientType] = _uncachedResolutionCounts.TryGetValue(clientType, out int count) ? count + 1 : 1;
                 }
             }
@@ -336,7 +334,7 @@ public class DependencyInjector : IDisposable
                 Action<object> compiledInject = _typeMetadataProvider.CompileMethodCall(compiledMethodName, nameof(client), injectMethod, dependencies);
                 (compiledInjectList ??= []).Add(compiledInject);
                 compiledInject(client);
-                if (_recording)
+                if (RecordingResolutions)
                     _cachedResolutionCounts[clientType] = 1;
             }
 
@@ -356,14 +354,14 @@ public class DependencyInjector : IDisposable
             return;
         }
 
-        if (!_services.TryGetValue(scene.handle, out Dictionary<Type, Dictionary<string, Service>>? sceneServices)) {
+        if (!_services.TryGetValue(scene.path, out Dictionary<Type, Dictionary<string, Service>>? sceneServices)) {
             log_UnregisterMissingSceneService(scene);
             return;
         }
 
         log_UnregisteringSceneServices(scene);
         int sceneServiceCount = sceneServices.Sum(x => x.Value.Values.Count);
-        _ = _services.Remove(scene.handle);
+        _ = _services.Remove(scene.path);
         log_UnregisteredAllSceneServices(scene, sceneServiceCount);
     }
 
@@ -404,8 +402,8 @@ public class DependencyInjector : IDisposable
     internal void TryGetService(Type serviceType, string injectTag, string clientName, out Service service)
     {
         Dictionary<string, Service>? typedServices = null;
-        foreach (int scene in _services.Keys) {
-            if (_services[scene].TryGetValue(serviceType, out typedServices))
+        foreach (string scenePath in _services.Keys) {
+            if (_services[scenePath].TryGetValue(serviceType, out typedServices))
                 break;
         }
         if (typedServices is null)
