@@ -32,7 +32,8 @@ so documentation content/organization are still in development.
     - `<package>` is one of the [packages](#packages) listed below
     - `<branch>` is...
       - `main` for the latest stable version of `<package>`
-      - `unity<unityVersion>` for the latest stable version of `<package>` built against Unity `<unityVersion>` (e.g., `unity6`)
+      - `unity<unityVersion>` for the latest stable version of `<package>` built against Unity `<unityVersion>`.
+        Unity versions are distinguished by minor version only, e.g., `unity6` or `unity6.3`.
       - `<version>-unity<unityVersion>` for `<version>` of `<package>` built against Unity `<unityVersion>` (e.g., `0.1.0-unity6`)
       - `unity<unityVersion>-dev` for the latest development version of `<package>` built against Unity `<unityVersion>`. **These versions are bleeding-edge and very likely to contain bugs!**
     - For example, to install version `0.2.0` of the `UnityUtil.Triggers` package for Unity 6, you would enter the URL: `https://github.com/DerploidEntertainment/UnityUtil.git?path=/UnityUtil/Assets/UnityUtil.Triggers#0.2.0-unity6`
