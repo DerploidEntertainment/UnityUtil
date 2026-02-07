@@ -23,6 +23,7 @@ UnityUtil/Assets/BuildReports.meta
 
 UnityUtil/*.csproj
 UnityUtil/*.sln
+UnityUtil/*.slnx
 
 UnityUtil/.vsconfig
 
