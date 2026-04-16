@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>UnityUtil.Editor</name>
+    </assembly>
+    <members>
+        <member name="T:System.Runtime.CompilerServices.IsExternalInit">
+            <summary>
+                Reserved to be used by the compiler for tracking metadata.
+                This class should not be used by developers in source code.
+            </summary>
+            <remarks>
+                This definition is provided by the <i>IsExternalInit</i> NuGet package (https://www.nuget.org/packages/IsExternalInit).
+                Please see https://github.com/manuelroemer/IsExternalInit for more information.
+            </remarks>
+        </member>
+        <member name="T:UnityUtil.Editor.RemovedObjectsReport">
+            <summary>
+            Summarizes which objects with an attached <see cref="T:UnityUtil.RemoveFromBuild"/> component were removed and which were preserved.
+            </summary>
+        </member>
+        <member name="P:UnityUtil.Editor.RemovedObjectsReport.TargetResults">
+            <summary>
+            Each key is the hierarchy name of a <see cref="T:UnityEngine.GameObject"/> with an attached <see cref="T:UnityUtil.RemoveFromBuild"/> component
+            (see <see cref="M:UnityUtil.UnityObjectExtensions.GetHierarchyName(UnityEngine.GameObject,System.Int32,System.String)"/>).
+            Each value is a string describing whether the object and/or its children were removed or preserved.
+            </summary>
+        </member>
+        <member name="M:UnityUtil.Editor.BuildGameObjectRemover.RemoveGameObjectsFromScene(UnityEngine.SceneManagement.Scene,UnityEditor.Build.Reporting.BuildReport)">
+            <summary>
+            Remove <see cref="T:UnityEngine.GameObject"/>s from the provided <paramref name="scene"/> for the provided <paramref name="buildReport"/>.
+            </summary>
+            <param name="scene"></param>
+            <param name="buildReport"></param>
+            <returns>
+            A <see cref="T:UnityUtil.Editor.RemovedObjectsReport"/> summarizing which objects were removed and which were preserved.
+            </returns>
+            <exception cref="T:System.InvalidOperationException">Could not convert <paramref name="buildReport"/>'s <see cref="T:UnityEditor.BuildTarget"/> to a <see cref="T:UnityEngine.RuntimePlatform"/>.</exception>
+        </member>
+        <member name="M:UnityUtil.Editor.BuildGameObjectRemover.RemoveGameObjectsFromScene(UnityEngine.SceneManagement.Scene,UnityEngine.RuntimePlatform,UnityUtil.BuildContext)">
+            <summary>
+            Remove <see cref="T:UnityEngine.GameObject"/>s from the provided <paramref name="scene"/> on the provided <paramref name="platform"/>.
+            </summary>
+            <param name="scene"><inheritdoc cref="M:UnityUtil.Editor.BuildGameObjectRemover.RemoveGameObjectsFromScene(UnityEngine.SceneManagement.Scene,UnityEditor.Build.Reporting.BuildReport)" path="/param[@name='scene']"/></param>
+            <param name="platform">Platform for which a player is being built, or that is currently running in Play Mode.</param>
+            <param name="buildContext"></param>
+            <returns><inheritdoc cref="M:UnityUtil.Editor.BuildGameObjectRemover.RemoveGameObjectsFromScene(UnityEngine.SceneManagement.Scene,UnityEditor.Build.Reporting.BuildReport)"/></returns>
+        </member>
+        <member name="F:UnityUtil.Editor.DependencyInjectorMenu.LOGGER">
+            <summary>
+            Must be static to be used in menu commands in Unity Editor.
+            This is an Editor script, so who cares if we hard-code the <see cref="T:Microsoft.Extensions.Logging.ILoggerFactory"/>...
+            </summary>
+        </member>
+        <member name="M:UnityUtil.Editor.ForceReserializeAssetsMenu.ForceReserializeAllAssets">
+            <summary>
+            This is mainly meant to be called after upgrading a project to a new Unity version,
+            but see <a href="https://docs.unity3d.com/ScriptReference/AssetDatabase.ForceReserializeAssets.html">the docs</a>
+            for other use cases and examples.
+            </summary>
+        </member>
+    </members>
+</doc>

@@ -1,0 +1,160 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Unity.Extensions.Logging</name>
+    </assembly>
+    <members>
+        <member name="T:System.Runtime.CompilerServices.IsExternalInit">
+            <summary>
+                Reserved to be used by the compiler for tracking metadata.
+                This class should not be used by developers in source code.
+            </summary>
+            <remarks>
+                This definition is provided by the <i>IsExternalInit</i> NuGet package (https://www.nuget.org/packages/IsExternalInit).
+                Please see https://github.com/manuelroemer/IsExternalInit for more information.
+            </remarks>
+        </member>
+        <member name="T:Microsoft.Extensions.Logging.LoggerFactoryExtensions">
+            <summary>
+            Extends <see cref="T:Microsoft.Extensions.Logging.ILoggerFactory"/> with methods for creating Unity-specific loggers.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Extensions.Logging.LoggerFactoryExtensions.CreateLogger``1(Microsoft.Extensions.Logging.ILoggerFactory,``0,Unity.Extensions.Logging.UnityObjectLoggerSettings)">
+            <summary>
+            
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="loggerFactory"><inheritdoc cref="T:Microsoft.Extensions.Logging.ILoggerFactory" path="/summary"/></param>
+            <param name="context"><inheritdoc cref="M:Unity.Extensions.Logging.UnityObjectLogger`1.#ctor(Microsoft.Extensions.Logging.ILoggerFactory,`0,Unity.Extensions.Logging.UnityObjectLoggerSettings)" path="/param[@name='context']"/></param>
+            <param name="unityObjectLoggerSettings"><inheritdoc cref="M:Unity.Extensions.Logging.UnityObjectLogger`1.#ctor(Microsoft.Extensions.Logging.ILoggerFactory,`0,Unity.Extensions.Logging.UnityObjectLoggerSettings)" path="/param[@name='unityObjectLoggerSettings']"/></param>
+            <returns>
+            A <see cref="T:Unity.Extensions.Logging.UnityObjectLogger`1"/> that adds <paramref name="context"/> as a scope property
+            to all of its log messages for use by Unity-specific logging providers.
+            </returns>
+        </member>
+        <member name="T:Unity.Extensions.Logging.UnityDebugLogger">
+            <summary>
+            "Default" implementation of <see cref="T:Microsoft.Extensions.Logging.ILogger"/> to wrap Unity's own <see cref="T:UnityEngine.Debug"/> <c>Log*</c> methods.
+            Mainly intended for Unity code that can't set up a proper logging framework via dependency injection (e.g., in Editor scripts).
+            Most runtime code should still prefer injecting an <see cref="T:Microsoft.Extensions.Logging.ILoggerFactory"/> and creating an <see cref="T:Microsoft.Extensions.Logging.ILogger`1"/>.
+            </summary>
+        </member>
+        <member name="M:Unity.Extensions.Logging.UnityDebugLogger.BeginScope``1(``0)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Unity.Extensions.Logging.UnityDebugLogger.IsEnabled(Microsoft.Extensions.Logging.LogLevel)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Unity.Extensions.Logging.UnityDebugLogger.Log``1(Microsoft.Extensions.Logging.LogLevel,Microsoft.Extensions.Logging.EventId,``0,System.Exception,System.Func{``0,System.Exception,System.String})">
+            <inheritdoc/>
+        </member>
+        <member name="T:Unity.Extensions.Logging.UnityDebugLoggerFactory">
+            <summary>
+            "Default" implementation of <see cref="T:Microsoft.Extensions.Logging.ILoggerFactory"/> that creates instances of <see cref="T:Unity.Extensions.Logging.UnityDebugLogger"/>.
+            </summary>
+        </member>
+        <member name="M:Unity.Extensions.Logging.UnityDebugLoggerFactory.AddProvider(Microsoft.Extensions.Logging.ILoggerProvider)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Unity.Extensions.Logging.UnityDebugLoggerFactory.CreateLogger(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Unity.Extensions.Logging.UnityDebugLoggerFactory.Dispose(System.Boolean)">
+            <summary>
+            Implementation of .NET Dispose pattern
+            </summary>
+            <param name="disposing">
+            <see langword="true"/> if called from <see cref="M:Unity.Extensions.Logging.UnityDebugLoggerFactory.Dispose"/>; otherwise, <see langword="false"/>.
+            </param>
+        </member>
+        <member name="M:Unity.Extensions.Logging.UnityDebugLoggerFactory.Dispose">
+            <inheritdoc/>
+        </member>
+        <member name="T:Unity.Extensions.Logging.UnityObjectLogger`1">
+            <summary>
+            An <see cref="T:Microsoft.Extensions.Logging.ILogger"/> that adds a <see cref="T:UnityEngine.Object"/>-derived instance as a scope property
+            to all of its log messages for use by Unity-specific logging providers.
+            </summary>
+            <typeparam name="T">A logging <see cref="T:UnityEngine.Object"/>-derived type</typeparam>
+        </member>
+        <member name="M:Unity.Extensions.Logging.UnityObjectLogger`1.#ctor(Microsoft.Extensions.Logging.ILoggerFactory,`0,Unity.Extensions.Logging.UnityObjectLoggerSettings)">
+            <summary>
+            Creates a new instance of <see cref="T:Unity.Extensions.Logging.UnityObjectLogger`1"/>.
+            </summary>
+            <param name="loggerFactory"><inheritdoc cref="T:Microsoft.Extensions.Logging.ILoggerFactory" path="/summary"/></param>
+            <param name="context">The <typeparamref name="T"/> instance to add as a scope property to all log messages for use by Unity-specific logging providers.</param>
+            <param name="unityObjectLoggerSettings"><inheritdoc cref="T:Unity.Extensions.Logging.UnityObjectLoggerSettings" path="/summary"/></param>
+        </member>
+        <member name="M:Unity.Extensions.Logging.UnityObjectLogger`1.BeginScope``1(``0)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Unity.Extensions.Logging.UnityObjectLogger`1.IsEnabled(Microsoft.Extensions.Logging.LogLevel)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Unity.Extensions.Logging.UnityObjectLogger`1.Log``1(Microsoft.Extensions.Logging.LogLevel,Microsoft.Extensions.Logging.EventId,``0,System.Exception,System.Func{``0,System.Exception,System.String})">
+            <inheritdoc/>
+        </member>
+        <member name="M:Unity.Extensions.Logging.UnityObjectLogger`1.GetHierarchyName">
+            <summary>
+            Gets the hierarchy name of the logging <see cref="T:UnityEngine.Object"/> instance.
+            </summary>
+            <remarks><inheritdoc cref="P:Unity.Extensions.Logging.UnityObjectLoggerSettings.AddHierarchyName" path="/remarks"/></remarks>
+            <returns>The hierarchy name of the logging <see cref="T:UnityEngine.Object"/> instance.</returns>
+        </member>
+        <member name="T:Unity.Extensions.Logging.UnityObjectLoggerSettings">
+            <summary>
+            Settings for a <see cref="T:Unity.Extensions.Logging.UnityObjectLogger`1"/> instance.
+            </summary>
+        </member>
+        <member name="P:Unity.Extensions.Logging.UnityObjectLoggerSettings.AddUnityContext">
+            <summary>
+            If <see langword="true"/>, then every log is encriched with the logging <see cref="T:UnityEngine.Object"/> instance.
+            </summary>
+            <remarks>
+            This instance will be used as <c>context</c> for Unity's <see cref="M:UnityEngine.Debug.Log(System.Object,UnityEngine.Object)"/> method.
+            </remarks>
+        </member>
+        <member name="P:Unity.Extensions.Logging.UnityObjectLoggerSettings.UnityContextLogProperty">
+            <summary>
+            Name of the log property that holds the logging <see cref="T:UnityEngine.Object"/> instance.
+            </summary>
+            <remarks><inheritdoc cref="P:Unity.Extensions.Logging.UnityObjectLoggerSettings.AddUnityContext" path="/remarks"/></remarks>
+        </member>
+        <member name="P:Unity.Extensions.Logging.UnityObjectLoggerSettings.AddHierarchyName">
+            <summary>
+            If <see langword="true"/>, then every log is encriched with the logging <see cref="T:UnityEngine.Object"/> instance's hierarchy name.
+            </summary>
+            <remarks>
+            For <see cref="T:UnityEngine.GameObject"/> and <see cref="T:UnityEngine.Component"/>-derived instances, the hierarchy name is
+            the name of the object's transform and all parent transforms, separated by <see cref="P:Unity.Extensions.Logging.UnityObjectLoggerSettings.ParentNameSeparator"/>.
+            For all other <see cref="T:UnityEngine.Object"/> instances, the hierarchy name is simply the object's <see cref="P:UnityEngine.Object.name"/>.
+            This information is useful in logs from built Unity players where you can't click on a log in the Editor,
+            but still want to know <em>which</em> instance of a type generated a log.
+            Note that computing this name requires walking the logging <see cref="T:UnityEngine.Object"/>'s transform hierarchy on every log event,
+            which could get expensive for deeply childed objects.
+            If the object's transform hierarchy does not change over the course of its lifetime then
+            set <see cref="P:Unity.Extensions.Logging.UnityObjectLoggerSettings.HasStaticHierarchy"/> to <see langword="true"/> so that the hierarchy name can be cached.
+            </remarks>
+        </member>
+        <member name="P:Unity.Extensions.Logging.UnityObjectLoggerSettings.HierarchyNameLogProperty">
+            <summary>
+            Name of the log property that holds the logging <see cref="T:UnityEngine.Object"/> instance's hierarchy name.
+            </summary>
+            <remarks><inheritdoc cref="P:Unity.Extensions.Logging.UnityObjectLoggerSettings.AddHierarchyName" path="/remarks"/></remarks>
+        </member>
+        <member name="P:Unity.Extensions.Logging.UnityObjectLoggerSettings.HasStaticHierarchy">
+            <summary>
+            Whether the logging <see cref="T:UnityEngine.Object"/> instance's hierarchy is static.
+            I.e., for <see cref="T:UnityEngine.GameObject"/> and <see cref="T:UnityEngine.Component"/>-derived instances, whether its parent transforms ever change.
+            If an object's hierarchy is static, then its hierarchy name is cached for better logging performance.
+            </summary>
+        </member>
+        <member name="P:Unity.Extensions.Logging.UnityObjectLoggerSettings.ParentNameSeparator">
+            <summary>
+            For logging <see cref="T:UnityEngine.Object"/>s that are <see cref="T:UnityEngine.GameObject"/>s or derived from <see cref="T:UnityEngine.Component"/>,
+            the object's transform and all of its parent transforms will be separated by this string.
+            Prefer single-character separators to keep rendered log messages small.
+            </summary>
+        </member>
+    </members>
+</doc>
