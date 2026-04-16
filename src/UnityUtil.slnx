@@ -1,4 +1,10 @@
 <Solution>
+  <Configurations>
+    <BuildType Name="Debug_6000_0" />
+    <BuildType Name="Debug_6000_3" />
+    <BuildType Name="Release_6000_0" />
+    <BuildType Name="Release_6000_3" />
+  </Configurations>
   <Folder Name="/Logging/">
     <File Path="Logging/Directory.Build.props" />
     <Project Path="Logging/Serilog.Enrichers.Unity/Serilog.Enrichers.Unity.csproj" />

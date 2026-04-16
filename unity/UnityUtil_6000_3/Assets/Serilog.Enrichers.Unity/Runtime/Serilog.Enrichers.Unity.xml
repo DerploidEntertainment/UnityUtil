@@ -1,0 +1,135 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Serilog.Enrichers.Unity</name>
+    </assembly>
+    <members>
+        <member name="T:System.Runtime.CompilerServices.IsExternalInit">
+            <summary>
+                Reserved to be used by the compiler for tracking metadata.
+                This class should not be used by developers in source code.
+            </summary>
+            <remarks>
+                This definition is provided by the <i>IsExternalInit</i> NuGet package (https://www.nuget.org/packages/IsExternalInit).
+                Please see https://github.com/manuelroemer/IsExternalInit for more information.
+            </remarks>
+        </member>
+        <member name="T:Serilog.Enrichers.Unity.LoggerEnrichmentConfigurationExtensions">
+            <summary>
+            Extends <see cref="T:Serilog.Configuration.LoggerEnrichmentConfiguration"/> with Unity enrichers.
+            </summary>
+        </member>
+        <member name="M:Serilog.Enrichers.Unity.LoggerEnrichmentConfigurationExtensions.WithUnityData(Serilog.Configuration.LoggerEnrichmentConfiguration,Serilog.Enrichers.Unity.UnityLogEnricherSettings)">
+            <summary>
+            Enriches log events with context from the Unity engine, such as frame counts.
+            </summary>
+            <param name="enrichmentConfiguration">Logger sink configuration.</param>
+            <param name="unityLogEnricherSettings"><inheritdoc cref="M:Serilog.Enrichers.Unity.UnityLogEnricher.#ctor(Serilog.Enrichers.Unity.UnityLogEnricherSettings)" path="/param[@name='unityLogEnricherSettings']"/></param>
+            <returns>Configuration object allowing method chaining.</returns>
+        </member>
+        <member name="T:Serilog.Enrichers.Unity.UnityLogEnricher">
+            <summary>
+            Enriches <see cref="T:Serilog.Events.LogEvent"/>s with information from the Unity engine.
+            </summary>
+            <param name="unityLogEnricherSettings"><inheritdoc cref="T:Serilog.Enrichers.Unity.UnityLogEnricherSettings" path="/summary"/></param>
+        </member>
+        <member name="M:Serilog.Enrichers.Unity.UnityLogEnricher.#ctor(Serilog.Enrichers.Unity.UnityLogEnricherSettings)">
+            <summary>
+            Enriches <see cref="T:Serilog.Events.LogEvent"/>s with information from the Unity engine.
+            </summary>
+            <param name="unityLogEnricherSettings"><inheritdoc cref="T:Serilog.Enrichers.Unity.UnityLogEnricherSettings" path="/summary"/></param>
+        </member>
+        <member name="M:Serilog.Enrichers.Unity.UnityLogEnricher.Enrich(Serilog.Events.LogEvent,Serilog.Core.ILogEventPropertyFactory)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Serilog.Enrichers.Unity.UnityLogEnricherSettings">
+            <summary>
+            Settings for a <see cref="T:Serilog.Enrichers.Unity.UnityLogEnricher"/>.
+            </summary>
+        </member>
+        <member name="P:Serilog.Enrichers.Unity.UnityLogEnricherSettings.FrameCountLogProperty">
+            <summary>
+            Name of the <see cref="T:Serilog.Events.LogEventProperty"/> that will hold the <see cref="P:UnityEngine.Time.frameCount"/>,
+            if <see cref="P:Serilog.Enrichers.Unity.UnityLogEnricherSettings.WithFrameCount"/> is <see langword="true"/>.
+            </summary>
+        </member>
+        <member name="P:Serilog.Enrichers.Unity.UnityLogEnricherSettings.TimeSinceLevelLoadLogProperty">
+            <summary>
+            Name of the <see cref="T:Serilog.Events.LogEventProperty"/> that will hold the <see cref="P:UnityEngine.Time.timeSinceLevelLoad"/>,
+            if <see cref="P:Serilog.Enrichers.Unity.UnityLogEnricherSettings.WithTimeSinceLevelLoad"/> is <see langword="true"/>.
+            </summary>
+        </member>
+        <member name="P:Serilog.Enrichers.Unity.UnityLogEnricherSettings.TimeSinceLevelLoadAsDoubleLogProperty">
+            <summary>
+            Name of the <see cref="T:Serilog.Events.LogEventProperty"/> that will hold the <see cref="P:UnityEngine.Time.timeSinceLevelLoadAsDouble"/>,
+            if <see cref="P:Serilog.Enrichers.Unity.UnityLogEnricherSettings.WithTimeSinceLevelLoadAsDouble"/> is <see langword="true"/>.
+            </summary>
+        </member>
+        <member name="P:Serilog.Enrichers.Unity.UnityLogEnricherSettings.UnscaledTimeLogProperty">
+            <summary>
+            Name of the <see cref="T:Serilog.Events.LogEventProperty"/> that will hold the <see cref="P:UnityEngine.Time.unscaledTime"/>,
+            if <see cref="P:Serilog.Enrichers.Unity.UnityLogEnricherSettings.WithUnscaledTime"/> is <see langword="true"/>.
+            </summary>
+        </member>
+        <member name="P:Serilog.Enrichers.Unity.UnityLogEnricherSettings.UnscaledTimeAsDoubleLogProperty">
+            <summary>
+            Name of the <see cref="T:Serilog.Events.LogEventProperty"/> that will hold the <see cref="P:UnityEngine.Time.unscaledTimeAsDouble"/>,
+            if <see cref="P:Serilog.Enrichers.Unity.UnityLogEnricherSettings.WithUnscaledTimeAsDouble"/> is <see langword="true"/>.
+            </summary>
+        </member>
+        <member name="P:Serilog.Enrichers.Unity.UnityLogEnricherSettings.TimeLogProperty">
+            <summary>
+            Name of the <see cref="T:Serilog.Events.LogEventProperty"/> that will hold the <see cref="P:UnityEngine.Time.time"/>,
+            if <see cref="P:Serilog.Enrichers.Unity.UnityLogEnricherSettings.WithTime"/> is <see langword="true"/>.
+            </summary>
+        </member>
+        <member name="P:Serilog.Enrichers.Unity.UnityLogEnricherSettings.TimeAsDoubleLogProperty">
+            <summary>
+            Name of the <see cref="T:Serilog.Events.LogEventProperty"/> that will hold the <see cref="P:UnityEngine.Time.timeAsDouble"/>,
+            if <see cref="P:Serilog.Enrichers.Unity.UnityLogEnricherSettings.WithTimeAsDouble"/> is <see langword="true"/>.
+            </summary>
+        </member>
+        <member name="P:Serilog.Enrichers.Unity.UnityLogEnricherSettings.WithFrameCount">
+            <summary>
+            If <see langword="true"/>, then every log is encriched with <see cref="P:UnityEngine.Time.frameCount"/>.
+            See the Unity Scripting API docs for <a href="https://docs.unity3d.com/ScriptReference/Time.html"><c>Time</c></a>.
+            </summary>
+        </member>
+        <member name="P:Serilog.Enrichers.Unity.UnityLogEnricherSettings.WithTimeSinceLevelLoad">
+            <summary>
+            If <see langword="true"/>, then every log is encriched with <see cref="P:UnityEngine.Time.timeSinceLevelLoad"/>.
+            See the Unity Scripting API docs for <a href="https://docs.unity3d.com/ScriptReference/Time.html"><c>Time</c></a>.
+            </summary>
+        </member>
+        <member name="P:Serilog.Enrichers.Unity.UnityLogEnricherSettings.WithTimeSinceLevelLoadAsDouble">
+            <summary>
+            If <see langword="true"/>, then every log is encriched with <see cref="P:UnityEngine.Time.timeSinceLevelLoadAsDouble"/>.
+            See the Unity Scripting API docs for <a href="https://docs.unity3d.com/ScriptReference/Time.html"><c>Time</c></a>.
+            </summary>
+        </member>
+        <member name="P:Serilog.Enrichers.Unity.UnityLogEnricherSettings.WithUnscaledTime">
+            <summary>
+            If <see langword="true"/>, then every log is encriched with <see cref="P:UnityEngine.Time.unscaledTime"/>.
+            See the Unity Scripting API docs for <a href="https://docs.unity3d.com/ScriptReference/Time.html"><c>Time</c></a>.
+            </summary>
+        </member>
+        <member name="P:Serilog.Enrichers.Unity.UnityLogEnricherSettings.WithUnscaledTimeAsDouble">
+            <summary>
+            If <see langword="true"/>, then every log is encriched with <see cref="P:UnityEngine.Time.unscaledTimeAsDouble"/>.
+            See the Unity Scripting API docs for <a href="https://docs.unity3d.com/ScriptReference/Time.html"><c>Time</c></a>.
+            </summary>
+        </member>
+        <member name="P:Serilog.Enrichers.Unity.UnityLogEnricherSettings.WithTime">
+            <summary>
+            If <see langword="true"/>, then every log is encriched with <see cref="P:UnityEngine.Time.time"/>.
+            See the Unity Scripting API docs for <a href="https://docs.unity3d.com/ScriptReference/Time.html"><c>Time</c></a>.
+            </summary>
+        </member>
+        <member name="P:Serilog.Enrichers.Unity.UnityLogEnricherSettings.WithTimeAsDouble">
+            <summary>
+            If <see langword="true"/>, then every log is encriched with <see cref="P:UnityEngine.Time.timeAsDouble"/>.
+            See the Unity Scripting API docs for <a href="https://docs.unity3d.com/ScriptReference/Time.html"><c>Time</c></a>.
+            </summary>
+        </member>
+    </members>
+</doc>
