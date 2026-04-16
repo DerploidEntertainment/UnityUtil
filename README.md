@@ -28,15 +28,21 @@ so documentation content/organization are still in development.
         as it just makes later updates to the asset more difficult.
 4. Install UPM dependenies of your desired UnityUtil package(s). This is necessary because UnityUtil packages are installed from Git URLs, so their UPM dependencies are not auto-resolved.
 5. In the Unity Editor, open the [Package Manager window](https://docs.unity3d.com/Manual/upm-ui.html), click the `+` button in the upper-left and choose `Add package from git URL...`.
-6. Paste a URL in the format `https://github.com/DerploidEntertainment/UnityUtil.git?path=/UnityUtil/Assets/<package>#<branch>` where...
+6. Paste a URL in the format `https://github.com/DerploidEntertainment/UnityUtil.git?path=/unity/UnityUtil_<unityVersion>/Assets/<package>[#<branch>]` where...
+    - `<unityVersion>` is the Unity version against which you need the packages to have been compiled.
+        Generally, packages compiled against the latest Unity LTS version will be compatible with several major versions above and below.
+        Must be in the format `<majorVersion>_<minorVersion>`. We only compile against Unity LTS major versions, so the current available versions are:
+        - `6000_0`
+        - `6000_3`.
     - `<package>` is one of the [packages](#packages) listed below
     - `<branch>` is...
-      - `main` for the latest stable version of `<package>`
-      - `unity<unityVersion>` for the latest stable version of `<package>` built against Unity `<unityVersion>`.
-        Unity versions are distinguished by minor version only, e.g., `unity6` or `unity6.3`.
-      - `<version>-unity<unityVersion>` for `<version>` of `<package>` built against Unity `<unityVersion>` (e.g., `0.1.0-unity6`)
-      - `unity<unityVersion>-dev` for the latest development version of `<package>` built against Unity `<unityVersion>`. **These versions are bleeding-edge and very likely to contain bugs!**
-    - For example, to install version `0.2.0` of the `UnityUtil.Triggers` package for Unity 6, you would enter the URL: `https://github.com/DerploidEntertainment/UnityUtil.git?path=/UnityUtil/Assets/UnityUtil.Triggers#0.2.0-unity6`
+      - `main` (or no branch) for the latest development version of `<package>` built against Unity `<unityVersion>`. **These versions are bleeding-edge and very likely to contain bugs!**
+      - `latest` for the latest stable version of the UnityUtil `<package>` built against Unity `<unityVersion>`.
+      - `<version>` for `<version>` of the UnityUtil `<package>` compiled against Unity `<unityVersion>` (e.g., `0.1.0`)
+    - For example...
+        - To install the latest stable version of the `UnityUtil` package compiled against Unity 6.3, you would enter the URL: `https://github.com/DerploidEntertainment/UnityUtil.git?path=/unity/UnityUtil_6000_3/Assets/UnityUtil#latest`
+        - To install version `0.2.0` of the `UnityUtil.Triggers` package compiled against Unity 6, you would enter the URL: `https://github.com/DerploidEntertainment/UnityUtil.git?path=/unity/UnityUtil_6000_0/Assets/UnityUtil.Triggers#0.2.0`
+        - To install the latest development version of the `UnityUtil.Legal` package compiled against Unity 6.3, you would enter the URL: `https://github.com/DerploidEntertainment/UnityUtil.git?path=/unity/UnityUtil_6000_3/Assets/UnityUtil.Legal#main` (optionally, without `#main`)
 
 ### Updating
 
