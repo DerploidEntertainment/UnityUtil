@@ -1,6 +1,6 @@
 {
   "name": "rabadash8820.unityutil.physics2d",
-  "version": "0.1.0",
+  "version": "0.6.0",
   "description": "A set of utility classes and components useful to any 2D Unity project, specifically related to physics.",
   "displayName": "UnityUtil.Physics2D",
   "unity": "2019.4",
@@ -13,7 +13,7 @@
     "org.nuget.microsoft.extensions.logging.abstractions": "2.0.0",
     "com.unity.modules.physics": "1.0.0",
     "com.unity.modules.physics2d": "1.0.0",
-    "rabadash8820.unityutil": "0.1.0"
+    "rabadash8820.unityutil": "0.6.0"
   },
   "license": "MIT",
   "keywords": [

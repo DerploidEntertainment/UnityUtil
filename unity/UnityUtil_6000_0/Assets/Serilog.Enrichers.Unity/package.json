@@ -1,6 +1,6 @@
 {
   "name": "com.serilog.enrichers.unity",
-  "version": "0.1.0",
+  "version": "0.6.0",
   "description": "A Serilog enricher that dynamically adds Unity data to your log events",
   "displayName": "Serilog Enricher: Unity",
   "unity": "2019.4",
