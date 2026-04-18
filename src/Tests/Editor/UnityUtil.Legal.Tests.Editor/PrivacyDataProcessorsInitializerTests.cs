@@ -205,6 +205,9 @@ public class PrivacyDataProcessorsInitializerTests : BaseEditModeTestFixture
             localPreferences: localPreferences.Object
         );
 
+        bool someNonCmpConsentStillRequired = Array.FindIndex(priorNonCmpConsents, x => x is null) > -1;
+        bool wasBespokeConsentFormRequired = someNonCmpConsentStillRequired || legalAcceptStatus != LegalAcceptStatus.Current;
+
         // ACT
         Task initializeTask = privacyDataProcessorsInitializer.InitializeDataProcessorsWithConsentAsync();
         privacyDataProcessorsInitializer.ToggleNonCmpConsent!.isOn = hasNonCmpConsent;
@@ -212,12 +215,13 @@ public class PrivacyDataProcessorsInitializerTests : BaseEditModeTestFixture
         await initializeTask;
 
         // ASSERT
-        for (int index = 0; index < priorNonCmpConsents.Length; index++) {
-            string key = nonTcfDataProcessors[index].Object.ConsentPreferenceKey;
-            if (priorNonCmpConsents[index] is null)
-                localPreferences.Verify(x => x.SetInt(key, hasNonCmpConsent ? 1 : 0), Times.Once());
-            else
-                localPreferences.Verify(x => x.SetInt(key, It.IsAny<int>()), Times.Never());
+        for (int i = 0; i < priorNonCmpConsents.Length; i++) {
+            string key = nonTcfDataProcessors[i].Object.ConsentPreferenceKey;
+            bool newHasConsent = (wasBespokeConsentFormRequired && hasNonCmpConsent) || (!wasBespokeConsentFormRequired && priorNonCmpConsents[i] == true);
+            localPreferences.Verify(
+                x => x.SetInt(key, newHasConsent ? 1 : 0),
+                newHasConsent == priorNonCmpConsents[i] ? Times.Never() : Times.Once()
+            );
         }
     }
 
@@ -256,6 +260,9 @@ public class PrivacyDataProcessorsInitializerTests : BaseEditModeTestFixture
             localPreferences: localPreferences.Object
         );
 
+        bool someNonCmpConsentStillRequired = Array.FindIndex(priorNonCmpConsents, x => x is null) > -1;
+        bool wasBespokeConsentFormRequired = someNonCmpConsentStillRequired || legalAcceptStatus != LegalAcceptStatus.Current;
+
         // ACT
         Task initializeTask = privacyDataProcessorsInitializer.InitializeDataProcessorsWithConsentAsync();
         privacyDataProcessorsInitializer.ToggleNonCmpConsent!.isOn = hasNonCmpConsent;
@@ -263,11 +270,9 @@ public class PrivacyDataProcessorsInitializerTests : BaseEditModeTestFixture
         await initializeTask;
 
         // ASSERT
-        for (int index = 0; index < nonTcfDataProcessors.Length; index++) {
-            Mock<INonTcfDataProcessor> nonTcfDataProcessor = nonTcfDataProcessors[index];
-            bool? priorConsent = priorNonCmpConsents[index];
-            bool shouldBeStarted = priorConsent == true || (priorConsent is null && hasNonCmpConsent);
-            nonTcfDataProcessor.Verify(x => x.ToggleDataCollection(true), shouldBeStarted ? Times.Once() : Times.Never());
+        for (int i = 0; i < nonTcfDataProcessors.Length; i++) {
+            bool newHasConsent = (wasBespokeConsentFormRequired && hasNonCmpConsent) || (!wasBespokeConsentFormRequired && priorNonCmpConsents[i] == true);
+            nonTcfDataProcessors[i].Verify(x => x.ToggleDataCollection(newHasConsent), Times.Once());
         }
     }
 
@@ -457,7 +462,7 @@ public class PrivacyDataProcessorsInitializerTests : BaseEditModeTestFixture
     }
 
     [Test]
-    public async Task WasConsentGranted_GetsCorrectConent([Values] bool hasConsent)
+    public async Task WasConsentGranted_GetsCorrectConsent([Values] bool hasConsent)
     {
         // ARRANGE
         Mock<INonTcfDataProcessor>[] nonTcfDataProcessors = buildNonTcfDataProcessors(1);
@@ -468,6 +473,7 @@ public class PrivacyDataProcessorsInitializerTests : BaseEditModeTestFixture
 
         // ACT / ASSERT
         Task initializeTask = privacyDataProcessorsInitializer.InitializeDataProcessorsWithConsentAsync();
+        privacyDataProcessorsInitializer.ToggleNonCmpConsent!.isOn = hasConsent;
         privacyDataProcessorsInitializer.BtnContinue!.onClick.Invoke();
         await initializeTask;
 
@@ -488,6 +494,7 @@ public class PrivacyDataProcessorsInitializerTests : BaseEditModeTestFixture
 
         // ACT / ASSERT
         Task initializeTask = privacyDataProcessorsInitializer.InitializeDataProcessorsWithConsentAsync();
+        privacyDataProcessorsInitializer.ToggleNonCmpConsent!.isOn = hasConsent;
         privacyDataProcessorsInitializer.BtnContinue!.onClick.Invoke();
         await initializeTask;
 
@@ -504,6 +511,7 @@ public class PrivacyDataProcessorsInitializerTests : BaseEditModeTestFixture
 
         // ACT
         Task initializeTask = privacyDataProcessorsInitializer.InitializeDataProcessorsWithConsentAsync();
+        privacyDataProcessorsInitializer.ToggleNonCmpConsent!.isOn = !hasConsent;
         privacyDataProcessorsInitializer.BtnContinue!.onClick.Invoke();
         await initializeTask;
 
@@ -518,17 +526,20 @@ public class PrivacyDataProcessorsInitializerTests : BaseEditModeTestFixture
     {
         // ARRANGE
         Mock<INonTcfDataProcessor> nonTcfDataProcessor = buildNonTcfDataProcessor();
-        _ = nonTcfDataProcessor.Setup(x => x.ToggleDataCollection(hasConsent)).Throws(new InvalidOperationException("AH!! Revoke consent exploded!"));
+        _ = nonTcfDataProcessor.SetupSequence(x => x.ToggleDataCollection(It.IsAny<bool>()))
+            .Throws(new InvalidOperationException("AH!! Revoke consent exploded!"));
         INonTcfDataProcessor[] nonTcfDataProcessors = [nonTcfDataProcessor.Object];
 
         Exception? loggedException = null;
         PrivacyDataProcessorsInitializer privacyDataProcessorsInitializer = buildPrivacyDataProcessorsInitializer(
             loggerFactory: new LogLevelCallbackLoggerFactory(LogLevel.Error, (_, _, ex, _) => loggedException = ex, logToUnity),
+            localPreferences: buildLocalPreferences([!hasConsent]).Object,
             nonTcfDataProcessors: nonTcfDataProcessors
         );
 
         // ACT
         Task initializeTask = privacyDataProcessorsInitializer.InitializeDataProcessorsWithConsentAsync();
+        privacyDataProcessorsInitializer.ToggleNonCmpConsent!.isOn = !hasConsent;
         privacyDataProcessorsInitializer.BtnContinue!.onClick.Invoke();
         await initializeTask;
 
@@ -541,11 +552,11 @@ public class PrivacyDataProcessorsInitializerTests : BaseEditModeTestFixture
     }
 
     [Test]
-    public async Task ToggleConsent_SetsLocalPreference([Values] bool hasConsent)
+    public async Task ToggleConsent_SetsLocalPreference_IfConsentChanged([Values] bool initialConsent, [Values] bool hasConsent)
     {
         // ARRANGE
         INonTcfDataProcessor[] nonTcfDataProcessors = [.. buildNonTcfDataProcessors(1).Select(x => x.Object)];
-        Mock<ILocalPreferences> localPreferences = buildLocalPreferences(priorConsents: [true]);
+        Mock<ILocalPreferences> localPreferences = buildLocalPreferences(priorConsents: [initialConsent]);
         PrivacyDataProcessorsInitializer privacyDataProcessorsInitializer = buildPrivacyDataProcessorsInitializer(
             legalAcceptManager: buildLegalAcceptManager(LegalAcceptStatus.Current).Object,
             nonTcfDataProcessors: nonTcfDataProcessors,
@@ -554,13 +565,17 @@ public class PrivacyDataProcessorsInitializerTests : BaseEditModeTestFixture
 
         // ACT
         Task initializeTask = privacyDataProcessorsInitializer.InitializeDataProcessorsWithConsentAsync();
+        privacyDataProcessorsInitializer.ToggleNonCmpConsent!.isOn = initialConsent;
         privacyDataProcessorsInitializer.BtnContinue!.onClick.Invoke();
         await initializeTask;
 
         privacyDataProcessorsInitializer.ToggleConsent(nonTcfDataProcessors[0], hasConsent);
 
         // ASSERT
-        localPreferences.Verify(x => x.SetInt(nonTcfDataProcessors[0].ConsentPreferenceKey, hasConsent ? 1 : 0), Times.Once());
+        localPreferences.Verify(
+            x => x.SetInt(nonTcfDataProcessors[0].ConsentPreferenceKey, hasConsent ? 1 : 0),
+            initialConsent == hasConsent ? Times.Never() : Times.Once()
+        );
     }
 
     #endregion
@@ -645,7 +660,7 @@ public class PrivacyDataProcessorsInitializerTests : BaseEditModeTestFixture
     private static Mock<INonTcfDataProcessor> buildNonTcfDataProcessor()
     {
         Mock<INonTcfDataProcessor> nonTcfDataProcessor = new();
-        _ = nonTcfDataProcessor.SetupGet(x => x.ConsentPreferenceKey).Returns(CONSENT_PREF_KEY_PREFIX);
+        _ = nonTcfDataProcessor.SetupGet(x => x.ConsentPreferenceKey).Returns($"{CONSENT_PREF_KEY_PREFIX}0");
         return nonTcfDataProcessor;
     }
 
@@ -657,6 +672,6 @@ public class PrivacyDataProcessorsInitializerTests : BaseEditModeTestFixture
             LogLevel.Error or LogLevel.Critical => LogType.Error,
             _ => throw UnityObjectExtensions.SwitchDefaultException(logLevel),
         };
-        Debug.unityLogger.Log(logType, message);
+        Debug.unityLogger.Log(logType, $"{logType}: {message}");
     }
 }

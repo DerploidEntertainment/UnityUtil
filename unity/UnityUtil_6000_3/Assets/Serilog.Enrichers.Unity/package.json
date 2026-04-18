@@ -1,0 +1,23 @@
+{
+  "name": "com.serilog.enrichers.unity",
+  "version": "0.6.0",
+  "description": "A Serilog enricher that dynamically adds Unity data to your log events",
+  "displayName": "Serilog Enricher: Unity",
+  "unity": "2019.4",
+  "documentationUrl": "https://github.com/DerploidEntertainment/UnityUtil/blob/main/src/Logging/Serilog.Enrichers.Unity/README.md",
+  "author": {
+    "name": "Rabadash8820",
+    "url": "https://github.com/Rabadash8820"
+  },
+  "dependencies": {
+    "org.nuget.serilog": "2.8.0"
+  },
+  "license": "MIT",
+  "keywords": [
+    "nuget",
+    "utility",
+    "logging",
+    "serilog",
+    "log-enrichment"
+  ]
+}

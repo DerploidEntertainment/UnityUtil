@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Unity.Extensions.Serilog</name>
+    </assembly>
+    <members>
+        <member name="T:System.Runtime.CompilerServices.IsExternalInit">
+            <summary>
+                Reserved to be used by the compiler for tracking metadata.
+                This class should not be used by developers in source code.
+            </summary>
+            <remarks>
+                This definition is provided by the <i>IsExternalInit</i> NuGet package (https://www.nuget.org/packages/IsExternalInit).
+                Please see https://github.com/manuelroemer/IsExternalInit for more information.
+            </remarks>
+        </member>
+        <member name="T:Unity.Extensions.Serilog.LoggerDestructuringConfigurationExtensions">
+            <summary>
+            Extends <see cref="T:Serilog.Configuration.LoggerDestructuringConfiguration"/> for logging in the Unity engine.
+            </summary>
+        </member>
+        <member name="M:Unity.Extensions.Serilog.LoggerDestructuringConfigurationExtensions.UnityObjectContext(Serilog.Configuration.LoggerDestructuringConfiguration)">
+            <summary>
+            Treat <see cref="T:UnityEngine.Object"/> instances wrapped in <see cref="T:System.ValueTuple`1"/> as scalar values,
+            i.e., don't break them down into properties event when destructuring complex types.
+            This allows them to be used as the <c>context</c> for logs in the Unity engine.
+            </summary>
+            <param name="loggerDestructuringConfiguration">Logger destructuring configuration.</param>
+            <returns>Configuration object allowing method chaining.</returns>
+        </member>
+        <member name="T:Unity.Extensions.Serilog.LoggerMinimumLevelConfigurationExtensions">
+            <summary>
+            Extends <see cref="T:Unity.Extensions.Serilog.LoggerMinimumLevelConfigurationExtensions"/> for logging in the Unity engine.
+            </summary>
+        </member>
+        <member name="M:Unity.Extensions.Serilog.LoggerMinimumLevelConfigurationExtensions.IsUnityFilterLogType(Serilog.Configuration.LoggerMinimumLevelConfiguration,UnityEngine.ILogger)">
+            <summary>
+            Add the Unity Console to the Serilog pipeline.
+            </summary>
+            <param name="loggerMinimumLevelConfiguration">Logger minimum level configuration.</param>
+            <param name="logger">
+            The <see cref="T:UnityEngine.ILogger"/> from which to set the minimum <see cref="T:Serilog.Events.LogEventLevel"/>,
+            based on its <see cref="P:UnityEngine.ILogger.filterLogType"/>.
+            If <see langword="null"/> then <see cref="P:UnityEngine.Debug.unityLogger"/> is used.
+            </param>
+            <returns>Configuration object allowing method chaining.</returns>
+        </member>
+        <member name="T:Unity.Extensions.Serilog.UnityLogContextDestructuringPolicy">
+            <summary>
+            Policy for destructuring <see cref="T:System.ValueTuple`1"/> instances with a single <see cref="T:UnityEngine.Object"/> item, representing the <c>context</c> for a Unity log.
+            <para>
+            Provides a mechanism for preserving <see cref="T:UnityEngine.Object"/> instances added to a <see cref="T:Serilog.Events.LogEvent"/>'s properties (e.g., via <see cref="T:Serilog.Context.LogContext"/>)
+            so that the instance may be used as the <c>context</c> of a Unity <see cref="M:UnityEngine.Debug.LogWarning(System.Object,UnityEngine.Object)"/> message
+            (without affecting the destructuring of other <see cref="T:UnityEngine.Object"/> log property values set by API consumers).
+            </para>
+            </summary>
+        </member>
+        <member name="M:Unity.Extensions.Serilog.UnityLogContextDestructuringPolicy.TryDestructure(System.Object,Serilog.Core.ILogEventPropertyValueFactory,Serilog.Events.LogEventPropertyValue@)">
+            <inheritdoc />
+        </member>
+    </members>
+</doc>

@@ -12,20 +12,18 @@ lib/*
 ## Unity
 #########################
 
-Library/
-Logs/
-Temp/
-UserSettings/
-CodeCoverage/
+unity/*/Library/
+unity/*/Logs/
+unity/*/Temp/
+unity/*/UserSettings/
+unity/*/CodeCoverage/
 
-UnityUtil/Assets/BuildReports/
-UnityUtil/Assets/BuildReports.meta
+unity/*/Assets/BuildReports/
+unity/*/Assets/BuildReports.meta
 
-UnityUtil/*.csproj
-UnityUtil/*.sln
-UnityUtil/*.slnx
-
-UnityUtil/.vsconfig
+unity/*/*.csproj
+unity/*/*.slnx
+unity/*/.vsconfig
 
 
 #########################

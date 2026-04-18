@@ -1,0 +1,1110 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>UnityUtil</name>
+    </assembly>
+    <members>
+        <member name="T:System.Runtime.CompilerServices.IsExternalInit">
+            <summary>
+                Reserved to be used by the compiler for tracking metadata.
+                This class should not be used by developers in source code.
+            </summary>
+            <remarks>
+                This definition is provided by the <i>IsExternalInit</i> NuGet package (https://www.nuget.org/packages/IsExternalInit).
+                Please see https://github.com/manuelroemer/IsExternalInit for more information.
+            </remarks>
+        </member>
+        <member name="T:UnityUtil.AppEnvironmentEnvExtensions">
+            <summary>
+            Extension methods for <see cref="T:UnityUtil.IAppEnvironment"/>.
+            Heavily based on the <a href="https://github.com/dotnet/dotnet/blob/main/src/runtime/src/libraries/Microsoft.Extensions.Hosting.Abstractions/src/HostEnvironmentEnvExtensions.cs"><c>Microsoft.Extensions.Hosting.Abstractions.HostEnvironmentEnvExtensions</c></a> class.
+            </summary>
+        </member>
+        <member name="M:UnityUtil.AppEnvironmentEnvExtensions.IsDevelopment(UnityUtil.IAppEnvironment)">
+            <summary>
+            Checks if the current app environment name is <see cref="F:UnityUtil.Environments.Development"/>.
+            </summary>
+            <param name="appEnvironment">An instance of <see cref="T:UnityUtil.IAppEnvironment"/>.</param>
+            <returns><see langword="true"/> if the environment name is <see cref="F:UnityUtil.Environments.Development"/>; otherwise, <see langword="false"/>.</returns>
+        </member>
+        <member name="M:UnityUtil.AppEnvironmentEnvExtensions.IsStaging(UnityUtil.IAppEnvironment)">
+            <summary>
+            Checks if the current app environment name is <see cref="F:UnityUtil.Environments.Staging"/>.
+            </summary>
+            <param name="appEnvironment">An instance of <see cref="T:UnityUtil.IAppEnvironment"/>.</param>
+            <returns><see langword="true"/> if the environment name is <see cref="F:UnityUtil.Environments.Staging"/>; otherwise, <see langword="false"/>.</returns>
+        </member>
+        <member name="M:UnityUtil.AppEnvironmentEnvExtensions.IsProduction(UnityUtil.IAppEnvironment)">
+            <summary>
+            Checks if the current app environment name is <see cref="F:UnityUtil.Environments.Production"/>.
+            </summary>
+            <param name="appEnvironment">An instance of <see cref="T:UnityUtil.IAppEnvironment"/>.</param>
+            <returns><see langword="true"/> if the environment name is <see cref="F:UnityUtil.Environments.Production"/>; otherwise, <see langword="false"/>.</returns>
+        </member>
+        <member name="M:UnityUtil.AppEnvironmentEnvExtensions.IsEnvironment(UnityUtil.IAppEnvironment,System.String)">
+            <summary>
+            Compares the current app environment name against the specified value.
+            </summary>
+            <param name="appEnvironment">An instance of <see cref="T:UnityUtil.IAppEnvironment"/>.</param>
+            <param name="environmentName">Environment name to validate against.</param>
+            <returns><see langword="true"/> if the specified name is the same as the current environment; otherwise, <see langword="false"/>.</returns>
+        </member>
+        <member name="T:UnityUtil.BuildAutomation.BuildManifest">
+            <summary>
+            Represents a Unity Build Automation (UBA) build manifest, for runtime parsing of the JSON manifest provided by UBA.
+            See the <a href="https://docs.unity.com/ugs/en-us/manual/devops/manual/build-automation/build-automation-integrations/use-build-automations-build-manifest-during-runtime">UBA build manifest docs</a>
+            for more info.
+            </summary>
+        </member>
+        <member name="P:UnityUtil.BuildAutomation.BuildManifest.ScmCommitId">
+            <summary>
+            The commit or changelist that was built.
+            </summary>
+        </member>
+        <member name="P:UnityUtil.BuildAutomation.BuildManifest.ScmBranch">
+            <summary>
+            The name of the branch that was built.
+            </summary>
+        </member>
+        <member name="P:UnityUtil.BuildAutomation.BuildManifest.BuildNumber">
+            <summary>
+            The Build Automation build number corresponding to this build.
+            </summary>
+        </member>
+        <member name="P:UnityUtil.BuildAutomation.BuildManifest.BuildStartTime">
+            <summary>
+            The UTC timestamp when the build process started.
+            </summary>
+        </member>
+        <member name="P:UnityUtil.BuildAutomation.BuildManifest.ProjectId">
+            <summary>
+            The Unity project identifier.
+            </summary>
+        </member>
+        <member name="P:UnityUtil.BuildAutomation.BuildManifest.BundleId">
+            <summary>
+            The bundleIdentifier configured in Build Automation (iOS and Android only).
+            </summary>
+        </member>
+        <member name="P:UnityUtil.BuildAutomation.BuildManifest.UnityVersion">
+            <summary>
+            The version of Unity that Build Automation used to create the build.
+            </summary>
+        </member>
+        <member name="P:UnityUtil.BuildAutomation.BuildManifest.XcodeVersion">
+            <summary>
+            The version of XCode used to build the Project (iOS only).
+            </summary>
+        </member>
+        <member name="P:UnityUtil.BuildAutomation.BuildManifest.CloudBuildTargetName">
+            <summary>
+            The name of the build target that was built.
+            </summary>
+        </member>
+        <member name="F:UnityUtil.DependencyInjection.DependencyInjector._injectedTypes">
+            <summary>
+            This collection is only a field (rather than a local var) so as to reduce allocations in <see cref="M:UnityUtil.DependencyInjection.DependencyInjector.getDependeciesOfMethod(System.String,System.Reflection.MethodBase,System.Reflection.ParameterInfo[])"/>
+            </summary>
+        </member>
+        <member name="M:UnityUtil.DependencyInjection.DependencyInjector.#ctor(System.Collections.Generic.IEnumerable{System.Type})">
+            <summary>
+            DO NOT USE THIS CONSTRUCTOR. It exists purely for unit testing
+            </summary>
+        </member>
+        <member name="M:UnityUtil.DependencyInjection.DependencyInjector.registerService(UnityUtil.DependencyInjection.Service,System.Nullable{UnityEngine.SceneManagement.Scene})">
+            <summary>
+            Register <paramref name="service"/> present in <paramref name="scene"/>
+            </summary>
+            <exception cref="T:System.InvalidOperationException">
+            A <see cref="T:UnityUtil.DependencyInjection.Service"/> with the provided <see cref="F:UnityUtil.DependencyInjection.Service.ServiceType"/> and <see cref="F:UnityUtil.DependencyInjection.Service.InjectTag"/> has already been registered.
+            </exception>
+        </member>
+        <member name="P:UnityUtil.DependencyInjection.DependencyInjector.CachedResolutionTypes">
+            <summary>
+            <para>
+            Use these rules to cache commonly resolved dependencies, speeding up Scene load times.
+            We use this whitelist approach because caching ALL dependency resolutions could use up significant memory, and could actually
+            worsen performance if many of the dependencies were only to be resolved by one client.
+            </para>
+            <para>
+            After a class instance with one of these types has had its dependences resolved via reflection,
+            the reflected metadata and matching services will be cached, so that
+            subsequent clients of the same type will have their dependencies injected much faster.
+            This is useful if you know you will have many client components in a scene with the same type.
+            </para>
+            </summary>
+        </member>
+        <member name="P:UnityUtil.DependencyInjection.DependencyInjector.RecordingResolutions">
+            <summary>
+            Toggles recording how many times service <see cref="T:System.Type"/>s are resolved at runtime, for optimization purposes.
+            </summary>
+        </member>
+        <member name="M:UnityUtil.DependencyInjection.DependencyInjector.GetServiceResolutionCounts">
+            <summary>
+            Gets the number of times that each service <see cref="T:System.Type"/> has been resolved at runtime.
+            </summary>
+        </member>
+        <member name="M:UnityUtil.DependencyInjection.DependencyInjector.Construct``1">
+            <summary>
+            Attempts to construct an instance of <typeparamref name="T"/>, using the constructor with the most parameters that
+            can all be resolved from registered services. If no constructors can have all parameters resolved, then <see langword="null"/> is returned.
+            </summary>
+            <typeparam name="T">Type of object to be constructed.</typeparam>
+            <returns>The constructed instance of <typeparamref name="T"/>.</returns>
+            <exception cref="T:System.InvalidOperationException">Could not resolve all dependencies (parameters) of any public constructor on <typeparamref name="T"/>.</exception>
+        </member>
+        <member name="M:UnityUtil.DependencyInjection.DependencyInjector.Construct(System.Type)">
+            <summary>
+            Attempts to construct an instance of <paramref name="clientType"/>, using the constructor with the most parameters that
+            can all be resolved from registered services. If no constructors can have all parameters resolved, then <see langword="null"/> is returned.
+            </summary>
+            <returns>The constructed instance of <paramref name="clientType"/>.</returns>
+            <exception cref="T:System.InvalidOperationException">Could not resolve all dependencies (parameters) of any public constructor on <paramref name="clientType"/>.</exception>
+        </member>
+        <member name="M:UnityUtil.DependencyInjection.DependencyInjector.ResolveDependenciesOf(System.Object)">
+            <summary>
+            Inject all dependencies into the specified client.
+            Can be called at runtime to satisfy dependencies of procedurally generated components, e.g., by a spawner.
+            </summary>
+            <param name="client">A client with service dependencies that need to be resolved.</param>
+        </member>
+        <member name="M:UnityUtil.DependencyInjection.DependencyInjector.getDependeciesOfMethod(System.String,System.Reflection.MethodBase,System.Reflection.ParameterInfo[])">
+            <summary>
+            Resolve the dependencies of <paramref name="method"/>.
+            I.e., get the service that satisfies the <see cref="T:System.Type"/> and (optional) tag of each of <paramref name="method"/>'s parameters.
+            </summary>
+            <param name="clientName">Name of the client object instance on which <paramref name="method"/> can be called</param>
+            <param name="method">The method for which to resolve dependencies.</param>
+            <param name="parameters"><paramref name="method"/>'s parameters, if they have already been loaded via reflection.</param>
+            <returns>The dependencies (parameters) required by <paramref name="method"/>.</returns>
+        </member>
+        <member name="T:UnityUtil.DependencyInjection.InjectTagAttribute">
+            <summary>
+            Inject the service configured with this field's <see cref="T:System.Type"/> and an optional Inspector tag.
+            </summary>
+            <remarks></remarks>
+            <param name="tag">The service <see cref="T:UnityEngine.Object"/> with this tag (set in the Inspector) will be injected.  Use when registering multiple services with the same Type.</param>
+        </member>
+        <member name="M:UnityUtil.DependencyInjection.InjectTagAttribute.#ctor(System.String)">
+            <summary>
+            Inject the service configured with this field's <see cref="T:System.Type"/> and an optional Inspector tag.
+            </summary>
+            <remarks></remarks>
+            <param name="tag">The service <see cref="T:UnityEngine.Object"/> with this tag (set in the Inspector) will be injected.  Use when registering multiple services with the same Type.</param>
+        </member>
+        <member name="P:UnityUtil.DependencyInjection.InjectTagAttribute.Tag">
+            <summary>
+            The service <see cref="T:UnityEngine.Object"/> with this tag (set in the Inspector) will be injected.  Use when registering multiple services with the same Type.
+            </summary>
+        </member>
+        <member name="T:UnityUtil.DependencyInjection.ITypeMetadataProvider">
+            <summary>
+            This type is used internally by the DI system. You should never need to implement it in your own code.
+            </summary>
+        </member>
+        <member name="F:UnityUtil.DependencyInjection.Service.InjectTag">
+            <summary>
+            Tag to disambiguate services of the same <see cref="F:UnityUtil.DependencyInjection.Service.ServiceType"/>.
+            </summary>
+        </member>
+        <member name="T:UnityUtil.DontDestroyOnLoad">
+            <summary>
+            Do not destroy the attached GameObject when loading a new scene.
+            </summary>
+        </member>
+        <member name="T:UnityUtil.Environments">
+            <summary>
+            Commonly used environment names.
+            Heavily based on the <a href="https://github.com/dotnet/dotnet/blob/main/src/runtime/src/libraries/Microsoft.Extensions.Hosting.Abstractions/src/Environments.cs"><c>Microsoft.Extensions.Hosting.Abstractions.Environments</c></a> class.
+            </summary>
+        </member>
+        <member name="F:UnityUtil.Environments.Development">
+            <summary>
+            Specifies the Development environment.
+            </summary>
+            <remarks>The development environment can enable features that shouldn't be exposed in production. Because of the performance cost, scope validation and dependency validation only happens in development.</remarks>
+        </member>
+        <member name="F:UnityUtil.Environments.Staging">
+            <summary>
+            Specifies the Staging environment.
+            </summary>
+            <remarks>The staging environment can be used to validate app changes before changing the environment to production.</remarks>
+        </member>
+        <member name="F:UnityUtil.Environments.Production">
+            <summary>
+            Specifies the Production environment.
+            </summary>
+            <remarks>The production environment should be configured to maximize security, performance, and application robustness.</remarks>
+        </member>
+        <member name="T:UnityUtil.FastIndexableDictionary`2">
+            <summary>
+            Represents a strongly typed dictionary of objects with constant-time insertion, removal, duplicate checks, <em>and</em> index lookup,
+            at the cost of additional memory (both a dictionary and a list are used internally).
+            </summary>
+            <remarks>
+            The indices of elements are not stable, and may change as elements are added/removed;
+            Note that this collection does <em>not</em> implement <see cref="T:System.Collections.Generic.IDictionary`2"/> as it does not
+            allow enumeration of <see cref="T:System.Collections.Generic.KeyValuePair`2"/>s.
+            Enumeration should be done via index lookups in a <see langword="for"/> loop.
+            </remarks>
+            <typeparam name="TKey">The type of the keys in the collection.</typeparam>
+            <typeparam name="TValue">The type of the values in the collection.</typeparam>
+        </member>
+        <member name="P:UnityUtil.FastIndexableDictionary`2.Count">
+            <summary>
+            Gets the number of elements contained in the <see cref="T:UnityUtil.FastIndexableDictionary`2"/>.
+            </summary>
+        </member>
+        <member name="P:UnityUtil.FastIndexableDictionary`2.Item(`0)">
+            <summary>
+            Gets or sets the value associated with the specified key.
+            </summary>
+            <param name="key">The key of the value to get or set.</param>
+            <returns>
+            The value associated with the specified key.
+            If the specified key is not found, a get operation throws a <see cref="T:System.Collections.Generic.KeyNotFoundException"/>, 
+            and a set operation creates a new element with the specified key.
+            </returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="key"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.Collections.Generic.KeyNotFoundException">The property is retrieved and <paramref name="key"/> does not exist in the collection.</exception>
+        </member>
+        <member name="P:UnityUtil.FastIndexableDictionary`2.Item(System.Int32)">
+            <summary>
+            Gets or sets the element at the specified index.
+            </summary>
+            <param name="index">The zero-based index of the element to get or set.</param>
+            <returns>The element at the specified index.</returns>
+            <exception cref="T:System.ArgumentOutOfRangeException">index is less than 0. -or- index is equal to or greater than <see cref="P:UnityUtil.FastIndexableDictionary`2.Count"/>.</exception>
+        </member>
+        <member name="M:UnityUtil.FastIndexableDictionary`2.TrimExcess">
+            <summary>
+            Sets the capacity to the actual number of elements in the underlying collection, to save on memory.
+            </summary>
+        </member>
+        <member name="M:UnityUtil.FastIndexableDictionary`2.Clear">
+            <summary>
+            Removes all elements from the <see cref="T:UnityUtil.FastIndexableDictionary`2"/>
+            </summary>
+        </member>
+        <member name="M:UnityUtil.FastIndexableDictionary`2.ContainsKey(`0)">
+            <summary>
+            Determines whether the <see cref="T:UnityUtil.FastIndexableDictionary`2"/> contains the specified key.
+            </summary>
+            <param name="key">The key to locate in the <see cref="T:UnityUtil.FastIndexableDictionary`2"/></param>
+            <returns>
+            <see langword="true"/> if the <see cref="T:UnityUtil.FastIndexableDictionary`2"/> contains an element with the specified key; 
+            otherwise, <see langword="false"/>.
+            </returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="key"/> is <see langword="null"/></exception>
+        </member>
+        <member name="M:UnityUtil.FastIndexableDictionary`2.Remove(`0)">
+            <summary>
+            Removes the value with the specified key from the <see cref="T:UnityUtil.FastIndexableDictionary`2"/>.
+            </summary>
+            <param name="key">The key of the element to remove.</param>
+            <returns>
+            <see langword="true"/> if the element is successfully found and removed; otherwise, <see langword="false"/>.
+            This method returns <see langword="false"/> if <paramref name="key"/> is not found in the <see cref="T:UnityUtil.FastIndexableDictionary`2"/>.
+            </returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="key"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="M:UnityUtil.FastIndexableDictionary`2.Remove(`0,`1@)">
+            <summary>
+            Removes the value with the specified key from the <see cref="T:UnityUtil.FastIndexableDictionary`2"/>,
+            and copies the element to the <paramref name="value"/> parameter.
+            </summary>
+            <param name="key">The key of the element to remove.</param>
+            <param name="value">The removed element.</param>
+            <returns>
+            <see langword="true"/> if the element is successfully found and removed; otherwise, <see langword="false"/>.
+            </returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="key"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="M:UnityUtil.FastIndexableDictionary`2.Add(`0,`1)">
+            <summary>
+            Adds the specified key and value to the dictionary.
+            </summary>
+            <param name="key">The key of the element to add.</param>
+            <param name="value">The value of the element to add. The value can be <see langword="null"/> for reference types.</param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="key"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentException">An element with the same key already exists in the dictionary.</exception>
+        </member>
+        <member name="M:UnityUtil.FastIndexableDictionary`2.TryAdd(`0,`1)">
+            <summary>
+            Attempts to add the specified key and value to the dictionary.
+            </summary>
+            <param name="key">The key of the element to add.</param>
+            <param name="value">The value of the element to add. It can be <see langword="null"/>.</param>
+            <returns>
+            <see langword="true"/> if the key/value pair was added to the dictionary successfully;
+            otherwise, <see langword="false"/>.
+            </returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="key"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="M:UnityUtil.FastIndexableDictionary`2.TryGetValue(`0,`1@)">
+            <summary>
+            Gets the value associated with the specified key.
+            </summary>
+            <param name="key">The key of the value to get.</param>
+            <param name="value">
+            When this method returns, contains the value associated with the specified key, if the key is found; 
+            otherwise, the default value for the type of the value parameter.
+            This parameter is passed uninitialized.
+            </param>
+            <returns>
+            <see langword="true"/> if the dictionary contains an element 
+            with the specified key; otherwise, <see langword="false"/>.
+            </returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="key"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="T:UnityUtil.IAppEnvironment">
+            <summary>
+            Provides information about the environment in which an application is running.
+            Based on the <a href="https://github.com/dotnet/dotnet/blob/main/src/runtime/src/libraries/Microsoft.Extensions.Hosting.Abstractions/src/IHostEnvironment.cs"><c>Microsoft.Extensions.Hosting.Abstractions.IHostEnvironment</c></a> interface.
+            </summary>
+        </member>
+        <member name="P:UnityUtil.IAppEnvironment.EnvironmentName">
+            <summary>
+            Gets or sets the name of the environment.
+            This property must be set to the value of the "environment" key in configuration at boot time.
+            </summary>
+        </member>
+        <member name="T:UnityUtil.IApplicationQuitter">
+            <summary>
+            Provides methods for quitting the entire application.
+            </summary>
+        </member>
+        <member name="M:UnityUtil.IApplicationQuitter.Quit(System.Int32)">
+            <summary>
+            Quits the application with the specified exit code.
+            </summary>
+            <param name="exitCode"></param>
+        </member>
+        <member name="T:UnityUtil.IRuntimeIdProvider">
+            <summary>
+            Provides methods for getting a unique identifier at runtime
+            </summary>
+        </member>
+        <member name="M:UnityUtil.IRuntimeIdProvider.GetNewId">
+            <summary>
+            Get a new, unique identifier. Every call to this method at runtime is guaranteed to return a new integer,
+            but different integers may be generated during each run.
+            </summary>
+            <returns>A new, unique identifier.</returns>
+        </member>
+        <member name="T:UnityUtil.QuantityEvent">
+            <summary>
+            Type arguments are (float oldValue, float newValue)
+            </summary>
+        </member>
+        <member name="T:UnityUtil.Math.IRandomAdapter">
+            <summary>
+            Provides an interface around <see cref="T:System.Random"/> to allow for easier testing and dependency injection.
+            </summary>
+        </member>
+        <member name="P:UnityUtil.Math.IRandomAdapter.Seed">
+            <summary>
+            The seed used to initialize <see cref="P:UnityUtil.Math.IRandomAdapter.Rand"/>
+            </summary>
+        </member>
+        <member name="P:UnityUtil.Math.IRandomAdapter.Rand">
+            <summary>
+            The adapted <see cref="T:System.Random"/> instance
+            </summary>
+        </member>
+        <member name="M:UnityUtil.Math.IRandomAdapter.NextInt">
+            <summary>
+            Returns a non-negative random integer.
+            </summary>
+            <returns>A 32-bit signed integer that is greater than or equal to 0 and less than <see cref="F:System.Int32.MaxValue"/>.</returns>
+            <exception cref="T:System.InvalidOperationException"><see cref="P:UnityUtil.Math.IRandomAdapter.Rand"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="M:UnityUtil.Math.IRandomAdapter.NextDouble">
+            <summary>
+            Returns a random floating-point number that is greater than or equal to 0.0, and less than 1.0.
+            </summary>
+            <returns>A double-precision floating point number that is greater than or equal to 0.0, and less than 1.0.</returns>
+            <exception cref="T:System.InvalidOperationException"><see cref="P:UnityUtil.Math.IRandomAdapter.Rand"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="M:UnityUtil.Math.IRandomAdapter.Range(System.Int32,System.Int32)">
+            <summary>
+            Returns a random integer that is within a specified range.
+            </summary>
+            <param name="inclusiveMin">The inclusive lower bound of the random number returned.</param>
+            <param name="exclusiveMax">The exclusive upper bound of the random number returned. <paramref name="exclusiveMax"/> must be greater than or equal to <paramref name="inclusiveMin"/>.</param>
+            <returns>
+            A 32-bit signed integer greater than or equal to <paramref name="inclusiveMin"/> and less than <paramref name="exclusiveMax"/>;
+            that is, the range of return values includes <paramref name="inclusiveMin"/> but not <paramref name="exclusiveMax"/>.
+            If <paramref name="inclusiveMin"/> equals <paramref name="exclusiveMax"/>, then <paramref name="inclusiveMin"/> is returned.</returns>
+            <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="inclusiveMin"/> is greater than <paramref name="exclusiveMax"/>.</exception>
+            <exception cref="T:System.InvalidOperationException"><see cref="P:UnityUtil.Math.IRandomAdapter.Rand"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="M:UnityUtil.Math.IRandomAdapter.Range(System.Single,System.Single)">
+            <summary>
+            Returns a random floating-point number that is within a specified range.
+            </summary>
+            <param name="inclusiveMin">The inclusive lower bound of the random number returned.</param>
+            <param name="exclusiveMax">The exclusive upper bound of the random number returned.</param>
+            <returns>
+            A floating point number greater than or equal to <paramref name="inclusiveMin"/> and less than <paramref name="exclusiveMax"/>;
+            that is, the range of return values includes <paramref name="inclusiveMin"/> but not <paramref name="exclusiveMax"/>.
+            If <paramref name="inclusiveMin"/> equals <paramref name="exclusiveMax"/>, then <paramref name="inclusiveMin"/> is returned.</returns>
+            <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="inclusiveMin"/> is greater than <paramref name="exclusiveMax"/>.</exception>
+            <exception cref="T:System.InvalidOperationException"><see cref="P:UnityUtil.Math.IRandomAdapter.Rand"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="M:UnityUtil.Math.IRandomAdapter.Range(System.Double,System.Double)">
+            <summary>
+            Returns a random floating-point number that is within a specified range.
+            </summary>
+            <param name="inclusiveMin">The inclusive lower bound of the random number returned.</param>
+            <param name="exclusiveMax">The exclusive upper bound of the random number returned.</param>
+            <returns>
+            A floating point number greater than or equal to <paramref name="inclusiveMin"/> and less than <paramref name="exclusiveMax"/>;
+            that is, the range of return values includes <paramref name="inclusiveMin"/> but not <paramref name="exclusiveMax"/>.
+            If <paramref name="inclusiveMin"/> equals <paramref name="exclusiveMax"/>, then <paramref name="inclusiveMin"/> is returned.</returns>
+            <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="inclusiveMin"/> is greater than <paramref name="exclusiveMax"/>.</exception>
+            <exception cref="T:System.InvalidOperationException"><see cref="P:UnityUtil.Math.IRandomAdapter.Rand"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="T:UnityUtil.Math.IRandomishOptionChooser">
+            <summary>
+            Chooses between options in a "randomish" way, i.e., a way that <em>feels</em> random to humans over time but may not be truly (psuedo)random.
+            </summary>
+        </member>
+        <member name="M:UnityUtil.Math.IRandomishOptionChooser.GetOptionIndex">
+            <summary>
+            Chooses an option index in a "randomish" way, i.e., a way that <em>feels</em> random to humans over time but may not be truly (psuedo)random.
+            </summary>
+            <returns>
+            An index between 0 (inclusive) and the number of options (exclusive).
+            </returns>
+        </member>
+        <member name="T:UnityUtil.Math.MaxRepeatsRandomishOptionChooser">
+            <summary>
+            <para>
+            Chooses between options in a "randomish" way, i.e., a way that <em>feels</em> random to humans over time but is not truly random.
+            Achieved by repeating options some max number of times in a row.
+            </para>
+            <para>
+            This type is not thread safe. If randomish option indices must be accessed by multiple threads, you will need to implement your own synchronization mechanism.
+            </para>
+            </summary>
+        </member>
+        <member name="F:UnityUtil.Math.MaxRepeatsRandomishOptionChooser.ProbabilitySumTolerance">
+            <summary>
+            All <see cref="P:UnityUtil.Math.MaxRepeatsRandomishOptionChooserConfig.OptionProbabilities"/> must sum to 1, within this tolerance.
+            This accounts for probabilities that cannot be accurately represented with floating point numbers (e.g., 1/9).
+            </summary>
+        </member>
+        <member name="P:UnityUtil.Math.MaxRepeatsRandomishOptionChooser.OptionRepeats">
+            <summary>
+            Number of times the option at each index has been repeated during the last <see cref="P:UnityUtil.Math.MaxRepeatsRandomishOptionChooserConfig.MaxRepeats"/> calls to <see cref="M:UnityUtil.Math.MaxRepeatsRandomishOptionChooser.GetOptionIndex"/>.
+            </summary>
+        </member>
+        <member name="M:UnityUtil.Math.MaxRepeatsRandomishOptionChooser.GetOptionIndex">
+            <summary>
+            Chooses an option index using "randomish" logic.
+            This is an O(n) operation, where n is the number of options.
+            </summary>
+            <returns>
+            An index between 0 (inclusive) and the number of options (exclusive).
+            </returns>
+            <remarks>
+            <para>
+            Indices are chosen using the configured <see cref="P:UnityUtil.Math.MaxRepeatsRandomishOptionChooserConfig.OptionProbabilities"/>
+            while ensuring that no option is returned more than <see cref="P:UnityUtil.Math.MaxRepeatsRandomishOptionChooserConfig.MaxRepeats"/> times in a row.
+            For example, suppose [0.3, 0.4, 0.3] are the specified probabilities, with a max repeat of 3.
+            Initially, there is a 30% chance of returning 0, 40% chance of returning 1, and 30% chance of returning 2.
+            If index 1 is returned 3 times in a row, then on the next call, there will instead be a 50% chance of returning 0 and a 50% chance of returning 2
+            (maintaining the relative probabilities of those options, while preventing 1 from being returned again).
+            On the next call, index 1 has no longer been returned 3 times in a row, so the probabilties go back to their initial values.
+            </para>
+            <para>
+            To understand this method's logic, picture a set of ranges between 0 and 1, with sizes determined by the <see cref="P:UnityUtil.Math.MaxRepeatsRandomishOptionChooserConfig.OptionProbabilities"/>.
+            </para>
+            <code>
+            |-------|----------------------|---|--------|
+            |------------------^------------------------|
+            </code>
+            <para>
+            The caret represents a random value, R, between 0 and 1 (inclusive).
+            The probability of choosing option i (0-based), according to the specified probabilities,
+            equals the probability of R falling within the (i+1)th range (where each range includes its left bound).
+            E.g., the probability of choosing index 1 equals the probability of R falling within the 2nd range.
+            Therefore, the index at which the cumulative probability of <see cref="P:UnityUtil.Math.MaxRepeatsRandomishOptionChooserConfig.OptionProbabilities"/> is greater than R is the "chosen" index.
+            </para>
+            <para>
+            <see cref="T:UnityUtil.Math.MaxRepeatsRandomishOptionChooser"/> maintains a collection of the last <see cref="P:UnityUtil.Math.MaxRepeatsRandomishOptionChooserConfig.MaxRepeats"/> indices returned.
+            When an option has been chosen more than the max allowed times in a row, its probability is temporarily zero.
+            In the above visualization, this is equivalent to collapsing that option's interval to zero width, and then restricting R
+            to the range between 0 and (1 - that option's probability).
+            </para>
+            </remarks>
+        </member>
+        <member name="M:UnityUtil.Math.MaxRepeatsRandomishOptionChooser.UseOption(System.Int32)">
+            <summary>
+            Adjust state after the option at <paramref name="index"/> is chosen.
+            </summary>
+            <param name="index">Index of the option that was chosen.</param>
+            <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="index"/> is out of bounds of the <see cref="P:UnityUtil.Math.MaxRepeatsRandomishOptionChooser.OptionRepeats"/> list.</exception>
+            <exception cref="T:System.InvalidOperationException">Option at <paramref name="index"/> has already been repeated the max of <see cref="P:UnityUtil.Math.MaxRepeatsRandomishOptionChooserConfig.MaxRepeats"/> times in a row.</exception>
+        </member>
+        <member name="M:UnityUtil.Math.MoreMath.RandomWeightedIndex(System.Collections.Generic.IReadOnlyList{System.Single},UnityUtil.Math.IRandomAdapter)">
+            <summary>
+            Gets a random index where each index has a provided weight. For example, if [0.3, 0.4, 0.3] is provided, then
+            there is a 30% chance of returning 0, 40% chance of returning 1, and 30% chance of returning 2.
+            </summary>
+            <param name="indexWeights">The weights for each index. These must sum up to 1.</param>
+            <param name="randomAdapter">The object used to generate pseudorandom numbers.</param>
+            <returns>An index between 0 (inclusive) and the length of <paramref name="indexWeights"/> (exclusive)</returns>
+            <exception cref="T:System.ArgumentException"><paramref name="indexWeights"/> is empty.</exception>
+            <exception cref="T:System.InvalidOperationException">The sum of <paramref name="indexWeights"/> is not 1.</exception>
+            <remarks>
+            Picture a set of ranges between 0 and 1, with sizes determined by <paramref name="indexWeights"/>
+            <code>
+            |-------|----------------------|---|--------|
+            |------------------^------------------------|
+            </code>
+            The caret represents a random value, R, between 0 and 1 (inclusive).
+            The probability of choosing index i (0-based), according to the specified weights,
+            equals the probability of R falling within the (i+1)th range (where each range includes its left bound).
+            E.g., the probability of choosing index 1 equals the probability of R falling within the 2nd range.
+            Therefore, the index at which the cumulative probability of <paramref name="indexWeights"/> is greater than R is our "chosen" index.
+            </remarks>
+        </member>
+        <member name="M:UnityUtil.Math.MoreMath.RandomUniqueIndices(System.Int32,System.Int32,UnityUtil.Math.IRandomAdapter)">
+            <summary>
+            Returns a set of <paramref name="count"/> unique random indices into a collection with the provided <paramref name="sourceCount"/>.
+            Order of the returned indices is unspecified. Note that this method allocates a block of memory that
+            scales linearly (O(n)) with <paramref name="sourceCount"/>.
+            </summary>
+            <param name="count">The number of unique random indices to return.</param>
+            <param name="sourceCount">The number of elements in the source collection into which we are returning random indices.</param>
+            <param name="randomAdapter">The object used to generate pseudorandom numbers.</param>
+            <returns></returns>
+            <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="count"/> or <paramref name="sourceCount"/> is less than zero.</exception>
+            <exception cref="T:System.InvalidOperationException"><paramref name="count"/> is greater than <paramref name="sourceCount"/>.</exception>
+        </member>
+        <member name="M:UnityUtil.Math.MoreMath.RandomConeVector(UnityEngine.Transform,System.Single,System.Boolean)">
+            <summary>
+            Returns a random unit vector within a cone of the provided half-angle around the provided <see cref="T:UnityEngine.Transform"/>'s forward vector (uniformly distributed).
+            </summary>
+            <param name="transform">The <see cref="T:UnityEngine.Transform"/> around whose forward vector the cone is centered</param>
+            <param name="halfAngle">The half angle (in degrees) of the cone</param>
+            <param name="onlyBoundary">If <see langword="true"/>, then the random unit vector will be constrained to the boundary of the cone.  If <see langword="false"/>, then the random unit vector may be anywhere within the cone.</param>
+            <returns>A random unit vector within a cone of the provided half-angle around the provided <see cref="T:UnityEngine.Transform"/>'s forward vector (uniformly distributed).</returns>
+            <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="halfAngle"/> is less then 0° or greater than or equal to 360°.</exception>
+        </member>
+        <member name="M:UnityUtil.Math.MoreMath.RandomConeVector(UnityEngine.Vector3,System.Single,System.Boolean)">
+            <summary>
+            Returns a random unit vector within a cone of the provided half-angle centered around the provided axis (uniformly distributed).
+            </summary>
+            <param name="axis">The center axis of the cone</param>
+            <param name="halfAngle">The half angle (in degrees) of the cone</param>
+            <param name="onlyBoundary">If <see langword="true"/>, then the random unit vector will be constrained to the boundary of the cone.  If <see langword="false"/>, then the random unit vector may be anywhere within the cone.</param>
+            <returns>A random unit vector within a cone of the provided half-angle around the provided <see cref="T:UnityEngine.Transform"/>'s forward vector (uniformly distributed).</returns>
+            <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="halfAngle"/> is less then 0° or greater than or equal to 360°.</exception>
+        </member>
+        <member name="P:UnityUtil.Math.RandomAdapter.Seed">
+            <inheritdoc/>
+        </member>
+        <member name="P:UnityUtil.Math.RandomAdapter.Rand">
+            <inheritdoc/>
+        </member>
+        <member name="P:UnityUtil.Math.UniformBatchedRandomishOptionChooserConfig.OptionCount">
+            <summary>
+            Number of equally likely options that can be chosen. Must be 1 or greater.
+            </summary>
+        </member>
+        <member name="P:UnityUtil.Math.UniformBatchedRandomishOptionChooserConfig.MinRunsPerBatch">
+            <summary>
+            Minimum number of runs (sequences of repeated options) allowed per batch. Must be 0 or greater and less than <see cref="P:UnityUtil.Math.UniformBatchedRandomishOptionChooserConfig.MaxRunsPerBatch"/>.
+            </summary>
+        </member>
+        <member name="P:UnityUtil.Math.UniformBatchedRandomishOptionChooserConfig.MaxRunsPerBatch">
+            <summary>
+            Maximum number of runs (sequences of repeated options) allowed per batch. Must be greater than or equal to <see cref="P:UnityUtil.Math.UniformBatchedRandomishOptionChooserConfig.MinRunsPerBatch"/>.
+            </summary>
+        </member>
+        <member name="P:UnityUtil.Math.UniformBatchedRandomishOptionChooserConfig.MaxRepeatsPerRun">
+            <summary>
+            Maximum number of times an option can be repeated in a run, i.e., the max "length" of a run.
+            Minimum number of repeats per run is obviously 1, so <see cref="P:UnityUtil.Math.UniformBatchedRandomishOptionChooserConfig.MaxRepeatsPerRun"/> must be greater than 1.
+            </summary>
+        </member>
+        <member name="T:UnityUtil.Math.UniformBatchedRandomishOptionChooser">
+            <summary>
+            <para>
+            Chooses between options in a "randomish" way, i.e., a way that <em>feels</em> random to humans over time but is not truly random.
+            Achieved by generating "batches" of options in advance with configurable numbers/lengths of runs.
+            All options are assumbed to be equally likely; they will have a "uniform" distribution over time.
+            </para>
+            <para>
+            This type is not thread safe. If randomish option indices must be accessed by multiple threads, you will need to implement your own synchronization mechanism.
+            </para>
+            </summary>
+        </member>
+        <member name="P:UnityUtil.Math.UniformBatchedRandomishOptionChooser.BatchProviderDelegate">
+            <summary>
+            The delegate that will provide the next batch of option indices. Defaults to <see cref="M:UnityUtil.Math.UniformBatchedRandomishOptionChooser.GetBatch"/>.
+            <strong>This property should only be explicitly set in unit tests!</strong>
+            </summary>
+        </member>
+        <member name="F:UnityUtil.Math.UniformBatchedRandomishOptionChooser.LastOptionIndexOfPreviousBatch">
+            <summary>
+            <see cref="M:UnityUtil.Math.UniformBatchedRandomishOptionChooser.GetBatch"/> will ensure that this index is not chosen at the start of a batch,
+            to prevent accidentally "continuing" a run across batches.
+            <strong>This property should only be explicitly set in unit tests!</strong>
+            </summary>
+        </member>
+        <member name="M:UnityUtil.Math.UniformBatchedRandomishOptionChooser.GetOptionIndex">
+            <inheritdoc/>
+        </member>
+        <member name="T:UnityUtil.RuntimeIdProvider">
+            <inheritdoc/>
+        </member>
+        <member name="M:UnityUtil.RuntimeIdProvider.GetNewId">
+            <inheritdoc/>
+        </member>
+        <member name="T:UnityUtil.ShowBackingFieldAttribute">
+            <summary>
+            Force Unity to serialize the backing field of a C# auto-implemented property.
+            Consuming properties should be declared as follows
+            (note that both a getter and a setter are required for Unity to recognize the backing field):
+            <code>
+            [field: SerializeBackingField]
+            public SomeType SomeProperty { get; private set; }
+            </code>
+            </summary>
+        </member>
+        <member name="T:UnityUtil.SpawnDirection">
+            <summary>
+            Determines the direction in which <see cref="F:UnityUtil.Spawner.Prefab"/> instances spawned by a <see cref="T:UnityUtil.Spawner"/> are launched.
+            </summary>
+        </member>
+        <member name="F:UnityUtil.SpawnDirection.Straight">
+            <summary>
+            Spawned <see cref="F:UnityUtil.Spawner.Prefab"/> instances will be launched along the <see cref="T:UnityUtil.Spawner"/>'s forward vector.
+            </summary>
+        </member>
+        <member name="F:UnityUtil.SpawnDirection.ConeRandom">
+            <summary>
+            Spawned <see cref="F:UnityUtil.Spawner.Prefab"/> instances will be launched along a random vector within a cone centered around the <see cref="T:UnityUtil.Spawner"/>'s forward vector.
+            </summary>
+        </member>
+        <member name="F:UnityUtil.SpawnDirection.ConeBoundary">
+            <summary>
+            Spawned <see cref="F:UnityUtil.Spawner.Prefab"/> instances will be launched along a random vector on the boundary of a cone centered around the <see cref="T:UnityUtil.Spawner"/>'s forward vector.
+            </summary>
+        </member>
+        <member name="F:UnityUtil.SpawnDirection.AnyDirection">
+            <summary>
+            Spawned <see cref="F:UnityUtil.Spawner.Prefab"/> instances will be launched along any random vector.
+            </summary>
+        </member>
+        <member name="M:UnityUtil.Storage.ILocalPreferences.DeleteAll">
+            <summary>
+            Removes all keys and values from the preferences. Use with caution.
+            </summary>
+        </member>
+        <member name="M:UnityUtil.Storage.ILocalPreferences.DeleteKey(System.String)">
+            <summary>
+            Removes key and its corresponding value from the preferences.
+            </summary>
+            <param name="key"></param>
+        </member>
+        <member name="M:UnityUtil.Storage.ILocalPreferences.GetFloat(System.String,System.Single)">
+            <summary>
+            Returns the value corresponding to key in the preference file if it exists; otherwise, <paramref name="defaultValue"/>.
+            </summary>
+            <param name="key"></param>
+            <param name="defaultValue"></param>
+            <returns></returns>
+        </member>
+        <member name="M:UnityUtil.Storage.ILocalPreferences.GetFloat(System.String)">
+            <summary>
+            Returns the value corresponding to key in the preference file if it exists; otherwise, zero.
+            </summary>
+            <param name="key"></param>
+            <returns></returns>
+        </member>
+        <member name="M:UnityUtil.Storage.ILocalPreferences.GetInt(System.String,System.Int32)">
+            <summary>
+            Returns the value corresponding to key in the preference file if it exists; otherwise, <paramref name="defaultValue"/>.
+            </summary>
+            <param name="key"></param>
+            <param name="defaultValue"></param>
+            <returns></returns>
+        </member>
+        <member name="M:UnityUtil.Storage.ILocalPreferences.GetInt(System.String)">
+            <summary>
+            Returns the value corresponding to key in the preference file if it exists; otherwise, zero.
+            </summary>
+            <param name="key"></param>
+            <returns></returns>
+        </member>
+        <member name="M:UnityUtil.Storage.ILocalPreferences.GetString(System.String,System.String)">
+            <summary>
+            Returns the value corresponding to key in the preference file if it exists; otherwise, <paramref name="defaultValue"/>.
+            </summary>
+            <param name="key"></param>
+            <param name="defaultValue"></param>
+            <returns></returns>
+        </member>
+        <member name="M:UnityUtil.Storage.ILocalPreferences.GetString(System.String)">
+            <summary>
+            Returns the value corresponding to key in the preference file if it exists; otherwise, <see cref="F:System.String.Empty"/>.
+            </summary>
+            <param name="key"></param>
+            <returns></returns>
+        </member>
+        <member name="M:UnityUtil.Storage.ILocalPreferences.HasKey(System.String)">
+            <summary>
+            Returns true if key exists in the preferences.
+            </summary>
+            <param name="key"></param>
+            <returns></returns>
+        </member>
+        <member name="M:UnityUtil.Storage.ILocalPreferences.Save">
+            <summary>
+            Writes all modified preferences to disk.
+            </summary>
+        </member>
+        <member name="M:UnityUtil.Storage.ILocalPreferences.SetFloat(System.String,System.Single)">
+            <summary>
+            Sets the value of the preference identified by key.
+            </summary>
+            <param name="key"></param>
+            <param name="value"></param>
+        </member>
+        <member name="M:UnityUtil.Storage.ILocalPreferences.SetInt(System.String,System.Int32)">
+            <summary>
+            Sets the value of the preference identified by key.
+            </summary>
+            <param name="key"></param>
+            <param name="value"></param>
+        </member>
+        <member name="M:UnityUtil.Storage.ILocalPreferences.SetString(System.String,System.String)">
+            <summary>
+            Sets the value of the preference identified by key.
+            </summary>
+            <param name="key"></param>
+            <param name="value"></param>
+        </member>
+        <member name="M:UnityUtil.UnityObjectExtensions.GetHierarchyName(UnityEngine.GameObject,System.Int32,System.String)">
+            <summary><inheritdoc cref="M:UnityUtil.UnityObjectExtensions.GetHierarchyName(UnityEngine.Component,System.Int32,System.String)"/></summary>
+            <remarks><inheritdoc cref="M:UnityUtil.UnityObjectExtensions.GetHierarchyName(UnityEngine.Component,System.Int32,System.String)"/></remarks>
+            <param name="obj"><inheritdoc cref="M:UnityUtil.UnityObjectExtensions.GetHierarchyName(UnityEngine.Component,System.Int32,System.String)" path="/param[@name='obj']"/></param>
+            <param name="parentCount"><inheritdoc cref="M:UnityUtil.UnityObjectExtensions.GetHierarchyName(UnityEngine.Component,System.Int32,System.String)" path="/param[@name='parentCount']"/></param>
+            <param name="separator"><inheritdoc cref="M:UnityUtil.UnityObjectExtensions.GetHierarchyName(UnityEngine.Component,System.Int32,System.String)" path="/param[@name='separator']"/></param>
+            <returns><inheritdoc cref="M:UnityUtil.UnityObjectExtensions.GetHierarchyName(UnityEngine.Component,System.Int32,System.String)"/></returns>
+            <exception cref="T:System.ArgumentOutOfRangeException"><inheritdoc cref="M:UnityUtil.UnityObjectExtensions.GetHierarchyName(UnityEngine.Component,System.Int32,System.String)"/></exception>
+        </member>
+        <member name="M:UnityUtil.UnityObjectExtensions.GetHierarchyName(UnityEngine.Component,System.Int32,System.String)">
+            <summary>
+            Gets <paramref name="obj"/>'s "hierarchy name".
+            That is, its <see cref="P:UnityEngine.Object.name"/> concatenated with the names of up to <paramref name="parentCount"/> parents above it,
+            separated by <paramref name="separator"/>.
+            For example, <c>parent/object</c> or <c>root > group > object</c>.
+            </summary>
+            <remarks>
+            <para>
+            If <paramref name="parentCount"/> is 0, then only <paramref name="obj"/>'s name is returned.
+            If <paramref name="obj"/> has fewer parents than <paramref name="parentCount"/>,
+            then the hierarchy name will only contain the names of as many parents as <paramref name="obj"/> actually has.
+            To include all parent names, set <paramref name="parentCount"/> to something high, e.g., <see cref="F:System.Int32.MaxValue"/>.
+            </para>
+            <para>
+            <strong>Warning</strong>: This method walks the Transform hierarchy to find <paramref name="obj"/>'s parents.
+            For deeply nested GameObjects, you may want to use a smaller <paramref name="parentCount"/> inside performance-critical code.
+            You could also cache the hierarchy name, but the name may become stale if <paramref name="obj"/>'s hierarchy changes.
+            </para>
+            </remarks>
+            <param name="obj"></param>
+            <param name="parentCount"></param>
+            <param name="separator"></param>
+            <returns></returns>
+            <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="separator"/> is negative.</exception>
+        </member>
+        <member name="M:UnityUtil.UnityObjectExtensions.ThrowIfInactiveOrDisabled(UnityEngine.Behaviour,System.String)">
+            <summary>
+            Assert that this component is both active and enabled.
+            </summary>
+            <param name="behaviour">The <see cref="T:UnityEngine.Behaviour"/> to assert as active and enabled</param>
+            <param name="verbMessage">
+            If this component is either inactive or disabled, then this verb will be used in the logged error message.
+            Should be present-tense phrase, like "stop", or "perform that action". Padding spaces are not required.
+            </param>
+        </member>
+        <member name="M:UnityUtil.Updating.IUpdater.AddUpdate(System.Int32,System.Action{System.Single})">
+            <summary>
+            Add an <see cref="T:System.Action"/> to be called every frame for the component with <paramref name="instanceId"/>.
+            Each instance ID may be associated with at most one of each of type of update action (<c>Update</c>, <c>FixedUpdate</c>, <c>LateUpdate</c>).
+            </summary>
+            <param name="instanceId">The instance ID of the component that will be updated every frame.</param>
+            <param name="updateAction">The <see cref="T:System.Action"/> to be called every frame.</param>
+            <exception cref="T:System.InvalidOperationException">An <c>Update</c> has already been associated with <paramref name="instanceId"/>.</exception>
+        </member>
+        <member name="M:UnityUtil.Updating.IUpdater.RemoveUpdate(System.Int32,System.Action{System.Single}@)">
+            <summary>
+            Remove the <see cref="T:System.Action"/> called every frame for the component with <paramref name="instanceId"/>
+            and copy it to <paramref name="updateAction"/>.
+            </summary>
+            <param name="instanceId">The instance ID of the component that no longer needs to be updated every frame.</param>
+            <param name="updateAction">The removed <c>Update</c> action.</param>
+            <returns>
+            <see langword="true"/> if the action is successfully found and removed; otherwise, <see langword="false"/>.
+            </returns>
+        </member>
+        <member name="M:UnityUtil.Updating.IUpdater.TryAddUpdate(System.Int32,System.Action{System.Single})">
+            <summary>
+            Attempts to add an <see cref="T:System.Action"/> to be called every frame for the component with <paramref name="instanceId"/>.
+            </summary>
+            <param name="instanceId">The instance ID of the component that will be updated every frame.</param>
+            <param name="updateAction">The <see cref="T:System.Action"/> to be called every frame.</param>
+            <returns>
+            <see langword="true"/> if the <see cref="T:System.Action"/> was successfully added; otherwise, <see langword="false"/>.
+            </returns>
+        </member>
+        <member name="M:UnityUtil.Updating.IUpdater.TryGetUpdate(System.Int32,System.Action{System.Single}@)">
+            <summary>
+            Attempts to get the <see cref="T:System.Action"/> called every frame for the component with <paramref name="instanceId"/>.
+            </summary>
+            <param name="instanceId">The instance ID of the component that is updated every frame.</param>
+            <param name="updateAction">
+            When this method returns, contains the <c>Update</c> action associated with <paramref name="instanceId"/>, 
+            if found; otherwise, <see langword="null"/>. This parameter is passed uninitialized.
+            </param>
+            <returns>
+            <see langword="true"/> if an <c>Update</c> action is associated with <paramref name="instanceId"/>;
+            otherwise, <see langword="false"/>.
+            </returns>
+        </member>
+        <member name="M:UnityUtil.Updating.IUpdater.ContainsUpdate(System.Int32)">
+            <summary>
+            Determines whether an <c>Update</c> action is associated with the component with <paramref name="instanceId"/>.
+            </summary>
+            <param name="instanceId">The instance ID of the component to check.</param>
+            <returns>
+            <see langword="true"/> if an <c>Update</c> action is associated with <paramref name="instanceId"/>; 
+            otherwise, <see langword="false"/>.
+            </returns>
+        </member>
+        <member name="M:UnityUtil.Updating.IUpdater.AddFixedUpdate(System.Int32,System.Action{System.Single})">
+            <summary>
+            Add an <see cref="T:System.Action"/> to be called every physics frame for the component with <paramref name="instanceId"/>.
+            Each instance ID may be associated with at most one of each of type of update action (<c>Update</c>, <c>FixedUpdate</c>, <c>LateUpdate</c>).
+            </summary>
+            <param name="instanceId">The instance ID of the component that will be updated every frame.</param>
+            <param name="fixedUpdateAction">The <see cref="T:System.Action"/> to be called every physics frame.</param>
+            <exception cref="T:System.InvalidOperationException">A <c>FixedUpdate</c> has already been associated with <paramref name="instanceId"/>.</exception>
+        </member>
+        <member name="M:UnityUtil.Updating.IUpdater.RemoveFixedUpdate(System.Int32,System.Action{System.Single}@)">
+            <summary>
+            Remove the <see cref="T:System.Action"/> called every physics frame for the component with <paramref name="instanceId"/>
+            and copy it to <paramref name="fixedUpdateAction"/>.
+            </summary>
+            <param name="instanceId">The instance ID of the component that no longer needs to be updated every physics frame.</param>
+            <param name="fixedUpdateAction">The removed <c>FixedUpdate</c> action.</param>
+            <returns>
+            <see langword="true"/> if the action is successfully found and removed; otherwise, <see langword="false"/>.
+            </returns>
+        </member>
+        <member name="M:UnityUtil.Updating.IUpdater.TryAddFixedUpdate(System.Int32,System.Action{System.Single})">
+            <summary>
+            Attempts to add an <see cref="T:System.Action"/> to be called every physics frame for the component with <paramref name="instanceId"/>.
+            </summary>
+            <param name="instanceId">The instance ID of the component that will be updated every physics frame.</param>
+            <param name="fixedUpdateAction">The <see cref="T:System.Action"/> to be called every physics frame.</param>
+            <returns>
+            <see langword="true"/> if the <see cref="T:System.Action"/> was successfully added; otherwise, <see langword="false"/>.
+            </returns>
+        </member>
+        <member name="M:UnityUtil.Updating.IUpdater.TryGetFixedUpdate(System.Int32,System.Action{System.Single}@)">
+            <summary>
+            Attempts to get the <see cref="T:System.Action"/> called every physics frame for the component with <paramref name="instanceId"/>.
+            </summary>
+            <param name="instanceId">The instance ID of the component that is updated every physics frame.</param>
+            <param name="fixedUpdateAction">
+            When this method returns, contains the <c>FixedUpdate</c> action associated with <paramref name="instanceId"/>, 
+            if found; otherwise, <see langword="null"/>. This parameter is passed uninitialized.
+            </param>
+            <returns>
+            <see langword="true"/> if a <c>FixedUpdate</c> action is associated with <paramref name="instanceId"/>;
+            otherwise, <see langword="false"/>.
+            </returns>
+        </member>
+        <member name="M:UnityUtil.Updating.IUpdater.ContainsFixedUpdate(System.Int32)">
+            <summary>
+            Determines whether a <c>FixedUpdate</c> action is associated with the component with <paramref name="instanceId"/>.
+            </summary>
+            <param name="instanceId">The instance ID of the component to check.</param>
+            <returns>
+            <see langword="true"/> if a <c>FixedUpdate</c> action is associated with <paramref name="instanceId"/>; 
+            otherwise, <see langword="false"/>.
+            </returns>
+        </member>
+        <member name="M:UnityUtil.Updating.IUpdater.AddLateUpdate(System.Int32,System.Action{System.Single})">
+            <summary>
+            Register an <see cref="T:System.Action"/> to be called at the end of every frame for the component with <paramref name="instanceId"/>.
+            Each instance ID may be associated with at most one of each of type of update action (<c>Update</c>, <c>FixedUpdate</c>, <c>LateUpdate</c>).
+            </summary>
+            <param name="instanceId">The instance ID of the component that will be updated every frame.</param>
+            <param name="lateUpdateAction">The <see cref="T:System.Action"/> to be called at the end of every frame.</param>
+            <exception cref="T:System.InvalidOperationException">A <c>LateUpdate</c> has already been associated with <paramref name="instanceId"/>.</exception>
+        </member>
+        <member name="M:UnityUtil.Updating.IUpdater.RemoveLateUpdate(System.Int32,System.Action{System.Single}@)">
+            <summary>
+            Remove the <see cref="T:System.Action"/> called at the end of every frame for the component with <paramref name="instanceId"/>
+            and copy it to <paramref name="lateUpdateAction"/>.
+            </summary>
+            <param name="instanceId">The instance ID of the component that no longer needs to be updated at the end of every frame.</param>
+            <param name="lateUpdateAction">The removed <c>LateUpdate</c> action.</param>
+            <returns>
+            <see langword="true"/> if the action is successfully found and removed; otherwise, <see langword="false"/>.
+            </returns>
+        </member>
+        <member name="M:UnityUtil.Updating.IUpdater.TryAddLateUpdate(System.Int32,System.Action{System.Single})">
+            <summary>
+            Attempts to add an <see cref="T:System.Action"/> to be called at the end of every frame for the component with <paramref name="instanceId"/>.
+            </summary>
+            <param name="instanceId">The instance ID of the component that will be updated at the end of every frame.</param>
+            <param name="lateUpdateAction">The <see cref="T:System.Action"/> to be called at the end of every frame.</param>
+            <returns>
+            <see langword="true"/> if the <see cref="T:System.Action"/> was successfully added; otherwise, <see langword="false"/>.
+            </returns>
+        </member>
+        <member name="M:UnityUtil.Updating.IUpdater.TryGetLateUpdate(System.Int32,System.Action{System.Single}@)">
+            <summary>
+            Attempts to get the <see cref="T:System.Action"/> called at the end of every frame for the component with <paramref name="instanceId"/>.
+            </summary>
+            <param name="instanceId">The instance ID of the component that is updated at the end of every frame.</param>
+            <param name="lateUpdateAction">
+            When this method returns, contains the <c>LateUpdate</c> action associated with <paramref name="instanceId"/>, 
+            if found; otherwise, <see langword="null"/>. This parameter is passed uninitialized.
+            </param>
+            <returns>
+            <see langword="true"/> if a <c>LateUpdate</c> action is associated with <paramref name="instanceId"/>;
+            otherwise, <see langword="false"/>.
+            </returns>
+        </member>
+        <member name="M:UnityUtil.Updating.IUpdater.ContainsLateUpdate(System.Int32)">
+            <summary>
+            Determines whether a <c>LateUpdate</c> action is associated with the component with <paramref name="instanceId"/>.
+            </summary>
+            <param name="instanceId">The instance ID of the component to check.</param>
+            <returns>
+            <see langword="true"/> if a <c>LateUpdate</c> action is associated with <paramref name="instanceId"/>; 
+            otherwise, <see langword="false"/>.
+            </returns>
+        </member>
+        <member name="M:UnityUtil.Updating.IUpdater.TrimExcess">
+            <summary>
+            Sets the capacity of all underlying collections to the actual number of elements in those collections.
+            Depending on implementation, there may be separate collections for <c>Update</c>s, <c>FixedUpdate</c>s, etc.,
+            the memory of which are all auto-allocated as more actions are added.
+            Trimming the capacity of these collections is thus an important way of saving memory,
+            e.g., after several updatable objects have been destroyed.
+            Re-allocating memory is still costly though, so avoid calling this method super often, 
+            ideally only during breaks in gameplay.
+            </summary>
+        </member>
+        <member name="T:UnityUtil.Updating.Updatable">
+            <summary>
+            Base class for components that need to register with the UnityUtil update system.
+            </summary>
+        </member>
+        <member name="P:UnityUtil.Updating.Updatable.InstanceId">
+            <summary>
+            Runtime instance ID of this component, used internally to register actions with the update system.
+            Inheritors may use this value so they don't have to add duplicate dependencies on an <see cref="T:UnityUtil.IRuntimeIdProvider"/>.
+            </summary>
+        </member>
+        <member name="M:UnityUtil.Updating.Updatable.AddUpdate(System.Action{System.Single})">
+            <summary>
+            Register <paramref name="action"/> to be called during <a href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.Update.html"><c>Update</c></a>.
+            It will automatically be unsubscribed and resubscribed as the component is disabled (or destroyed) and re-enabled.
+            </summary>
+            <param name="action">The action to be called during <c>Update</c></param>
+        </member>
+        <member name="M:UnityUtil.Updating.Updatable.AddFixedUpdate(System.Action{System.Single})">
+            <summary>
+            Register <paramref name="action"/> to be called during <a href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.FixedUpdate.html"><c>FixedUpdate</c></a>.
+            It will automatically be unsubscribed and resubscribed as the component is disabled (or destroyed) and re-enabled.
+            </summary>
+            <param name="action">The action to be called during <c>FixedUpdate</c></param>
+        </member>
+        <member name="M:UnityUtil.Updating.Updatable.AddLateUpdate(System.Action{System.Single})">
+            <summary>
+            Register <paramref name="action"/> to be called during <a href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.LateUpdate.html"><c>LateUpdate</c></a>.
+            It will automatically be unsubscribed and resubscribed as the component is disabled (or destroyed) and re-enabled.
+            </summary>
+            <param name="action">The action to be called during <c>LateUpdate</c></param>
+        </member>
+        <member name="M:UnityUtil.Updating.Updatable.RemoveUpdate">
+            <summary>
+            Unregister this component's <a href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.Update.html"><c>Update</c></a> action.
+            </summary>
+            <exception cref="T:System.InvalidOperationException">No <c>Update</c> action was ever registered for this component.</exception>
+        </member>
+        <member name="M:UnityUtil.Updating.Updatable.RemoveFixedUpdate">
+            <summary>
+            Unregister this component's <a href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.FixedUpdate.html"><c>FixedUpdate</c></a> action.
+            </summary>
+            <exception cref="T:System.InvalidOperationException">No <c>FixedUpdate</c> action was ever registered for this component.</exception>
+        </member>
+        <member name="M:UnityUtil.Updating.Updatable.RemoveLateUpdate">
+            <summary>
+            Unregister this component's <a href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.LateUpdate.html"><c>LateUpdate</c></a> action.
+            </summary>
+            <exception cref="T:System.InvalidOperationException">No <c>LateUpdate</c> action was ever registered for this component.</exception>
+        </member>
+        <member name="M:UnityUtil.Updating.Updater.AddUpdate(System.Int32,System.Action{System.Single})">
+            <inheritdoc/>
+        </member>
+        <member name="M:UnityUtil.Updating.Updater.RemoveUpdate(System.Int32,System.Action{System.Single}@)">
+            <inheritdoc/>
+        </member>
+        <member name="M:UnityUtil.Updating.Updater.TryAddUpdate(System.Int32,System.Action{System.Single})">
+            <inheritdoc/>
+        </member>
+        <member name="M:UnityUtil.Updating.Updater.TryGetUpdate(System.Int32,System.Action{System.Single}@)">
+            <inheritdoc/>
+        </member>
+        <member name="M:UnityUtil.Updating.Updater.ContainsUpdate(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:UnityUtil.Updating.Updater.AddFixedUpdate(System.Int32,System.Action{System.Single})">
+            <inheritdoc/>
+        </member>
+        <member name="M:UnityUtil.Updating.Updater.RemoveFixedUpdate(System.Int32,System.Action{System.Single}@)">
+            <inheritdoc/>
+        </member>
+        <member name="M:UnityUtil.Updating.Updater.TryAddFixedUpdate(System.Int32,System.Action{System.Single})">
+            <inheritdoc/>
+        </member>
+        <member name="M:UnityUtil.Updating.Updater.TryGetFixedUpdate(System.Int32,System.Action{System.Single}@)">
+            <inheritdoc/>
+        </member>
+        <member name="M:UnityUtil.Updating.Updater.ContainsFixedUpdate(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:UnityUtil.Updating.Updater.AddLateUpdate(System.Int32,System.Action{System.Single})">
+            <inheritdoc/>
+        </member>
+        <member name="M:UnityUtil.Updating.Updater.RemoveLateUpdate(System.Int32,System.Action{System.Single}@)">
+            <inheritdoc/>
+        </member>
+        <member name="M:UnityUtil.Updating.Updater.TryAddLateUpdate(System.Int32,System.Action{System.Single})">
+            <inheritdoc/>
+        </member>
+        <member name="M:UnityUtil.Updating.Updater.TryGetLateUpdate(System.Int32,System.Action{System.Single}@)">
+            <inheritdoc/>
+        </member>
+        <member name="M:UnityUtil.Updating.Updater.ContainsLateUpdate(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:UnityUtil.Updating.Updater.TrimExcess">
+            <inheritdoc/>
+        </member>
+    </members>
+</doc>

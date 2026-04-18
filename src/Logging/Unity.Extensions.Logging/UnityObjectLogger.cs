@@ -89,7 +89,7 @@ public class UnityObjectLogger<T> : ILogger<T> where T : UE.Object
     /// <returns>The hierarchy name of the logging <see cref="UE.Object"/> instance.</returns>
     public string GetHierarchyName()
     {
-        if (_transform is null)
+        if (_transform == null)
             return _contextName!;   // Not set to null in ctor if hierarchy is dynamic
 
         if (_hierarchyNameParts is null)
