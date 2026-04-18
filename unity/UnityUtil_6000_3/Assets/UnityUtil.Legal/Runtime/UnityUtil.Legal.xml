@@ -218,11 +218,13 @@
             </param>
             <param name="cancellationToken">Token to monitor for cancellation requests.</param>
         </member>
-        <member name="M:UnityUtil.Legal.PrivacyDataProcessorsInitializer.saveRequiredNonCmpConsents(System.Boolean)">
+        <member name="M:UnityUtil.Legal.PrivacyDataProcessorsInitializer.saveNonCmpConsents(System.Boolean,System.Boolean)">
             <summary>
-            Save consent for all registered <see cref="T:UnityUtil.Legal.INonTcfDataProcessor"/>s that did not already have consent saved in local preferences,
-            and accept the latest legal documents.
+            Save consent for all registered <see cref="T:UnityUtil.Legal.INonTcfDataProcessor"/>s in local preferences, if changed,
+            so we don't have to request consent again every startup.
             </summary>
+            <param name="wasBespokeConsentFormRequired"></param>
+            <param name="hasConsent"></param>
         </member>
         <member name="M:UnityUtil.Legal.PrivacyDataProcessorsInitializer.initializeTcfDataProcessorsAsync">
             <summary>
