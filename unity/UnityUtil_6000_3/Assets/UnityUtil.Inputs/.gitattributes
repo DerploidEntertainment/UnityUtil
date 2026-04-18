@@ -1,0 +1,29 @@
+#########################################################################################
+# Be sure to copy any changes here to the .gitattributes files in the other UPM packages!
+# Apparently a .gitattribues next to every UPM package.json is required, see https://issuetracker.unity3d.com/issues/package-manager-fails-to-download-lfs-files-from-git-repository-when-the-git-url-contains-a-path-extension
+# Note that .gitattributes files cannot be symlinked, and only top-level .gitattributes may contain macro attributes (`[attr]lfs`, e.g.). See https://git-scm.com/docs/gitattributes#_defining_macro_attributes
+#########################################################################################
+
+# Unity
+
+*.cs diff=csharp text
+
+*.anim unitymerge merge=unityyamlmerge eol=lf
+*.asset unitymerge merge=unityyamlmerge eol=lf
+*.controller unitymerge merge=unityyamlmerge eol=lf
+*.mat unitymerge merge=unityyamlmerge eol=lf
+*.meta unitymerge merge=unityyamlmerge eol=lf
+*.physicsMaterial unitymerge merge=unityyamlmerge eol=lf
+*.physicsMaterial2D unitymerge merge=unityyamlmerge eol=lf
+*.prefab unitymerge merge=unityyamlmerge eol=lf
+*.unity unitymerge merge=unityyamlmerge eol=lf
+
+# Git LFS
+
+# Can't use the following [attr] for LFS. Apparently Unity does not support this when installing UPM packages from a Git URL using LFS?
+# [attr]lfs filter=lfs diff=lfs merge=lfs -text
+
+*.unitypackage filter=lfs diff=lfs merge=lfs -text
+*.png filter=lfs diff=lfs merge=lfs -text
+*.dll filter=lfs diff=lfs merge=lfs -text
+*.pdb filter=lfs diff=lfs merge=lfs -text
