@@ -14,11 +14,6 @@ using static Microsoft.Extensions.Logging.LogLevel;
 using MEL = Microsoft.Extensions.Logging;
 
 namespace UnityUtil.Legal;
-internal class LegalDocumentState(string currentTag)
-{
-    public string CurrentTag = currentTag;
-    public string? AcceptedTag;
-}
 
 /// <summary><inheritdoc cref="ILegalAcceptManager"/></summary>
 /// <remarks>
@@ -51,12 +46,12 @@ public class LegalAcceptManager : ScriptableObject, ILegalAcceptManager
     }
 
     /// <inheritdoc/>
-    public async Task<LegalAcceptStatus> CheckStatusAsync(IEnumerable<LegalDocument> legalDocuments)
+    public async Task<IEnumerable<LegalDocumentState>> CheckStatusAsync(IEnumerable<LegalDocument> legalDocuments)
     {
         _legalDocuments = [.. legalDocuments];
         if (_legalDocuments.Length == 0) {
             log_NoLegalDocuments();
-            return LegalAcceptStatus.Current;
+            return [];
         }
 
         LegalDocumentState[] legalDocumentStates = await Task.WhenAll(
@@ -80,12 +75,11 @@ public class LegalAcceptManager : ScriptableObject, ILegalAcceptManager
                 log_AcceptRequired_OutOfDate();
             else
                 log_AcceptRequired_FirstTime();
-            return acceptOutdated ? LegalAcceptStatus.Stale : LegalAcceptStatus.Unprovided;
         }
-        else {
+        else
             log_AlreadyAcceptedAll();
-            return LegalAcceptStatus.Current;
-        }
+
+        return legalDocumentStates;
     }
 
     private Task<LegalDocumentState> checkForUpdateAsync(LegalDocument legalDocument)
@@ -137,11 +131,9 @@ public class LegalAcceptManager : ScriptableObject, ILegalAcceptManager
                 }
             }
 
-            tcs.SetResult(
-                new LegalDocumentState(currentTag) {
-                    AcceptedTag = string.IsNullOrEmpty(acceptedTag) ? null : acceptedTag,
-                }
-            );
+            tcs.SetResult(new LegalDocumentState(currentTag,
+                acceptedTag: string.IsNullOrEmpty(acceptedTag) ? null : acceptedTag
+            ));
         }
     }
 
@@ -196,7 +188,7 @@ public class LegalAcceptManager : ScriptableObject, ILegalAcceptManager
 
     private static readonly Action<MEL.ILogger, Exception?> LOG_ACCEPT_REQUIRED_OUT_OF_DATE_ACTION = LoggerMessage.Define(Information,
         new EventId(id: 0, nameof(log_AcceptRequired_OutOfDate)),
-        $"User must accept latest versions of all legal documents because the versions that they last accepted are out of date"
+        "User must accept latest version of all legal documents but at least one had an outdated accepted version"
     );
     private void log_AcceptRequired_OutOfDate() => LOG_ACCEPT_REQUIRED_OUT_OF_DATE_ACTION(_logger!, null);
 

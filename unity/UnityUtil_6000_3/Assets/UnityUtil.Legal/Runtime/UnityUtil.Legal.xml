@@ -26,10 +26,16 @@
         </member>
         <member name="M:UnityUtil.Legal.ILegalAcceptManager.CheckStatusAsync(System.Collections.Generic.IEnumerable{UnityUtil.Legal.LegalDocument})">
             <summary>
-            Check the <see cref="T:UnityUtil.Legal.LegalAcceptStatus"/> across all provided <paramref name="legalDocuments"/>.
+            Check the acceptance status of all provided <paramref name="legalDocuments"/>.
             </summary>
+            <remarks>
+            The <see cref="F:UnityUtil.Legal.LegalDocument.TagHeader"/> values in the responses from the provided documents' <see cref="F:UnityUtil.Legal.LegalDocument.LatestVersionUri"/>s
+            will be checked against the tags stored at their <see cref="F:UnityUtil.Legal.LegalDocument.PreferencesKey"/>s.
+            </remarks>
+            <param name="legalDocuments">The <see cref="T:UnityUtil.Legal.LegalDocument"/>s for which to check acceptance.</param>
             <returns>
-            A task representing the asynchronous status check operation, containing the <see cref="T:UnityUtil.Legal.LegalAcceptStatus"/> across all <paramref name="legalDocuments"/>.
+            A task representing the asynchronous status check operation,
+            which wraps the <see cref="T:UnityUtil.Legal.LegalDocumentState"/> for each of the provided <paramref name="legalDocuments"/>, in the same order.
             </returns>
         </member>
         <member name="M:UnityUtil.Legal.ILegalAcceptManager.Accept">
@@ -143,11 +149,6 @@
         <member name="M:UnityUtil.Legal.LegalAcceptManager.Accept">
             <inheritdoc/>
         </member>
-        <member name="T:UnityUtil.Legal.LegalAcceptStatus">
-            <summary>
-            Status of a user's acceptance of <see cref="T:UnityUtil.Legal.LegalDocument"/>s.
-            </summary>
-        </member>
         <member name="T:UnityUtil.Legal.LegalDocument">
             <summary>
             Represents a versioned legal document that users must accept before using the application.
@@ -217,14 +218,14 @@
             These actions could be connecting to databases, retrieving remote configuration, registering service dependencies, etc.
             </param>
             <param name="cancellationToken">Token to monitor for cancellation requests.</param>
+            <returns>A task representing the asynchronous initialize operation that wraps the resulting <see cref="T:UnityUtil.Legal.DataProcessorsStatus"/>.</returns>
         </member>
-        <member name="M:UnityUtil.Legal.PrivacyDataProcessorsInitializer.saveNonCmpConsents(System.Boolean,System.Boolean)">
+        <member name="M:UnityUtil.Legal.PrivacyDataProcessorsInitializer.saveNonCmpConsents(UnityUtil.Legal.NonCmpConsentStatus)">
             <summary>
             Save consent for all registered <see cref="T:UnityUtil.Legal.INonTcfDataProcessor"/>s in local preferences, if changed,
             so we don't have to request consent again every startup.
             </summary>
-            <param name="wasBespokeConsentFormRequired"></param>
-            <param name="hasConsent"></param>
+            <param name="newNonCmpConsentStatus"></param>
         </member>
         <member name="M:UnityUtil.Legal.PrivacyDataProcessorsInitializer.initializeTcfDataProcessorsAsync">
             <summary>

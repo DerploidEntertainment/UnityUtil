@@ -17,6 +17,15 @@ using MEL = Microsoft.Extensions.Logging;
 
 namespace UnityUtil.Legal;
 
+public readonly struct DataProcessorsStatus(
+    IReadOnlyDictionary<LegalDocument, LegalDocumentState> legalDocumentStates,
+    IReadOnlyDictionary<INonTcfDataProcessor, NonCmpConsentStatus> nonCmpConsentStatuses
+)
+{
+    public IReadOnlyDictionary<LegalDocument, LegalDocumentState> LegalDocumentStates { get; } = legalDocumentStates;
+    public IReadOnlyDictionary<INonTcfDataProcessor, NonCmpConsentStatus> NonCmpConsentStatuses { get; } = nonCmpConsentStatuses;
+}
+
 /// <summary>
 /// Handles an opinionated user flow to gather user acceptance of legal documents and consent to private data sharing before initializing data processor SDKs.
 /// </summary>
@@ -150,11 +159,12 @@ public class PrivacyDataProcessorsInitializer : MonoBehaviour
     /// These actions could be connecting to databases, retrieving remote configuration, registering service dependencies, etc.
     /// </param>
     /// <param name="cancellationToken">Token to monitor for cancellation requests.</param>
-    public async Task InitializeDataProcessorsWithConsentAsync(Task? preInitializeTask = null, CancellationToken cancellationToken = default)
+    /// <returns>A task representing the asynchronous initialize operation that wraps the resulting <see cref="DataProcessorsStatus"/>.</returns>
+    public async Task<DataProcessorsStatus> InitializeDataProcessorsWithConsentAsync(Task? preInitializeTask = null, CancellationToken cancellationToken = default)
     {
         cancellationToken.ThrowIfCancellationRequested();
 
-        LegalAcceptStatus legalAcceptStatus = await _legalAcceptManager!.CheckStatusAsync(LegalDocuments);
+        IEnumerable<LegalDocumentState> legalDocumentStates = await _legalAcceptManager!.CheckStatusAsync(LegalDocuments);
 
         cancellationToken.ThrowIfCancellationRequested();
 
@@ -163,10 +173,12 @@ public class PrivacyDataProcessorsInitializer : MonoBehaviour
 
         cancellationToken.ThrowIfCancellationRequested();
 
-        // Initialize bespoke consent form UI for non-CMP consent and/or legal acceptance.
-        // Having Toggles pre-checked looks shady, even if their state was already persisted to true, so we always set them to false if the bespoke form is being shown.
-        bool isBespokeConsentFormRequired = someNonCmpConsentStillRequired || legalAcceptStatus != LegalAcceptStatus.Current;
-        DialogRoot!.gameObject.SetActive(isBespokeConsentFormRequired);
+        // Initialize non-CMP consent form UI and/or legal acceptance.
+        // Having Toggles pre-checked looks shady, even if their state was already persisted to true, so we always set them to false if the non-CMP form is being shown.
+        bool allLegalAcceptCurrent = legalDocumentStates.All(x => x.CurrentTag == x.AcceptedTag);
+        bool allLegalAcceptUnprovided = legalDocumentStates.All(x => x.AcceptedTag is null);
+        bool isNonCmpConsentFormRequired = someNonCmpConsentStillRequired || !allLegalAcceptCurrent;
+        DialogRoot!.gameObject.SetActive(isNonCmpConsentFormRequired);
         ToggleLegalAccept!.isOn = false;
         ToggleNonCmpConsent!.isOn = false;
         BtnContinue!.interactable = false;
@@ -174,14 +186,15 @@ public class PrivacyDataProcessorsInitializer : MonoBehaviour
         log_NonCmpConsentRequired(someNonCmpConsentStillRequired);
         (someNonCmpConsentStillRequired ? NonCmpConsentRequired : NonCmpConsentNotRequired).Invoke();
 
-        log_LegalAcceptStatus(legalAcceptStatus);
+        log_LegalDocumentStates(legalDocumentStates);
         (
-            legalAcceptStatus == LegalAcceptStatus.Unprovided ? LegalAcceptUnprovided
-            : legalAcceptStatus == LegalAcceptStatus.Stale ? LegalAcceptStale : LegalAcceptCurrent
+            allLegalAcceptUnprovided ? LegalAcceptUnprovided
+            : allLegalAcceptCurrent ? LegalAcceptCurrent
+            : LegalAcceptStale
         ).Invoke();
 
-        log_ShowingBespokeConsentForm(isBespokeConsentFormRequired);
-        if (isBespokeConsentFormRequired) {
+        log_ShowingNonCmpConsentForm(isNonCmpConsentFormRequired);
+        if (isNonCmpConsentFormRequired) {
             // These UI event handler registrations were originally in Awake(), but then they don't run in Edit Mode tests.
             // So we've kinda changed functionality just to facilitate tests, but whatev, this is the first and only major method of this class that gets called anyway.
             _awaitingContinueTcs = new TaskCompletionSource<bool>();
@@ -197,14 +210,15 @@ public class PrivacyDataProcessorsInitializer : MonoBehaviour
         if (preInitializeTask is not null)
             await preInitializeTask;
 
-        if (legalAcceptStatus != LegalAcceptStatus.Current)
+        if (!allLegalAcceptCurrent)
             _legalAcceptManager!.Accept();
-        // Don't check cancellation here; saving legal acceptance and non-CMP consents from the bespoke form should be done together (not rigorously atomic, but close enough)
+        // Don't check cancellation here; saving legal acceptance and consents from the non-CMP form should be done together (not rigorously atomic, but close enough)
 
         if (_nonTcfDataProcessors!.Count == 0)
             log_NoNonTcfDataProcessors();
         else {
-            saveNonCmpConsents(isBespokeConsentFormRequired, ToggleNonCmpConsent!.isOn);
+            if (isNonCmpConsentFormRequired)
+                saveNonCmpConsents(ToggleNonCmpConsent!.isOn ? Granted : Denied);
             startNonTcfDataProcessors();
         }
 
@@ -218,6 +232,15 @@ public class PrivacyDataProcessorsInitializer : MonoBehaviour
             await updateCmpConsentAsync();  // Always update consent info; showing a consent form to users again may not be required tho
             await initializeTcfDataProcessorsAsync();    // TCF-compliant data processors are always initialized; they may just be using the "default" TC string
         }
+
+        return new DataProcessorsStatus(
+            new Dictionary<LegalDocument, LegalDocumentState>(
+                LegalDocuments.Zip(legalDocumentStates, (doc, state) => KeyValuePair.Create(doc, state))
+            ),
+            new Dictionary<INonTcfDataProcessor, NonCmpConsentStatus>(
+                _nonTcfDataProcessors.Zip(_nonCmpConsentStatuses, (processor, state) => KeyValuePair.Create(processor, state))
+            )
+        );
     }
 
     private async Task updateCmpConsentAsync()
@@ -261,21 +284,16 @@ public class PrivacyDataProcessorsInitializer : MonoBehaviour
     /// Save consent for all registered <see cref="INonTcfDataProcessor"/>s in local preferences, if changed,
     /// so we don't have to request consent again every startup.
     /// </summary>
-    /// <param name="wasBespokeConsentFormRequired"></param>
-    /// <param name="hasConsent"></param>
-    private void saveNonCmpConsents(bool wasBespokeConsentFormRequired, bool hasConsent)
+    /// <param name="newNonCmpConsentStatus"></param>
+    private void saveNonCmpConsents(NonCmpConsentStatus newNonCmpConsentStatus)
     {
         log_SaveAllNonCmpConsents();
 
         for (int i = 0; i < _nonTcfDataProcessors!.Count; i++) {
-            bool newHasConsent =
-                (wasBespokeConsentFormRequired && hasConsent)
-                || (!wasBespokeConsentFormRequired && _nonCmpConsentStatuses![i] == Granted);
-            NonCmpConsentStatus newNonCmpConsentStatus = newHasConsent ? Granted : Denied;
             if (newNonCmpConsentStatus != _nonCmpConsentStatuses![i]) {
                 _nonCmpConsentStatuses![i] = newNonCmpConsentStatus;
                 log_SavingNonCmpConsent(_nonTcfDataProcessors[i], _nonCmpConsentStatuses[i]);
-                _localPreferences!.SetInt(_nonTcfDataProcessors[i].ConsentPreferenceKey, newHasConsent ? 1 : 0);
+                _localPreferences!.SetInt(_nonTcfDataProcessors[i].ConsentPreferenceKey, newNonCmpConsentStatus == Granted ? 1 : 0);
             }
         }
     }
@@ -389,12 +407,18 @@ public class PrivacyDataProcessorsInitializer : MonoBehaviour
     private void log_NonCmpConsentRequired(bool isRequired) => LOG_NON_CMP_CONSENT_REQUIRED_ACTION(_logger!, isRequired, null);
 
 
-    private static readonly Action<MEL.ILogger, LegalAcceptStatus, Exception?> LOG_LEGAL_ACCEPT_STATUS_ACTION = LoggerMessage.Define<LegalAcceptStatus>(Information,
-        new EventId(id: 0, nameof(log_LegalAcceptStatus)),
-        $"{nameof(LegalAcceptStatus)}: {{LegalAcceptStatus}}. If not '{LegalAcceptStatus.Current}' then the bespoke form to accept latest legal docs will be activated."
+    private static readonly Action<MEL.ILogger, string, Exception?> LOG_LEGAL_ACCEPT_STATUS_ACTION = LoggerMessage.Define<string>(Information,
+        new EventId(id: 0, nameof(log_LegalDocumentStates)),
+        $"If {nameof(LegalDocumentState.CurrentTag)} does not equal {nameof(LegalDocumentState.AcceptedTag)} for all {nameof(LegalDocument)}s " +
+        $"then the non-CMP consent form will be activated for user to accept latest legal docs. " +
+        $"Current {nameof(LegalDocumentState)}s (\"<{nameof(LegalDocument.name)}>: <{nameof(LegalDocumentState.CurrentTag)}>, <{nameof(LegalDocumentState.AcceptedTag)}>\"):\n" +
+        "\t{LegalDocumentStates}."
     );
-    private void log_LegalAcceptStatus(LegalAcceptStatus legalAcceptStatus) => LOG_LEGAL_ACCEPT_STATUS_ACTION(_logger!, legalAcceptStatus, null);
-
+    private void log_LegalDocumentStates(IEnumerable<LegalDocumentState> legalDocumentStates)
+    {
+        IEnumerable<string> stateSummaries = LegalDocuments.Zip(legalDocumentStates, (doc, state) => $"'{doc.name}': '{state.CurrentTag}', '{state.AcceptedTag}'");
+        LOG_LEGAL_ACCEPT_STATUS_ACTION(_logger!, string.Join("\n\t", stateSummaries), null);
+    }
 
     private static readonly Action<MEL.ILogger, string, NonCmpConsentStatus, Exception?> LOG_NON_CMP_CONSENT_ALREADY_REQUESTED_ACTION = LoggerMessage.Define<string, NonCmpConsentStatus>(Information,
         new EventId(id: 0, nameof(log_NonCmpConsentAlreadyRequested)),
@@ -404,12 +428,12 @@ public class PrivacyDataProcessorsInitializer : MonoBehaviour
         LOG_NON_CMP_CONSENT_ALREADY_REQUESTED_ACTION(_logger!, dataProcessorName, nonCmpConsentStatus, null);
 
 
-    private static readonly Action<MEL.ILogger, bool, Exception?> LOG_SHOWING_BESPOKE_FORM_ACTION = LoggerMessage.Define<bool>(Information,
-        new EventId(id: 0, nameof(log_ShowingBespokeConsentForm)),
-        "Showing bespoke form for non-CMP consent and/or legal acceptance? {IsShowing}"
+    private static readonly Action<MEL.ILogger, bool, Exception?> LOG_SHOWING_NON_CMP_FORM_ACTION = LoggerMessage.Define<bool>(Information,
+        new EventId(id: 0, nameof(log_ShowingNonCmpConsentForm)),
+        "Showing form for non-CMP consent and/or legal acceptance? {IsShowing}"
     );
-    private void log_ShowingBespokeConsentForm(bool isShowing) =>
-        LOG_SHOWING_BESPOKE_FORM_ACTION(_logger!, isShowing, null);
+    private void log_ShowingNonCmpConsentForm(bool isShowing) =>
+        LOG_SHOWING_NON_CMP_FORM_ACTION(_logger!, isShowing, null);
 
 
     private static readonly Action<MEL.ILogger, string, Exception?> LOG_NON_CMP_CONSENT_NEEDS_REQURESTED_ACTION = LoggerMessage.Define<string>(Information,

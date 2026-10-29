@@ -14,5 +14,15 @@
                 Please see https://github.com/manuelroemer/IsExternalInit for more information.
             </remarks>
         </member>
+        <member name="F:UnityUtil.Legal.Tests.Editor.PrivacyDataProcessorsInitializerTests.PRIOR_NON_CMP_CONSENTS">
+            <summary>
+            Prior consent test cases, where each element is the consent values for a list of <see cref="T:UnityUtil.Legal.INonTcfDataProcessor"/>s:
+            <list type="number">
+            <item><see langword="null"/>: equivalent to <see cref="F:UnityUtil.Legal.NonCmpConsentStatus.StillRequired"/></item>
+            <item><see langword="false"/>: <see cref="F:UnityUtil.Legal.NonCmpConsentStatus.Denied"/></item>
+            <item><see langword="true"/>: <see cref="F:UnityUtil.Legal.NonCmpConsentStatus.Granted"/></item>
+            </list>
+            </summary>
+        </member>
     </members>
 </doc>
